@@ -6,10 +6,11 @@ This repo contains code which is used in the Firebase project to control the Fir
 
 - [x] TypeScript Build System
 - [x] Initial Test Suite
+- [x] Validate Survey Data
+- [x] Initial Survey Endpoint
+- [x] Write to Firestore
+- [ ] Add watcher to auto build .ts to .js
 - [ ] Agree on API / Response Payloads
-- [ ] Initial Survey Endpoint
-- [ ] Validate Survey Data
-- [ ] Write to Firestore
 - [ ] Verify Cryptographic Hashes
 - [ ] Cache Reads in Buckets
 
@@ -19,6 +20,7 @@ This repo contains code which is used in the Firebase project to control the Fir
 - Prettier Code Formatter
 - Node 10+
 - Firestore CLI
+- Postman
 
 ## Security Model
 
@@ -83,3 +85,30 @@ Example Report JSON Payload:
   "timestamp": "2020-04-13"
 }
 ```
+
+## Firestore Emulator REST API
+
+You can query the Firestore API with urls like this:
+http://localhost:8080/v1/projects/tagstwo-431e3/databases/(default)/documents/signed_reports
+
+```
+$ curl --location --request GET 'http://localhost:8080/v1/projects/tagstwo-431e3/databases/(default)/documents/signed_reports'
+```
+
+### Postman Collection
+
+You can import the COVID-Watch.postman_collection.json to play with the local Cloud Functions and Firestore Emulator.
+
+## Deployment
+
+### Cloud Functions
+
+Deploy a single function:
+
+```
+$ firebase deploy --only functions:submitReport
+```
+
+## Live URLS
+
+https://us-central1-tagstwo-431e3.cloudfunctions.net/submitReport

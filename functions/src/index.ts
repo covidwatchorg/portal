@@ -1,5 +1,10 @@
+import * as admin from "firebase-admin"
 import * as functions from "firebase-functions"
-import { parse, DateClass, Field } from "sparkson"
+import { DateClass, Field, parse } from "sparkson"
+
+admin.initializeApp(functions.config().firebase)
+
+export const firestore = admin.firestore()
 
 export class Report {
   constructor(
@@ -19,11 +24,32 @@ export const submitReport = functions.https.onRequest((request, response) => {
   console.log(request.body)
 
   try {
+    // validate format
     const report = parse(Report, request.body)
-    console.log("I got the report", report)
-    response.status(200).send(report)
+    console.log("Report JSON received: ", report)
+
+    // validate crypto
+
+    // prepare for storage
+    const jsonObject = JSON.parse(JSON.stringify(report))
+    console.log("Saving report: ", jsonObject)
+
+    firestore
+      .collection("signed_reports")
+      .doc()
+      .set(jsonObject)
+      .then(() => {
+        return response.status(201).send({
+          status: "201",
+          message: "Success",
+        })
+      })
+      .catch((error) => {
+        console.log(`Error writing to firestore: ${error}`)
+        response.status(400).send(error)
+      })
   } catch (error) {
-    console.log(`Got an error: ${error}`)
+    console.log(`Error processing report: ${error}`)
     response.status(400).send(error)
   }
 })

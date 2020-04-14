@@ -1,14 +1,10 @@
 {
+  "extends": "./tsconfig.test.json",
   "compilerOptions": {
-    "module": "commonjs",
-    "noImplicitReturns": true,
-    "noUnusedLocals": true,
-    "sourceMap": true,
-    "strict": true,
-    "target": "es2017",
+    "outDir": "lib",
     "experimentalDecorators": true,
-    "outDir": ".mocha"
+    "noEmit": true
   },
-  "compileOnSave": true,
-  "include": ["test/**/*.ts"]
+  "exclude": ["test"],
+  "include": ["src/**/*.ts"]
 }
