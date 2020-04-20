@@ -38,8 +38,10 @@ $ npm install
 
 ## Run Firestore Emulators
 
+Run with debug logging enabled to see console.logs
+
 ```
-$ firebase emulators:start
+$ DEBUG_LOGGING=1; firebase emulators:start
 ```
 
 ## Run Tests
@@ -75,14 +77,13 @@ Example Report JSON Payload:
 
 ```json
 {
-  "contact_event_key_bytes": "a",
-  "memo_data": "a",
+  "temporary_contact_key_bytes": "PvLGpfQZgGqnoQRtSr0AHd8J5/WdKwaJNLRCkhGlgHU=",
+  "memo_data": "SGVsbG8sIFdvcmxkIQ==",
   "memo_type": 1,
   "start_index": 1,
-  "end_index": 1,
-  "signature_bytes": "a",
-  "report_verification_public_key_bytes": "a",
-  "timestamp": "2020-04-13"
+  "end_index": 8,
+  "signature_bytes": "+k7HDsVZPY5Pxcz0cpwVBvDOHrrQ0+AyDVL/MbGkXBYG2WAyoqLaNxFuXiB9rSzkdCesDv1NSSk06hrjx2YABA==",
+  "report_verification_public_key_bytes": "v78liBBYQrFXqOH6YydUD1aGpXLMgruKATAjFZ0ycLk="
 }
 ```
 
