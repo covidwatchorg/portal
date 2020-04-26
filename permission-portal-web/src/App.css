@@ -1,0 +1,10 @@
+/* Global styles go here */
+
+:root {
+  --main-dark-blue: #2C58B1;
+  --main-text-gray: #585858;
+}
+
+h1 {
+  color: var(--main-dark-blue);
+}
