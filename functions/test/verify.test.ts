@@ -1,27 +1,33 @@
 import { expect } from 'chai';
 import 'mocha';
+import {verifySignature} from "../src/verify"
 
-import {bla} from "../src/verify"
-
+const valid = {
+  tck: Buffer.from('PvLGpfQZgGqnoQRtSr0AHd8J5/WdKwaJNLRCkhGlgHU=', "base64"),
+  memo: Buffer.from('SGVsbG8sIFdvcmxkIQ==', "base64"),
+  memoType: 1,
+  startIndex: 1,
+  endIndex:8,
+  sig: Buffer.from('+k7HDsVZPY5Pxcz0cpwVBvDOHrrQ0+AyDVL/MbGkXBYG2WAyoqLaNxFuXiB9rSzkdCesDv1NSSk06hrjx2YABA==', "base64"),
+  rvk: Buffer.from('v78liBBYQrFXqOH6YydUD1aGpXLMgruKATAjFZ0ycLk=', "base64")
+}
 
 @suite
 export class CryptoVerification {
 
   @test
-   "bla is bla"() {
-    const result = bla();
-    expect(result).to.equal('bla');
+  'It should pass for untampered message and signature'() {
+    var data = {...valid}
+    var result = verifySignature(data.tck, data.memo, data.sig, data.rvk, data.startIndex, data.endIndex, data.memoType)
+    expect(result).to.be.true;
+ }
 
-  }
+  @test
+  'It should not pass for tampered message'() {
+    var data = {...valid}
+    data.memoType = 2;
+    var result = verifySignature(data.tck, data.memo, data.sig, data.rvk, data.startIndex, data.endIndex, data.memoType)
+    expect(result).to.be.false;
+ }
 
 }
-
-// describe('Test for crypto verification', () => {
-
-//     it('should return hello world', () => {
-//       const result = bla();
-//       console.log('asdadsa')
-//       expect(result).to.equal('Hello bla!');
-//     });
-  
-//   });
