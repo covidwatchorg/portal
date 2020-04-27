@@ -23,7 +23,7 @@ export class CryptoVerification {
  }
 
   @test
-  'It should not pass for tampered message'() {
+  'It should not pass for tampered message or signature'() {
     var data = {...valid}
     data.memoType = 2;
     var result = verifySignature(data.tck, data.memo, data.sig, data.rvk, data.startIndex, data.endIndex, data.memoType)

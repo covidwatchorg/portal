@@ -34,8 +34,8 @@ export class Report {
 }
 
 function handleError(response: functions.Response, message: string, code = 400) {
-  var er =  JSON.stringify({
-    code: code,
+  const er =  JSON.stringify({
+    status: code,
     message: message
   });
   console.log(`Error processing report: ${er}`);
@@ -73,7 +73,6 @@ export const submitReport = functions.https.onRequest((request, response) => {
       jsonObject["report_verification_public_key_bytes"],
       "base64"
     )
-//    var result = verifySignature(data.tck, data.memo, data.sig, data.rvk, data.startIndex, data.endIndex, data.memoType)
 
     if(!verifySignature(
       jsonObject["temporary_contact_key_bytes"],

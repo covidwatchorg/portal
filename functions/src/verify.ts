@@ -1,7 +1,7 @@
 const tcn = require("tcn-node");
 
 function enumMemoTypeOf(memoType: number): string {
-    var res: string;
+    let res: string;
     switch(memoType) { 
         case 0: { 
            res = 'CoEpiV1'; 
@@ -22,7 +22,7 @@ function enumMemoTypeOf(memoType: number): string {
 function verifySignature(bTck: Buffer, bMemo: Buffer, bSig: Buffer,
     bRvk: Buffer, startIndex: number, endIndex: number, memoType: number): boolean {
 
-    var report = {
+    const report = {
         rvk: bRvk.toJSON().data,
         tck_bytes: bTck.toJSON().data,
         j_1: startIndex,
@@ -31,8 +31,8 @@ function verifySignature(bTck: Buffer, bMemo: Buffer, bSig: Buffer,
         memo_data: bMemo.toJSON().data,
     }
 
-    var sigBytes = bSig.toJSON().data;
-    var sig = {
+    const sigBytes = bSig.toJSON().data;
+    const sig = {
         R_bytes: sigBytes.slice(0, 32),
         s_bytes: sigBytes.slice(32, 64)
     }
@@ -46,4 +46,4 @@ function verifySignature(bTck: Buffer, bMemo: Buffer, bSig: Buffer,
 }
 
 
-export { verifySignature }
+export { verifySignature };
