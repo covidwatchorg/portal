@@ -45,6 +45,5 @@ function verifySignature(bTck: Buffer, bMemo: Buffer, bSig: Buffer,
     )
 }
 
-function bla() {return "bla"}
 
-export { verifySignature, bla}
+export { verifySignature }

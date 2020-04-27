@@ -5,6 +5,7 @@ import { Field, parse } from "sparkson"
 //registerStringMapper(Buffer, (val: string) => Buffer.from(val, "base64"))
 
 import tcn from "tcn-node"
+import {verifySignature} from "./verify"
 
 // Check for DEBUG_LOGGING
 const DEBUG_LOGGING = process.env.DEBUG_LOGGING || ""
@@ -30,6 +31,16 @@ export class Report {
     @Field("report_verification_public_key_bytes")
     public report_verification_public_key_bytes: string
   ) {}
+}
+
+function handleError(response: functions.Response, message: string, code = 400) {
+  var er =  JSON.stringify({
+    code: code,
+    message: message
+  });
+  console.log(`Error processing report: ${er}`);
+  response.setHeader('content-type', 'application/json; charset=utf-8');
+  response.status(code).send(er);
 }
 
 export const submitReport = functions.https.onRequest((request, response) => {
@@ -62,8 +73,19 @@ export const submitReport = functions.https.onRequest((request, response) => {
       jsonObject["report_verification_public_key_bytes"],
       "base64"
     )
+//    var result = verifySignature(data.tck, data.memo, data.sig, data.rvk, data.startIndex, data.endIndex, data.memoType)
 
-    // validate crypto
+    if(!verifySignature(
+      jsonObject["temporary_contact_key_bytes"],
+      jsonObject["memo_data"],
+      jsonObject["signature_bytes"],
+      jsonObject["report_verification_public_key_bytes"],
+      jsonObject["start_index"],
+      jsonObject["end_index"],
+      jsonObject["memo_type"]
+    )) {
+      throw new Error("Unable to verify signature");
+    }
 
     firestore
       .collection("signed_reports")
@@ -76,11 +98,9 @@ export const submitReport = functions.https.onRequest((request, response) => {
         })
       })
       .catch((error) => {
-        console.log(`Error writing to firestore: ${error}`)
-        response.status(400).send(error)
+        handleError(response, error.message);
       })
   } catch (error) {
-    console.log(`Error processing report: ${error}`)
-    response.status(400).send(error)
+    handleError(response, error.message);
   }
 })
