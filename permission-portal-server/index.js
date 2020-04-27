@@ -6,7 +6,6 @@ import organizationRouter from "./routes/organization";
 import permissionRouter from "./routes/permission";
 
 (async () => {
-
   const app = express();
   app.disable("x-powered-by");
   app.use(bodyParser.json());

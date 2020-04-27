@@ -7,6 +7,4 @@ userRouter.use(bodyParser.json());
 
 // TODO: routes here
 
-
-
 export default userRouter;
