@@ -13,12 +13,12 @@ organizationRouter.use(bodyParser.json());
 const getOrgs = async (req, res, next) => {
   try {
     const client = await pool.connect();
-    const results = await client.query("SELECT * FROM Organizations");
+    const results = await client.query('SELECT * FROM "Organization"');
     res.status(200).json(results.rows);
     client.release();
   } catch (err) {
     console.error(err);
-    res.send("Error " + err);
+    res.send(err);
   }
 };
 

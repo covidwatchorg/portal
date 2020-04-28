@@ -11,5 +11,9 @@ export const pool = new Pool({
   connectionString: isProduction
     ? process.env.HEROKU_POSTGRESQL_BLUE_URL
     : connectionString,
-  ssl: true,
+  ssl: {
+    require: true,
+    // https://github.com/brianc/node-postgres/issues/2009
+    rejectUnauthorized: false,
+  },
 });
