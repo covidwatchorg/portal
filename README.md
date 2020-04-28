@@ -6,7 +6,7 @@
 
 ```
 cd permission-portal-server
-npm run dev
+npm start
 ```
 
 #### To deploy
