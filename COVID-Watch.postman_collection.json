@@ -1,116 +1,102 @@
 {
-	"info": {
-		"_postman_id": "3bb7cb29-53ca-4c50-966a-5137b7f9d728",
-		"name": "COVID-Watch",
-		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
-	},
-	"item": [
-		{
-			"name": "Firestore Emulator GET ALL Signed Reports",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "http://localhost:8080/v1/projects/tagstwo-431e3/databases/(default)/documents/signed_reports",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "8080",
-					"path": [
-						"v1",
-						"projects",
-						"tagstwo-431e3",
-						"databases",
-						"(default)",
-						"documents",
-						"signed_reports"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Firestore Emulator DELETE ALL",
-			"request": {
-				"method": "DELETE",
-				"header": [],
-				"url": {
-					"raw": "http://localhost:8080/emulator/v1/projects/tagstwo-431e3/databases/(default)/documents",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "8080",
-					"path": [
-						"emulator",
-						"v1",
-						"projects",
-						"tagstwo-431e3",
-						"databases",
-						"(default)",
-						"documents"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Function Emulator POST New Signed Report",
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n  \"temporary_contact_key_bytes\": \"PvLGpfQZgGqnoQRtSr0AHd8J5/WdKwaJNLRCkhGlgHU=\",\n  \"memo_data\": \"SGVsbG8sIFdvcmxkIQ==\",\n  \"memo_type\": 1,\n  \"start_index\": 1,\n  \"end_index\": 8,\n  \"signature_bytes\": \"+k7HDsVZPY5Pxcz0cpwVBvDOHrrQ0+AyDVL/MbGkXBYG2WAyoqLaNxFuXiB9rSzkdCesDv1NSSk06hrjx2YABA==\",\n  \"report_verification_public_key_bytes\": \"v78liBBYQrFXqOH6YydUD1aGpXLMgruKATAjFZ0ycLk=\"\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "http://localhost:5001/tagstwo-431e3/us-central1/submitReport",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "5001",
-					"path": [
-						"tagstwo-431e3",
-						"us-central1",
-						"submitReport"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "LIVE GET ALL Signed Reports",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "https://firestore.googleapis.com/v1/projects/tagstwo-431e3/databases/(default)/documents/signed_reports",
-					"protocol": "https",
-					"host": [
-						"firestore",
-						"googleapis",
-						"com"
-					],
-					"path": [
-						"v1",
-						"projects",
-						"tagstwo-431e3",
-						"databases",
-						"(default)",
-						"documents",
-						"signed_reports"
-					]
-				}
-			},
-			"response": []
-		}
-	],
-	"protocolProfileBehavior": {}
+  "info": {
+    "_postman_id": "3bb7cb29-53ca-4c50-966a-5137b7f9d728",
+    "name": "COVID-Watch",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Firestore Emulator GET ALL Signed Reports",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/v1/projects/covidwatch-354ce/databases/(default)/documents/signed_reports",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8080",
+          "path": [
+            "v1",
+            "projects",
+            "covidwatch-354ce",
+            "databases",
+            "(default)",
+            "documents",
+            "signed_reports"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Firestore Emulator DELETE ALL",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/emulator/v1/projects/covidwatch-354ce/databases/(default)/documents",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8080",
+          "path": [
+            "emulator",
+            "v1",
+            "projects",
+            "covidwatch-354ce",
+            "databases",
+            "(default)",
+            "documents"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Function Emulator POST New Signed Report",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"temporary_contact_key_bytes\": \"PvLGpfQZgGqnoQRtSr0AHd8J5/WdKwaJNLRCkhGlgHU=\",\n  \"memo_data\": \"SGVsbG8sIFdvcmxkIQ==\",\n  \"memo_type\": 1,\n  \"start_index\": 1,\n  \"end_index\": 8,\n  \"signature_bytes\": \"+k7HDsVZPY5Pxcz0cpwVBvDOHrrQ0+AyDVL/MbGkXBYG2WAyoqLaNxFuXiB9rSzkdCesDv1NSSk06hrjx2YABA==\",\n  \"report_verification_public_key_bytes\": \"v78liBBYQrFXqOH6YydUD1aGpXLMgruKATAjFZ0ycLk=\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:5001/covidwatch-354ce/us-central1/submitReport",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "5001",
+          "path": ["covidwatch-354ce", "us-central1", "submitReport"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "LIVE GET ALL Signed Reports",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "https://firestore.googleapis.com/v1/projects/covidwatch-354ce/databases/(default)/documents/signed_reports",
+          "protocol": "https",
+          "host": ["firestore", "googleapis", "com"],
+          "path": [
+            "v1",
+            "projects",
+            "covidwatch-354ce",
+            "databases",
+            "(default)",
+            "documents",
+            "signed_reports"
+          ]
+        }
+      },
+      "response": []
+    }
+  ],
+  "protocolProfileBehavior": {}
 }

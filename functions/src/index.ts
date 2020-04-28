@@ -1,14 +1,11 @@
-import * as admin from "firebase-admin"
-import * as functions from "firebase-functions"
-import { Field, parse } from "sparkson"
-//import { registerStringMapper, Field, parse } from "sparkson"
-//registerStringMapper(Buffer, (val: string) => Buffer.from(val, "base64"))
+import * as admin from 'firebase-admin'
+import * as functions from 'firebase-functions'
 
 import tcn from "tcn-node"
 import {verifySignature} from "./verify"
 
 // Check for DEBUG_LOGGING
-const DEBUG_LOGGING = process.env.DEBUG_LOGGING || ""
+const DEBUG_LOGGING = process.env.DEBUG_LOGGING || ''
 const log = parseInt(DEBUG_LOGGING) === 1 ? true : false
 if (!log) {
   // replace console.log with a noop

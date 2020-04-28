@@ -71,7 +71,7 @@ The emulator should hot reload the scripts.
 
 You can hit the endpoints with curl or Postman.
 
-http://localhost:5001/tagstwo-431e3/us-central1/submitReport
+http://localhost:5001/covidwatch-354ce/us-central1/submitReport
 
 Example Report JSON Payload:
 
@@ -90,10 +90,10 @@ Example Report JSON Payload:
 ## Firestore Emulator REST API
 
 You can query the Firestore API with urls like this:
-http://localhost:8080/v1/projects/tagstwo-431e3/databases/(default)/documents/signed_reports
+http://localhost:8080/v1/projects/covidwatch-354ce/databases/(default)/documents/signed_reports
 
 ```
-$ curl --location --request GET 'http://localhost:8080/v1/projects/tagstwo-431e3/databases/(default)/documents/signed_reports'
+$ curl --location --request GET 'http://localhost:8080/v1/projects/covidwatch-354ce/databases/(default)/documents/signed_reports'
 ```
 
 ### Postman Collection
@@ -112,4 +112,4 @@ $ firebase deploy --only functions:submitReport
 
 ## Live URLS
 
-https://us-central1-tagstwo-431e3.cloudfunctions.net/submitReport
+https://us-central1-covidwatch-354ce.cloudfunctions.net/submitReport

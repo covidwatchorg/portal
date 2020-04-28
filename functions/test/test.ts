@@ -10,8 +10,10 @@ import { setup } from "./utils"
  * ============
  */
 
-const projectId = "tagstwo-431e3"
-const coverageUrl = `http://${process.env["FIRESTORE_EMULATOR_HOST"]}/emulator/v1/projects/${projectId}:ruleCoverage.html`
+const projectId = 'covidwatch-354ce'
+const coverageUrl =
+    `http://${process.env['FIRESTORE_EMULATOR_HOST']}/emulator/v1/projects/${
+        projectId}:ruleCoverage.html`
 
 // /*
 //  * ============
@@ -19,10 +21,9 @@ const coverageUrl = `http://${process.env["FIRESTORE_EMULATOR_HOST"]}/emulator/v
 //  * ============
 //  */
 
-beforeEach(async () => {
-  // Clear the database between tests
-  await firebase.clearFirestoreData({ projectId })
-})
+beforeEach(
+    async () => {// Clear the database between tests
+                 await firebase.clearFirestoreData({projectId})})
 
 after(async () => {
   // Tear down Firebase apps
@@ -54,7 +55,6 @@ const mockData = {
   "random/bob":{ 
     foo: "bar"
   }
-}
 
 @suite
 export class CovidWatchFirestore {
@@ -95,4 +95,3 @@ export class CovidWatchFirestore {
       })
     );
   }
-}
