@@ -11,6 +11,8 @@ npm run dev
 
 #### To deploy
 
+Commit all your changes, then run:
+
 ```
 git subtree push --prefix permission-portal-server/ heroku master
 ```
