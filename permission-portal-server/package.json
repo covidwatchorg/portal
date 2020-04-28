@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "eval $(cat .env) nodemon -r esm index.js"
+    "start": "nodemon -r esm index.js"
   },
   "keywords": [],
   "author": "",
@@ -18,5 +18,8 @@
     "esm": "^3.2.25",
     "express": "^4.17.1",
     "pg": "^8.0.3"
+  },
+  "engines": {
+    "node": "12.x"
   }
 }

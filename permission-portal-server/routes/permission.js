@@ -7,6 +7,4 @@ permissionRouter.use(bodyParser.json());
 
 // TODO: routes here
 
-
-
 export default permissionRouter;

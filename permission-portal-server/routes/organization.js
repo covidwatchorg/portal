@@ -1,5 +1,6 @@
-import express from "express";
 import bodyParser from "body-parser";
+import express from "express";
+
 import { pool } from "../config";
 
 const organizationRouter = express.Router();
@@ -11,15 +12,16 @@ organizationRouter.use(bodyParser.json());
 
 const getOrgs = async (req, res, next) => {
   try {
-    const results = await pool.query("SELECT * FROM Organizations");
+    const client = await pool.connect();
+    const results = await client.query('SELECT * FROM "Organization"');
     res.status(200).json(results.rows);
+    client.release();
   } catch (err) {
-    throw err;
+    console.error(err);
+    res.send(err);
   }
 };
 
-organizationRouter.route("/")
-.get(getOrgs);
-
+organizationRouter.route("/").get(getOrgs);
 
 export default organizationRouter;
