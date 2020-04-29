@@ -108,8 +108,10 @@ Deploy a single function:
 
 ```
 $ firebase deploy --only functions:submitReport
+$ firebase deploy --only functions:submitDiagnosis
 ```
 
 ## Live URLS
 
 https://us-central1-covidwatch-354ce.cloudfunctions.net/submitReport
+https://us-central1-covidwatch-354ce.cloudfunctions.net/submitDiagnosis

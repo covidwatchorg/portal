@@ -10,9 +10,30 @@ service cloud.firestore {
     //
     // Make sure to write security rules for your app before that time, or else
     // your app will lose access to your Firestore database
+    
+    function isAdmin() {
+      return get(/databases/$(database)/documents/users/$(request.auth.uid)).data.isAdmin;
+    }    
+    
     match /{document=**} {
-      allow read: if request.time < timestamp.date(2020, 5, 5);
-      allow write: if true;
+      allow read, write: if isAdmin();
+    }
+    
+    match /signed_reports/{document=**} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+    
+    // remove for live
+    match /diagnosis_permission_number/{document=**} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+    
+    // remove for live
+    match /positive_diagnosis/{document=**} {
+      allow read: if true;
+      allow write: if isAdmin();
     }
   }
 }
