@@ -23,7 +23,20 @@ const setup = async (
   const app = await authedApp(projectId, auth)
   const db = app.firestore()
 
-  // Set Rules
+  // Insecure rules opens write access so we can store admin in /users
+  await firebase.loadFirestoreRules({
+    projectId,
+    rules: fs.readFileSync("./firestore.insecure.rules", "utf8"),
+  })
+
+  if (data) {
+    for (const key in data) {
+      const ref = db.doc(key);
+      await ref.set(data[key]);
+    }
+  }
+
+  // Once admin is stored we can switch to production rules
   await firebase.loadFirestoreRules({
     projectId,
     rules: fs.readFileSync("../firestore.rules", "utf8"),
