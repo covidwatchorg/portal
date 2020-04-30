@@ -9,15 +9,19 @@ This repo contains code which is used in the Firebase project to control the Fir
 - [x] Validate Survey Data
 - [x] Initial Survey Endpoint
 - [x] Write to Firestore
+- [x] Verify TCN Cryptographic Hashes
+- [ ] Implement AG Protocol endpoint
+- [ ] Add Secure Permission Number System
 - [ ] Add watcher to auto build .ts to .js
 - [ ] Agree on API / Response Payloads
-- [ ] Verify Cryptographic Hashes
+
 - [ ] Cache Reads in Buckets
 
 ## Setup
 
 - VSCode
 - Prettier Code Formatter
+  - Make default formatter and format on save
 - Node 10+
 - Firestore CLI
 - Postman
@@ -71,6 +75,8 @@ The emulator should hot reload the scripts.
 
 You can hit the endpoints with curl or Postman.
 
+### TCN Submit Report
+
 http://localhost:5001/covidwatch-354ce/us-central1/submitReport
 
 Example Report JSON Payload:
@@ -87,10 +93,28 @@ Example Report JSON Payload:
 }
 ```
 
+### AG Submit Diagnosis
+
+This endpoint is for submitting the Apple / Google format diagnosis payload.
+http://localhost:5001/covidwatch-354ce/us-central1/submitDiagnosis
+
+## Firebase Security
+
+The Firestore reads and writes are all disabled except for reading of the TCN signed_reports.
+If you want to read from the emulator you can send the following header to override the security with the bearer token "owner"
+
+```
+curl --location \
+  --request GET 'http://localhost:8080/v1/projects/covidwatch-354ce/databases/(default)/documents/diagnosis_permission_number' \
+  --header 'Authorization: Bearer owner'
+```
+
 ## Firestore Emulator REST API
 
 You can query the Firestore API with urls like this:
 http://localhost:8080/v1/projects/covidwatch-354ce/databases/(default)/documents/signed_reports
+
+_NB_ Be aware that the firestore.rules will affect your access to these Emulator endpoints.
 
 ```
 $ curl --location --request GET 'http://localhost:8080/v1/projects/covidwatch-354ce/databases/(default)/documents/signed_reports'
@@ -111,7 +135,14 @@ $ firebase deploy --only functions:submitReport
 $ firebase deploy --only functions:submitDiagnosis
 ```
 
+Deploy the firestore rules:
+
+```
+$ firebase deploy --only firestore:rules
+```
+
 ## Live URLS
 
 https://us-central1-covidwatch-354ce.cloudfunctions.net/submitReport
 https://us-central1-covidwatch-354ce.cloudfunctions.net/submitDiagnosis
+https://us-central1-covidwatch-354ce.cloudfunctions.net/fetchDiagnosis

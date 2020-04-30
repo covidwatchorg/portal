@@ -19,8 +19,7 @@ class PositiveDiagnosis {
   ) {}
 }
 
-function validatePermissionNumber(data: Buffer): Boolean {
-  console.log("got some data to verify", data, typeof data)
+function validatePermissionNumber(data: string): Boolean {
   if (data.length === 0) {
     return false
   }
@@ -29,11 +28,11 @@ function validatePermissionNumber(data: Buffer): Boolean {
 
 function getPermissionNumberDocId(
   db: firestore.Firestore,
-  data: Buffer
+  key: string
 ): Promise<string> {
   const permissionRef = db.collection("diagnosis_permission_number")
   return permissionRef
-    .where("key", "==", data)
+    .where("key", "==", key)
     .get()
     .then((snapshot) => {
       let docId = ""
@@ -43,7 +42,7 @@ function getPermissionNumberDocId(
 
       snapshot.forEach((doc) => {
         const docData = doc.data()
-        if (!("used_timestamp" in docData)) {
+        if (typeof docData === "object" && !("used_timestamp" in docData)) {
           docId = doc.id
         }
       })
@@ -61,7 +60,7 @@ function getPermissionNumberDocId(
 function checkAndSave(
   db: firestore.Firestore,
   docId: string,
-  permissionNumber: Buffer,
+  permissionNumber: string,
   jsonObject: Object
 ) {
   const transaction = db.runTransaction((t) => {
@@ -69,12 +68,18 @@ function checkAndSave(
       .collection("diagnosis_permission_number")
       .doc(docId)
     return t.get(permissionRef).then((doc) => {
-      console.log("Found diagnosis_permission_number", doc.id, doc.data())
+      console.log(
+        "Found diagnosis_permission_number",
+        doc.id,
+        doc.data(),
+        typeof doc.data()
+      )
       let data = doc.data()
       if (
         data !== undefined &&
+        typeof data == "object" &&
         doc.id === docId &&
-        Buffer.compare(data["key"], permissionNumber) === 0
+        data["key"] === permissionNumber
       ) {
         if ("used_timestamp" in data) {
           return Promise.reject(
@@ -113,14 +118,9 @@ export const submitDiagnosisHandler = function (
     const jsonObject = JSON.parse(JSON.stringify(report))
     jsonObject["timestamp"] = firestore.FieldValue.serverTimestamp() // add server side timestamp
 
-    // convert base64 strings to bytes
-    jsonObject["public_health_authority_permission_number"] = Buffer.from(
-      jsonObject["public_health_authority_permission_number"],
-      "base64"
-    )
-
     const permissionNumber =
       jsonObject["public_health_authority_permission_number"]
+    delete jsonObject["public_health_authority_permission_number"]
     if (!validatePermissionNumber(permissionNumber)) {
       return response
         .status(400)
@@ -130,16 +130,13 @@ export const submitDiagnosisHandler = function (
     }
 
     for (const diagnosisKey of jsonObject["diagnosis_keys"]) {
-      console.log("before diagnosisKey", diagnosisKey)
       diagnosisKey["key_data"] = Buffer.from(diagnosisKey["key_data"], "base64")
-      console.log("after diagnosisKey", diagnosisKey)
     }
 
     return respond(
       response,
       endpointDescription,
       getPermissionNumberDocId(db, permissionNumber).then((docId) => {
-        console.log("found permission doc id", docId)
         return checkAndSave(db, docId, permissionNumber, jsonObject)
       })
     )

@@ -1,32 +1,26 @@
 import { firestore } from "firebase-admin"
 import * as functions from "firebase-functions"
-import { ArrayField, parse } from "sparkson"
 import { respond, makeError } from "./utils"
 
-class PermissionNumbers {
-  constructor(
-    @ArrayField("permission_numbers", String)
-    public permission_numbers: Array<string>
-  ) {}
-}
-
-function createPermissionNumbers(
-  db: firestore.Firestore,
-  permissionNumbers: Array<string>
-): Promise<firestore.WriteResult[]> {
+function createPermissionNumber(db: firestore.Firestore): Promise<string[]> {
   const promises = []
+  // TODO: replace this
+  const randomNumber: string = Math.random().toString(36).substring(2, 7)
   const permissionRef = db.collection("diagnosis_permission_number")
-  for (const permissionNumber of permissionNumbers) {
+  for (const permissionNumber of [randomNumber]) {
     const promise = permissionRef
       .doc()
-      .set({ key: Buffer.from(permissionNumber, "base64") })
+      .set({ key: permissionNumber })
+      .then(() => {
+        return permissionNumber
+      })
     promises.push(promise)
   }
 
   return Promise.all(promises)
 }
 
-export const addPermissionNumbersHandler = function (
+export const createPermissionNumbersHandler = function (
   db: firestore.Firestore,
   request: functions.https.Request,
   response: functions.Response
@@ -35,14 +29,13 @@ export const addPermissionNumbersHandler = function (
   console.log(endpointDescription, request.body)
 
   try {
-    // validate format
-    const permissionNumbers = parse(PermissionNumbers, request.body)
-    console.log("Report JSON received: ", permissionNumbers)
-
     return respond(
       response,
       endpointDescription,
-      createPermissionNumbers(db, permissionNumbers.permission_numbers)
+      createPermissionNumber(db).then((permissionNumber) => {
+        console.log("got this after writing", permissionNumber)
+        return { data: permissionNumber }
+      })
     )
   } catch (error) {
     return response

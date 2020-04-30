@@ -6,11 +6,16 @@ export const respond = function (
   promise: Promise<any>
 ) {
   return promise
-    .then(() => {
-      return response.status(201).send({
+    .then((extra) => {
+      let payload: Record<string, string> = {
         status: "201",
         message: "Success",
-      })
+      }
+      // allow extra data to be sent to the client
+      if (typeof extra === "object" && "data" in extra) {
+        payload["data"] = extra["data"]
+      }
+      return response.status(201).send(payload)
     })
     .catch((error: any) => {
       return response

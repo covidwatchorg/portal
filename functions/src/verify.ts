@@ -1,49 +1,52 @@
-const tcn = require("tcn-node");
+const tcn = require("tcn-node")
 
 function enumMemoTypeOf(memoType: number): string {
-    let res: string;
-    switch(memoType) { 
-        case 0: { 
-           res = 'CoEpiV1'; 
-           break; 
-        } 
-        case 1: { 
-           res = 'CovidWatchV1'; 
-           break; 
-        } 
-        default: { 
-           res = 'Reserved'; 
-           break; 
-        } 
-     };
-     return res;
+  let res: string
+  switch (memoType) {
+    case 0: {
+      res = "CoEpiV1"
+      break
+    }
+    case 1: {
+      res = "CovidWatchV1"
+      break
+    }
+    default: {
+      res = "Reserved"
+      break
+    }
+  }
+  return res
 }
 
-function verifySignature(bTck: Buffer, bMemo: Buffer, bSig: Buffer,
-    bRvk: Buffer, startIndex: number, endIndex: number, memoType: number): boolean {
+function verifySignature(
+  bTck: Buffer,
+  bMemo: Buffer,
+  bSig: Buffer,
+  bRvk: Buffer,
+  startIndex: number,
+  endIndex: number,
+  memoType: number
+): boolean {
+  const report = {
+    rvk: bRvk.toJSON().data,
+    tck_bytes: bTck.toJSON().data,
+    j_1: startIndex,
+    j_2: endIndex,
+    memo_type: enumMemoTypeOf(memoType),
+    memo_data: bMemo.toJSON().data,
+  }
 
-    const report = {
-        rvk: bRvk.toJSON().data,
-        tck_bytes: bTck.toJSON().data,
-        j_1: startIndex,
-        j_2: endIndex,
-        memo_type: enumMemoTypeOf(memoType),
-        memo_data: bMemo.toJSON().data,
-    }
+  const sigBytes = bSig.toJSON().data
+  const sig = {
+    R_bytes: sigBytes.slice(0, 32),
+    s_bytes: sigBytes.slice(32, 64),
+  }
 
-    const sigBytes = bSig.toJSON().data;
-    const sig = {
-        R_bytes: sigBytes.slice(0, 32),
-        s_bytes: sigBytes.slice(32, 64)
-    }
-
-    return tcn.validateReport(
-        {
-            report: report,
-            sig: sig
-        }
-    )
+  return tcn.validateReport({
+    report: report,
+    sig: sig,
+  })
 }
 
-
-export { verifySignature };
+export { verifySignature }

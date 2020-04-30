@@ -1,10 +1,9 @@
 import { firestore } from "firebase-admin"
 import * as functions from "firebase-functions"
-import { Field, parse } from "sparkson"
-import tcn from "tcn-node"
 
-// import { registerStringMapper, Field, parse } from "sparkson"
-// registerStringMapper(Buffer, (val: string) => Buffer.from(val, "base64"))
+import { Field, parse } from "sparkson"
+import { respond, makeError } from "./utils"
+import { verifySignature } from "./verify"
 
 class Report {
   constructor(
@@ -25,8 +24,8 @@ export const submitReportHandler = function (
   request: functions.https.Request,
   response: functions.Response
 ) {
-  console.log(request.body)
-  console.log("Call TCN Rust", tcn.tcn_example()) // should print "symptom data"
+  const endpointDescription = "tcn submit report"
+  console.log(endpointDescription, request.body)
 
   try {
     // validate format
@@ -56,22 +55,29 @@ export const submitReportHandler = function (
     )
 
     // validate crypto
+    if (
+      !verifySignature(
+        jsonObject["temporary_contact_key_bytes"],
+        jsonObject["memo_data"],
+        jsonObject["signature_bytes"],
+        jsonObject["report_verification_public_key_bytes"],
+        jsonObject["start_index"],
+        jsonObject["end_index"],
+        jsonObject["memo_type"]
+      )
+    ) {
+      console.log("here?")
+      throw new Error("Unable to verify signature")
+    }
 
-    db.collection("signed_reports")
-      .doc()
-      .set(jsonObject)
-      .then(() => {
-        return response.status(201).send({
-          status: "201",
-          message: "Success",
-        })
-      })
-      .catch((error: any) => {
-        console.log(`Error writing to firestore: ${error}`)
-        response.status(400).send(error)
-      })
+    return respond(
+      response,
+      endpointDescription,
+      db.collection("signed_reports").doc().set(jsonObject)
+    )
   } catch (error) {
-    console.log(`Error processing report: ${error}`)
-    response.status(400).send(error)
+    return response
+      .status(400)
+      .send(makeError(`Error processing ${endpointDescription}: ${error}`, 400))
   }
 }

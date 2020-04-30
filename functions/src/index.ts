@@ -1,9 +1,10 @@
 import * as admin from "firebase-admin"
 import * as functions from "firebase-functions"
 
-import { addPermissionNumbersHandler } from "./addPermissionNumbers"
-import { submitDiagnosisHandler } from "./submitDiagnosis"
 import { submitReportHandler } from "./submitReport"
+import { submitDiagnosisHandler } from "./submitDiagnosis"
+import { fetchDiagnosisHandler } from "./fetchDiagnosis"
+import { createPermissionNumbersHandler } from "./createPermissionNumber"
 
 // Check for DEBUG_LOGGING
 const DEBUG_LOGGING = process.env.DEBUG_LOGGING || ""
@@ -27,8 +28,12 @@ export const submitDiagnosis = functions.https.onRequest(
   }
 )
 
-export const addPermissionNumbers = functions.https.onRequest(
+export const fetchDiagnosis = functions.https.onRequest((request, response) => {
+  fetchDiagnosisHandler(firestore, request, response)
+})
+
+export const createPermissionNumber = functions.https.onRequest(
   (request, response) => {
-    addPermissionNumbersHandler(firestore, request, response)
+    createPermissionNumbersHandler(firestore, request, response)
   }
 )
