@@ -11,7 +11,7 @@
     "deploy": "firebase deploy --only functions",
     "logs": "firebase functions:log",
     "pretest": "tsc --build tsconfig.test.json",
-    "test": "env FIRESTORE_EMULATOR_HOST=localhost:8080 mocha --ui mocha-typescript .mocha"
+    "test": "env FIRESTORE_EMULATOR_HOST=localhost:8080 mocha --ui mocha-typescript .mocha/test"
   },
   "engines": {
     "node": "10"
