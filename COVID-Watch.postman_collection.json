@@ -1,17 +1,42 @@
 {
 	"info": {
-		"_postman_id": "3bb7cb29-53ca-4c50-966a-5137b7f9d728",
+		"_postman_id": "3b1ece4f-159d-4b6b-8788-7937b7f96c34",
 		"name": "COVID-Watch",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
 		{
-			"name": "Firestore Emulator GET ALL Signed Reports",
+			"name": "Emulator DELETE ALL",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/emulator/v1/projects/covidwatch-354ce/databases/(default)/documents",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"emulator",
+						"v1",
+						"projects",
+						"covidwatch-354ce",
+						"databases",
+						"(default)",
+						"documents"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "v1 TCN GET ALL Signed Reports",
 			"request": {
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:8080/v1/projects/tagstwo-431e3/databases/(default)/documents/signed_reports",
+					"raw": "http://localhost:8080/v1/projects/covidwatch-354ce/databases/(default)/documents/signed_reports",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -20,7 +45,7 @@
 					"path": [
 						"v1",
 						"projects",
-						"tagstwo-431e3",
+						"covidwatch-354ce",
 						"databases",
 						"(default)",
 						"documents",
@@ -31,32 +56,7 @@
 			"response": []
 		},
 		{
-			"name": "Firestore Emulator DELETE ALL",
-			"request": {
-				"method": "DELETE",
-				"header": [],
-				"url": {
-					"raw": "http://localhost:8080/emulator/v1/projects/tagstwo-431e3/databases/(default)/documents",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "8080",
-					"path": [
-						"emulator",
-						"v1",
-						"projects",
-						"tagstwo-431e3",
-						"databases",
-						"(default)",
-						"documents"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Function Emulator POST New Signed Report",
+			"name": "v1 TCN POST New Signed Report",
 			"request": {
 				"method": "POST",
 				"header": [],
@@ -70,14 +70,14 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:5001/tagstwo-431e3/us-central1/submitReport",
+					"raw": "http://localhost:5001/covidwatch-354ce/us-central1/submitReport",
 					"protocol": "http",
 					"host": [
 						"localhost"
 					],
 					"port": "5001",
 					"path": [
-						"tagstwo-431e3",
+						"covidwatch-354ce",
 						"us-central1",
 						"submitReport"
 					]
@@ -86,12 +86,12 @@
 			"response": []
 		},
 		{
-			"name": "LIVE GET ALL Signed Reports",
+			"name": "v1 LIVE GET ALL Signed Reports",
 			"request": {
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "https://firestore.googleapis.com/v1/projects/tagstwo-431e3/databases/(default)/documents/signed_reports",
+					"raw": "https://firestore.googleapis.com/v1/projects/covidwatch-354ce/databases/(default)/documents/signed_reports",
 					"protocol": "https",
 					"host": [
 						"firestore",
@@ -101,11 +101,142 @@
 					"path": [
 						"v1",
 						"projects",
-						"tagstwo-431e3",
+						"covidwatch-354ce",
 						"databases",
 						"(default)",
 						"documents",
 						"signed_reports"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "v2 AG GET ALL Diagnosis",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"timestamp\": \"2020-04-30T03:11:54.097Z\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5001/covidwatch-354ce/us-central1/fetchDiagnosis",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5001",
+					"path": [
+						"covidwatch-354ce",
+						"us-central1",
+						"fetchDiagnosis"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "v2 AG POST New Diagnosis",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"diagnosis_keys\": [\n    {\n      \"key_data\": \"PvLGpfQZgGqnoQRtSr0AHd8J5/WdKwaJNLRCkhGlgHU=\",\n      \"rolling_start_number\": 1\n    },\n    {\n      \"key_data\": \"AvLGpfQZgGqnoQRtSr0AHd8J5/WdKwaJNLRCkhGlgHU=\",\n      \"rolling_start_number\": 2\n    }\n  ],\n  \"public_health_authority_permission_number\": \"zu5td\"\n}\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5001/covidwatch-354ce/us-central1/submitDiagnosis",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5001",
+					"path": [
+						"covidwatch-354ce",
+						"us-central1",
+						"submitDiagnosis"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "v2 SECURE GET Generate Permission Number",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5001/covidwatch-354ce/us-central1/createPermissionNumber",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5001",
+					"path": [
+						"covidwatch-354ce",
+						"us-central1",
+						"createPermissionNumber"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "v2 SECURE GET ALL Permission Numbers",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "owner",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/v1/projects/covidwatch-354ce/databases/(default)/documents/diagnosis_permission_number",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"v1",
+						"projects",
+						"covidwatch-354ce",
+						"databases",
+						"(default)",
+						"documents",
+						"diagnosis_permission_number"
 					]
 				}
 			},

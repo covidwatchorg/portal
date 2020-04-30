@@ -1,6 +1,6 @@
 /// <reference path='../node_modules/mocha-typescript/globals.d.ts' />
 
-import { assert } from "chai"
+//import { assert } from "chai"
 import * as firebase from "@firebase/testing"
 import { setup } from "./utils"
 
@@ -10,7 +10,7 @@ import { setup } from "./utils"
  * ============
  */
 
-const projectId = "tagstwo-431e3"
+const projectId = "covidwatch-354ce"
 const coverageUrl = `http://${process.env["FIRESTORE_EMULATOR_HOST"]}/emulator/v1/projects/${projectId}:ruleCoverage.html`
 
 // /*
@@ -30,69 +30,54 @@ after(async () => {
   console.log(`View rule coverage information at ${coverageUrl}\n`)
 })
 
-const adminAuth = {
-  uid: "covid"
-}
-const nonAdminAuth = {
-  uid: "abc"
+const anyUser = {
+  uid: "alice",
 }
 
 const mockData = {
-  "users/covid": {
-    userRole: "Admin"
-  },
   "signed_reports/alice": {
-    contact_event_key_bytes: "blah",
-    end_index: 21,
-    memo_data: "SGVsbG8sIF",
+    temporary_contact_key_bytes: "PvLGpfQZgGqnoQRtSr0AHd8J5/WdKwaJNLRCkhGlgHU=",
+    memo_data: "SGVsbG8sIFdvcmxkIQ==",
     memo_type: 1,
-    report_verification_public_key_bytes: "oxChFfFyTH",
-    signature_bytes: "ETuzy1VioX",
     start_index: 1,
-    timestamp: firebase.firestore.FieldValue.serverTimestamp()
+    end_index: 8,
+    signature_bytes:
+      "+k7HDsVZPY5Pxcz0cpwVBvDOHrrQ0+AyDVL/MbGkXBYG2WAyoqLaNxFuXiB9rSzkdCesDv1NSSk06hrjx2YABA==",
+    report_verification_public_key_bytes:
+      "v78liBBYQrFXqOH6YydUD1aGpXLMgruKATAjFZ0ycLk=",
   },
-  "random/bob":{ 
-    foo: "bar"
-  }
+  "random/bob": {
+    foo: "bar",
+  },
 }
 
 @suite
 export class CovidWatchFirestore {
-
   @test
-  async "With firestore.rules, admin can read and write any document"() {
-    const db = await setup(projectId, adminAuth, mockData);
+  async "With firestore.rules, read and writes are disabled for any collection"() {
+    const db = await setup(projectId, anyUser, mockData)
 
-    const ranRef = db.collection("random");
-    await firebase.assertSucceeds(ranRef.get());
-    const foo = await firebase.assertSucceeds(ranRef.doc("bob").get());
-    assert.equal(foo.data()["foo"], "bar", "Admin can read any document");
-
-    const sigRef = db.collection("signed_reports");
-    let alice = await sigRef.doc("alice");
-    await firebase.assertSucceeds(
-      alice.update({
-        contact_event_key_bytes: "new_data",
-      })
-    );
-    alice = await firebase.assertSucceeds(sigRef.doc("alice").get());
-    assert.equal(alice.data()["contact_event_key_bytes"], "new_data", "Updated value is as expected");
+    const ranRef = db.collection("random")
+    await firebase.assertFails(ranRef.get())
+    await firebase.assertFails(ranRef.doc().set({ foo: "bar" }))
   }
 
   @test
-  async "With firestore.rules, non-admin can only read signed_reports"() {
-    const db = await setup(projectId, nonAdminAuth, mockData);
-    const ranRef = db.collection("random");
-    await firebase.assertFails(ranRef.get());
-    await firebase.assertFails(ranRef.doc("bob").get());
-
-    const sigRef = db.collection("signed_reports");
-    await firebase.assertSucceeds(sigRef.get());
-    const alice = await firebase.assertSucceeds(sigRef.doc("alice"));
+  async "With firestore.rules, all users can only read signed_reports"() {
+    const db = await setup(projectId, anyUser, mockData)
+    const sigRef = db.collection("signed_reports")
+    await firebase.assertSucceeds(sigRef.get())
+    const alice = await firebase.assertSucceeds(sigRef.doc("alice"))
     await firebase.assertFails(
       alice.update({
         contact_event_key_bytes: "new_data",
       })
-    );
+    )
+
+    await firebase.assertFails(
+      sigRef.doc().update({
+        contact_event_key_bytes: "new_data",
+      })
+    )
   }
 }
