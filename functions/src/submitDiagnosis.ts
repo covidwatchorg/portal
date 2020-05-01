@@ -1,12 +1,16 @@
 import { firestore } from "firebase-admin"
 import * as functions from "firebase-functions"
-import { ArrayField, Field, parse } from "sparkson"
+import { ArrayField, Field, Min, Max, parse } from "sparkson"
 import { respond, makeError } from "./utils"
 
 class DiagnosisKey {
   constructor(
     @Field("key_data") public key_data: string,
-    @Field("rolling_start_number") public rolling_start_number: number
+    @Field("rolling_start_number") public rolling_start_number: number,
+    @Field("transmission_risk_level")
+    @Min(0)
+    @Max(255)
+    public transmission_risk_level: number
   ) {}
 }
 
