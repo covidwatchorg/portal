@@ -1,6 +1,6 @@
-import React from 'react';
 import ReactDOM from 'react-dom';
-import App from './components/App';
-import styles from './scss/application.scss';
+import React from 'react';
+import Login from './components/core/Login';
+import Routes from './Routes';
 
-ReactDOM.render(<App />, document.getElementById('root'));
+ReactDOM.render(<Routes />, document.getElementById('root'));
