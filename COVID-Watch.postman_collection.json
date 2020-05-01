@@ -151,7 +151,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n  \"diagnosis_keys\": [\n    {\n      \"key_data\": \"PvLGpfQZgGqnoQRtSr0AHd8J5/WdKwaJNLRCkhGlgHU=\",\n      \"rolling_start_number\": 1\n    },\n    {\n      \"key_data\": \"AvLGpfQZgGqnoQRtSr0AHd8J5/WdKwaJNLRCkhGlgHU=\",\n      \"rolling_start_number\": 2\n    }\n  ],\n  \"public_health_authority_permission_number\": \"zu5td\"\n}\n",
+					"raw": "{\n  \"diagnosis_keys\": [\n    {\n      \"key_data\": \"PvLGpfQZgGqnoQRtSr0AHd8J5/WdKwaJNLRCkhGlgHU=\",\n      \"rolling_start_number\": 1,\n      \"transmission_risk_level\": 0\n    },\n    {\n      \"key_data\": \"AvLGpfQZgGqnoQRtSr0AHd8J5/WdKwaJNLRCkhGlgHU=\",\n      \"rolling_start_number\": 2,\n      \"transmission_risk_level\": 255\n    }\n  ],\n  \"public_health_authority_permission_number\": \"osghr\"\n}\n",
 					"options": {
 						"raw": {
 							"language": "json"
