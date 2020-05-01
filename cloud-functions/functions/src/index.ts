@@ -9,9 +9,8 @@ const db = admin.firestore();
 function authGuard(context: functions.https.CallableContext): Promise<void> {
   return new Promise((resolve, reject) => {
     if (!context.auth) {
-      resolve();
       // Throwing an HttpsError so that the client gets the error details.
-      //   reject(new functions.https.HttpsError('failed-precondition', 'The function must be called while authenticated.'));
+      reject(new functions.https.HttpsError('failed-precondition', 'The function must be called while authenticated.'));
     }
     resolve();
   });
@@ -35,7 +34,7 @@ function isAdminGuard(context: functions.https.CallableContext): Promise<void> {
 // https://firebase.google.com/docs/functions/callable
 export const createUser = functions.https.onCall((newUser, context) => {
   return isAdminGuard(context).then(() => {
-    let newUserPrivileges = {
+    const newUserPrivileges = {
       isAdmin: false,
       isSuperAdmin: false,
     };
@@ -54,7 +53,15 @@ export const createUser = functions.https.onCall((newUser, context) => {
           })
           .then((userRecord) => {
             return userRecord.toJSON();
+          })
+          .catch((err) => {
+            console.log(err);
+            throw err;
           });
+      })
+      .catch((err) => {
+        console.log(err);
+        throw err;
       });
   });
 });
@@ -64,15 +71,20 @@ export const createUser = functions.https.onCall((newUser, context) => {
 // random users from being created by having clients call the auth-protected createUser,
 // create our own record in our 'users' collection, and then wire up this trigger to either accept or reject
 // the sign up.
-functions.auth.user().onCreate((firebaseAuthUser) => {
+export const onCreate = functions.auth.user().onCreate((firebaseAuthUser) => {
   db.doc('users/' + firebaseAuthUser.email)
     .get()
     .then((covidWatchUser) => {
       if (covidWatchUser.exists) {
         // User has been created through auth protected createUser endpoint, update uuid
-        covidWatchUser.ref.update({
-          uuid: firebaseAuthUser.uid,
-        });
+        covidWatchUser.ref
+          .update({
+            uuid: firebaseAuthUser.uid,
+          })
+          .catch((err) => {
+            console.log(err);
+            throw err;
+          });
       } else {
         // Not an authorized user creation, delete this user
         admin
@@ -86,5 +98,9 @@ functions.auth.user().onCreate((firebaseAuthUser) => {
             console.log('Error deleting user:', err);
           });
       }
+    })
+    .catch((err) => {
+      console.log(err);
+      throw err;
     });
 });
