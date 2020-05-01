@@ -32,25 +32,59 @@ function isAdminGuard(context: functions.https.CallableContext): Promise<void> {
   );
 }
 
-// Start writing Firebase Functions
-// https://firebase.google.com/docs/functions/typescript
-
-// functions.https.onCall is an https "Callable function". From the
-// documentation:
-// - With callables, Firebase Authentication and FCM tokens, when available, are
-// automatically included in requests.
-// - The functions.https.onCall trigger automatically deserializes the request
-// body and validates auth tokens.
 // https://firebase.google.com/docs/functions/callable
-export const helloWorld = functions.https.onCall((data, context) => {
-  return authGuard(context).then(() => {
-    return { text: 'hello world!' };
+export const createUser = functions.https.onCall((newUser, context) => {
+  return isAdminGuard(context).then(() => {
+    let newUserPrivileges = {
+      isAdmin: false,
+      isSuperAdmin: false,
+    };
+    db.collection('users')
+      .doc(newUser.email)
+      .set(newUserPrivileges) /* Create new user in our Firestore record */
+      .then(() => {
+        // Create Firebase Auth record of the user
+        admin
+          .auth()
+          .createUser({
+            email: newUser.email,
+            emailVerified: false,
+            password: newUser.password,
+            disabled: false,
+          })
+          .then((userRecord) => {
+            return userRecord.toJSON();
+          });
+      });
   });
 });
 
-// createUser('f')
-export const createUser = functions.https.onCall((data, context) => {
-  return isAdminGuard(context).then(() => {
-    return { text: 'create user' };
-  });
+// Called every time a new user is created.
+// Because its not possible to turn off user creation in Firebase Auth, we are going to prevent
+// random users from being created by having clients call the auth-protected createUser,
+// create our own record in our 'users' collection, and then wire up this trigger to either accept or reject
+// the sign up.
+functions.auth.user().onCreate((firebaseAuthUser) => {
+  db.doc('users/' + firebaseAuthUser.email)
+    .get()
+    .then((covidWatchUser) => {
+      if (covidWatchUser.exists) {
+        // User has been created through auth protected createUser endpoint, update uuid
+        covidWatchUser.ref.update({
+          uuid: firebaseAuthUser.uid,
+        });
+      } else {
+        // Not an authorized user creation, delete this user
+        admin
+          .auth()
+          .deleteUser(firebaseAuthUser.uid)
+          .then(() => {
+            console.log('Successfully deleted user');
+          })
+          .catch((err) => {
+            // TODO should probably send us an email to look into this
+            console.log('Error deleting user:', err);
+          });
+      }
+    });
 });
