@@ -1,6 +1,7 @@
 {
   "projects": {
-    "default": "permission-portal",
-    "test": "permission-portal-test"
+    "default": "permission-portal-test",
+    "test": "permission-portal-test",
+    "prod": "permission-portal"
   }
 }
