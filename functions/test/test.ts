@@ -3,7 +3,7 @@
 //import { assert } from "chai"
 import * as firebase from "@firebase/testing"
 import { setup } from "./utils"
-import * as SignedReport from "../src/types/SignedReport"
+import * as SignedReport from "../src/types/signedReportRequest"
 
 /*
  * ============
@@ -36,7 +36,7 @@ const anyUser = {
 }
 
 const mockData = () => {
-  const signedReport: SignedReport.Welcome = {
+  const signedReport: SignedReport.Root = {
     temporary_contact_key_bytes: "PvLGpfQZgGqnoQRtSr0AHd8J5/WdKwaJNLRCkhGlgHU=",
     memo_data: "SGVsbG8sIFdvcmxkIQ==",
     memo_type: 1,

@@ -1,5 +1,5 @@
 // Postman object extracted into its type with https://app.quicktype.io/?l=ts
-export interface Welcome {
+export interface Root {
     info:                    Info;
     item:                    Item[];
     protocolProfileBehavior: WelcomeProtocolProfileBehavior;

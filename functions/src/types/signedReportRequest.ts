@@ -1,4 +1,4 @@
-export interface Welcome {
+export interface Root {
     temporary_contact_key_bytes:          string;
     memo_data:                            string;
     memo_type:                            number;
