@@ -15,8 +15,6 @@ This repo contains code which is used in the Firebase project to control the Fir
 - [ ] Add watcher to auto build .ts to .js
 - [ ] Agree on API / Response Payloads
 - [ ] Cache Reads in Buckets
-- [ ] Test submitted message if content is invalid (missing fields, etc) but signed properly
-
 
 ## Setup
 
