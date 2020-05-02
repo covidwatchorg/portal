@@ -15,12 +15,17 @@ const testNames = {
     liveAllSignedReports: "v1 LIVE GET ALL Signed Reports",
     allDiagnosis: "v2 AG GET ALL Diagnosis",
     newPermissionNumber: "v2 SECURE GET Generate Permission Number",
-    newDiagnosis: "v2 AG POST New Diagnosis"
+    newDiagnosis: "v2 AG POST New Diagnosis",
+    allPermissionNumbers: "v2 SECURE GET ALL Permission Numbers"
+}
 
+function getPostmanItem(json: Postman.Root, testName: string) {
+    const item : Postman.Item  = json.item.filter((p: Postman.Item)=> p.name === testName)[0];
+    return item;
 }
 
 function getConfig(json: Postman.Root, testName: string) {
-    const item : Postman.Item  = json.item.filter((p: Postman.Item)=> p.name === testName)[0];
+    const item : Postman.Item  = getPostmanItem(json, testName);
     let body: string = "";
     if (item.request.body){
         body = item.request.body.raw;
@@ -69,9 +74,20 @@ export class IntegratedTest {
     })
   }
 
+  @test
+  async "Submit new report with tampered message should fail"() {
+    const config = getConfig(postman, testNames.newSignedReport);
+    const tamperedBody: SignedReport.Root= JSON.parse(config.body);
+    tamperedBody.temporary_contact_key_bytes =  "tampered";
+    await chaiPost(config.url, JSON.stringify(tamperedBody))
+    .then(function (res: Response) {
+        expect(res).to.have.status(400);
+    })
+  }
+
 
   @test 
-  async "Get all signed reports should succeed"() {
+  async "Get all signed reports as public should succeed"() {
     const config = getConfig(postman, testNames.allSignedReports);
     await chaiGet(config.url)
     .then(function (res: Response) {
@@ -80,7 +96,7 @@ export class IntegratedTest {
   }
 
   @test 
-  async "Get all live signed reports should succeed"() {
+  async "Get all live signed reports as public should succeed"() {
     const config = getConfig(postman, testNames.liveAllSignedReports);
     await chaiGet(config.url)
     .then(function (res: Response) {
@@ -89,11 +105,37 @@ export class IntegratedTest {
   }
 
   @test 
-  async "Get all diagnosis should succeed"() {
+  async "Get all diagnosis as public should succeed"() {
     const config = getConfig(postman, testNames.allDiagnosis);
     await chaiGet(config.url)
     .then(function (res: Response) {
         expect(res).to.have.status(201);
+    })
+  }
+
+  @test 
+  async "Secure all permission numbers without proper auth should fail"() {
+    const config = getConfig(postman, testNames.allPermissionNumbers);
+    await chaiGet(config.url)
+    .then(function (res: Response) {
+        expect(res).to.have.status(400);
+    })
+  }
+
+  @test 
+  async "Get all permission numbers securely should succeed"() {
+    const item = getPostmanItem(postman, testNames.allPermissionNumbers);
+    const config = getConfig(postman, testNames.allPermissionNumbers);
+    let bearer: string = "";
+    if(item.request.auth){
+       bearer =  item.request.auth.bearer[0].value;
+    }
+    await chai
+    .request(config.url)
+    .get("")
+    .set("Authorization", "Bearer " + bearer) 
+    .then(function (res: Response) {
+        expect(res).to.have.status(200);
     })
   }
 
