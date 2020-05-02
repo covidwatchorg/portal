@@ -114,11 +114,11 @@ export class IntegratedTest {
   }
 
   @test 
-  async "Secure all permission numbers without proper auth should fail"() {
+  async "Get all permission numbers as public should fail"() {
     const config = getConfig(postman, testNames.allPermissionNumbers);
     await chaiGet(config.url)
     .then(function (res: Response) {
-        expect(res).to.have.status(400);
+        expect(res).to.have.status(403);
     })
   }
 
