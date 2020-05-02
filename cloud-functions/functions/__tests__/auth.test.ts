@@ -21,6 +21,7 @@ firebase.initializeApp(firebaseConfig);
 
 const db = firebase.firestore();
 
+jest.setTimeout(60000);
 const delay = (t: number) => new Promise((resolve) => setTimeout(resolve, t));
 
 test('createUser cannot be called without being authenticated', () => {
@@ -36,7 +37,6 @@ test('createUser cannot be called without being authenticated', () => {
 });
 
 test('createUser cannot be called by non-admin', () => {
-  jest.setTimeout(30000);
   const createUser = firebase.functions().httpsCallable('createUser');
   return firebase
     .auth()
@@ -79,79 +79,98 @@ test('Email address can only be used once', () => {
     });
 });
 
-test('createUser works for admins', () => {
-  const createUser = firebase.functions().httpsCallable('createUser');
-  return firebase
-    .auth()
-    .signInWithEmailAndPassword('testuser@isadmin.com', 'isadmin')
-    .then(() => {
-      return createUser({ email: 'test@email.com', password: 'password' })
-        .then((result) => result.data)
-        .then((userRecord) => {
-          // Check that the endpoint responded with the proper user
-          expect(userRecord.email).toEqual('test@email.com');
-          return firebase
-            .auth()
-            .signInWithEmailAndPassword('test@email.com', 'password')
-            .then(() => {
-              // Check that we can sign in with this user
-              const currentUser = firebase.auth().currentUser;
-              if (currentUser === null) {
-                throw new Error('firebase.auth().currentUser returned null');
-              }
-              expect(currentUser.email).toEqual('test@email.com');
-              // Check that we have a corresponding user in our users collection whose uuid field has been filled out appropriately
-              return db
-                .collection('users')
-                .doc('test@email.com')
-                .get()
-                .then((userSnapshot) => userSnapshot.data())
-                .then((user) => {
-                  if (user !== undefined) {
-                    // Make sure the users collection uuid was updated with firebase auth uuid
-                    // Was running into issues with this running before onCreate finishes (which updates the uuid), so added this delay
-                    return delay(2000).then(() => {
-                      expect(user.uuid).toEqual(currentUser.uid);
-                      return db
-                        .collection('users')
-                        .doc('test@email.com')
-                        .delete()
-                        .then(() => {
-                          // test@email.com successfully deleted from users collection, now delete user from firebase auth
-                          return currentUser
-                            .delete()
-                            .then(() => {
-                              expect('User successfully deleted').toEqual('User successfully deleted');
-                            })
-                            .catch((err) => {
-                              throw new Error(
-                                'Firebase auth deletion of test@email.com failed, go into the authentication section of the database and delete manually'
-                              );
-                            });
-                        })
-                        .catch(() => {
-                          throw new Error(
-                            'test@email.com deletion in users collection failed. You must go into the database and delete it manually (in both the users collection and the authentication section).'
-                          );
-                        });
-                    });
-                  } else {
-                    throw new Error("Couldn't find test@email.com in our users collection");
-                  }
-                })
+describe('Scoped to allow for idempotency, need to delete test@email.com after each run', () => {
+  afterEach(() => {
+    return firebase
+      .auth()
+      .signInWithEmailAndPassword('test@email.com', 'password')
+      .then(() => {
+        return db
+          .collection('users')
+          .doc('test@email.com')
+          .delete()
+          .then(() => {
+            const currentUser = firebase.auth().currentUser;
+            if (currentUser === null) {
+              throw new Error(
+                "test@email.com deletion may have failed, log in to console and ensure it's been deleted manually."
+              );
+            } else {
+              return currentUser
+                .delete()
+                .then(() => {})
                 .catch((err) => {
-                  throw err;
+                  throw new Error(
+                    "test@email.com deletion may have failed, log in to console and ensure it's been deleted manually."
+                  );
                 });
-            })
-            .catch((err) => {
-              throw err;
-            });
-        })
-        .catch((err) => {
-          throw err;
-        });
-    })
-    .catch((err) => {
-      throw err;
-    });
+            }
+          })
+          .catch((err) => {
+            throw new Error(
+              "test@email.com deletion may have failed, log in to console and ensure it's been deleted manually."
+            );
+          });
+      })
+      .catch((err) => {
+        throw new Error(
+          "test@email.com deletion may have failed, log in to console and ensure it's been deleted manually."
+        );
+      });
+  });
+
+  test('createUser works for admins', () => {
+    const createUser = firebase.functions().httpsCallable('createUser');
+    return firebase
+      .auth()
+      .signInWithEmailAndPassword('testuser@isadmin.com', 'isadmin')
+      .then(() => {
+        return createUser({ email: 'test@email.com', password: 'password' })
+          .then((result) => result.data)
+          .then((userRecord) => {
+            // Check that the endpoint responded with the proper user
+            expect(userRecord.email).toEqual('test@email.com');
+            return firebase
+              .auth()
+              .signInWithEmailAndPassword('test@email.com', 'password')
+              .then(() => {
+                // Check that we can sign in with this user
+                const currentUser = firebase.auth().currentUser;
+                if (currentUser === null) {
+                  throw new Error('firebase.auth().currentUser returned null');
+                }
+                expect(currentUser.email).toEqual('test@email.com');
+                // Check that we have a corresponding user in our users collection whose uuid field has been filled out appropriately
+                return db
+                  .collection('users')
+                  .doc('test@email.com')
+                  .get()
+                  .then((userSnapshot) => userSnapshot.data())
+                  .then((user) => {
+                    if (user !== undefined) {
+                      // Make sure the users collection uuid was updated with firebase auth uuid
+                      // Was running into issues with this running before onCreate finishes (which updates the uuid), so added this delay
+                      return delay(2000).then(() => {
+                        expect(user.uuid).toEqual(currentUser.uid);
+                      });
+                    } else {
+                      throw new Error("Couldn't find test@email.com in our users collection");
+                    }
+                  })
+                  .catch((err) => {
+                    throw err;
+                  });
+              })
+              .catch((err) => {
+                throw err;
+              });
+          })
+          .catch((err) => {
+            throw err;
+          });
+      })
+      .catch((err) => {
+        throw err;
+      });
+  });
 });

@@ -85,7 +85,8 @@ export const createUser = functions.https.onCall((newUser, context) => {
 // create our own record in our 'users' collection, and then wire up this trigger to either accept or reject
 // the sign up.
 export const onCreate = functions.auth.user().onCreate((firebaseAuthUser) => {
-  db.doc('users/' + firebaseAuthUser.email)
+  return db
+    .doc('users/' + firebaseAuthUser.email)
     .get()
     .then((covidWatchUser) => {
       if (covidWatchUser.exists) {
