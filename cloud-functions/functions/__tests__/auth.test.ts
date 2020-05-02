@@ -28,3 +28,23 @@ it('createUser cannot be called without being authenticated', () => {
       expect(err.message).toEqual('The function must be called while authenticated.');
     });
 });
+
+it('createUser cannot be called by non-admin', () => {
+  const createUser = firebase.functions().httpsCallable('createUser');
+  return firebase
+    .auth()
+    .signInWithEmailAndPassword('testuser@normaluser.com', 'normaluser')
+    .then(() => {
+      createUser({ email: 'test@email.com', password: 'password' })
+        .then((result) => {
+          throw new Error("This shouldn't happen!");
+        })
+        .catch((err) => {
+          expect(err.code).toEqual('failed-precondition');
+          expect(err.message).toEqual('The function must be called by an admin');
+        });
+    })
+    .catch((err) => {
+      throw Error("This shouldn't happen!");
+    });
+});
