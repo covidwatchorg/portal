@@ -19,7 +19,9 @@ const firebaseConfig = {
 
 firebase.initializeApp(firebaseConfig);
 
-// const db = firebase.firestore();
+const db = firebase.firestore();
+
+const delay = (t: number) => new Promise((resolve) => setTimeout(resolve, t));
 
 test('createUser cannot be called without being authenticated', () => {
   const createUser = firebase.functions().httpsCallable('createUser');
@@ -55,90 +57,101 @@ test('createUser cannot be called by non-admin', () => {
     });
 });
 
-// test('createUser works for admins', () => {
-//   const createUser = firebase.functions().httpsCallable('createUser');
-//   firebase
-//     .auth()
-//     .signInWithEmailAndPassword('testuser@isadmin.com', 'isadmin')
-//     .then(() => {
-//       createUser({ email: 'test@email.com', password: 'password' })
-//         .then((result) => result.data)
-//         .then((userRecord) => {
-//           // Check that the endpoint responded with the proper user
-//           expect(userRecord.email).toEqual('test@email.com');
-//           firebase
-//             .auth()
-//             .signInWithEmailAndPassword('test@email.com', 'password')
-//             .then(() => {
-//               // Check that we can sign in with this user
-//               const currentUser = firebase.auth().currentUser;
-//               if (currentUser === null) {
-//                 throw new Error("This shouldn't happen!");
-//               }
-//               expect(currentUser.email).toEqual('test@email.com');
-//               // Check that we have a corresponding user in our users collection whose uuid field has been filled out appropriately
-//               db.collection('users')
-//                 .doc('test@email.com')
-//                 .get()
-//                 .then((userSnapshot) => userSnapshot.data())
-//                 .then((user) => {
-//                   if (user !== undefined) {
-//                     throw new Error('No such document!');
-//                     // expect(user.uuid).toEqual(currentUser.uid);
-//                   } else {
-//                     throw new Error('No such document!');
-//                   }
-//                 })
-//                 .catch(function (error) {
-//                   throw new Error('Error getting document:' + error);
-//                 });
-//             })
-//             .catch((err) => {
-//               throw new Error("This shouldn't happen!");
-//             });
-//         })
-//         .catch((err) => {
-//           throw new Error("This shouldn't happen!");
-//         });
-//     })
-//     .catch((err) => {
-//       throw Error("This shouldn't happen!");
-//     });
-// });
+test('Email address can only be used once', () => {
+  const createUser = firebase.functions().httpsCallable('createUser');
+  return firebase
+    .auth()
+    .signInWithEmailAndPassword('testuser@isadmin.com', 'isadmin')
+    .then(() => {
+      return createUser({ email: 'testuser@normaluser.com', password: 'password' })
+        .then((result) => {
+          throw new Error(
+            'testuser@normaluser.com should already be in the test database, and the email should not be allowed to be used again!'
+          );
+        })
+        .catch((err) => {
+          expect(err.code).toEqual('already-exists');
+          expect(err.message).toEqual('The email address is already in use by another account.');
+        });
+    })
+    .catch((err) => {
+      throw Error(err);
+    });
+});
 
-// const createUser = firebase.functions().httpsCallable('createUser');
-// var er1;
-// var er2;
-// var res;
-// firebase
-//   .auth()
-//   .signInWithEmailAndPassword('testuser@isadmin.com', 'isadmin')
-//   .then(() => {
-//     createUser({ email: 'test@email.com', password: 'password' })
-//       .then((result) => {
-//         res = result;
-//       })
-//       .catch((err) => {
-//         er1 = err;
-//       });
-//   })
-//   .catch((err) => {
-//     er2 = err;
-//   });
-
-// firebase
-//   .auth()
-//   .signInWithEmailAndPassword('testuser@normaluser.com', 'normaluser')
-//   .then(() => {
-//     createUser({ email: 'test@email.com', password: 'password' })
-//       .then((result) => {
-//         throw new Error("This shouldn't happen!");
-//       })
-//       .catch((err) => {
-//         expect(err.code).toEqual('failed-precondition');
-//         expect(err.message).toEqual('The function must be called by an admin');
-//       });
-//   })
-//   .catch((err) => {
-//     throw Error("This shouldn't happen!");
-//   });
+test('createUser works for admins', () => {
+  const createUser = firebase.functions().httpsCallable('createUser');
+  return firebase
+    .auth()
+    .signInWithEmailAndPassword('testuser@isadmin.com', 'isadmin')
+    .then(() => {
+      return createUser({ email: 'test@email.com', password: 'password' })
+        .then((result) => result.data)
+        .then((userRecord) => {
+          // Check that the endpoint responded with the proper user
+          expect(userRecord.email).toEqual('test@email.com');
+          return firebase
+            .auth()
+            .signInWithEmailAndPassword('test@email.com', 'password')
+            .then(() => {
+              // Check that we can sign in with this user
+              const currentUser = firebase.auth().currentUser;
+              if (currentUser === null) {
+                throw new Error('firebase.auth().currentUser returned null');
+              }
+              expect(currentUser.email).toEqual('test@email.com');
+              // Check that we have a corresponding user in our users collection whose uuid field has been filled out appropriately
+              return db
+                .collection('users')
+                .doc('test@email.com')
+                .get()
+                .then((userSnapshot) => userSnapshot.data())
+                .then((user) => {
+                  if (user !== undefined) {
+                    // Make sure the users collection uuid was updated with firebase auth uuid
+                    // Was running into issues with this running before onCreate finishes (which updates the uuid), so added this delay
+                    return delay(2000).then(() => {
+                      expect(user.uuid).toEqual(currentUser.uid);
+                      return db
+                        .collection('users')
+                        .doc('test@email.com')
+                        .delete()
+                        .then(() => {
+                          // test@email.com successfully deleted from users collection, now delete user from firebase auth
+                          return currentUser
+                            .delete()
+                            .then(() => {
+                              expect('User successfully deleted').toEqual('User successfully deleted');
+                            })
+                            .catch((err) => {
+                              throw new Error(
+                                'Firebase auth deletion of test@email.com failed, go into the authentication section of the database and delete manually'
+                              );
+                            });
+                        })
+                        .catch(() => {
+                          throw new Error(
+                            'test@email.com deletion in users collection failed. You must go into the database and delete it manually (in both the users collection and the authentication section).'
+                          );
+                        });
+                    });
+                  } else {
+                    throw new Error("Couldn't find test@email.com in our users collection");
+                  }
+                })
+                .catch((err) => {
+                  throw err;
+                });
+            })
+            .catch((err) => {
+              throw err;
+            });
+        })
+        .catch((err) => {
+          throw err;
+        });
+    })
+    .catch((err) => {
+      throw err;
+    });
+});

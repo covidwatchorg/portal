@@ -6,11 +6,7 @@
 var firebase = require('firebase/app');
 require('firebase/functions');
 var admin = require('firebase-admin');
-
-// admin.initializeApp({
-//   credential: admin.credential.cert('service-account-credentials.json'),
-//   databaseURL: 'https://permission-portal.firebaseio.com',
-// });
+require('firebase/auth');
 
 const firebaseConfig = {
   apiKey: 'AIzaSyAHVZXO-wFnGmUIBLxF6-mY3tuleK4ENVo',

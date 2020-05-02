@@ -33,36 +33,49 @@ function isAdminGuard(context: functions.https.CallableContext): Promise<void> {
 
 // https://firebase.google.com/docs/functions/callable
 export const createUser = functions.https.onCall((newUser, context) => {
-  return isAdminGuard(context).then(() => {
-    const newUserPrivileges = {
-      isAdmin: false,
-      isSuperAdmin: false,
-    };
-    db.collection('users')
-      .doc(newUser.email)
-      .set(newUserPrivileges) /* Create new user in our Firestore record */
+  return new Promise((resolve, reject) => {
+    isAdminGuard(context)
       .then(() => {
-        // Create Firebase Auth record of the user
-        admin
-          .auth()
-          .createUser({
-            email: newUser.email,
-            emailVerified: false,
-            password: newUser.password,
-            disabled: false,
-          })
-          .then((userRecord) => {
-            return userRecord.toJSON();
+        const newUserPrivileges = {
+          isAdmin: false,
+          isSuperAdmin: false,
+        };
+        db.collection('users')
+          .doc(newUser.email)
+          .set(newUserPrivileges) /* Create new user in our Firestore record */
+          .then(() => {
+            // Create Firebase Auth record of the user
+            admin
+              .auth()
+              .createUser({
+                email: newUser.email,
+                emailVerified: false,
+                password: newUser.password,
+                disabled: false,
+              })
+              .then((userRecord) => {
+                resolve(userRecord.toJSON());
+              })
+              .catch((err) => {
+                console.error(err);
+                if (err.errorInfo.code === 'auth/email-already-exists') {
+                  reject(new functions.https.HttpsError('already-exists', err.errorInfo.message));
+                } else {
+                  reject(new functions.https.HttpsError('internal', err.errorInfo.message));
+                }
+              });
           })
           .catch((err) => {
-            console.log(err);
-            throw err;
+            console.error(err);
+            reject(err);
           });
       })
       .catch((err) => {
-        console.log(err);
-        throw err;
+        console.error(err);
+        reject(err);
       });
+  }).catch((err) => {
+    throw err;
   });
 });
 
@@ -81,8 +94,11 @@ export const onCreate = functions.auth.user().onCreate((firebaseAuthUser) => {
           .update({
             uuid: firebaseAuthUser.uid,
           })
+          .then(() => {
+            console.log('uuid updated');
+          })
           .catch((err) => {
-            console.log(err);
+            console.error(err);
             throw err;
           });
       } else {
@@ -94,13 +110,13 @@ export const onCreate = functions.auth.user().onCreate((firebaseAuthUser) => {
             console.log('Successfully deleted user');
           })
           .catch((err) => {
-            // TODO should probably send us an email to look into this
+            // TODO should send us an email to look into this
             console.log('Error deleting user:', err);
           });
       }
     })
     .catch((err) => {
-      console.log(err);
+      console.error(err);
       throw err;
     });
 });
