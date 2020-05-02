@@ -74,6 +74,52 @@ export class IntegratedTest {
     })
   }
 
+  @test 
+  async "Submit new malformed start_index report should fail"() {
+    const config = getConfig(postman, testNames.newSignedReport);
+    const malformedBody = {
+        "temporary_contact_key_bytes": "PvLGpfQZgGqnoQRtSr0AHd8J5/WdKwaJNLRCkhGlgHU=",
+        "memo_data": "SGVsbG8sIFdvcmxkIQ==",
+        "memo_type": 1,
+        "start_index": "thisIsSupposedToBeNumber",
+        "end_index": 8,
+        "signature_bytes": "+k7HDsVZPY5Pxcz0cpwVBvDOHrrQ0+AyDVL/a==",
+        "report_verification_public_key_bytes": "v78liBBYQrFXqOH6YydUD1aGpXLMgruKATAjFZ0ycLk="
+      }
+    await chaiPost(config.url, JSON.stringify(malformedBody))
+    .then(function (res: Response) {
+        expect(res).to.have.status(400);
+    })
+  }
+
+  @test 
+  async "Submit new missing end_index report should fail"() {
+    const config = getConfig(postman, testNames.newSignedReport);
+    const malformedBody = {
+        "temporary_contact_key_bytes": "PvLGpfQZgGqnoQRtSr0AHd8J5/WdKwaJNLRCkhGlgHU=",
+        "memo_data": "SGVsbG8sIFdvcmxkIQ==",
+        "memo_type": 1,
+        "start_index": 1,
+        "signature_bytes": "+k7HDsVZPY5Pxcz0cpwVBvDOHrrQ0+AyDVL/a==",
+        "report_verification_public_key_bytes": "v78liBBYQrFXqOH6YydUD1aGpXLMgruKATAjFZ0ycLk="
+      }
+    await chaiPost(config.url, JSON.stringify(malformedBody))
+    .then(function (res: Response) {
+        expect(res).to.have.status(400);
+    })
+  }
+
+  @test
+  async "Submit new report with invalid memo type should fail"() {
+    const config = getConfig(postman, testNames.newSignedReport);
+    const tamperedBody: SignedReport.Root= JSON.parse(config.body);
+    tamperedBody.memo_type =  10000;
+    await chaiPost(config.url, JSON.stringify(tamperedBody))
+    .then(function (res: Response) {
+        expect(res).to.have.status(400);
+    })
+  }
+
   @test
   async "Submit new report with tampered message should fail"() {
     const config = getConfig(postman, testNames.newSignedReport);

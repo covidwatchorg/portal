@@ -3,7 +3,7 @@ import * as functions from "firebase-functions"
 
 import { Field, parse } from "sparkson"
 import { respond, makeError } from "./utils"
-import { verifySignature } from "./verify"
+import { verifySignature, verifyMemoType } from "./verify"
 
 class Report {
   constructor(
@@ -53,7 +53,11 @@ export const submitReportHandler = function (
       jsonObject["report_verification_public_key_bytes"],
       "base64"
     )
+    console.log(verifyMemoType(jsonObject["memo_type"]))
 
+    if(!verifyMemoType(jsonObject["memo_type"])){
+      throw new Error("Invalid memo type")
+    }
     // validate crypto
     if (
       !verifySignature(
