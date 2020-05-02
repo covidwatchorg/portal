@@ -150,7 +150,7 @@ describe('Scoped to allow for idempotency, need to delete test@email.com after e
                     if (user !== undefined) {
                       // Make sure the users collection uuid was updated with firebase auth uuid
                       // Was running into issues with this running before onCreate finishes (which updates the uuid), so added this delay
-                      return delay(2000).then(() => {
+                      return delay(6000).then(() => {
                         expect(user.uuid).toEqual(currentUser.uid);
                       });
                     } else {
