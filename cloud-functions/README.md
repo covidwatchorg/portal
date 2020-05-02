@@ -15,7 +15,7 @@ This means that in order for tests to run properly, they must be deployed first 
 firebase deploy --only functions --project=test
 ```
 
-Once changes are deployed, tests can be run from the `functions/` directory. Because they are written in Typescript, they must be built first:
+Once changes are deployed, tests can be run from the `functions/` directory. Tests require a firebase admin key to run properly, stored as `functions/permission-portal-test-firebase-admin-key.json` (ask maintainer). Because they are written in Typescript, they must be built first:
 
 ```
 cd functions

@@ -1,4 +1,5 @@
 import * as firebase from 'firebase/app';
+import * as admin from 'firebase-admin';
 // Add the Firebase services that you want to use
 // tslint:disable-next-line: no-import-side-effect
 import 'firebase/auth';
@@ -7,6 +8,9 @@ import 'firebase/functions';
 // tslint:disable-next-line: no-import-side-effect
 import 'firebase/firestore';
 
+jest.setTimeout(60000);
+
+// Initialize client SDK
 const firebaseConfig = {
   apiKey: 'AIzaSyAHVZXO-wFnGmUIBLxF6-mY3tuleK4ENVo',
   authDomain: 'permission-portal-test.firebaseapp.com',
@@ -16,16 +20,25 @@ const firebaseConfig = {
   messagingSenderId: '1090782248577',
   appId: '1:1090782248577:web:184d481f492cfa4edc1780',
 };
-
 firebase.initializeApp(firebaseConfig);
 
-const db = firebase.firestore();
+// Initialize admin SDK
+const serviceAccount = require('../../permission-portal-test-firebase-admin-key.json');
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount),
+  databaseURL: 'https://permission-portal-test.firebaseio.com',
+});
 
-jest.setTimeout(60000);
+// Initialize commonly used vars
+const clientDb = firebase.firestore();
+const adminDb = admin.firestore();
+const clientAuth = firebase.auth();
+const createUser = firebase.functions().httpsCallable('createUser');
+
+// Delay function to deal with Cloud Functions triggers needing time to propagate.
 const delay = (t: number) => new Promise((resolve) => setTimeout(resolve, t));
 
 test('createUser cannot be called without being authenticated', () => {
-  const createUser = firebase.functions().httpsCallable('createUser');
   return createUser({ email: 'test@email.com', password: 'password' })
     .then((result) => {
       throw new Error("This shouldn't happen!");
@@ -37,9 +50,7 @@ test('createUser cannot be called without being authenticated', () => {
 });
 
 test('createUser cannot be called by non-admin', () => {
-  const createUser = firebase.functions().httpsCallable('createUser');
-  return firebase
-    .auth()
+  return clientAuth
     .signInWithEmailAndPassword('testuser@normaluser.com', 'normaluser')
     .then(() => {
       return createUser({ email: 'test@email.com', password: 'password' })
@@ -58,9 +69,7 @@ test('createUser cannot be called by non-admin', () => {
 });
 
 test('Email address can only be used once', () => {
-  const createUser = firebase.functions().httpsCallable('createUser');
-  return firebase
-    .auth()
+  return clientAuth
     .signInWithEmailAndPassword('testuser@isadmin.com', 'isadmin')
     .then(() => {
       return createUser({ email: 'testuser@normaluser.com', password: 'password' })
@@ -81,48 +90,41 @@ test('Email address can only be used once', () => {
 
 describe('Scoped to allow for idempotency, need to delete test@email.com after each run', () => {
   afterEach(() => {
-    return firebase
-      .auth()
+    return clientAuth
       .signInWithEmailAndPassword('test@email.com', 'password')
       .then(() => {
-        return db
+        return clientDb
           .collection('users')
           .doc('test@email.com')
           .delete()
           .then(() => {
-            const currentUser = firebase.auth().currentUser;
-            if (currentUser === null) {
-              throw new Error(
-                "test@email.com deletion may have failed, log in to console and ensure it's been deleted manually."
-              );
-            } else {
+            const currentUser = clientAuth.currentUser;
+            if (currentUser !== null) {
               return currentUser
                 .delete()
                 .then(() => {})
                 .catch((err) => {
+                  console.error(err);
                   throw new Error(
                     "test@email.com deletion may have failed, log in to console and ensure it's been deleted manually."
                   );
                 });
+            } else {
+              console.log('currentUser === null');
+              return undefined;
             }
           })
           .catch((err) => {
-            throw new Error(
-              "test@email.com deletion may have failed, log in to console and ensure it's been deleted manually."
-            );
+            console.log(err);
           });
       })
       .catch((err) => {
-        throw new Error(
-          "test@email.com deletion may have failed, log in to console and ensure it's been deleted manually."
-        );
+        console.log(err);
       });
   });
 
   test('createUser works for admins', () => {
-    const createUser = firebase.functions().httpsCallable('createUser');
-    return firebase
-      .auth()
+    return clientAuth
       .signInWithEmailAndPassword('testuser@isadmin.com', 'isadmin')
       .then(() => {
         return createUser({ email: 'test@email.com', password: 'password' })
@@ -135,31 +137,31 @@ describe('Scoped to allow for idempotency, need to delete test@email.com after e
               .signInWithEmailAndPassword('test@email.com', 'password')
               .then(() => {
                 // Check that we can sign in with this user
-                const currentUser = firebase.auth().currentUser;
+                const currentUser = clientAuth.currentUser;
                 if (currentUser === null) {
-                  throw new Error('firebase.auth().currentUser returned null');
+                  throw new Error('clientAuth.currentUser returned null');
                 }
                 expect(currentUser.email).toEqual('test@email.com');
                 // Check that we have a corresponding user in our users collection whose uuid field has been filled out appropriately
-                return db
-                  .collection('users')
-                  .doc('test@email.com')
-                  .get()
-                  .then((userSnapshot) => userSnapshot.data())
-                  .then((user) => {
-                    if (user !== undefined) {
-                      // Make sure the users collection uuid was updated with firebase auth uuid
-                      // Was running into issues with this running before onCreate finishes (which updates the uuid), so added this delay
-                      return delay(6000).then(() => {
+                return delay(6000).then(() => {
+                  // Was running into issues with this running before onCreate finishes (which updates the uuid), so added the above delay
+                  return clientDb
+                    .collection('users')
+                    .doc('test@email.com')
+                    .get()
+                    .then((userSnapshot) => userSnapshot.data())
+                    .then((user) => {
+                      if (user !== undefined) {
+                        // Make sure the users collection uuid was updated with firebase auth uuid
                         expect(user.uuid).toEqual(currentUser.uid);
-                      });
-                    } else {
-                      throw new Error("Couldn't find test@email.com in our users collection");
-                    }
-                  })
-                  .catch((err) => {
-                    throw err;
-                  });
+                      } else {
+                        throw new Error("Couldn't find test@email.com in our users collection");
+                      }
+                    })
+                    .catch((err) => {
+                      throw err;
+                    });
+                });
               })
               .catch((err) => {
                 throw err;
@@ -171,6 +173,34 @@ describe('Scoped to allow for idempotency, need to delete test@email.com after e
       })
       .catch((err) => {
         throw err;
+      });
+  });
+
+  test('Attempting to sign up a user through clientAuth.createUserWithEmailAndPassword and not through createUser endpoint results in the user being deleted', () => {
+    return clientAuth
+      .createUserWithEmailAndPassword('test@email.com', 'password')
+      .then((userCredential) => {
+        expect(userCredential.user?.email).toEqual('test@email.com');
+        // Give onCreate some time to delete the user
+        return delay(6000)
+          .then(() => {
+            return adminDb
+              .doc('users/' + 'test@email.com')
+              .get()
+              .then((user) => {
+                expect(user.exists).toEqual(false);
+              })
+              .catch((err) => {
+                throw err;
+              });
+          })
+          .catch((err) => {
+            throw err;
+          });
+      })
+      .catch((err) => {
+        throw err;
+        // throw new Error('Firebase error');
       });
   });
 });
