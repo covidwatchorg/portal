@@ -33,10 +33,70 @@ admin.initializeApp({
 const clientDb = firebase.firestore();
 const adminDb = admin.firestore();
 const clientAuth = firebase.auth();
+const adminAuth = admin.auth();
 const createUser = firebase.functions().httpsCallable('createUser');
 
 // Delay function to deal with Cloud Functions triggers needing time to propagate.
 const delay = (t: number) => new Promise((resolve) => setTimeout(resolve, t));
+
+// Save test user's id's for easy deletion at the end
+let adminGoodCorpUid: string;
+let nonAdminGoodCorpUid: string;
+
+beforeAll(() => {
+  return adminDb
+    .collection('users')
+    .doc('admin@goodcorp.com')
+    .set({
+      isSuperAdmin: false,
+      isAdmin: true,
+      organization: 'goodcorp',
+    }) /* Create new user in our Firestore record */
+    .then(() => {
+      // Create Firebase Auth record of the user
+      return adminAuth
+        .createUser({
+          email: 'admin@goodcorp.com',
+          password: 'admin@goodcorp.com',
+        })
+        .then((adminGoodCorpUserRecord) => {
+          adminGoodCorpUid = adminGoodCorpUserRecord.uid;
+          return adminDb
+            .collection('users')
+            .doc('nonadmin@goodcorp.com')
+            .set({
+              isSuperAdmin: false,
+              isAdmin: false,
+              organization: 'goodcorp',
+            }) /* Create new user in our Firestore record */
+            .then(() => {
+              // Create Firebase Auth record of the user
+              return adminAuth
+                .createUser({
+                  email: 'nonadmin@goodcorp.com',
+                  password: 'nonadmin@goodcorp.com',
+                })
+                .then((nonAdminGoodCorpUserRecord) => {
+                  nonAdminGoodCorpUid = nonAdminGoodCorpUserRecord.uid;
+                });
+            });
+        });
+    });
+});
+
+afterAll(() => {
+  return adminAuth.deleteUser(adminGoodCorpUid).then(() => {
+    return adminAuth.deleteUser(nonAdminGoodCorpUid).then(() => {
+      return adminDb
+        .collection('users')
+        .doc('admin@goodcorp.com')
+        .delete()
+        .then(() => {
+          return adminDb.collection('users').doc('nonadmin@goodcorp.com').delete();
+        });
+    });
+  });
+});
 
 test('createUser cannot be called without being authenticated', () => {
   return createUser({ email: 'test@email.com', password: 'password' })
@@ -51,7 +111,7 @@ test('createUser cannot be called without being authenticated', () => {
 
 test('createUser cannot be called by non-admin', () => {
   return clientAuth
-    .signInWithEmailAndPassword('testuser@normaluser.com', 'normaluser')
+    .signInWithEmailAndPassword('nonadmin@goodcorp.com', 'nonadmin@goodcorp.com')
     .then(() => {
       return createUser({ email: 'test@email.com', password: 'password' })
         .then((result) => {
@@ -70,12 +130,12 @@ test('createUser cannot be called by non-admin', () => {
 
 test('Email address can only be used once', () => {
   return clientAuth
-    .signInWithEmailAndPassword('testuser@isadmin.com', 'isadmin')
+    .signInWithEmailAndPassword('admin@goodcorp.com', 'admin@goodcorp.com')
     .then(() => {
-      return createUser({ email: 'testuser@normaluser.com', password: 'password' })
+      return createUser({ email: 'nonadmin@goodcorp.com', password: 'nonadmin@goodcorp.com' })
         .then((result) => {
           throw new Error(
-            'testuser@normaluser.com should already be in the test database, and the email should not be allowed to be used again!'
+            'nonadmin@goodcorp.com should already be in the test database, and the email should not be allowed to be used again!'
           );
         })
         .catch((err) => {
@@ -125,7 +185,7 @@ describe('Scoped to allow for idempotency, need to delete test@email.com after e
 
   test('createUser works for admins', () => {
     return clientAuth
-      .signInWithEmailAndPassword('testuser@isadmin.com', 'isadmin')
+      .signInWithEmailAndPassword('admin@goodcorp.com', 'admin@goodcorp.com')
       .then(() => {
         return createUser({ email: 'test@email.com', password: 'password' })
           .then((result) => result.data)
