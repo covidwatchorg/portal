@@ -1,122 +1,71 @@
 import React, { useState } from 'react';
 import { Link, Redirect } from 'react-router-dom';
-import Avatar from '@material-ui/core/Avatar';
-import Button from '@material-ui/core/Button';
-import CssBaseline from '@material-ui/core/CssBaseline';
-import TextField from '@material-ui/core/TextField';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Checkbox from '@material-ui/core/Checkbox';
-import MaterialLink from '@material-ui/core/Link';
-import Grid from '@material-ui/core/Grid';
-import Box from '@material-ui/core/Box';
-import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
-import Typography from '@material-ui/core/Typography';
-import { makeStyles } from '@material-ui/core/styles';
-import Container from '@material-ui/core/Container';
+import { signin } from '../auth'
+
+
 
 function Copyright() {
   return (
-    <Typography variant='body2' color='textSecondary' align='center'>
-      {'Copyright © '}
-      <MaterialLink color='inherit' href='https://material-ui.com/'>
-        Your Website
-      </MaterialLink>{' '}
-      {new Date().getFullYear()}
-      {'.'}
-    </Typography>
+    <p>Copyright</p>
   );
 }
 
-const useStyles = makeStyles((theme) => ({
-  paper: {
-    marginTop: theme.spacing(8),
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-  },
-  avatar: {
-    margin: theme.spacing(1),
-    backgroundColor: theme.palette.secondary.main,
-  },
-  form: {
-    width: '100%', // Fix IE 11 issue.
-    marginTop: theme.spacing(1),
-  },
-  submit: {
-    margin: theme.spacing(3, 0, 2),
-  },
-}));
-
 const Login = () => {
-  const classes = useStyles();
+
+  const [values, setValues] = useState({
+    email: '',
+    password: '',
+    error: '',
+    redirect: false,
+  })
+
+  const { email, password, error, redirect } = values
+
+  const handleChange = (name) => (event) => {
+    setValues({ ...values, error: false, [name]: event.target.value })
+  }
+
+  const clickSubmit = (event) => {
+    event.preventDefault()
+    setValues({ ...values, error: false })
+    if (signin({ email, password }) === true) {
+      setValues({ ...values, redirect: true })
+    }
+  }
+
+  const redirectUser = () => {
+    if (redirect === true) {
+      console.log('redirecting')
+      return <Redirect to='/orgAdmin' />
+    }
+  }
+
+  const loginForm = () => (
+    <div className="mainContainer">
+      <div className="welcome">
+        <h1 id="heroTitle">Welcome to the Covid Watch Community Tracing Portal</h1>
+        <h3>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquet nullam condimentum quam magna tortor.</h3>
+      </div>
+      <div className="loginContainer">
+        <label for="email">Email</label>
+        <input onChange={handleChange('email')} type="email" id="email" name="email" />
+        <label for="password">Password</label>
+        <input onChange={handleChange('password')} type="password" id="password" name="password" />
+        <button onClick={clickSubmit}>
+          Login
+          </button>
+        <a href="url">Forgot password?</a>
+      </div>
+    </div>
+  )
 
   return (
-    <Container component='main' maxWidth='xs'>
-      <CssBaseline />
-      <div className={classes.paper}>
-        <Avatar className={classes.avatar}>
-          <LockOutlinedIcon />
-        </Avatar>
-        <Typography component='h1' variant='h5'>
-          Sign in
-        </Typography>
-        <form className={classes.form} noValidate>
-          <TextField
-            variant='outlined'
-            margin='normal'
-            required
-            fullWidth
-            id='email'
-            label='Email Address'
-            name='email'
-            autoComplete='email'
-            autoFocus
-          />
-          <TextField
-            variant='outlined'
-            margin='normal'
-            required
-            fullWidth
-            name='password'
-            label='Password'
-            type='password'
-            id='password'
-            autoComplete='current-password'
-          />
-          <FormControlLabel
-            control={<Checkbox value='remember' color='primary' />}
-            label='Remember me'
-          />
-          <Link to='/orgAdmin'>
-            <Button
-              type='submit'
-              fullWidth
-              variant='contained'
-              color='primary'
-              className={classes.submit}
-            >
-              Sign In
-            </Button>
-          </Link>
-          <Grid container>
-            <Grid item xs>
-              <MaterialLink href='#' variant='body2'>
-                Forgot password?
-              </MaterialLink>
-            </Grid>
-            <Grid item>
-              <MaterialLink href='#' variant='body2'>
-                {"Don't have an account? Sign Up"}
-              </MaterialLink>
-            </Grid>
-          </Grid>
-        </form>
-      </div>
-      <Box mt={8}>
-        <Copyright />
-      </Box>
-    </Container>
-  );
+    <React.Fragment>
+      {loginForm()}
+      {redirectUser()}
+    </React.Fragment>
+
+  )
 };
 
 export default Login;
