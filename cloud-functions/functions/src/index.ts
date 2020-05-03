@@ -36,9 +36,16 @@ export const createUser = functions.https.onCall((newUser, context) => {
   return new Promise((resolve, reject) => {
     isAdminGuard(context)
       .then(() => {
+        // Check that data is formatted properly
+        if (!newUser.email || !newUser.organization) {
+          reject(
+            new functions.https.HttpsError('invalid-argument', 'user object must have email and organization specified')
+          );
+        }
         const newUserPrivileges = {
           isAdmin: false,
           isSuperAdmin: false,
+          organization: newUser.organization,
         };
         db.collection('users')
           .doc(newUser.email)
@@ -49,8 +56,8 @@ export const createUser = functions.https.onCall((newUser, context) => {
               .auth()
               .createUser({
                 email: newUser.email,
-                emailVerified: false,
                 password: newUser.password,
+                emailVerified: false,
                 disabled: false,
               })
               .then((userRecord) => {
@@ -96,7 +103,26 @@ export const onCreate = functions.auth.user().onCreate((firebaseAuthUser) => {
             uuid: firebaseAuthUser.uid,
           })
           .then(() => {
-            console.log('uuid updated');
+            console.log('user ' + covidWatchUser.id + 'uuid updated to ' + firebaseAuthUser.uid);
+            admin
+              .auth()
+              .setCustomUserClaims(firebaseAuthUser.uid, {
+                isSuperAdmin: covidWatchUser.data()?.isSuperAdmin,
+                isAdmin: covidWatchUser.data()?.isAdmin,
+                organization: covidWatchUser.data()?.organization,
+              })
+              .then(() => {
+                console.log(
+                  'user ' + covidWatchUser.id + 'isSuperAdmin claim set to ' + covidWatchUser.data()?.isSuperAdmin
+                );
+                console.log('user ' + covidWatchUser.id + 'isAdmin claim set to ' + covidWatchUser.data()?.isAdmin);
+                console.log(
+                  'user ' + covidWatchUser.id + 'organization claim set to ' + covidWatchUser.data()?.organization
+                );
+              })
+              .catch((err) => {
+                console.error(err);
+              });
           })
           .catch((err) => {
             console.error(err);
