@@ -28,10 +28,12 @@ const Login = () => {
   const clickSubmit = (event) => {
     event.preventDefault()
     setValues({ ...values, error: false })
-    if (signin({ email, password }) === true) {
+    signin.checkIfAdmin({ email, password });
+    if (signin.isAdmin === true) {
       setValues({ ...values, redirect: true })
     }
   }
+
 
   const redirectUser = () => {
     if (redirect === true) {
