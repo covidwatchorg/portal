@@ -4,6 +4,7 @@ import * as functions from 'firebase-functions';
 // Initialize firebse admin and get db instance
 admin.initializeApp();
 const db = admin.firestore();
+const auth = admin.auth();
 
 // Throw error if user is not authenticated
 function authGuard(context: functions.https.CallableContext): Promise<void> {
@@ -18,17 +19,12 @@ function authGuard(context: functions.https.CallableContext): Promise<void> {
 
 // Throw error if user is not an admin
 function isAdminGuard(context: functions.https.CallableContext): Promise<void> {
-  const email = context.auth?.token.email;
-  return authGuard(context).then(() =>
-    db
-      .doc('users/' + email)
-      .get()
-      .then((userDocumentData) => {
-        if (!userDocumentData.get('isAdmin')) {
-          throw new functions.https.HttpsError('failed-precondition', 'The function must be called by an admin.');
-        }
-      })
-  );
+  return authGuard(context).then(() => {
+    // Force unwrapping warranted, because existence of context.auth is checked by authGuard
+    if (context.auth!.token.isAdmin !== true) {
+      throw new functions.https.HttpsError('failed-precondition', 'The function must be called by an admin.');
+    }
+  });
 }
 
 // Cloud function for creating new users. Allows admins to create new non-admin users.
@@ -37,9 +33,12 @@ export const createUser = functions.https.onCall((newUser, context) => {
     isAdminGuard(context)
       .then(() => {
         // Check that data is formatted properly
-        if (!newUser.email || !newUser.organization) {
+        if (!newUser.email || !newUser.organization || !newUser.password) {
           reject(
-            new functions.https.HttpsError('invalid-argument', 'user object must have email and organization specified')
+            new functions.https.HttpsError(
+              'invalid-argument',
+              'user object must have email, password, and organization specified'
+            )
           );
         }
         const newUserPrivileges = {
@@ -52,8 +51,7 @@ export const createUser = functions.https.onCall((newUser, context) => {
           .set(newUserPrivileges) /* Create new user in our Firestore record */
           .then(() => {
             // Create Firebase Auth record of the user
-            admin
-              .auth()
+            auth
               .createUser({
                 email: newUser.email,
                 password: newUser.password,
@@ -108,8 +106,7 @@ export const onCreate = functions.auth.user().onCreate((firebaseAuthUser) => {
           // If that user is not properly formatted in the users collection, delete them from auth and users collection
           // delete from auth
           console.log();
-          admin
-            .auth()
+          auth
             .deleteUser(firebaseAuthUser.uid)
             .then(() => {
               console.log('Successfully deleted user');
@@ -131,12 +128,12 @@ export const onCreate = functions.auth.user().onCreate((firebaseAuthUser) => {
             })
             .then(() => {
               console.log('user ' + covidWatchUser.id + 'uuid updated to ' + firebaseAuthUser.uid);
-              admin
-                .auth()
+              auth
                 .setCustomUserClaims(firebaseAuthUser.uid, {
-                  isSuperAdmin: covidWatchUser.data()?.isSuperAdmin,
-                  isAdmin: covidWatchUser.data()?.isAdmin,
-                  organization: covidWatchUser.data()?.organization,
+                  // Forced unwrapping is warranted, because data integrity is checked above
+                  isSuperAdmin: covidWatchUser.data()!.isSuperAdmin,
+                  isAdmin: covidWatchUser.data()!.isAdmin,
+                  organization: covidWatchUser.data()!.organization,
                 })
                 .then(() => {
                   console.log(
@@ -158,8 +155,7 @@ export const onCreate = functions.auth.user().onCreate((firebaseAuthUser) => {
         }
       } else {
         // User has not been properly pre-registered in `users` collection, delete this user from Firebase Auth
-        admin
-          .auth()
+        auth
           .deleteUser(firebaseAuthUser.uid)
           .then(() => {
             console.log('Successfully deleted user');

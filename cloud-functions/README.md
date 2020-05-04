@@ -1,7 +1,12 @@
 # Permission Portal Cloud Functions
 
 Cloud functions for the Covid Watch Permission Portal.
-Firebase project can be found [here](https://console.firebase.google.com/project/permission-portal/)
+Firebase project can be found here:
+
+- [prod](https://console.firebase.google.com/project/permission-portal/)
+- [test](https://console.firebase.google.com/project/permission-portal-test/)
+
+In depth discussion of app and data model can be found in [Notion](https://www.notion.so/covidwatch/Org-Admin-App-Technical-Details-f8a235f8cfb44e1d938c731ccfe621cb).
 
 ## Testing
 
