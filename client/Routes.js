@@ -15,7 +15,6 @@ const Routes = () => {
       <Switch>
         <Route path='/' exact component={Login} />
         <AdminRoute path='/orgAdmin' component={AdminDashboard} />
-        {/* <Route path='/orgAdmin' exact component={AdminDashboard} /> */}
       </Switch>
       <Footer />
     </BrowserRouter>
