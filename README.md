@@ -1,18 +1,15 @@
-# permission-portal
+# README
 
-## permission-portal-server
+To start the application, please go to the root folder and execute:
 
-#### To run locally
+1. `npm install` to install all the dependencies
+2. `npm run dev` to start the webpack dev server.
+3.  For login and authentificatoin purposes, please enter `admin` as the email to login, pending further instruction in authentication, firebase token, dummy data, etc. 
 
-```
-cd permission-portal-server
-npm start
-```
+## Contact:
 
-#### To deploy
+If you have any questions, please reach out to
 
-Commit all your changes, then run:
+Wenfei Zhou - [https://github.com/wjoe2046](https://github.com/wjoe2046)
 
-```
-git subtree push --prefix permission-portal-server/ heroku master
-```
+Rachel Quartararo - [https://github.com/rquartararo](https://github.com/rquartararo)
