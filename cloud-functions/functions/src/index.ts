@@ -157,7 +157,7 @@ export const onCreate = functions.auth.user().onCreate((firebaseAuthUser) => {
             });
         }
       } else {
-        // User has been properly pre-registered in `users` collection, delete this user from Firebase Auth
+        // User has not been properly pre-registered in `users` collection, delete this user from Firebase Auth
         admin
           .auth()
           .deleteUser(firebaseAuthUser.uid)
