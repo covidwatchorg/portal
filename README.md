@@ -49,17 +49,20 @@ $ npm install
 
 ## Run Firestore Emulators
 
-Run with debug logging enabled to see console.logs
+Debug logging is enabled to show console.logs (see package.json)
+
+Start the emulator:
 
 ```
-$ DEBUG_LOGGING=1; firebase emulators:start
+$ cd functions
+$ npm run serve
 ```
 
 ## Run Tests
 
 ```
 $ cd functions
-$ npm test
+$ npm run test
 ```
 
 ## Firebase Functions

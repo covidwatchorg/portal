@@ -5,13 +5,13 @@
     "tsc": "tsc --build tsconfig.json",
     "ts-babel": "npx babel src --out-dir lib --extensions '.ts,.tsx'",
     "build": "npm run tsc && npm run ts-babel",
-    "serve": "npm run build && firebase emulators:start --only functions",
+    "serve": "npm run build && DEBUG_LOGGING=1 firebase emulators:start",
     "shell": "npm run build && firebase functions:shell",
     "start": "npm run shell",
     "deploy": "firebase deploy --only functions",
     "logs": "firebase functions:log",
     "pretest": "tsc --build tsconfig.test.json",
-    "test": "env FIRESTORE_EMULATOR_HOST=localhost:8080 mocha --timeout 5000 --ui mocha-typescript .mocha/test"
+    "test": "npm run build && env FIRESTORE_EMULATOR_HOST=localhost:8080 mocha --timeout 5000 --ui mocha-typescript .mocha/test"
   },
   "engines": {
     "node": "10"
