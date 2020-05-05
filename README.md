@@ -14,7 +14,6 @@ This repo contains code which is used in the Firebase project to control the Fir
 - [ ] Add Secure Permission Number System
 - [ ] Add watcher to auto build .ts to .js
 - [ ] Agree on API / Response Payloads
-
 - [ ] Cache Reads in Buckets
 
 ## Setup

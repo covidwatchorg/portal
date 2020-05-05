@@ -1,22 +1,31 @@
 const tcn = require("tcn-node")
 
-function enumMemoTypeOf(memoType: number): string {
-  let res: string
-  switch (memoType) {
-    case 0: {
-      res = "CoEpiV1"
-      break
-    }
-    case 1: {
-      res = "CovidWatchV1"
-      break
-    }
-    default: {
-      res = "Reserved"
-      break
+function enumMemoTypeOf(memoType: number): string | null {
+  let res: string | null;
+  if(memoType < 0x0 || memoType > 0xff){
+    res = null;
+  }
+  else {
+    switch (memoType) {
+      case 0: {
+        res = "CoEpiV1"
+        break
+      }
+      case 1: {
+        res = "CovidWatchV1"
+        break
+      }
+      default: {
+        res = "Reserved"
+        break
+      }
     }
   }
   return res
+}
+
+function verifyMemoType(memoType: number): boolean {
+  return enumMemoTypeOf(memoType) !== null
 }
 
 function verifySignature(
@@ -49,4 +58,4 @@ function verifySignature(
   })
 }
 
-export { verifySignature }
+export { verifySignature, verifyMemoType }

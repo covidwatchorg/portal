@@ -3,6 +3,7 @@
 //import { assert } from "chai"
 import * as firebase from "@firebase/testing"
 import { setup } from "./utils"
+import * as SignedReport from "../src/types/signedReportRequest"
 
 /*
  * ============
@@ -34,8 +35,8 @@ const anyUser = {
   uid: "alice",
 }
 
-const mockData = {
-  "signed_reports/alice": {
+const mockData = () => {
+  const signedReport: SignedReport.Root = {
     temporary_contact_key_bytes: "PvLGpfQZgGqnoQRtSr0AHd8J5/WdKwaJNLRCkhGlgHU=",
     memo_data: "SGVsbG8sIFdvcmxkIQ==",
     memo_type: 1,
@@ -45,10 +46,13 @@ const mockData = {
       "+k7HDsVZPY5Pxcz0cpwVBvDOHrrQ0+AyDVL/MbGkXBYG2WAyoqLaNxFuXiB9rSzkdCesDv1NSSk06hrjx2YABA==",
     report_verification_public_key_bytes:
       "v78liBBYQrFXqOH6YydUD1aGpXLMgruKATAjFZ0ycLk=",
-  },
-  "random/bob": {
-    foo: "bar",
-  },
+  };
+  return {
+    "signed_reports/alice": signedReport,
+    "random/bob": {
+      foo: "bar",
+    }
+  }
 }
 
 @suite
