@@ -22,8 +22,16 @@ This repo contains code which is used in the Firebase project to control the Fir
 - Prettier Code Formatter
   - Make default formatter and format on save
 - Node 10+
-- Firestore CLI
+- Firebase CLI
 - Postman
+
+### Firebase CLI
+
+Install the Firebase CLI tools using:
+
+```
+$ npm install -g firebase-tools
+```
 
 ## Security Model
 
