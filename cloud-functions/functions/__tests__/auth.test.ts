@@ -40,44 +40,53 @@ const createUser = firebase.functions().httpsCallable('createUser');
 const delay = (t: number) => new Promise((resolve) => setTimeout(resolve, t));
 
 // Save test user's id's for easy deletion at the end
+let goodCorpID: string;
 let adminGoodCorpUid: string;
 let nonAdminGoodCorpUid: string;
 
 beforeAll(() => {
-  return adminDb
-    .collection('users')
-    .doc('admin@goodcorp.com')
+  const goodCoorpRef = adminDb.collection('organizations').doc();
+  goodCorpID = goodCoorpRef.id;
+  return goodCoorpRef
     .set({
-      isSuperAdmin: false,
-      isAdmin: true,
-      organization: 'goodcorp',
-    }) /* Create new user in our Firestore record */
+      name: 'goodcorp',
+    })
     .then(() => {
-      // Create Firebase Auth record of the user
-      return adminAuth
-        .createUser({
-          email: 'admin@goodcorp.com',
-          password: 'admin@goodcorp.com',
-        })
-        .then((adminGoodCorpUserRecord) => {
-          adminGoodCorpUid = adminGoodCorpUserRecord.uid;
-          return adminDb
-            .collection('users')
-            .doc('nonadmin@goodcorp.com')
-            .set({
-              isSuperAdmin: false,
-              isAdmin: false,
-              organization: 'goodcorp',
-            }) /* Create new user in our Firestore record */
-            .then(() => {
-              // Create Firebase Auth record of the user
-              return adminAuth
-                .createUser({
-                  email: 'nonadmin@goodcorp.com',
-                  password: 'nonadmin@goodcorp.com',
-                })
-                .then((nonAdminGoodCorpUserRecord) => {
-                  nonAdminGoodCorpUid = nonAdminGoodCorpUserRecord.uid;
+      return adminDb
+        .collection('users')
+        .doc('admin@goodcorp.com')
+        .set({
+          isSuperAdmin: false,
+          isAdmin: true,
+          organizationID: goodCorpID,
+        }) /* Create new user in our Firestore record */
+        .then(() => {
+          // Create Firebase Auth record of the user
+          return adminAuth
+            .createUser({
+              email: 'admin@goodcorp.com',
+              password: 'admin@goodcorp.com',
+            })
+            .then((adminGoodCorpUserRecord) => {
+              adminGoodCorpUid = adminGoodCorpUserRecord.uid;
+              return adminDb
+                .collection('users')
+                .doc('nonadmin@goodcorp.com')
+                .set({
+                  isSuperAdmin: false,
+                  isAdmin: false,
+                  organizationID: goodCorpID,
+                }) /* Create new user in our Firestore record */
+                .then(() => {
+                  // Create Firebase Auth record of the user
+                  return adminAuth
+                    .createUser({
+                      email: 'nonadmin@goodcorp.com',
+                      password: 'nonadmin@goodcorp.com',
+                    })
+                    .then((nonAdminGoodCorpUserRecord) => {
+                      nonAdminGoodCorpUid = nonAdminGoodCorpUserRecord.uid;
+                    });
                 });
             });
         });
@@ -96,7 +105,13 @@ afterAll(() => {
             .doc('admin@goodcorp.com')
             .delete()
             .then(() => {
-              return adminDb.collection('users').doc('nonadmin@goodcorp.com').delete();
+              return adminDb
+                .collection('users')
+                .doc('nonadmin@goodcorp.com')
+                .delete()
+                .then(() => {
+                  return adminDb.collection('organizations').doc(goodCorpID).delete();
+                });
             })
             .catch((err) => {
               console.log(err);
@@ -115,7 +130,7 @@ test('createUser cannot be called without being authenticated', () => {
   return createUser({
     email: 'testuser@goodcorp.com',
     password: 'testuser@goodcorp.com',
-    organization: 'goodcorp',
+    organizationID: goodCorpID,
   })
     .then((result) => {
       throw new Error("This shouldn't happen!");
@@ -133,7 +148,7 @@ test('createUser cannot be called by non-admin', () => {
       return createUser({
         email: 'testuser@goodcorp.com',
         password: 'testuser@goodcorp.com',
-        organization: 'goodcorp',
+        organizationID: goodCorpID,
       })
         .then((result) => {
           throw new Error("This shouldn't happen!");
@@ -156,7 +171,7 @@ test('Email address can only be used once', () => {
       return createUser({
         email: 'nonadmin@goodcorp.com',
         password: 'nonadmin@goodcorp.com',
-        organization: 'goodcorp',
+        organizationID: goodCorpID,
       })
         .then((result) => {
           throw new Error(
@@ -202,7 +217,7 @@ describe('Scoped to allow for idempotency, need to delete testuser@goodcorp.com 
         return createUser({
           email: 'testuser@goodcorp.com',
           password: 'testuser@goodcorp.com',
-          organization: 'goodcorp',
+          organizationID: goodCorpID,
         })
           .then((result) => result.data)
           .then((userRecord) => {
@@ -224,7 +239,7 @@ describe('Scoped to allow for idempotency, need to delete testuser@goodcorp.com 
                     // Check that custom claims are being added properly
                     expect(idTokenResult.claims.isSuperAdmin).toEqual(false);
                     expect(idTokenResult.claims.isAdmin).toEqual(false);
-                    expect(idTokenResult.claims.organization).toEqual('goodcorp');
+                    expect(idTokenResult.claims.organizationID).toEqual(goodCorpID);
                     // Check that we have a corresponding user in our users collection whose uuid field has been filled out appropriately
                     return clientDb
                       .collection('users')

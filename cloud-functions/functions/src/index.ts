@@ -33,18 +33,18 @@ export const createUser = functions.https.onCall((newUser, context) => {
     isAdminGuard(context)
       .then(() => {
         // Check that data is formatted properly
-        if (!newUser.email || !newUser.organization || !newUser.password) {
+        if (!newUser.email || !newUser.organizationID || !newUser.password) {
           reject(
             new functions.https.HttpsError(
               'invalid-argument',
-              'user object must have email, password, and organization specified'
+              'user object must have email, password, and organizationID specified'
             )
           );
         }
         const newUserPrivileges = {
           isAdmin: false,
           isSuperAdmin: false,
-          organization: newUser.organization,
+          organizationID: newUser.organizationID,
         };
         db.collection('users')
           .doc(newUser.email)
@@ -101,7 +101,7 @@ export const onCreate = functions.auth.user().onCreate((firebaseAuthUser) => {
         if (
           covidWatchUser.data()?.isSuperAdmin === undefined ||
           covidWatchUser.data()?.isAdmin === undefined ||
-          covidWatchUser.data()?.organization === undefined
+          covidWatchUser.data()?.organizationID === undefined
         ) {
           // If that user is not properly formatted in the users collection, delete them from auth and users collection
           // delete from auth
@@ -133,7 +133,7 @@ export const onCreate = functions.auth.user().onCreate((firebaseAuthUser) => {
                   // Forced unwrapping is warranted, because data integrity is checked above
                   isSuperAdmin: covidWatchUser.data()!.isSuperAdmin,
                   isAdmin: covidWatchUser.data()!.isAdmin,
-                  organization: covidWatchUser.data()!.organization,
+                  organizationID: covidWatchUser.data()!.organizationID,
                 })
                 .then(() => {
                   console.log(
@@ -141,7 +141,7 @@ export const onCreate = functions.auth.user().onCreate((firebaseAuthUser) => {
                   );
                   console.log('user ' + covidWatchUser.id + 'isAdmin claim set to ' + covidWatchUser.data()?.isAdmin);
                   console.log(
-                    'user ' + covidWatchUser.id + 'organization claim set to ' + covidWatchUser.data()?.organization
+                    'user ' + covidWatchUser.id + 'organizationID claim set to ' + covidWatchUser.data()?.organizationID
                   );
                 })
                 .catch((err) => {
