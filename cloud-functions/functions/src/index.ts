@@ -6,6 +6,21 @@ admin.initializeApp();
 const db = admin.firestore();
 const auth = admin.auth();
 
+// Checks that an entry (or pending entry) to the users table contains the required fields
+function isCovidWatchUserProperlyFormatted(covidWatchUser: any): boolean {
+  console.log(`checking that ${covidWatchUser} is properly formatted`);
+  return (
+    covidWatchUser.isAdmin !== undefined &&
+    covidWatchUser.isSuperAdmin !== undefined &&
+    covidWatchUser.organizationID !== undefined
+  );
+}
+
+function isCreateUserRequestProperlyFormatted(newUser: any): boolean {
+  console.log(`checking that ${newUser} is properly formatted`);
+  return newUser.email !== undefined && newUser.password !== undefined && newUser.organizationID !== undefined;
+}
+
 // Throw error if user is not authenticated
 function authGuard(context: functions.https.CallableContext): Promise<void> {
   return new Promise((resolve, reject) => {
@@ -33,7 +48,7 @@ export const createUser = functions.https.onCall((newUser, context) => {
     isAdminGuard(context)
       .then(() => {
         // Check that data is formatted properly
-        if (!newUser.email || !newUser.organizationID || !newUser.password) {
+        if (!isCreateUserRequestProperlyFormatted(newUser)) {
           reject(
             new functions.https.HttpsError(
               'invalid-argument',
@@ -97,15 +112,12 @@ export const onCreate = functions.auth.user().onCreate((firebaseAuthUser) => {
     .get()
     .then((covidWatchUser) => {
       if (covidWatchUser.exists) {
-        // `users` entry exists
-        if (
-          covidWatchUser.data()?.isSuperAdmin === undefined ||
-          covidWatchUser.data()?.isAdmin === undefined ||
-          covidWatchUser.data()?.organizationID === undefined
-        ) {
-          // If that user is not properly formatted in the users collection, delete them from auth and users collection
+        // Forced unwrapping warranted because data() only returns undefined if ref.exists is falsey
+        if (!isCovidWatchUserProperlyFormatted(covidWatchUser.data()!)) {
           // delete from auth
-          console.log();
+          console.error(
+            'Attempted to register new user, but corresponding entry in the users collection was not properly formatted'
+          );
           auth
             .deleteUser(firebaseAuthUser.uid)
             .then(() => {
