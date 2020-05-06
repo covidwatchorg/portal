@@ -1,2 +1,17 @@
-@import 'login';
-@import 'footer';
+@import 'screens/login';
+@import 'components/footer';
+@import 'components/navbar';
+
+body {
+  margin: 0px;
+}
+
+h1 {
+  font-family: Montserrat;
+  font-style: normal;
+  font-weight: 600;
+  font-size: 40px;
+  line-height: 49px;
+  color: #333333;
+  margin-left: 32px;
+}

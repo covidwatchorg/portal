@@ -1,9 +1,6 @@
 import React from 'react';
-import { BrowserRouter, Switch, Route, Redirect } from 'react-router-dom';
-import AdminDashboard from './user/AdminDashboard';
-import {signin} from './auth/';
-
-
+import { Route, Redirect } from 'react-router-dom';
+import { signin } from './auth';
 
 const AdminRoute = ({component : Component, ...rest}) => {
     return (
@@ -13,7 +10,5 @@ const AdminRoute = ({component : Component, ...rest}) => {
     : <Redirect to='/'/> )} />
     )
 }
-   
-    
 
 export default AdminRoute;
