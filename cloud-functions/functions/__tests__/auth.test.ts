@@ -68,7 +68,7 @@ beforeAll(() => {
               password: 'admin@goodcorp.com',
             })
             .then((adminGoodCorpUserRecord) => {
-              return delay(1000).then(() => {
+              return delay(2000).then(() => {
                 // Delay to allow for onCreate to boot up some
                 adminGoodCorpUid = adminGoodCorpUserRecord.uid;
                 return adminDb
@@ -87,7 +87,7 @@ beforeAll(() => {
                         password: 'nonadmin@goodcorp.com',
                       })
                       .then((nonAdminGoodCorpUserRecord) => {
-                        return delay(1000).then(() => {
+                        return delay(2000).then(() => {
                           // Delay to allow for onCreate to boot up some
                           nonAdminGoodCorpUid = nonAdminGoodCorpUserRecord.uid;
                         });
@@ -130,6 +130,27 @@ afterAll(() => {
     .catch((err) => {
       console.log(err);
     });
+});
+
+let testuserUid: string;
+afterEach(() => {
+  return (
+    adminAuth
+      .deleteUser(testuserUid)
+      .then(() => {
+        return adminDb
+          .collection('users')
+          .doc('testuser@goodcorp.com')
+          .delete()
+          .catch((err) => {
+            console.log(err);
+          });
+      })
+      // tslint:disable-next-line: no-empty
+      .catch((err) => {
+        /* suppress expected error */
+      })
+  );
 });
 
 test('createUser cannot be called without being authenticated', () => {
@@ -194,118 +215,161 @@ test('Email address can only be used once', () => {
     });
 });
 
-let testuserUid: string;
-describe('Scoped to allow for idempotency, need to delete testuser@goodcorp.com after each run', () => {
-  afterEach(() => {
-    return (
-      adminAuth
-        .deleteUser(testuserUid)
-        .then(() => {
-          return adminDb
-            .collection('users')
-            .doc('testuser@goodcorp.com')
-            .delete()
-            .catch((err) => {
-              console.log(err);
-            });
-        })
-        // tslint:disable-next-line: no-empty
-        .catch((err) => {
-          /* suppress expected error */
-        })
-    );
-  });
-
-  test('createUser works for admins', () => {
-    return clientAuth
-      .signInWithEmailAndPassword('admin@goodcorp.com', 'admin@goodcorp.com')
-      .then(() => {
-        return createUser({
-          email: 'testuser@goodcorp.com',
-          password: 'testuser@goodcorp.com',
-          organizationID: goodCorpID,
-        })
-          .then((result) => result.data)
-          .then((userRecord) => {
-            testuserUid = userRecord.uid;
-            // Check that the endpoint responded with the proper user
-            expect(userRecord.email).toEqual('testuser@goodcorp.com');
-            // delay for 6 sec to allow functions.auth.user().onCreate to trigger and propagate
-            return delay(6000).then(() => {
-              return clientAuth
-                .signInWithEmailAndPassword('testuser@goodcorp.com', 'testuser@goodcorp.com')
-                .then(() => {
-                  // Check that we can sign in with this user
-                  const currentUser = clientAuth.currentUser;
-                  if (currentUser === null) {
-                    throw new Error('clientAuth.currentUser returned null');
-                  }
-                  expect(currentUser.email).toEqual('testuser@goodcorp.com');
-                  return currentUser.getIdTokenResult(true).then((idTokenResult) => {
-                    // Check that custom claims are being added properly
-                    expect(idTokenResult.claims.isSuperAdmin).toEqual(false);
-                    expect(idTokenResult.claims.isAdmin).toEqual(false);
-                    expect(idTokenResult.claims.organizationID).toEqual(goodCorpID);
-                    // Check that we have a corresponding user in our users collection whose uuid field has been filled out appropriately
-                    return clientDb
-                      .collection('users')
-                      .doc('testuser@goodcorp.com')
-                      .get()
-                      .then((userSnapshot) => userSnapshot.data())
-                      .then((user) => {
-                        if (user !== undefined) {
-                          // Make sure the users collection uuid was updated with firebase auth uuid
-                          expect(user.uuid).toEqual(currentUser.uid);
-                        } else {
-                          throw new Error("Couldn't find test@email.com in our users collection");
-                        }
-                      })
-                      .catch((err) => {
-                        throw err;
-                      });
-                  });
-                })
-                .catch((err) => {
-                  throw err;
-                });
-            });
-          })
-          .catch((err) => {
-            throw err;
-          });
+test('createUser works for admins', () => {
+  return clientAuth
+    .signInWithEmailAndPassword('admin@goodcorp.com', 'admin@goodcorp.com')
+    .then(() => {
+      return createUser({
+        email: 'testuser@goodcorp.com',
+        password: 'testuser@goodcorp.com',
+        organizationID: goodCorpID,
       })
-      .catch((err) => {
-        throw err;
-      });
-  });
-
-  test('Attempting to sign up a user through clientAuth.createUserWithEmailAndPassword and not through createUser endpoint results in the user being deleted', () => {
-    return clientAuth
-      .createUserWithEmailAndPassword('testuser@goodcorp.com', 'testuser@goodcorp.com')
-      .then((userCredential) => {
-        expect(userCredential.user?.email).toEqual('testuser@goodcorp.com');
-        if (userCredential.user) {
-          testuserUid = userCredential.user.uid;
-        }
-        // Give onCreate some time to delete the user
-        return delay(6000)
-          .then(() => {
-            return adminDb
-              .doc('users/' + 'testuser@goodcorp.com')
-              .get()
-              .then((user) => {
-                expect(user.exists).toEqual(false);
+        .then((result) => result.data)
+        .then((userRecord) => {
+          testuserUid = userRecord.uid;
+          // Check that the endpoint responded with the proper user
+          expect(userRecord.email).toEqual('testuser@goodcorp.com');
+          // delay for 6 sec to allow functions.auth.user().onCreate to trigger and propagate
+          return delay(6000).then(() => {
+            return clientAuth
+              .signInWithEmailAndPassword('testuser@goodcorp.com', 'testuser@goodcorp.com')
+              .then(() => {
+                // Check that we can sign in with this user
+                const currentUser = clientAuth.currentUser;
+                if (currentUser === null) {
+                  throw new Error('clientAuth.currentUser returned null');
+                }
+                expect(currentUser.email).toEqual('testuser@goodcorp.com');
+                return currentUser.getIdTokenResult(true).then((idTokenResult) => {
+                  // Check that custom claims are being added properly
+                  expect(idTokenResult.claims.isSuperAdmin).toEqual(false);
+                  expect(idTokenResult.claims.isAdmin).toEqual(false);
+                  expect(idTokenResult.claims.organizationID).toEqual(goodCorpID);
+                  // Check that we have a corresponding user in our users collection whose uuid field has been filled out appropriately
+                  return clientDb
+                    .collection('users')
+                    .doc('testuser@goodcorp.com')
+                    .get()
+                    .then((userSnapshot) => userSnapshot.data())
+                    .then((user) => {
+                      if (user !== undefined) {
+                        // Make sure the users collection uuid was updated with firebase auth uuid
+                        expect(user.uuid).toEqual(currentUser.uid);
+                      } else {
+                        throw new Error("Couldn't find test@email.com in our users collection");
+                      }
+                    })
+                    .catch((err) => {
+                      throw err;
+                    });
+                });
               })
               .catch((err) => {
                 throw err;
               });
+          });
+        })
+        .catch((err) => {
+          throw err;
+        });
+    })
+    .catch((err) => {
+      throw err;
+    });
+});
+
+test('createUser fails if invalid request body', () => {
+  return clientAuth.signInWithEmailAndPassword('admin@goodcorp.com', 'admin@goodcorp.com').then(() => {
+    return createUser({
+      email: 'testuser@goodcorp.com',
+      password: 'testuser@goodcorp.com',
+      organization: 'This field should be organizationID',
+    })
+      .then((result) => {
+        throw new Error('createUser returned a 200 despite improperly formatted request');
+      })
+      .catch((err) => {
+        expect(err.code).toEqual('invalid-argument');
+        expect(err.message).toEqual('user object must have email, password, and organizationID specified');
+      });
+  });
+});
+
+test('Attempting to sign up a user through clientAuth.createUserWithEmailAndPassword and not through createUser endpoint results in the user being deleted', () => {
+  return clientAuth
+    .createUserWithEmailAndPassword('testuser@goodcorp.com', 'testuser@goodcorp.com')
+    .then((userCredential) => {
+      expect(userCredential.user?.email).toEqual('testuser@goodcorp.com');
+      if (userCredential.user) {
+        testuserUid = userCredential.user.uid;
+      }
+      // Give onCreate some time to delete the user
+      return delay(3000)
+        .then(() => {
+          return adminDb
+            .doc('users/' + 'testuser@goodcorp.com')
+            .get()
+            .then((user) => {
+              expect(user.exists).toEqual(false);
+            })
+            .catch((err) => {
+              throw err;
+            });
+        })
+        .catch((err) => {
+          throw err;
+        });
+    })
+    .catch((err) => {
+      throw err;
+    });
+});
+
+test("Manually added, improperly formatted user in users table can't be signed up", () => {
+  return (
+    // set faulty document in users table
+    adminDb
+      .collection('users')
+      .doc('testuser@goodcorp.com')
+      .set({
+        isAdmin: false,
+        isSuperAdmin: false,
+        organization: 'This field should be organizationID',
+      })
+      .then(() => {
+        // try to create corresponding user in Firebase auth
+        return adminAuth
+          .createUser({
+            email: 'testuser@goodcorp.com',
+            password: 'testuser@goodcorp.com',
           })
-          .catch((err) => {
-            throw err;
+          .then(() => {
+            // delay to allow onCreate to trigger and realize users table document is faulty
+            return delay(3000).then(() => {
+              // check that user has been deleted from Firebase Auth
+              return adminAuth
+                .getUserByEmail('testuser@goodcorp.com')
+                .then((userRecord) => {
+                  throw new Error("Improperly formatted user should have been deleted from Auth but wasn't");
+                })
+                .catch((err1) => {
+                  expect(true).toEqual(true);
+                  return adminDb
+                    .collection('users')
+                    .doc('testuser@goodcorp.com')
+                    .get()
+                    .then((user) => {
+                      expect(user.exists).toEqual(false);
+                    })
+                    .catch((err2) => {
+                      throw err2;
+                    });
+                });
+            });
           });
       })
       .catch((err) => {
         throw err;
-      });
-  });
+      })
+  );
 });
