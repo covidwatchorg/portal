@@ -183,7 +183,7 @@ export const onCreate = functions.auth.user().onCreate((firebaseAuthUser) => {
           console.error(
             'Attempted to register new user, but corresponding entry in the users collection was not properly formatted'
           );
-          deleteUser(covidWatchUserData.uid);
+          deleteUser(firebaseAuthUser.uid);
         } else {
           doesOrganizationExist(covidWatchUserData.organizationID)
             .then((doesExist) => {

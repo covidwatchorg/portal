@@ -68,26 +68,32 @@ beforeAll(() => {
               password: 'admin@goodcorp.com',
             })
             .then((adminGoodCorpUserRecord) => {
-              adminGoodCorpUid = adminGoodCorpUserRecord.uid;
-              return adminDb
-                .collection('users')
-                .doc('nonadmin@goodcorp.com')
-                .set({
-                  isSuperAdmin: false,
-                  isAdmin: false,
-                  organizationID: goodCorpID,
-                }) /* Create new user in our Firestore record */
-                .then(() => {
-                  // Create Firebase Auth record of the user
-                  return adminAuth
-                    .createUser({
-                      email: 'nonadmin@goodcorp.com',
-                      password: 'nonadmin@goodcorp.com',
-                    })
-                    .then((nonAdminGoodCorpUserRecord) => {
-                      nonAdminGoodCorpUid = nonAdminGoodCorpUserRecord.uid;
-                    });
-                });
+              return delay(1000).then(() => {
+                // Delay to allow for onCreate to boot up some
+                adminGoodCorpUid = adminGoodCorpUserRecord.uid;
+                return adminDb
+                  .collection('users')
+                  .doc('nonadmin@goodcorp.com')
+                  .set({
+                    isSuperAdmin: false,
+                    isAdmin: false,
+                    organizationID: goodCorpID,
+                  }) /* Create new user in our Firestore record */
+                  .then(() => {
+                    // Create Firebase Auth record of the user
+                    return adminAuth
+                      .createUser({
+                        email: 'nonadmin@goodcorp.com',
+                        password: 'nonadmin@goodcorp.com',
+                      })
+                      .then((nonAdminGoodCorpUserRecord) => {
+                        return delay(1000).then(() => {
+                          // Delay to allow for onCreate to boot up some
+                          nonAdminGoodCorpUid = nonAdminGoodCorpUserRecord.uid;
+                        });
+                      });
+                  });
+              });
             });
         });
     });
