@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"io"
 	"log"
 	"net/http"
 
@@ -82,7 +83,6 @@ func ValidateRequestMethod(ctx *Context, method, err string) StatusError {
 	if m != method {
 		return NewMethodNotAllowedError(m)
 	}
-
 	return nil
 }
 
@@ -162,6 +162,23 @@ func FirestoreToStatusError(err error) StatusError {
 	}
 
 	return NewInternalServerError(err)
+}
+
+// JSONToStatusError converts an error returned from the "encoding/json" package
+// to a StatusError. It assumes that all error types defined in the
+// "encoding/json" package and io.EOF are bad request errors and all others are
+// internal server errors.
+func JSONToStatusError(err error) StatusError {
+	switch err := err.(type) {
+	case *json.MarshalerError, *json.SyntaxError, *json.UnmarshalFieldError,
+		*json.UnmarshalTypeError, *json.UnsupportedTypeError, *json.UnsupportedValueError:
+		return NewBadRequestError(err)
+	default:
+		if err == io.EOF {
+			return NewBadRequestError(err)
+		}
+		return NewInternalServerError(err)
+	}
 }
 
 // ReadCryptoRandBytes fills b with cryptographically random bytes from the
