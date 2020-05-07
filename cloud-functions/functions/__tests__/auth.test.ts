@@ -38,11 +38,16 @@ const createUser = firebase.functions().httpsCallable('createUser');
 
 // Delay function to deal with Cloud Functions triggers needing time to propagate.
 const delay = (t: number) => new Promise((resolve) => setTimeout(resolve, t));
+// Milliseconds to delay at certain points in the test suite. Incredibly annoying, but because
+// our system relies on the onCreate trigger for various features, we need to provide delays in the tests in order
+// to give the trigger time to run.
+const DELAY = 5000;
 
-// Save test user's id's for easy deletion at the end
+// Variables to track during test runs for easy cleanup at the end.
 let goodCorpID: string;
 let adminGoodCorpUid: string;
 let nonAdminGoodCorpUid: string;
+let testuserUid: string;
 
 beforeAll(() => {
   const goodCoorpRef = adminDb.collection('organizations').doc();
@@ -68,7 +73,7 @@ beforeAll(() => {
               password: 'admin@goodcorp.com',
             })
             .then((adminGoodCorpUserRecord) => {
-              return delay(2000).then(() => {
+              return delay(DELAY).then(() => {
                 // Delay to allow for onCreate to boot up some
                 adminGoodCorpUid = adminGoodCorpUserRecord.uid;
                 return adminDb
@@ -87,7 +92,7 @@ beforeAll(() => {
                         password: 'nonadmin@goodcorp.com',
                       })
                       .then((nonAdminGoodCorpUserRecord) => {
-                        return delay(2000).then(() => {
+                        return delay(DELAY).then(() => {
                           // Delay to allow for onCreate to boot up some
                           nonAdminGoodCorpUid = nonAdminGoodCorpUserRecord.uid;
                         });
@@ -132,7 +137,6 @@ afterAll(() => {
     });
 });
 
-let testuserUid: string;
 afterEach(() => {
   return (
     adminAuth
@@ -230,7 +234,7 @@ test('createUser works for admins', () => {
           // Check that the endpoint responded with the proper user
           expect(userRecord.email).toEqual('testuser@goodcorp.com');
           // delay for 6 sec to allow functions.auth.user().onCreate to trigger and propagate
-          return delay(6000).then(() => {
+          return delay(DELAY).then(() => {
             return clientAuth
               .signInWithEmailAndPassword('testuser@goodcorp.com', 'testuser@goodcorp.com')
               .then(() => {
@@ -304,7 +308,7 @@ test('Attempting to sign up a user through clientAuth.createUserWithEmailAndPass
         testuserUid = userCredential.user.uid;
       }
       // Give onCreate some time to delete the user
-      return delay(3000)
+      return delay(DELAY)
         .then(() => {
           return adminDb
             .doc('users/' + 'testuser@goodcorp.com')
@@ -345,12 +349,63 @@ test("Manually added, improperly formatted user in users table can't be signed u
           })
           .then(() => {
             // delay to allow onCreate to trigger and realize users table document is faulty
-            return delay(3000).then(() => {
+            return delay(DELAY).then(() => {
               // check that user has been deleted from Firebase Auth
               return adminAuth
                 .getUserByEmail('testuser@goodcorp.com')
                 .then((userRecord) => {
                   throw new Error("Improperly formatted user should have been deleted from Auth but wasn't");
+                })
+                .catch((err1) => {
+                  expect(true).toEqual(true);
+                  return adminDb
+                    .collection('users')
+                    .doc('testuser@goodcorp.com')
+                    .get()
+                    .then((user) => {
+                      expect(user.exists).toEqual(false);
+                    })
+                    .catch((err2) => {
+                      throw err2;
+                    });
+                });
+            });
+          });
+      })
+      .catch((err) => {
+        throw err;
+      })
+  );
+});
+
+test("Manually added user in users table with non-existent organizationID can't be signed up", () => {
+  return (
+    // set faulty document in users table
+    adminDb
+      .collection('users')
+      .doc('testuser@goodcorp.com')
+      .set({
+        isAdmin: false,
+        isSuperAdmin: false,
+        organizationID: "This id doesn't exist",
+      })
+      .then(() => {
+        // try to create corresponding user in Firebase auth
+        return adminAuth
+          .createUser({
+            email: 'testuser@goodcorp.com',
+            password: 'testuser@goodcorp.com',
+          })
+          .then(() => {
+            // delay to allow onCreate to trigger and realize users table document is faulty
+            return delay(DELAY).then(() => {
+              // check that user has been deleted from Firebase Auth
+              return adminAuth
+                .getUserByEmail('testuser@goodcorp.com')
+                .then((userRecord) => {
+                  throw new Error(
+                    "User with non-existent organizationID should have been deleted from Auth but wasn't"
+                  );
                 })
                 .catch((err1) => {
                   expect(true).toEqual(true);
