@@ -14,7 +14,7 @@ In depth discussion of app and data model can be found in [Notion](https://www.n
 Unfortunately the Firebase emulators don't support many auth features, so because this is an auth heavy application we are running a live dev infrastructure (see link above). Deploy the latest cloud functions to the dev infrastructure by running:
 
 ```
-firebase deploy --only functions --project=test
+firebase deploy --only functions --project=dev
 ```
 
 Once functions are deployed, the dev infrastructure can loaded with some fake sample data by navigating to the `functions/` directory and running:
