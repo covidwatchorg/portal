@@ -66,4 +66,12 @@ const Login = () => {
   );
 };
 
+const LoginForm = compose(
+  withRouter,
+  withFirebase,
+)(SignInFormBase);
+ 
+export default SignInPage;
+ 
+
 export default Login;
