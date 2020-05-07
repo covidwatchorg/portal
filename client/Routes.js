@@ -1,17 +1,13 @@
 import React from 'react';
 import { BrowserRouter, Switch, Route } from 'react-router-dom';
-import Login from './components/core/Login';
-import NavBar from './components/core/NavBar';
-import AdminDashboard from './components/user/AdminDashboard';
-import Footer from './components/core/Footer'
-import AdminRoute from './components/AdminRoute';
-
-
+import Login from './src/screens/Login';
+import AdminDashboard from './src/components/AdminDashboard';
+import Footer from './src/components/Footer'
+import AdminRoute from './src/util/AdminRoute';
 
 const Routes = () => {
   return (
     <BrowserRouter>
-      <NavBar />
       <Switch>
         <Route path='/' exact component={Login} />
         <AdminRoute path='/orgAdmin' component={AdminDashboard} />
