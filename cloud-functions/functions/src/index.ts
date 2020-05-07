@@ -10,15 +10,19 @@ const auth = admin.auth();
 function isCovidWatchUserProperlyFormatted(covidWatchUser: any): boolean {
   console.log(`checking that ${JSON.stringify(covidWatchUser)} is properly formatted`);
   return (
-    covidWatchUser.isAdmin !== undefined &&
-    covidWatchUser.isSuperAdmin !== undefined &&
-    covidWatchUser.organizationID !== undefined
+    typeof covidWatchUser.isAdmin === 'boolean' &&
+    typeof covidWatchUser.isSuperAdmin === 'boolean' &&
+    typeof covidWatchUser.organizationID === 'string'
   );
 }
 
 function isCreateUserRequestProperlyFormatted(newUser: any): boolean {
-  console.log(`checking that ${newUser} is properly formatted`);
-  return newUser.email !== undefined && newUser.password !== undefined && newUser.organizationID !== undefined;
+  console.log(`checking that createUser request with body ${JSON.stringify(newUser)} is properly formatted`);
+  return (
+    typeof newUser.email === 'string' &&
+    typeof newUser.password === 'string' &&
+    typeof newUser.organizationID === 'string'
+  );
 }
 
 function doesOrganizationExist(organizationID: string): Promise<boolean> {
@@ -103,7 +107,7 @@ export const createUser = functions.https.onCall((newUser, context) => {
           reject(
             new functions.https.HttpsError(
               'invalid-argument',
-              'user object must have email, password, and organizationID specified'
+              'user object must have email <string>, password <string>, and organizationID <string> specified'
             )
           );
         }
@@ -181,7 +185,9 @@ export const onCreate = functions.auth.user().onCreate((firebaseAuthUser) => {
         if (!isCovidWatchUserProperlyFormatted(covidWatchUserData)) {
           // delete from auth
           console.error(
-            'Attempted to register new user, but corresponding entry in the users collection was not properly formatted'
+            `Attempted to register new user, but corresponding entry in the users collection was not properly defined: ${JSON.stringify(
+              covidWatchUserData
+            )}`
           );
           deleteUser(firebaseAuthUser.uid);
         } else {
@@ -228,6 +234,7 @@ export const onCreate = functions.auth.user().onCreate((firebaseAuthUser) => {
             })
             .catch((err) => {
               console.error(err);
+              deleteUser(firebaseAuthUser.uid);
             });
         }
       } else {
@@ -236,6 +243,7 @@ export const onCreate = functions.auth.user().onCreate((firebaseAuthUser) => {
       }
     })
     .catch((err) => {
+      deleteUser(firebaseAuthUser.uid);
       console.error(err);
       throw err;
     });
