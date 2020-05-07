@@ -8,7 +8,7 @@ const auth = admin.auth();
 
 // Checks that an entry (or pending entry) to the users table contains the required fields
 function isCovidWatchUserProperlyFormatted(covidWatchUser: any): boolean {
-  console.log(`checking that ${covidWatchUser} is properly formatted`);
+  console.log(`checking that ${JSON.stringify(covidWatchUser)} is properly formatted`);
   return (
     covidWatchUser.isAdmin !== undefined &&
     covidWatchUser.isSuperAdmin !== undefined &&

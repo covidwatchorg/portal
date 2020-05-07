@@ -11,19 +11,33 @@ import 'firebase/firestore';
 jest.setTimeout(60000);
 
 // Initialize client SDK
-const firebaseConfig = {
-  apiKey: 'AIzaSyAHVZXO-wFnGmUIBLxF6-mY3tuleK4ENVo',
-  authDomain: 'permission-portal-test.firebaseapp.com',
-  databaseURL: 'https://permission-portal-test.firebaseio.com',
-  projectId: 'permission-portal-test',
-  storageBucket: 'permission-portal-test.appspot.com',
-  messagingSenderId: '1090782248577',
-  appId: '1:1090782248577:web:184d481f492cfa4edc1780',
-};
+const firebaseConfig =
+  process.env.NODE_ENV === 'development'
+    ? {
+        apiKey: 'AIzaSyAKbS8JEe1UVSZdaJfN4RnsRFPE7Tb-YpM',
+        authDomain: 'permission-portal-dev.firebaseapp.com',
+        databaseURL: 'https://permission-portal-dev.firebaseio.com',
+        projectId: 'permission-portal-dev',
+        storageBucket: 'permission-portal-dev.appspot.com',
+        messagingSenderId: '885750041965',
+        appId: '1:885750041965:web:14133265537c686c1dde64',
+      }
+    : {
+        apiKey: 'AIzaSyAHVZXO-wFnGmUIBLxF6-mY3tuleK4ENVo',
+        authDomain: 'permission-portal-test.firebaseapp.com',
+        databaseURL: 'https://permission-portal-test.firebaseio.com',
+        projectId: 'permission-portal-test',
+        storageBucket: 'permission-portal-test.appspot.com',
+        messagingSenderId: '1090782248577',
+        appId: '1:1090782248577:web:184d481f492cfa4edc1780',
+      };
 firebase.initializeApp(firebaseConfig);
 
 // Initialize admin SDK
-const serviceAccount = require('../../permission-portal-test-firebase-admin-key.json');
+const serviceAccount =
+  process.env.NODE_ENV === 'development'
+    ? require('../../permission-portal-dev-firebase-admin-key.json')
+    : require('../../permission-portal-test-firebase-admin-key.json');
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
   databaseURL: 'https://permission-portal-test.firebaseio.com',
@@ -34,7 +48,8 @@ const clientDb = firebase.firestore();
 const adminDb = admin.firestore();
 const clientAuth = firebase.auth();
 const adminAuth = admin.auth();
-const createUser = firebase.functions().httpsCallable('createUser');
+const clientFunctions = firebase.functions();
+const createUser = clientFunctions.httpsCallable('createUser');
 
 // Delay function to deal with Cloud Functions triggers needing time to propagate.
 const delay = (t: number) => new Promise((resolve) => setTimeout(resolve, t));
