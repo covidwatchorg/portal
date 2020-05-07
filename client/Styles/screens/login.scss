@@ -1,5 +1,19 @@
 @import url('https://fonts.googleapis.com/css2?family=Montserrat');
 
+.topNav {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: stretch;
+  margin: 32px 32px 0 32px;
+  #ucsfLogo {
+    height: 4.21vh;
+  }
+  #poweredByCWLogo {
+    height: 3.73vh;
+  }
+}
+
 .mainContainer {
   display: flex;
   flex-direction: row;
