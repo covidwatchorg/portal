@@ -299,6 +299,25 @@ test('createUser fails if invalid request body', () => {
   });
 });
 
+test('createUser fails if non-existent organizationID', () => {
+  return clientAuth.signInWithEmailAndPassword('admin@goodcorp.com', 'admin@goodcorp.com').then(() => {
+    return createUser({
+      email: 'testuser@goodcorp.com',
+      password: 'testuser@goodcorp.com',
+      organizationID: "This id doesn't exist",
+    })
+      .then((result) => {
+        throw new Error('createUser returned a 200 despite improperly formatted request');
+      })
+      .catch((err) => {
+        expect(err.code).toEqual('invalid-argument');
+        expect(err.message).toEqual(
+          "attempted to sign up user with an organization id that DNE: This id doesn't exist"
+        );
+      });
+  });
+});
+
 test('Attempting to sign up a user through clientAuth.createUserWithEmailAndPassword and not through createUser endpoint results in the user being deleted', () => {
   return clientAuth
     .createUserWithEmailAndPassword('testuser@goodcorp.com', 'testuser@goodcorp.com')

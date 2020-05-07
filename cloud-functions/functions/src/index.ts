@@ -145,7 +145,7 @@ export const createUser = functions.https.onCall((newUser, context) => {
               reject(
                 new functions.https.HttpsError(
                   'invalid-argument',
-                  'attempted to sign up user with an organization id that DNE:' + newUser.organizationID
+                  'attempted to sign up user with an organization id that DNE: ' + newUser.organizationID
                 )
               );
             }
