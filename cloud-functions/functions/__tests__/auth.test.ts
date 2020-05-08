@@ -262,28 +262,30 @@ test('createUser works for admins', () => {
                   throw new Error('clientAuth.currentUser returned null');
                 }
                 expect(currentUser.email).toEqual('testuser@goodcorp.com');
-                return currentUser.getIdTokenResult(true).then((idTokenResult) => {
-                  // Check that custom claims are being added properly
-                  expect(idTokenResult.claims.isSuperAdmin).toEqual(false);
-                  expect(idTokenResult.claims.isAdmin).toEqual(false);
-                  expect(idTokenResult.claims.organizationID).toEqual(goodCorpID);
-                  // Check that we have a corresponding user in our users collection whose uuid field has been filled out appropriately
-                  return clientDb
-                    .collection('users')
-                    .doc('testuser@goodcorp.com')
-                    .get()
-                    .then((userSnapshot) => userSnapshot.data())
-                    .then((user) => {
-                      if (user !== undefined) {
-                        // Make sure the users collection uuid was updated with firebase auth uuid
-                        expect(user.uuid).toEqual(currentUser.uid);
-                      } else {
-                        throw new Error("Couldn't find test@email.com in our users collection");
-                      }
-                    })
-                    .catch((err) => {
-                      throw err;
-                    });
+                return delay(DELAY).then(() => {
+                  return currentUser.getIdTokenResult(true).then((idTokenResult) => {
+                    // Check that custom claims are being added properly
+                    expect(idTokenResult.claims.isSuperAdmin).toEqual(false);
+                    expect(idTokenResult.claims.isAdmin).toEqual(false);
+                    expect(idTokenResult.claims.organizationID).toEqual(goodCorpID);
+                    // Check that we have a corresponding user in our users collection whose uuid field has been filled out appropriately
+                    return clientDb
+                      .collection('users')
+                      .doc('testuser@goodcorp.com')
+                      .get()
+                      .then((userSnapshot) => userSnapshot.data())
+                      .then((user) => {
+                        if (user !== undefined) {
+                          // Make sure the users collection uuid was updated with firebase auth uuid
+                          expect(user.uuid).toEqual(currentUser.uid);
+                        } else {
+                          throw new Error("Couldn't find test@email.com in our users collection");
+                        }
+                      })
+                      .catch((err) => {
+                        throw err;
+                      });
+                  });
                 });
               })
               .catch((err) => {
