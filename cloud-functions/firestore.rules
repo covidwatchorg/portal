@@ -1,0 +1,24 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+		// Disallow all reads and writes by default
+    match /{document=**} {
+      allow read, write: if false
+    }
+    
+   	function isSignedIn() {
+    	return request.auth != null
+    }
+    
+    function isSelfOrAdminInOrg(email, orgID) {
+    	let isSelf = request.auth.token.email == email;
+      let isAdmin = request.auth.token.isAdmin;
+      let isInOrg = request.auth.token.organizationID == orgID;
+      return isSelf || (isAdmin && isInOrg);
+    }
+
+    match /users/{email} {
+    	allow read, write: if isSignedIn() && isSelfOrAdminInOrg(email, resource.data.orgID);
+    }
+  }
+}
