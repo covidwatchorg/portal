@@ -1,4 +1,6 @@
 node_modules
 .DS_Store
 dist
-cloud-functions/functions/.vscode/launch.json
+**/.vscode/*
+.env
+.env.local

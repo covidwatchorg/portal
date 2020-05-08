@@ -2,6 +2,7 @@
   "projects": {
     "default": "permission-portal-test",
     "test": "permission-portal-test",
-    "prod": "permission-portal"
+    "prod": "permission-portal",
+    "local": "permission-portal-dev"
   }
 }

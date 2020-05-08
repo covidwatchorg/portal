@@ -7,26 +7,32 @@ import 'firebase/auth';
 import 'firebase/functions';
 // tslint:disable-next-line: no-import-side-effect
 import 'firebase/firestore';
+import * as dotenv from 'dotenv';
+import path = require('path');
+
+const envPath= path.resolve(process.cwd(), `.env.${process.env.NODE_ENV}`)
+dotenv.config({path: envPath});
 
 jest.setTimeout(60000);
 
 // Initialize client SDK
 const firebaseConfig = {
-  apiKey: 'AIzaSyAHVZXO-wFnGmUIBLxF6-mY3tuleK4ENVo',
-  authDomain: 'permission-portal-test.firebaseapp.com',
-  databaseURL: 'https://permission-portal-test.firebaseio.com',
-  projectId: 'permission-portal-test',
-  storageBucket: 'permission-portal-test.appspot.com',
-  messagingSenderId: '1090782248577',
-  appId: '1:1090782248577:web:184d481f492cfa4edc1780',
-};
-firebase.initializeApp(firebaseConfig);
+  apiKey: process.env.apiKey,
+  authDomain: process.env.authDomain,
+  databaseURL: process.env.databaseURL,
+  projectId: process.env.projectId,
+  storageBucket: process.env.storageBucket,
+  messagingSenderId: process.env.messagingSenderId,
+  appId: process.env.appId
+}
 
+firebase.initializeApp(firebaseConfig);
 // Initialize admin SDK
-const serviceAccount = require('../../permission-portal-test-firebase-admin-key.json');
+const serviceCredentials = `../../permission-portal-${process.env.NODE_ENV}-firebase-admin-key.json`;
+const serviceAccount = require(serviceCredentials);
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
-  databaseURL: 'https://permission-portal-test.firebaseio.com',
+  databaseURL: firebaseConfig.databaseURL,
 });
 
 // Initialize commonly used vars
@@ -79,8 +85,8 @@ beforeAll(() => {
                 .then((nonAdminGoodCorpUserRecord) => {
                   nonAdminGoodCorpUid = nonAdminGoodCorpUserRecord.uid;
                 });
-            });
-        });
+            }).catch(err => console.log(err));
+        }).catch(err => console.log(err));
     });
 });
 

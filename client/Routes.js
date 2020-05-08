@@ -1,6 +1,6 @@
 import React from 'react';
 import { BrowserRouter, Switch, Route } from 'react-router-dom';
-import Login from './src/screens/Login';
+import Login from './src/screens/Login.v1';
 import AdminDashboard from './src/components/AdminDashboard';
 import Footer from './src/components/Footer'
 import AdminRoute from './src/util/AdminRoute';
