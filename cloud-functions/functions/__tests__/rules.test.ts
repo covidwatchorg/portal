@@ -61,7 +61,7 @@ const delay = (t: number) => new Promise(resolve => setTimeout(resolve, t));
 // Milliseconds to delay at certain points in the test suite. Incredibly annoying, but because
 // our system relies on the onCreate trigger for various features, we need to provide delays in the tests in order
 // to give the trigger time to run.
-const DELAY = 3000;
+const DELAY = 10000;
 
 // Track important variables for use in tests and easy deletion in afterAll()
 let soylentGreenAdminID: string;
