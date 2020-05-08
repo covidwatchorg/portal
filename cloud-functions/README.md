@@ -4,9 +4,26 @@ Cloud functions for the Covid Watch Permission Portal.
 Firebase project can be found here:
 
 - [prod](https://console.firebase.google.com/project/permission-portal/)
+- [dev](https://console.firebase.google.com/project/permission-portal-dev/)
 - [test](https://console.firebase.google.com/project/permission-portal-test/)
 
 In depth discussion of app and data model can be found in [Notion](https://www.notion.so/covidwatch/Org-Admin-App-Technical-Details-f8a235f8cfb44e1d938c731ccfe621cb).
+
+## Development
+
+Unfortunately the Firebase emulators don't support many auth features, so because this is an auth heavy application we are running a live dev infrastructure (see link above). Deploy the latest cloud functions to the dev infrastructure by running:
+
+```
+firebase deploy --only functions --project=dev
+```
+
+Once functions are deployed, the dev infrastructure can loaded with some fake sample data by navigating to the `functions/` directory and running:
+
+```
+node reset-dev-infrastructure.js
+```
+
+This script can be run repeatedly to clear out the dev infrastructure and reset it with only the sample data. However try to be mindful of other developers working with the same infrastructure, and check with them before resetting.
 
 ## Testing
 
