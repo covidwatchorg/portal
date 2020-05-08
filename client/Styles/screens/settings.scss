@@ -1,0 +1,32 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat');
+
+.settingsContainer {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    #formCol1 {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    } 
+    #formCol2 {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;   
+    }
+    input {
+        border-radius: 5px;
+        
+    }
+    label {
+        font-family: 'Montserrat', sans-serif;
+        color: #383737;
+        font-size:25;
+        font-weight:700;
+        margin-bottom: 5px;
+        margin-top: 25px;
+      }
+   
+
+  }
+
