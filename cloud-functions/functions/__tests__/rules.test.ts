@@ -63,17 +63,19 @@ const adminAuth = admin.auth();
 // to give the trigger time to run.
 // const DELAY = 10000;
 
-// Track created user's ids for easy deletion afterAll()
+// Track important variables for use in tests and easy deletion in afterAll()
 let soylentGreenAdminID: string;
 let soylentGreenRegularUserId: string;
 let initechAdminID: string;
 let initechRegularUserId: string;
+let soylentGreenID: string;
+let initechID: string;
 
 beforeAll(() => {
   const soylentGreenRef = adminDb.collection('organizations').doc();
   const initechRef = adminDb.collection('organizations').doc();
-  const soylentGreenID = soylentGreenRef.id;
-  const initechID = initechRef.id;
+  soylentGreenID = soylentGreenRef.id;
+  initechID = initechRef.id;
 
   return soylentGreenRef
     .set({
@@ -237,16 +239,62 @@ afterAll(() => {
     });
 });
 
-test("Unauthenticated user can't touch users", () => {
+test("Unauthenticated user can't read users", () => {
   return clientDb
     .collection('users')
     .doc('admin@soylentgreen.com')
     .get()
     .then(() => {
-      throw new Error('Unauthenticated user should not be able to read from users table');
+      throw new Error('Unauthenticated user should not be able to read from users collection');
     })
     .catch(err => {
       expect(err.code).toEqual('permission-denied');
       expect(err.message).toEqual('Missing or insufficient permissions.');
+    });
+});
+
+test("Unauthenticated user can't write users", () => {
+  return clientDb
+    .collection('users')
+    .doc('some doc in users')
+    .set({
+      someField: 'someValue'
+    })
+    .then(() => {
+      throw new Error('Unauthenticated user should not be able to write to users collection');
+    })
+    .catch(err => {
+      expect(err.code).toEqual('permission-denied');
+      expect(err.message).toEqual('7 PERMISSION_DENIED: Missing or insufficient permissions.');
+    });
+});
+
+test("Unauthenticated user can't read organizations", () => {
+  return clientDb
+    .collection('organizations')
+    .doc(soylentGreenID)
+    .get()
+    .then(() => {
+      throw new Error('Unauthenticated user should not be able to read from organizations table');
+    })
+    .catch(err => {
+      expect(err.code).toEqual('permission-denied');
+      expect(err.message).toEqual('Missing or insufficient permissions.');
+    });
+});
+
+test("Unauthenticated user can't write organizations", () => {
+  return clientDb
+    .collection('organizations')
+    .doc('some doc in organizations')
+    .set({
+      someField: 'someValue'
+    })
+    .then(() => {
+      throw new Error('Unauthenticated user should not be able to write to organizations table');
+    })
+    .catch(err => {
+      expect(err.code).toEqual('permission-denied');
+      expect(err.message).toEqual('7 PERMISSION_DENIED: Missing or insufficient permissions.');
     });
 });
