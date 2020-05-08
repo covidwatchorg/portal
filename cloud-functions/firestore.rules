@@ -11,7 +11,7 @@ service cloud.firestore {
     }
 
     function isAdmin() {
-      return request.auth.isAdmin == true;
+      return request.auth.token.isAdmin == true;
     }
 
     function isInOrganization(organizationID) {

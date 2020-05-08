@@ -51,17 +51,17 @@ admin.initializeApp({
 // Initialize commonly used vars
 const clientDb = firebase.firestore();
 const adminDb = admin.firestore();
-// const clientAuth = firebase.auth();
+const clientAuth = firebase.auth();
 const adminAuth = admin.auth();
 // const clientFunctions = firebase.functions();
 // const createUser = clientFunctions.httpsCallable('createUser');
 
 // Delay function to deal with Cloud Functions triggers needing time to propagate.
-// const delay = (t: number) => new Promise(resolve => setTimeout(resolve, t));
+const delay = (t: number) => new Promise(resolve => setTimeout(resolve, t));
 // Milliseconds to delay at certain points in the test suite. Incredibly annoying, but because
 // our system relies on the onCreate trigger for various features, we need to provide delays in the tests in order
 // to give the trigger time to run.
-// const DELAY = 10000;
+const DELAY = 3000;
 
 // Track important variables for use in tests and easy deletion in afterAll()
 let soylentGreenAdminID: string;
@@ -102,73 +102,82 @@ beforeAll(() => {
               console.log(
                 `Successfully created Soylent Green admin user with username/password admin@soylentgreen.com`
               );
-              return adminDb
-                .collection('users')
-                .doc('user@soylentgreen.com')
-                .set({
-                  isSuperAdmin: false,
-                  isAdmin: false,
-                  organizationID: soylentGreenID
-                })
-                .then(() => {
-                  return adminAuth
-                    .createUser({
-                      email: 'user@soylentgreen.com',
-                      password: 'user@soylentgreen.com'
-                    })
-                    .then(soylentGreenRegularUserRecord => {
-                      soylentGreenRegularUserId = soylentGreenRegularUserRecord.uid;
-                      console.log(
-                        `Successfully created Soylent Green regular user with username/password user@soylentgreen.com`
-                      );
-                      return initechRef
-                        .set({
-                          name: 'Initech'
-                        })
-                        .then(() => {
-                          console.log(`Successfully created organization Initech with document ID ${initechID}`);
-                          return adminDb
-                            .collection('users')
-                            .doc('admin@initech.com')
+              return delay(DELAY).then(() => {
+                return adminDb
+                  .collection('users')
+                  .doc('user@soylentgreen.com')
+                  .set({
+                    isSuperAdmin: false,
+                    isAdmin: false,
+                    organizationID: soylentGreenID
+                  })
+                  .then(() => {
+                    return adminAuth
+                      .createUser({
+                        email: 'user@soylentgreen.com',
+                        password: 'user@soylentgreen.com'
+                      })
+                      .then(soylentGreenRegularUserRecord => {
+                        soylentGreenRegularUserId = soylentGreenRegularUserRecord.uid;
+                        console.log(
+                          `Successfully created Soylent Green regular user with username/password user@soylentgreen.com`
+                        );
+                        return delay(DELAY).then(() => {
+                          return initechRef
                             .set({
-                              isSuperAdmin: false,
-                              isAdmin: true,
-                              organizationID: initechID
+                              name: 'Initech'
                             })
                             .then(() => {
-                              return adminAuth
-                                .createUser({
-                                  email: 'admin@initech.com',
-                                  password: 'admin@initech.com'
+                              console.log(`Successfully created organization Initech with document ID ${initechID}`);
+                              return adminDb
+                                .collection('users')
+                                .doc('admin@initech.com')
+                                .set({
+                                  isSuperAdmin: false,
+                                  isAdmin: true,
+                                  organizationID: initechID
                                 })
-                                .then(initechAdminUserRecord => {
-                                  initechAdminID = initechAdminUserRecord.uid;
-                                  console.log(
-                                    `Successfully created Initech admin user with username/password admin@initech.com`
-                                  );
-                                  return adminDb
-                                    .collection('users')
-                                    .doc('user@initech.com')
-                                    .set({
-                                      isSuperAdmin: false,
-                                      isAdmin: false,
-                                      organizationID: initechID
+                                .then(() => {
+                                  return adminAuth
+                                    .createUser({
+                                      email: 'admin@initech.com',
+                                      password: 'admin@initech.com'
                                     })
-                                    .then(() => {
-                                      return adminAuth
-                                        .createUser({
-                                          email: 'user@initech.com',
-                                          password: 'user@initech.com'
-                                        })
-                                        .then(initechRegularUserRecord => {
-                                          initechRegularUserId = initechRegularUserRecord.uid;
-                                          console.log(
-                                            `Successfully created Initech regular user with username/password user@initech.com`
-                                          );
-                                        })
-                                        .catch(err => {
-                                          throw err;
-                                        });
+                                    .then(initechAdminUserRecord => {
+                                      initechAdminID = initechAdminUserRecord.uid;
+                                      console.log(
+                                        `Successfully created Initech admin user with username/password admin@initech.com`
+                                      );
+                                      return delay(DELAY).then(() => {
+                                        return adminDb
+                                          .collection('users')
+                                          .doc('user@initech.com')
+                                          .set({
+                                            isSuperAdmin: false,
+                                            isAdmin: false,
+                                            organizationID: initechID
+                                          })
+                                          .then(() => {
+                                            return adminAuth
+                                              .createUser({
+                                                email: 'user@initech.com',
+                                                password: 'user@initech.com'
+                                              })
+                                              .then(initechRegularUserRecord => {
+                                                initechRegularUserId = initechRegularUserRecord.uid;
+                                                console.log(
+                                                  `Successfully created Initech regular user with username/password user@initech.com`
+                                                );
+                                                return delay(DELAY);
+                                              })
+                                              .catch(err => {
+                                                throw err;
+                                              });
+                                          })
+                                          .catch(err => {
+                                            throw err;
+                                          });
+                                      });
                                     })
                                     .catch(err => {
                                       throw err;
@@ -181,18 +190,16 @@ beforeAll(() => {
                             .catch(err => {
                               throw err;
                             });
-                        })
-                        .catch(err => {
-                          throw err;
                         });
-                    })
-                    .catch(err => {
-                      throw err;
-                    });
-                })
-                .catch(err => {
-                  throw err;
-                });
+                      })
+                      .catch(err => {
+                        throw err;
+                      });
+                  })
+                  .catch(err => {
+                    throw err;
+                  });
+              });
             })
             .catch(err => {
               throw err;
@@ -297,4 +304,120 @@ test("Unauthenticated user can't write organizations", () => {
       expect(err.code).toEqual('permission-denied');
       expect(err.message).toEqual('7 PERMISSION_DENIED: Missing or insufficient permissions.');
     });
+});
+
+test('Authenticated regular user can read his own data', () => {
+  return clientAuth.signInWithEmailAndPassword('user@soylentgreen.com', 'user@soylentgreen.com').then(() => {
+    return clientDb
+      .collection('users')
+      .doc('user@soylentgreen.com')
+      .get()
+      .then(userSnapshot => {
+        expect(userSnapshot.id).toEqual('user@soylentgreen.com');
+      })
+      .catch(err => {
+        throw err;
+      });
+  });
+});
+
+test("Authenticated regular user can't read other user's data", () => {
+  return clientAuth.signInWithEmailAndPassword('user@soylentgreen.com', 'user@soylentgreen.com').then(() => {
+    return clientDb
+      .collection('users')
+      .doc('admin@soylentgreen.com')
+      .get()
+      .then(() => {
+        throw new Error("Authenticated regular users should not be able to read other user's data");
+      })
+      .catch(err => {
+        expect(err.code).toEqual('permission-denied');
+        expect(err.message).toEqual('Missing or insufficient permissions.');
+        return clientDb
+          .collection('users')
+          .doc('admin@initech.com')
+          .get()
+          .then(() => {
+            throw new Error("Authenticated regular users should not be able to read other user's data");
+          })
+          .catch(err2 => {
+            expect(err2.code).toEqual('permission-denied');
+            expect(err2.message).toEqual('Missing or insufficient permissions.');
+            return clientDb
+              .collection('users')
+              .doc('user@initech.com')
+              .get()
+              .then(() => {
+                throw new Error("Authenticated regular users should not be able to read other user's data");
+              })
+              .catch(err3 => {
+                expect(err3.code).toEqual('permission-denied');
+                expect(err3.message).toEqual('Missing or insufficient permissions.');
+              });
+          });
+      });
+  });
+});
+
+test('Authenticated admin user can read his own data', () => {
+  return clientAuth.signInWithEmailAndPassword('admin@soylentgreen.com', 'admin@soylentgreen.com').then(() => {
+    return clientDb
+      .collection('users')
+      .doc('admin@soylentgreen.com')
+      .get()
+      .then(userSnapshot => {
+        expect(userSnapshot.id).toEqual('admin@soylentgreen.com');
+      })
+      .catch(err => {
+        throw err;
+      });
+  });
+});
+
+test("Authenticated admin user can read other users' data if they're in his organization", () => {
+  return clientAuth.signInWithEmailAndPassword('admin@soylentgreen.com', 'admin@soylentgreen.com').then(() => {
+    return clientDb
+      .collection('users')
+      .doc('user@soylentgreen.com')
+      .get()
+      .then(userSnapshot => {
+        expect(userSnapshot.id).toEqual('user@soylentgreen.com');
+      })
+      .catch(err => {
+        throw err;
+      });
+  });
+});
+
+test("Authenticated admin user can't read other users' data if they're not in his organization", () => {
+  return clientAuth.signInWithEmailAndPassword('admin@soylentgreen.com', 'admin@soylentgreen.com').then(() => {
+    return clientDb
+      .collection('users')
+      .doc('admin@initech.com')
+      .get()
+      .then(userSnapshot => {
+        expect(userSnapshot.id).toEqual('user@soylentgreen.com');
+        throw new Error(
+          "Authenticated admin users should not be able to read other user's data if they're not in the same organization"
+        );
+      })
+      .catch(err => {
+        expect(err.code).toEqual('permission-denied');
+        expect(err.message).toEqual('Missing or insufficient permissions.');
+        return clientDb
+          .collection('users')
+          .doc('user@initech.com')
+          .get()
+          .then(userSnapshot => {
+            expect(userSnapshot.id).toEqual('user@soylentgreen.com');
+            throw new Error(
+              "Authenticated admin users should not be able to read other user's data if they're not in the same organization"
+            );
+          })
+          .catch(err2 => {
+            expect(err2.code).toEqual('permission-denied');
+            expect(err2.message).toEqual('Missing or insufficient permissions.');
+          });
+      });
+  });
 });
