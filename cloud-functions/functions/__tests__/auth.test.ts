@@ -490,7 +490,7 @@ test("Manually added user in users table with empty string organizationID can't 
           })
           .then(() => {
             // delay to allow onCreate to trigger and realize users table document is faulty
-            return delay(DELAY).then(() => {
+            return delay(DELAY * 2).then(() => {
               // check that user has been deleted from Firebase Auth
               return adminAuth
                 .getUserByEmail('testuser@goodcorp.com')
