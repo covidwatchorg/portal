@@ -47,10 +47,7 @@ const serviceAccount =
     : require('../../permission-portal-test-firebase-admin-key.json');
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
-  databaseURL:
-    process.env.NODE_ENV === 'development'
-      ? 'https://permission-portal-dev.firebaseio.com'
-      : 'https://permission-portal-test.firebaseio.com',
+  databaseURL: 'https://permission-portal-test.firebaseio.com',
 });
 
 // Initialize commonly used vars
