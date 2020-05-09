@@ -2,7 +2,9 @@ import React from 'react';
 
 const EventLog = () => {
   return (
-    <h1>Permission Events Log</h1>
+    <div className="module-container">
+      <h1>Permission Events Log</h1>
+    </div>
   );
 };
 
