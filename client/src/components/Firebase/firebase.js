@@ -1,5 +1,10 @@
 import app from 'firebase/app';
-require('firebase/auth')
+import "firebase/auth";
+import { functions } from "firebase";
+
+//require('firebase/auth')
+import "firebase/firestore";
+
 var config = require(`../../config/firebase.config.local.js`)
 if(process.env.REACT_APP_ENV) {
   config = require(`../../config/firebase.config.${process.env.REACT_APP_ENV}.js`)
@@ -9,6 +14,10 @@ class Firebase {
   constructor() {
     app.initializeApp(config);
     this.auth = app.auth();
+    this.firestore = app.firestore();
+    this.db = app.database();
+
+
 
   }
   doCreateUserWithEmailAndPassword = (email, password) =>
@@ -24,6 +33,64 @@ class Firebase {
   doPasswordUpdate = password =>
     this.auth.currentUser.updatePassword(password);
 
+  generateUserDocument = async (user, additionalData) => {
+      if (!user) return;
+    
+      const userRef = this.firestore.doc(`users/${user.email}`);
+      const snapshot = await userRef.get();
+    
+      
+      return this.getUserDocument(user.email);
+    };
+    
+    getUserDocument = async uid => {
+      if (!uid) return null;
+      try {
+        const userDocument = await this.firestore.doc(`users/${uid}`).get();
+    
+        return {
+          uid,
+          ...userDocument.data()
+        };
+      } catch (error) {
+        console.error("Error fetching user", error);
+      }
+    };
+
+
+
+onAuthUserListener = (next, fallback) =>
+    this.auth.onAuthStateChanged(authUser => {
+      if (authUser) {
+             this.getUserDocument(authUser.email).then(userDoc => {
+                if (!userDoc.roles) {
+                  userDoc.roles = {
+                    ADMIN: userDoc.isAdmin,
+                    SUPER_ADMIN: userDoc.isSuperAdmin
+                  }
+                  
+                }
+                // merge auth and db user
+                authUser = {
+                  uid: authUser.uid,
+                  email: authUser.email,
+                  emailVerified: authUser.emailVerified,
+                  providerData: authUser.providerData,
+                  ...userDoc,
+                };
+                next(authUser);
+              });
+              
+      } else {
+        fallback();
+      }
+    });
+
+  // *** User API ***
+
+user = uid => this.db.ref(`/users/${uid}`);
+
+users = () => this.db.ref('/users');
+
 }
-   
 export default Firebase;

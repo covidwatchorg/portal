@@ -1,5 +1,11 @@
 const path = require('path');
 const webpack = require('webpack');
+const DefinePlugin = require('webpack/lib/DefinePlugin');
+
+const envKeys = Object.keys(process.env).reduce((prev, next) => {
+  prev[`process.env.${next}`] = JSON.stringify(process.env[next]);
+  return prev;
+}, {});
 
 module.exports = function(env, argv) {
   return {
@@ -10,13 +16,7 @@ module.exports = function(env, argv) {
     fs: "empty"
   }, 
   plugins : [
-    new webpack.DefinePlugin({
-      'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),
-      'process.env.DEBUG': JSON.stringify(process.env.DEBUG)
-    })
-    //new webpack.EnvironmentPlugin({
-    //  ...process.env
-    //})
+    new DefinePlugin(envKeys)
   ],
   entry: {
     polyfill: 'babel-polyfill',
@@ -24,7 +24,7 @@ module.exports = function(env, argv) {
   },
   output: {
     path: path.resolve(__dirname, 'dist'),
-    filename: 'bundle.js',
+    filename: '[name].bundle.js',
   },
   devServer: {
     port: 8080,
@@ -48,9 +48,6 @@ module.exports = function(env, argv) {
               }
             ],
           },
-        },
-        {
-          loader: 'ts-loader'
         }],
       },
       {

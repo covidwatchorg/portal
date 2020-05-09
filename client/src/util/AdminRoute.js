@@ -5,9 +5,10 @@ import { signin } from './auth';
 const AdminRoute = ({component : Component, ...rest}) => {
     return (
     <Route {...rest} render={(props) => (
-    signin.isAdmin === true ? 
+    /*signin.isAdmin === true ? 
     <Component {...props}/>
-    : <Redirect to='/'/> )} />
+    : <Redirect to='/'/> )} /> */
+    <Component {...props}/> )} /> 
     )
 }
 

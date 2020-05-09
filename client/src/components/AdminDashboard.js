@@ -4,6 +4,10 @@ import EventLog from '../screens/EventLog';
 import ManageTeams from '../screens/ManageTeams';
 import AccountBranding from '../screens/AccountBranding';
 import Settings from '../screens/Settings';
+import { withAuthorization } from './Session';
+import * as ROLES from '../constants/roles';
+import { compose } from 'recompose';
+
 
 const AdminDashboard = () => {
   const [chosenPage, setChosenPage] = useState(1);
@@ -24,4 +28,12 @@ const AdminDashboard = () => {
     </Fragment>
   );
 };
-export default AdminDashboard;
+
+const condition = authUser => {
+  var result = authUser && authUser.roles[ROLES.ADMIN];
+  return result;
+}
+
+export default compose(
+  withAuthorization(condition),
+)(AdminDashboard);
