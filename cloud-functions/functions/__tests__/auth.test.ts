@@ -40,7 +40,7 @@ const serviceAccount =
         type: 'service_account',
         project_id: 'permission-portal-test',
         private_key_id: 'c8874cba45031dd6df96dac0319b61c12ff1a72a',
-        private_key: process.env.private_key!.replace(/\\n/g, '\n'),
+        private_key: process.env.private_key,
         client_email: 'firebase-adminsdk-nqxd8@permission-portal-test.iam.gserviceaccount.com',
         client_id: '106962391164160767637',
         auth_uri: 'https://accounts.google.com/o/oauth2/auth',
