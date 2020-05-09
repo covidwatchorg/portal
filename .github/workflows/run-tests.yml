@@ -26,4 +26,4 @@ jobs:
         working-directory: cloud-functions/functions
         run: npm run test_ci
         env:
-          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
+          FIREBASE_PRIVATE_KEY: ${{ secrets.FIREBASE_PRIVATE_KEY }}
