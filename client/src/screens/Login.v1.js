@@ -58,10 +58,10 @@ class SignInFormBase extends React.Component {
         </div>
         <div className="loginContainer">
           <label for="email">Email</label>
-          <input onChange={handleChange('email')} type="email" id="email" name="email" />
+          <input  type="email" id="email" name="email" />
           <label for="password">Password</label>
-          <input onChange={handleChange('password')} type="password" id="password" name="password" />
-          <button onClick={clickSubmit}>
+          <input type="password" id="password" name="password" />
+          <button onClick={this.onSubmit}>
             Login
             </button>
           <a href="url">Forgot password?</a>

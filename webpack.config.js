@@ -4,13 +4,19 @@ const webpack = require('webpack');
 module.exports = function(env, argv) {
   return {
   mode: 'development',
+  devtool: 'source-map',
+
   node: {
     fs: "empty"
   }, 
   plugins : [
-    new webpack.EnvironmentPlugin({
-      ...process.env
+    new webpack.DefinePlugin({
+      'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),
+      'process.env.DEBUG': JSON.stringify(process.env.DEBUG)
     })
+    //new webpack.EnvironmentPlugin({
+    //  ...process.env
+    //})
   ],
   entry: {
     polyfill: 'babel-polyfill',
@@ -33,7 +39,7 @@ module.exports = function(env, argv) {
       {
         test: /\.jsx?/,
         exclude: /node_modules/,
-        use: {
+        use: [{  
           loader: 'babel-loader',
           options: {
             presets: ['@babel/preset-env', '@babel/preset-react',
@@ -43,6 +49,9 @@ module.exports = function(env, argv) {
             ],
           },
         },
+        {
+          loader: 'ts-loader'
+        }],
       },
       {
         test: /\.s[ac]ss$/i,
