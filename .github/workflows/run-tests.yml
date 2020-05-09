@@ -10,15 +10,20 @@ on:
 
 jobs:
   main:
-    name: Build and Deploy
+    name: Build, Deploy to Test Infrastructure, and Run Tests
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
     - name: Build
       working-directory: cloud-functions/functions
-      run: npm run build
+      run: |
+        npm install
+        npm run build
     - name: Deploy to Firebase
       working-directory: cloud-functions/functions
       run: firebase deploy --project=test
       env:
         FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
+    - name: Run Tests
+      working-directory: cloud-functions/functions
+      run: npm run test
