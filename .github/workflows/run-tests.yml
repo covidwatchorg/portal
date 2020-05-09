@@ -1,36 +1,29 @@
-# This is a basic workflow to help you get started with Actions
-
 name: CI
 
 # Controls when the action will run. Triggers the workflow on push or pull request
 # events but only for the master branch
 on:
   pull_request:
-    branches: [ master, dev ]
+    branches: [master, dev]
 
 jobs:
   main:
     name: Build, Deploy to Test Infrastructure, and Run Tests
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
-    - name: Build
-      working-directory: cloud-functions/functions
-      run: |
-        npm install
-        npm run build
-#     - name: Deploy to Firebase
-#       working-directory: cloud-functions/functions
-#       run: firebase deploy --project=test
-#       env:
-#         FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
-    - name: Deploy to Firebase
-      uses: w9jds/firebase-action@master
-      with:
-        args: deploy --project=test
-      env:
-        FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
-        PROJECT_PATH: cloud-functions/
-    - name: Run Tests
-      working-directory: cloud-functions/functions
-      run: npm run test
+      - uses: actions/checkout@v2
+      # - name: Build
+      #   working-directory: cloud-functions/functions
+      #   run: |
+      #     npm install
+      #     npm run build
+      - name: Build and Deploy to Firebase
+        uses: w9jds/firebase-action@master
+        with:
+          args: deploy --project=test
+        env:
+          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
+          PROJECT_PATH: cloud-functions/
+      - name: Run Tests
+        working-directory: cloud-functions/functions
+        run: npm run test_ci
