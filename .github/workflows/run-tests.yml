@@ -22,6 +22,7 @@ jobs:
         env:
           FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
           PROJECT_PATH: cloud-functions/
+          private_key: ${{ secrets.private_key }}
       - name: Run Tests
         working-directory: cloud-functions/functions
         run: npm run test_ci
