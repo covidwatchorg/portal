@@ -14,8 +14,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Build
-      run: cd cloud-functions/functions/ && npm run build
+      working-directory: ./cloud-functions/functions/
+      run: npm run build
     - name: Deploy to Firebase
-      run: cd cloud-functions/functions && firebase deploy --project=test
+      working-directory: ./cloud-functions/functions/
+      run: firebase deploy --project=test
       env:
         FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
