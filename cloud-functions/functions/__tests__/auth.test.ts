@@ -39,7 +39,9 @@ const serviceAccount =
     ? {
         projectId: 'permission-portal-test',
         privateKey:
-          '-----BEGIN PRIVATE KEY-----\n' + process.env.FIREBASE_PRIVATE_KEY + '\n-----END PRIVATE KEY-----\n',
+          '-----BEGIN PRIVATE KEY-----\n' +
+          process.env.FIREBASE_PRIVATE_KEY!.replace(/\\n/g, '\n') +
+          '\n-----END PRIVATE KEY-----\n',
         clientEmail: 'firebase-adminsdk-nqxd8@permission-portal-test.iam.gserviceaccount.com',
       }
     : require('../../permission-portal-test-firebase-admin-key.json');
