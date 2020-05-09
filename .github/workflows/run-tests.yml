@@ -12,11 +12,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      # - name: Build
-      #   working-directory: cloud-functions/functions
-      #   run: |
-      #     npm install
-      #     npm run build
+      - name: Install
+        working-directory: cloud-functions/functions
+        run: npm install
       - name: Build and Deploy to Firebase
         uses: w9jds/firebase-action@master
         with:
