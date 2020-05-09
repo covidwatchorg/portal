@@ -19,11 +19,18 @@ jobs:
       run: |
         npm install
         npm run build
+#     - name: Deploy to Firebase
+#       working-directory: cloud-functions/functions
+#       run: firebase deploy --project=test
+#       env:
+#         FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
     - name: Deploy to Firebase
-      working-directory: cloud-functions/functions
-      run: firebase deploy --project=test
+      uses: w9jds/firebase-action@master
+      with:
+        args: deploy --project=test
       env:
         FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
+        PROJECT_PATH: cloud-functions/
     - name: Run Tests
       working-directory: cloud-functions/functions
       run: npm run test
