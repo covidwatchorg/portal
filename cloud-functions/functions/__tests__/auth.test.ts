@@ -35,10 +35,20 @@ firebase.initializeApp(firebaseConfig);
 
 // Initialize admin SDK
 const serviceAccount =
-  process.env.NODE_ENV === 'development'
-    ? require('../../permission-portal-dev-firebase-admin-key.json')
-    : process.env.NODE_ENV === 'ci'
-    ? require(JSON.parse(process.env.FIREBASE_TEST_INFRA_ADMIN_JSON!))
+  process.env.NODE_ENV === 'ci'
+    ? {
+        type: 'service_account',
+        project_id: 'permission-portal-test',
+        private_key_id: 'c8874cba45031dd6df96dac0319b61c12ff1a72a',
+        private_key: process.env.private_key,
+        client_email: 'firebase-adminsdk-nqxd8@permission-portal-test.iam.gserviceaccount.com',
+        client_id: '106962391164160767637',
+        auth_uri: 'https://accounts.google.com/o/oauth2/auth',
+        token_uri: 'https://oauth2.googleapis.com/token',
+        auth_provider_x509_cert_url: 'https://www.googleapis.com/oauth2/v1/certs',
+        client_x509_cert_url:
+          'https://www.googleapis.com/robot/v1/metadata/x509/firebase-adminsdk-nqxd8%40permission-portal-test.iam.gserviceaccount.com',
+      }
     : require('../../permission-portal-test-firebase-admin-key.json');
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
