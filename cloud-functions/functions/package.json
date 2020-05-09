@@ -8,7 +8,8 @@
     "start": "npm run shell",
     "deploy": "firebase deploy --only functions",
     "logs": "firebase functions:log",
-    "test": "NODE_ENV=test jest --forceExit"
+    "test": "NODE_ENV=test jest --forceExit",
+    "test_ci": "NODE_ENV=ci jest --forceExit"
   },
   "engines": {
     "node": "8"

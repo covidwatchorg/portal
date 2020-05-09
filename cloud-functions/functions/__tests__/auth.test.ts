@@ -37,6 +37,8 @@ firebase.initializeApp(firebaseConfig);
 const serviceAccount =
   process.env.NODE_ENV === 'development'
     ? require('../../permission-portal-dev-firebase-admin-key.json')
+    : process.env.NODE_ENV === 'ci'
+    ? require(JSON.parse(process.env.FIREBASE_TEST_INFRA_ADMIN_JSON!))
     : require('../../permission-portal-test-firebase-admin-key.json');
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
