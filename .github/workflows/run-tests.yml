@@ -13,11 +13,12 @@ jobs:
     name: Build and Deploy
     runs-on: ubuntu-latest
     steps:
+    - uses: actions/checkout@v2
     - name: Build
-      working-directory: ./cloud-functions/functions/
+      working-directory: cloud-functions/functions
       run: npm run build
     - name: Deploy to Firebase
-      working-directory: ./cloud-functions/functions/
+      working-directory: cloud-functions/functions
       run: firebase deploy --project=test
       env:
         FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
