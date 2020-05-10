@@ -8,7 +8,9 @@ import (
 )
 
 // ChallengeHandler is a handler for the /challenge endpoint.
-func ChallengeHandler(ctx *util.Context) util.StatusError {
+var ChallengeHandler = util.MakeHTTPHandler(challengeHandler)
+
+func challengeHandler(ctx *util.Context) util.StatusError {
 	if err := util.ValidateRequestMethod(ctx, "GET", ""); err != nil {
 		return err
 	}
