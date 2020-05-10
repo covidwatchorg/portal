@@ -1,0 +1,89 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800&display=swap');
+
+.branding-container {
+  display: flex;
+  flex-direction: row;
+}
+
+.branding-section {
+  flex: 1;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: stretch;
+  padding: 32px;
+}
+
+.section-heading {
+  font-family: Montserrat;
+  font-style: normal;
+  font-weight: 600;
+  font-size: 24px;
+  line-height: 29px;
+
+  /* Dark Gray */
+  color: #585858;
+}
+
+.section-description {
+  font-family: Montserrat;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 16px;
+  line-height: 20px;
+
+  /* Dark Gray */
+  color: #585858;
+}
+
+textarea {
+  padding: 2.5%;
+  width: 95%;
+  height: 19.5vh;
+  flex: 1;
+  font-family: Montserrat;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 16px;
+  line-height: 20px;
+  color: #585858;
+}
+
+.save-button {
+  margin-top: 32px;
+  background: #2C58B1;
+  border-radius: 7px;
+  font-family: Montserrat;
+  font-style: normal;
+  font-weight: bold;
+  font-size: 14px;
+  line-height: 17px;
+  text-align: center;
+  color: #FFFFFF;
+  padding: 10px;
+}
+
+.save-button:hover {
+  cursor: pointer;
+}
+
+#contact-button {
+  margin-top: 32px;
+  /* Gradient White */
+  background: #FFFFFF;
+  /* Gray 4 */
+  border: 2px solid #BDBDBD;
+  border-radius: 7px;
+  font-family: Montserrat;
+  font-style: normal;
+  font-weight: bold;
+  font-size: 14px;
+  line-height: 17px;
+  text-align: center;
+  /* Bluejay */
+  color: #2C58B1;
+  padding: 10px;
+}
+
+#contact-button:hover {
+  cursor: pointer;
+}

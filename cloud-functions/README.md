@@ -15,6 +15,7 @@ Unfortunately the Firebase emulators don't support many auth features, so becaus
 
 ```
 firebase deploy --only functions --project=dev
+firebase deploy --only firestore:rules --project=dev
 ```
 
 Once functions are deployed, the dev infrastructure can loaded with some fake sample data by navigating to the `functions/` directory and running:
@@ -35,6 +36,7 @@ This means that in order for tests to run properly, they must be deployed first 
 
 ```
 firebase deploy --only functions --project=test
+firebase deploy --only firestore:rules --project=test
 ```
 
 Once changes are deployed, tests can be run from the `functions/` directory. Tests require a firebase admin key to run properly, stored as `functions/permission-portal-test-firebase-admin-key.json` (ask maintainer). Because they are written in Typescript, they must be built first:

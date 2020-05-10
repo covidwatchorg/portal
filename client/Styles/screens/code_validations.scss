@@ -1,0 +1,141 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800&display=swap');
+
+#verify-code-btn {
+  margin-top: 32px;
+  background: #2C58B1;
+  border-radius: 7px;
+  font-family: Montserrat;
+  font-style: normal;
+  font-weight: bold;
+  font-size: 14px;
+  line-height: 17px;
+  text-align: center;
+  color: #FFFFFF;
+  padding: 10px;
+
+  &:hover {
+      cursor: pointer;
+  }
+}
+
+ .tooltip {
+    margin-left: 20px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.tooltip-msg {
+    visibility: hidden;
+    // if we adjust the width, the margin-left will need to be adjusted the same proportion
+    width: 300px;
+    margin-left: -150px;
+    color: #222222;
+    padding: 5px 0;
+    position: absolute;
+    z-index: 1;
+    bottom: 80%;
+    left: 50%;
+    opacity: 0;
+    transition: opacity 0.3s;
+
+    /* Gradient White */
+    background: #FFFFFF;
+    /* Gray 4 */
+    border: 1px solid #BDBDBD;
+    box-sizing: border-box;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    font-family: Montserrat;
+    font-style: normal;
+    font-size: 12px;
+    line-height: 17px;
+    padding: 10px;
+}
+
+.tooltip-title {
+    font-weight: bold;
+}
+
+.tooltip-msg::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: #555 transparent transparent transparent;
+}
+
+.tooltip:hover .tooltip-msg {
+  visibility: visible;
+  opacity: 1;
+}
+
+
+#actions-box {
+    display: flex;
+    border: 2px solid #BDBDBD;
+    height: 300px;
+    margin-top: 50px;
+
+    .section-heading-container {
+        display: flex;
+    }
+
+
+    .action-section {
+        padding-left: 6vw;
+        padding-right: 6vw;
+        width: 33.33%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+
+        input {
+            /* White */
+            background: #FFFFFF;
+            /* Light Grey */
+
+            border: 2px solid #BDBDBD;
+            box-sizing: border-box;
+            box-shadow: inset 0px 2px 10px rgba(0, 0, 0, 0.2);
+            border-radius: 7px;
+            padding: 10px 8px 10px 8px;
+
+            font-family: Montserrat;
+            font-style: normal;
+            font-weight: 600;
+            font-size: 16px;
+            line-height: 20px;
+            display: flex;
+            align-items: center;
+
+            /* Gray 1 */
+
+            color: #333333;
+        }
+    }
+}
+
+    .gray-background {
+        background-color: #E5E5E5;
+    }
+
+    .white-background {
+        background-color: white;
+    }
+
+.section-description {
+  font-family: Montserrat;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 16px;
+  line-height: 20px;
+
+  /* Dark Gray */
+  color: #585858;
+}
+

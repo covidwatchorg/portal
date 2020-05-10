@@ -66,8 +66,8 @@ const NavBar = props => {
         open={open}
         onClose={handleClose}
       >
-        <MenuItem onClick={() => onClickMenuItem(0)}>Permission Events Log</MenuItem>
-        <MenuItem onClick={() => onClickMenuItem(1)}>Manage Teams</MenuItem>
+        <MenuItem onClick={() => onClickMenuItem(0)}>Positive Test Validations</MenuItem>
+        <MenuItem onClick={() => onClickMenuItem(1)}>Manage Members</MenuItem>
         <MenuItem onClick={() => onClickMenuItem(2)}>Account Branding</MenuItem>
         <MenuItem onClick={() => onClickMenuItem(3)}>My Settings</MenuItem>
         <MenuItem onClick={() => setRedirect(true)}>Logout</MenuItem>

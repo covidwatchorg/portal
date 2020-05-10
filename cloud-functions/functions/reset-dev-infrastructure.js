@@ -160,7 +160,7 @@ async function deleteAllUsers(nextPageToken) {
       return deleteUser(uid);
     });
     if (listUsersResult.pageToken) {
-      getAllUsers(listUsersResult.pageToken);
+      deleteAllUsers(listUsersResult.pageToken);
     }
   } catch (err) {
     throw err;
