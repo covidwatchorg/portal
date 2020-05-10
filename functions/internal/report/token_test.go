@@ -1,6 +1,7 @@
 package report
 
 import (
+	"encoding/json"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -39,9 +40,18 @@ func TestTokenFormatParse(t *testing.T) {
 	// For each of the first 2^16 token values, ensure that parsing is the
 	// inverse of formatting.
 	for i := uint64(0); i < 1<<16; i++ {
+		// Test that formatting and parsing are inverses.
 		t0 := UploadToken{token: i}
 		s := t0.String()
 		t1, err := parseUploadToken(s)
+		assert.Nil(t, err)
+		assert.Equal(t, t0, t1)
+
+		// Test that JSON marshaling and unmarshaling are inverses.
+		bytes, err := json.Marshal(t0)
+		assert.Nil(t, err)
+		t1 = UploadToken{}
+		err = json.Unmarshal(bytes, &t1)
 		assert.Nil(t, err)
 		assert.Equal(t, t0, t1)
 	}

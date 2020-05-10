@@ -1,9 +1,13 @@
 package report
 
 import (
+	"encoding/json"
 	"errors"
 	"fmt"
+	"strconv"
 	"strings"
+
+	"functions/internal/util"
 )
 
 // On the design of the upload token (see [1] for more details):
@@ -85,8 +89,10 @@ func (t UploadToken) key() uint16 {
 	return uint16(t.token & 0x1FF)
 }
 
+const tokenSuffix = "9"
+
 func (t UploadToken) String() string {
-	str := fmt.Sprintf("%o9", t.token)
+	str := fmt.Sprintf("%o%v", t.token, tokenSuffix)
 
 	// We need at most 22 characters for the octal encoding of a uin64 plus 1
 	// character for the trailing 9 for a total of 23 characters. That results
@@ -119,17 +125,37 @@ func (t UploadToken) String() string {
 	return string(scratch[:written-1])
 }
 
-var tokenParseError = errors.New("malformed upload token")
+// MarshalJSON implements json.Marshaler.
+func (t UploadToken) MarshalJSON() ([]byte, error) {
+	return json.Marshal(t.String())
+}
+
+// UnmarshalJSON implements json.Unmarshaler.
+func (t *UploadToken) UnmarshalJSON(b []byte) error {
+	var s string
+	if err := json.Unmarshal(b, &s); err != nil {
+		return err
+	}
+	tt, err := parseUploadToken(s)
+	if err != nil {
+		return err
+	}
+
+	*t = tt
+	return nil
+}
+
+var tokenParseError = util.NewBadRequestError(errors.New("malformed upload token"))
 
 func parseUploadToken(s string) (UploadToken, error) {
 	s = strings.ReplaceAll(s, "-", "")
-	if !strings.HasSuffix(s, "9") {
+	if !strings.HasSuffix(s, tokenSuffix) {
 		return UploadToken{}, tokenParseError
 	}
 
-	var t UploadToken
-	if _, err := fmt.Sscanf(s, "%o", &t.token); err != nil {
+	n, err := strconv.ParseUint(s[:len(s)-len(tokenSuffix)], 8, 64)
+	if err != nil {
 		return UploadToken{}, tokenParseError
 	}
-	return t, nil
+	return UploadToken{token: n}, nil
 }
