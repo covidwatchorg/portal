@@ -22,6 +22,7 @@ const inputStyles = makeStyles({
     borderRadius: 7,
     border: '2px solid #BDBDBD',
     width: '75%',
+    height: 30,
     marginTop: 5,
     marginBottom: 20
 
@@ -44,7 +45,15 @@ const Settings = () => {
               Profile Photo
               <div style={{marginTop:'20px', height:'217px', width:'212px', backgroundColor:'#E0E0E0', border: '2px dashed #828282'}}>
               </div>
-
+              <text style={{fontSize:'12px', color:'#585858'}}>
+                Accepted file types: jpg or png
+              </text>
+              <text style={{fontSize:'12px', color:'#585858'}}>
+                Maximum file size: __ MB
+              </text>
+              <Button onClick={console.log('button clicked')} className={classes.root} variant='outlined' style={{ color:'#2C58B1', width:'75%', fontSize:'smaller', padding:'5px'}}>
+                Change Image
+              </Button>
           </Grid>
         </Grid>
 
@@ -82,7 +91,7 @@ const Settings = () => {
               Password <text style={{color:'red'}}>*</text>
             </label>
             <TextField required className={input.root}  label="" type="password" variant="outlined" style={{backgroundColor: '#E0E0E0'}}/>
-            <a style={{fontSize:'10px', textAlign:'right', color:'#2C58B1', fontStyle:'underline'}}>Change Password</a>
+            <a href='' style={{fontSize:'12px', textAlign:'right', color:'#2C58B1', fontStyle:'underline'}}>Change Password</a>
           </Grid>
         </Grid>
     
