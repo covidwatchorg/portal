@@ -14,18 +14,54 @@ const ManageTeams = () => {
   const theme = useTheme()
   const [state, setState] = React.useState({
     columns: [
-      { title: 'Name', field: 'name' },
+      {
+        title: 'Name', field: 'name',
+        cellStyle: {
+          fontFamily: 'Montserrat',
+        },
+        headerStyle: {
+          fontFamily: 'Montserrat',
+          backgroundColor: "#E5E5E5"
+        }
+      },
       {
         title: 'Role',
         field: 'role',
         lookup: { 0: 'Account Administrator', 1: 'Contact Tracer' },
+        cellStyle: {
+          fontFamily: 'Montserrat',
+        },
+        headerStyle: {
+          fontFamily: 'Montserrat',
+          backgroundColor: "#E5E5E5"
+        }
+
+
       },
       {
         title: 'Status',
         field: 'status',
         lookup: { 0: 'Deactivated', 1: 'Active' },
+        cellStyle: {
+          fontFamily: 'Montserrat',
+        },
+        headerStyle: {
+          fontFamily: 'Montserrat',
+          backgroundColor: "#E5E5E5"
+        }
+
       },
-      { title: 'Settings', field: 'Settings' },
+      {
+        title: 'Settings', field: 'Settings', cellStyle: {
+          fontFamily: 'Montserrat',
+        },
+        headerStyle: {
+          fontFamily: 'Montserrat',
+          backgroundColor: "#E5E5E5"
+        }
+
+      },
+
     ],
     data: [
       { name: 'Smitherson, Dr.Rebecca', role: 0, status: 1 },
@@ -34,58 +70,54 @@ const ManageTeams = () => {
     ],
   });
 
-  const table = () => (
-    <MaterialTable
-      className={classes.tableStyle}
-      title="Editable Example"
-      columns={state.columns}
-      data={state.data}
-      editable={{
-        onRowAdd: (newData) =>
-          new Promise((resolve) => {
-            setTimeout(() => {
-              resolve();
-              setState((prevState) => {
-                const data = [...prevState.data];
-                data.push(newData);
-                return { ...prevState, data };
-              });
-            }, 600);
-          }),
-        onRowUpdate: (newData, oldData) =>
-          new Promise((resolve) => {
-            setTimeout(() => {
-              resolve();
-              if (oldData) {
-                setState((prevState) => {
-                  const data = [...prevState.data];
-                  data[data.indexOf(oldData)] = newData;
-                  return { ...prevState, data };
-                });
-              }
-            }, 600);
-          }),
-        onRowDelete: (oldData) =>
-          new Promise((resolve) => {
-            setTimeout(() => {
-              resolve();
-              setState((prevState) => {
-                const data = [...prevState.data];
-                data.splice(data.indexOf(oldData), 1);
-                return { ...prevState, data };
-              });
-            }, 600);
-          }),
-      }}
-    />
-  )
-
   return (
     <div className="manage-teams-container">
       <h1>Manage Teams</h1>
       <button className="mainBtn">Add Member</button>
-      <Grid container direction='row' justify='center'>
-        {table()}
+      <Grid className={classes.tableStyle}
+        container direction='row' justify='center'>
+        <MaterialTable
+          columns={state.columns}
+          data={state.data}
+          editable={{
+            onRowAdd: (newData) =>
+              new Promise((resolve) => {
+                setTimeout(() => {
+                  resolve();
+                  setState((prevState) => {
+                    const data = [...prevState.data];
+                    data.push(newData);
+                    return { ...prevState, data };
+                  });
+                }, 600);
+              }),
+            onRowUpdate: (newData, oldData) =>
+              new Promise((resolve) => {
+                setTimeout(() => {
+                  resolve();
+                  if (oldData) {
+                    setState((prevState) => {
+                      const data = [...prevState.data];
+                      data[data.indexOf(oldData)] = newData;
+                      return { ...prevState, data };
+                    });
+                  }
+                }, 600);
+              }),
+            onRowDelete: (oldData) =>
+              new Promise((resolve) => {
+                setTimeout(() => {
+                  resolve();
+                  setState((prevState) => {
+                    const data = [...prevState.data];
+                    data.splice(data.indexOf(oldData), 1);
+                    return { ...prevState, data };
+                  });
+                }, 600);
+              }),
+          }}
+        />
+
       </Grid>
       <button className="mainBtn">Save Changes</button>
     </div>
