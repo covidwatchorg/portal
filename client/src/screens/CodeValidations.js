@@ -10,12 +10,26 @@ const CodeValidations = () => {
 
         <div id="actions-box" className="gray-background">
           <div className="action-section">
-            <h2 className="section-heading">Validation Code</h2>
+            <div className="section-heading-container">
+              <h2 className="section-heading">Validation Code</h2>
+              <div className="tooltip">
+                <img src="/client/assets/info-icon.svg" alt="info" />
+                <div className="tooltip-msg">
+                  {/* to replace tooltip text here: */}
+                  <div className="tooltip-title">This the tooltip title</div>
+                  <div className="tooltip-body">
+                    Quisque sagittis, vel hendrerit consectetur tincidunt
+                    senectus. Feugiat aenean nunc, tempus tempus, porta nibh.
+                    Nunc id donec enim ut potenti risus amet amet.
+                  </div>
+                </div>
+              </div>
+            </div>
             <p className="section-description">
               Enter the positive test validation code the user gave to you over
               the phone.
             </p>
-            <input type="text"></input>
+            <input type="text" placeholder="281-177-9"></input>
           </div>
 
           <div className="action-section">
