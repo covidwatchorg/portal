@@ -1,35 +1,42 @@
 import React from 'react';
 import Grid from '@material-ui/core/Grid';
 import MaterialTable from 'material-table';
+import { makeStyles, useTheme } from '@material-ui/styles';
 
+const useStyles = makeStyles((theme) => ({
+  tableStyle: {
+    fontFamily: 'Montserrat',
+  }
+}))
 
 const ManageTeams = () => {
+  const classes = useStyles()
+  const theme = useTheme()
   const [state, setState] = React.useState({
     columns: [
       { title: 'Name', field: 'name' },
-      { title: 'Role', field: 'role' },
       {
         title: 'Role',
-        field: 'Role',
+        field: 'role',
         lookup: { 0: 'Account Administrator', 1: 'Contact Tracer' },
       },
       {
         title: 'Status',
-        field: 'Status',
+        field: 'status',
         lookup: { 0: 'Deactivated', 1: 'Active' },
       },
-      { title: 'Role', field: 'role' },
+      { title: 'Settings', field: 'Settings' },
     ],
     data: [
       { name: 'Smitherson, Dr.Rebecca', role: 0, status: 1 },
       { name: 'Jesse Colligan', role: 0, status: 1 },
       { name: 'Donald J Trump', role: 1, status: 0 },
-
     ],
   });
 
   const table = () => (
     <MaterialTable
+      className={classes.tableStyle}
       title="Editable Example"
       columns={state.columns}
       data={state.data}
@@ -72,7 +79,6 @@ const ManageTeams = () => {
       }}
     />
   )
-
 
   return (
     <div className="manage-teams-container">
