@@ -6,11 +6,5 @@ service cloud.firestore {
     match /{document=**} {
       allow read, write: if false;
     }
-    
-    // allow reads on TCN Signed Reports
-    match /signed_reports/{document=**} {
-      allow read: if true; // old apps still do public reads
-      allow write: if false;
-    }
   }
 }

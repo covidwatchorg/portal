@@ -1,11 +1,11 @@
-package app
+package functions
 
 import (
 	"encoding/json"
 	"net/http"
 
-	"app/internal/pow"
-	"app/internal/util"
+	"functions/internal/pow"
+	"functions/internal/util"
 )
 
 // ChallengeHandler is a handler for the /challenge endpoint.

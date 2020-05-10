@@ -1,4 +1,4 @@
-module app
+module functions
 
 // As of this writing, Google Cloud runtime is on 1.13.8 in beta.
 go 1.13

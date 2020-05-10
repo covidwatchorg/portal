@@ -14,7 +14,7 @@ import (
 
 	"golang.org/x/crypto/argon2"
 
-	"app/internal/util"
+	"functions/internal/util"
 )
 
 const (
