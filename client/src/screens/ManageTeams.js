@@ -2,7 +2,10 @@ import React from 'react';
 
 const ManageTeams = () => {
   return (
-    <h1>Manage Teams</h1>
+    <div className="manage-teams-container">
+      <h1>Manage Teams</h1>
+      <button>Add Member</button>
+    </div>
   );
 };
 
