@@ -135,3 +135,26 @@
   color: #585858;
 }
 
+#success-msg {
+    display: flex;
+    align-items: center;
+
+    img {
+        margin-left: 26px;
+    }
+}
+
+#failure-msg {
+    display: flex;
+    align-items: center;
+
+    img {
+        margin-left: 26px;
+    }
+}
+
+#progress-container {
+    display: flex;
+    justify-content: center;
+}
+
