@@ -1,6 +1,6 @@
 import React, { Fragment, useState } from 'react';
 import NavBar from './NavBar';
-import EventLog from '../screens/EventLog';
+import CodeValidations from '../screens/CodeValidations';
 import ManageTeams from '../screens/ManageTeams';
 import AccountBranding from '../screens/AccountBranding';
 import Settings from '../screens/Settings';
@@ -16,7 +16,7 @@ const AdminDashboard = () => {
     <Fragment>
       <NavBar onNavigate={onNavigate} />
       {
-        (chosenPage === 0) ? <EventLog /> :
+        (chosenPage === 0) ? <CodeValidations /> :
         (chosenPage === 1) ? <ManageTeams /> :
         (chosenPage === 2) ? <AccountBranding /> :
         <Settings />
