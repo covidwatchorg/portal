@@ -1,158 +1,85 @@
-# COVID-Watch Cloud Functions
+# Covid Watch Upload Token Service
 
-This repo contains code which is used in the Firebase project to control the Firestore security rules, and define cloud functions.
-
-## TODO
-
-- [x] TypeScript Build System
-- [x] Initial Test Suite
-- [x] Validate Survey Data
-- [x] Initial Survey Endpoint
-- [x] Write to Firestore
-- [x] Verify TCN Cryptographic Hashes
-- [ ] Implement AG Protocol endpoint
-- [ ] Add Secure Permission Number System
-- [ ] Add watcher to auto build .ts to .js
-- [ ] Agree on API / Response Payloads
-- [ ] Cache Reads in Buckets
+The Upload Token Service is a service which allows the Covid Watch phone app to
+upload reports, and allows users of the permission portal to validate those
+reports.
 
 ## Setup
 
-- VSCode
-- Prettier Code Formatter
-  - Make default formatter and format on save
-- Node 10+
-- Firebase CLI
-- Postman
-
-### Firebase CLI
-
-Install the Firebase CLI tools using:
-
-```
-$ npm install -g firebase-tools
-```
-
-## Security Model
-
-The idea is to set reads to be open and public as all data is inherently anonymous. Writes are set to disabled except through a cloud endpoint which does the job validating the cryptographic signatures are valid before writing to the firestore.
-
-See the TCN implementation here:
-https://github.com/TCNCoalition/TCN
-
-## NPM Install
-
-```
-$ cd functions
-$ npm install
-```
-
-## Run Firestore Emulators
-
-Debug logging is enabled to show console.logs (see package.json)
-
-Start the emulator:
-
-```
-$ cd functions
-$ npm run serve
-```
+1. Install [Go](https://golang.org/) 1.13 or higher
+2. [Install the Google Cloud SDK](https://cloud.google.com/sdk/install).
+3. Tests use the Firestore emulator, which requires some components from the
+   Google Cloud SDK which are not installed by default. In order to install
+   them, run the emulator once using `gcloud beta emulators firestore start`. It
+   will prompt to install any missing components. Once all the necessary
+   components have been installed and the emulator is actually running, you can
+   kill it.
 
 ## Run Tests
 
-```
+The following will run all unit tests:
+
+```text
 $ cd functions
-$ npm run test
+$ go test ./...
 ```
 
-## Firebase Functions
+## Run Locally
 
-### TypeScript + Babel
+The service can be run locally using the Firestore emulator. First, start the
+emulator:
 
-We are using TypeScript and Babel to convert to JS which will run on Node 10 and the Firebase Emulator.
-
-### Build
-
-To convert the .ts files in src into .js files in lib run:
-
-```
-$ npm run-script build
+```text
+$ gcloud beta emulators firestore start --host-port=locahost:8081
 ```
 
-The emulator should hot reload the scripts.
+In another terminal, run the service. Use the `FIRESTORE_EMULATOR_HOST`
+environment variable to instruct the service where to find the emulator.
+
+```text
+$ cd functions
+$ export FIRESTORE_EMULATOR_HOST=localhost:8081
+$ go run ./cmd
+```
+
+By default, the service will listen for incoming HTTP requests on port 8080. You
+can choose a custom port by setting the `PORT` environment variable.
+
+### Randomized Emulator Port
+
+The emulator may fail to start if the port specified with the `--host-port` flag
+is already in use. This can happen if you have recently killed the emulator, as
+the kernel will reserve the port for some time (for the curious, it does this in
+order to prevent network traffic destined for old TCP connections to arrive at
+the new one and cause confusion).
+
+If the `--host-port` flag is omitted, the emulator will choose a random port,
+which has a high likelihood of not being in use. The emulator will output which
+address to use by displaying a line like `export
+FIRESTORE_EMULATOR_HOST=::1:8195`.
+
+Note that, if the local IP address is an IPv6 address (like `::1`), then you
+will need to put square brackets around the address for compatibility with Go's
+parsing. In this example, that would look like `export
+FIRESTORE_EMULATOR_HOST=[::1]:8195`.
 
 ## Local Endpoints
 
 You can hit the endpoints with curl or Postman.
 
-### TCN Submit Report
-
-http://localhost:5001/covidwatch-354ce/us-central1/submitReport
-
-Example Report JSON Payload:
-
-```json
-{
-  "temporary_contact_key_bytes": "PvLGpfQZgGqnoQRtSr0AHd8J5/WdKwaJNLRCkhGlgHU=",
-  "memo_data": "SGVsbG8sIFdvcmxkIQ==",
-  "memo_type": 1,
-  "start_index": 1,
-  "end_index": 8,
-  "signature_bytes": "+k7HDsVZPY5Pxcz0cpwVBvDOHrrQ0+AyDVL/MbGkXBYG2WAyoqLaNxFuXiB9rSzkdCesDv1NSSk06hrjx2YABA==",
-  "report_verification_public_key_bytes": "v78liBBYQrFXqOH6YydUD1aGpXLMgruKATAjFZ0ycLk="
-}
-```
-
-### AG Submit Diagnosis
-
-This endpoint is for submitting the Apple / Google format diagnosis payload.
-http://localhost:5001/covidwatch-354ce/us-central1/submitDiagnosis
-
 ## Firebase Security
 
-The Firestore reads and writes are all disabled except for reading of the TCN signed_reports.
-If you want to read from the emulator you can send the following header to override the security with the bearer token "owner"
+Unauthenticated Firestore access is disabled. If you want to access the emulator
+you can send the following header to override the security with the bearer token
+"owner".
 
-```
+```text
 curl --location \
-  --request GET 'http://localhost:8080/v1/projects/covidwatch-354ce/databases/(default)/documents/diagnosis_permission_number' \
+  --request GET 'http://localhost:8080/v1/projects/covidwatch-354ce/databases/(default)/documents/challenges' \
   --header 'Authorization: Bearer owner'
-```
-
-## Firestore Emulator REST API
-
-You can query the Firestore API with urls like this:
-http://localhost:8080/v1/projects/covidwatch-354ce/databases/(default)/documents/signed_reports
-
-_NB_ Be aware that the firestore.rules will affect your access to these Emulator endpoints.
-
-```
-$ curl --location --request GET 'http://localhost:8080/v1/projects/covidwatch-354ce/databases/(default)/documents/signed_reports'
 ```
 
 ### Postman Collection
 
-You can import the COVID-Watch.postman_collection.json to play with the local Cloud Functions and Firestore Emulator.
-
-## Deployment
-
-### Cloud Functions
-
-Deploy a single function:
-
-```
-$ firebase deploy --only functions:submitReport
-$ firebase deploy --only functions:submitDiagnosis
-```
-
-Deploy the firestore rules:
-
-```
-$ firebase deploy --only firestore:rules
-```
-
-## Live URLS
-
-https://us-central1-covidwatch-354ce.cloudfunctions.net/submitReport
-https://us-central1-covidwatch-354ce.cloudfunctions.net/submitDiagnosis
-https://us-central1-covidwatch-354ce.cloudfunctions.net/fetchDiagnosis
+You can import the COVID-Watch.postman_collection.json to play with the local
+Cloud Functions and Firestore Emulator.
