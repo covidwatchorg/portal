@@ -1,4 +1,7 @@
 import React, { useState } from "react";
+import Button from "@material-ui/core/Button";
+import Snackbar from "@material-ui/core/Snackbar";
+
 
 import "../../Styles/screens/code_validations.scss";
 
@@ -42,7 +45,8 @@ const CodeValidations = () => {
           </div>
 
           <div id="white-box" className="action-section white-background">
-            <div id="verify-code-btn">Verify Code</div>
+            <Button id="verify-code-btn">Verify Code</Button>
+            {/* <div id="verify-code-btn">Verify Code</div> */}
           </div>
         </div>
       </div>
