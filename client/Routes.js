@@ -5,11 +5,13 @@ import CodeValidations from './src/screens/CodeValidations';
 import Settings from './src/screens/Settings';
 import AdminDashboard from './src/components/AdminDashboard';
 import Footer from './src/components/Footer'
+import NavBar from './src/components/NavBar'
 import AdminRoute from './src/util/AdminRoute';
 
 const Routes = () => {
   return (
     <BrowserRouter>
+      <NavBar></NavBar>
       <Switch>
         <Route path='/' exact component={Login} />
         <Route path='/settings' exact component={Settings} />

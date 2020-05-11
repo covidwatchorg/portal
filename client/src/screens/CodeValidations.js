@@ -67,13 +67,13 @@ const CodeValidations = () => {
             <input type="date"></input>
           </div>
 
-          <div id="white-box" className="action-section white-background">
+          <div id="white-box" className="white-background">
             {/* circle loading graphic demo working:
               To do: trigger this upon click and loading of data.  Will this data processing take sufficiently long to justify having this loading graphic at all?
             */}
-            <div id="progress-container">
+            {/* <div id="progress-container">
               <CircularProgress />
-            </div>
+            </div> */}
 
             <Button
               id="verify-code-btn"
@@ -104,6 +104,7 @@ const CodeValidations = () => {
               display: "flex",
               justifyContent: "center",
               alignItems: "center",
+              marginTop: "57px",
             }}
             message={
               <span id="success-msg">
