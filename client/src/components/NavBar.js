@@ -50,18 +50,18 @@ const NavBar = props => {
   return (
     <div className='navbarContainer'>
       <img src='/client/assets/ucsf-health.svg' id='ucsfLogo' />
-      <div class="avatar_group avatar_text">
-        <div class="name">
+      <div className="avatar_group avatar_text">
+        <div className="name">
           {getUserName()}
         </div>
-        <div class="title">
+        <div className="title">
           {getUserTitle()}
         </div>
       </div>
-      <div class="avatar_group avatar_image">
+      <div className="avatar_group avatar_image">
         <img src='client/assets/placeholder/profile.png'/>
       </div>
-      <div class="avatar_group separator"/>
+      <div className="avatar_group separator"/>
       <IconButton
         edge='start'
         className={classes.menuButton}
