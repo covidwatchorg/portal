@@ -5,6 +5,10 @@
   flex-direction: row;
 }
 
+.branding-header {
+  margin-left: 32px;
+}
+
 .branding-section {
   flex: 1;
   flex-direction: column;
@@ -14,6 +18,8 @@
 }
 
 .section-heading {
+  height: 58px;
+
   font-family: Montserrat;
   font-style: normal;
   font-weight: 600;
@@ -25,6 +31,8 @@
 }
 
 .section-description {
+  height: 80px;
+
   font-family: Montserrat;
   font-style: normal;
   font-weight: normal;
@@ -33,6 +41,10 @@
 
   /* Dark Gray */
   color: #585858;
+}
+
+.section-input {
+  resize: none;
 }
 
 textarea {
@@ -48,18 +60,25 @@ textarea {
   color: #585858;
 }
 
-.save-button {
+.save-button-container {
+  margin: auto;
   margin-top: 32px;
+  width: 350px;
+}
+
+.save-button {
+  width:350px;
+  height:50px;
   background: #2C58B1;
   border-radius: 7px;
   font-family: Montserrat;
   font-style: normal;
   font-weight: bold;
-  font-size: 14px;
-  line-height: 17px;
+  font-size: 18px;
+  line-height: 50px;
+  align-items: center;
   text-align: center;
   color: #FFFFFF;
-  padding: 10px;
 }
 
 .save-button:hover {
@@ -67,7 +86,9 @@ textarea {
 }
 
 #contact-button {
-  margin-top: 32px;
+  width: 212px;
+  height: 35px;
+
   /* Gradient White */
   background: #FFFFFF;
   /* Gray 4 */
@@ -77,11 +98,10 @@ textarea {
   font-style: normal;
   font-weight: bold;
   font-size: 14px;
-  line-height: 17px;
+  line-height: 35px;
   text-align: center;
   /* Bluejay */
   color: #2C58B1;
-  padding: 10px;
 }
 
 #contact-button:hover {
