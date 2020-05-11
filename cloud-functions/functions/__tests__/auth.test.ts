@@ -58,6 +58,12 @@ const DELAY = 10000;
 const soylentGreenID: string = 'wV6rYRcd6ujaxiOWb9qa';
 // Track so user can be deleted after each test
 let testUid: string;
+// create random email each run so that concurrent runs of the test suite don't cause conflict
+const testUserEmail =
+  Math.random()
+    .toString(36)
+    .replace(/[^a-z]+/g, '')
+    .substr(0, 5) + '@soylentgreen.com';
 
 afterEach(() => {
   return (
@@ -66,7 +72,7 @@ afterEach(() => {
       .then(() => {
         return adminDb
           .collection('users')
-          .doc('test@soylentgreen.com')
+          .doc(testUserEmail)
           .delete()
           .catch((err) => {
             console.log(err);
@@ -81,8 +87,8 @@ afterEach(() => {
 
 test('createUser cannot be called without being authenticated', () => {
   return createUser({
-    email: 'test@soylentgreen.com',
-    password: 'test@soylentgreen.com',
+    email: testUserEmail,
+    password: testUserEmail,
     organizationID: soylentGreenID,
   })
     .then((result) => {
@@ -99,8 +105,8 @@ test('createUser cannot be called by non-admin', () => {
     .signInWithEmailAndPassword('user@soylentgreen.com', 'user@soylentgreen.com')
     .then(() => {
       return createUser({
-        email: 'test@soylentgreen.com',
-        password: 'test@soylentgreen.com',
+        email: testUserEmail,
+        password: testUserEmail,
         organizationID: soylentGreenID,
       })
         .then((result) => {
@@ -146,26 +152,26 @@ test('createUser works for admins', () => {
     .signInWithEmailAndPassword('admin@soylentgreen.com', 'admin@soylentgreen.com')
     .then(() => {
       return createUser({
-        email: 'test@soylentgreen.com',
-        password: 'test@soylentgreen.com',
+        email: testUserEmail,
+        password: testUserEmail,
         organizationID: soylentGreenID,
       })
         .then((result) => result.data)
         .then((userRecord) => {
           testUid = userRecord.uid;
           // Check that the endpoint responded with the proper user
-          expect(userRecord.email).toEqual('test@soylentgreen.com');
+          expect(userRecord.email).toEqual(testUserEmail);
           // delay for 6 sec to allow functions.auth.user().onCreate to trigger and propagate
           return delay(DELAY).then(() => {
             return clientAuth
-              .signInWithEmailAndPassword('test@soylentgreen.com', 'test@soylentgreen.com')
+              .signInWithEmailAndPassword(testUserEmail, testUserEmail)
               .then(() => {
                 // Check that we can sign in with this user
                 const currentUser = clientAuth.currentUser;
                 if (currentUser === null) {
                   throw new Error('clientAuth.currentUser returned null');
                 }
-                expect(currentUser.email).toEqual('test@soylentgreen.com');
+                expect(currentUser.email).toEqual(testUserEmail);
                 return delay(DELAY).then(() => {
                   return currentUser.getIdTokenResult(true).then((idTokenResult) => {
                     // Check that custom claims are being added properly
@@ -175,7 +181,7 @@ test('createUser works for admins', () => {
                     // Check that we have a corresponding user in our users collection whose uuid field has been filled out appropriately
                     return clientDb
                       .collection('users')
-                      .doc('test@soylentgreen.com')
+                      .doc(testUserEmail)
                       .get()
                       .then((userSnapshot) => userSnapshot.data())
                       .then((user) => {
@@ -209,8 +215,8 @@ test('createUser works for admins', () => {
 test('createUser fails if invalid request body', () => {
   return clientAuth.signInWithEmailAndPassword('admin@soylentgreen.com', 'admin@soylentgreen.com').then(() => {
     return createUser({
-      email: 'test@soylentgreen.com',
-      password: 'test@soylentgreen.com',
+      email: testUserEmail,
+      password: testUserEmail,
       organization: 'This field should be organizationID',
     })
       .then((result) => {
@@ -228,8 +234,8 @@ test('createUser fails if invalid request body', () => {
 test('createUser fails if non-existent organizationID', () => {
   return clientAuth.signInWithEmailAndPassword('admin@soylentgreen.com', 'admin@soylentgreen.com').then(() => {
     return createUser({
-      email: 'test@soylentgreen.com',
-      password: 'test@soylentgreen.com',
+      email: testUserEmail,
+      password: testUserEmail,
       organizationID: "This id doesn't exist",
     })
       .then((result) => {
@@ -246,9 +252,9 @@ test('createUser fails if non-existent organizationID', () => {
 
 test('Attempting to sign up a user through clientAuth.createUserWithEmailAndPassword and not through createUser endpoint results in the user being deleted', () => {
   return clientAuth
-    .createUserWithEmailAndPassword('test@soylentgreen.com', 'test@soylentgreen.com')
+    .createUserWithEmailAndPassword(testUserEmail, testUserEmail)
     .then((userCredential) => {
-      expect(userCredential.user?.email).toEqual('test@soylentgreen.com');
+      expect(userCredential.user?.email).toEqual(testUserEmail);
       if (userCredential.user) {
         testUid = userCredential.user.uid;
       }
@@ -256,7 +262,7 @@ test('Attempting to sign up a user through clientAuth.createUserWithEmailAndPass
       return delay(DELAY)
         .then(() => {
           return adminDb
-            .doc('users/' + 'test@soylentgreen.com')
+            .doc('users/' + testUserEmail)
             .get()
             .then((user) => {
               expect(user.exists).toEqual(false);
@@ -279,7 +285,7 @@ test("Manually added, improperly formatted user in users table can't be signed u
     // set faulty document in users table
     adminDb
       .collection('users')
-      .doc('test@soylentgreen.com')
+      .doc(testUserEmail)
       .set({
         isAdmin: false,
         isSuperAdmin: false,
@@ -289,15 +295,15 @@ test("Manually added, improperly formatted user in users table can't be signed u
         // try to create corresponding user in Firebase auth
         return adminAuth
           .createUser({
-            email: 'test@soylentgreen.com',
-            password: 'test@soylentgreen.com',
+            email: testUserEmail,
+            password: testUserEmail,
           })
           .then(() => {
             // delay to allow onCreate to trigger and realize users table document is faulty
-            return delay(DELAY).then(() => {
+            return delay(DELAY * 2).then(() => {
               // check that user has been deleted from Firebase Auth
               return adminAuth
-                .getUserByEmail('test@soylentgreen.com')
+                .getUserByEmail(testUserEmail)
                 .then((userRecord) => {
                   throw new Error("Improperly formatted user should have been deleted from Auth but wasn't");
                 })
@@ -305,7 +311,7 @@ test("Manually added, improperly formatted user in users table can't be signed u
                   expect(true).toEqual(true);
                   return adminDb
                     .collection('users')
-                    .doc('test@soylentgreen.com')
+                    .doc(testUserEmail)
                     .get()
                     .then((user) => {
                       expect(user.exists).toEqual(false);
@@ -328,7 +334,7 @@ test("Manually added user in users table with non-existent organizationID can't 
     // set faulty document in users table
     adminDb
       .collection('users')
-      .doc('test@soylentgreen.com')
+      .doc(testUserEmail)
       .set({
         isAdmin: false,
         isSuperAdmin: false,
@@ -338,15 +344,15 @@ test("Manually added user in users table with non-existent organizationID can't 
         // try to create corresponding user in Firebase auth
         return adminAuth
           .createUser({
-            email: 'test@soylentgreen.com',
-            password: 'test@soylentgreen.com',
+            email: testUserEmail,
+            password: testUserEmail,
           })
           .then(() => {
             // delay to allow onCreate to trigger and realize users table document is faulty
             return delay(DELAY).then(() => {
               // check that user has been deleted from Firebase Auth
               return adminAuth
-                .getUserByEmail('test@soylentgreen.com')
+                .getUserByEmail(testUserEmail)
                 .then((userRecord) => {
                   throw new Error(
                     "User with non-existent organizationID should have been deleted from Auth but wasn't"
@@ -356,7 +362,7 @@ test("Manually added user in users table with non-existent organizationID can't 
                   expect(true).toEqual(true);
                   return adminDb
                     .collection('users')
-                    .doc('test@soylentgreen.com')
+                    .doc(testUserEmail)
                     .get()
                     .then((user) => {
                       expect(user.exists).toEqual(false);
@@ -379,7 +385,7 @@ test("Manually added user in users table with empty string organizationID can't 
     // set faulty document in users table
     adminDb
       .collection('users')
-      .doc('test@soylentgreen.com')
+      .doc(testUserEmail)
       .set({
         isAdmin: false,
         isSuperAdmin: false,
@@ -389,15 +395,15 @@ test("Manually added user in users table with empty string organizationID can't 
         // try to create corresponding user in Firebase auth
         return adminAuth
           .createUser({
-            email: 'test@soylentgreen.com',
-            password: 'test@soylentgreen.com',
+            email: testUserEmail,
+            password: testUserEmail,
           })
           .then(() => {
             // delay to allow onCreate to trigger and realize users table document is faulty
             return delay(DELAY * 2).then(() => {
               // check that user has been deleted from Firebase Auth
               return adminAuth
-                .getUserByEmail('test@soylentgreen.com')
+                .getUserByEmail(testUserEmail)
                 .then((userRecord) => {
                   throw new Error(
                     "User with empty string organizationID should have been deleted from Auth but wasn't"
@@ -407,7 +413,7 @@ test("Manually added user in users table with empty string organizationID can't 
                   expect(true).toEqual(true);
                   return adminDb
                     .collection('users')
-                    .doc('test@soylentgreen.com')
+                    .doc(testUserEmail)
                     .get()
                     .then((user) => {
                       expect(user.exists).toEqual(false);
