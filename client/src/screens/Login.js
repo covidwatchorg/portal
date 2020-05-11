@@ -1,6 +1,6 @@
 import React, { Fragment, useState } from 'react'
 import { Redirect } from 'react-router-dom'
-import { auth } from '../util/auth'
+import store from '../store'
 
 const Login = () => {
   const [values, setValues] = useState({
@@ -16,18 +16,18 @@ const Login = () => {
     setValues({ ...values, error: false, [name]: event.target.value })
   }
 
-  const clickSubmit = (event) => {
+  const clickSubmit = async (event) => {
     event.preventDefault()
     setValues({ ...values, error: false })
-    auth
-      .signIn({ email, password })
-      .then(() => {
-        setValues({ ...values, redirect: auth.isAdmin })
-      })
-      .catch((err) => {
-        console.log(err)
-        setValues({ ...values, redirect: auth.isAdmin })
-      })
+    console.log(`isAdmin = ${store.user.isAdmin}`)
+
+    try {
+      await store.user.signIn(email, password);
+      setValues({ ...values, redirect: store.user.isAdmin })
+    } catch (err) {
+      console.log(err)
+      setValues({ ...values, redirect: store.user.isAdmin })
+    }
   }
 
   const redirectUser = () => {
