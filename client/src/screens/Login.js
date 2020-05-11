@@ -22,7 +22,7 @@ const Login = () => {
     auth
       .signIn({ email, password })
       .then(() => {
-        setValues({ ...values, redirect: auth.checkIfAdmin() })
+        setValues({ ...values, redirect: auth.isAdmin })
       })
       .catch((err) => {
         console.log(err)
