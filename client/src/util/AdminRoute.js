@@ -2,12 +2,15 @@ import React from 'react';
 import { Route, Redirect } from 'react-router-dom';
 import { signin } from './auth';
 
-const AdminRoute = ({component : Component, ...rest}) => {
+const AdminRoute = props => {
     return (
-    <Route {...rest} render={(props) => (
-    signin.isAdmin === true ? 
-    <Component {...props}/>
-    : <Redirect to='/'/> )} />
+    <Route path={props.path}>
+        {
+            signin.isAdmin === true ? 
+            props.children :
+            <Redirect to='/'/>
+        }
+    </Route>
     )
 }
 

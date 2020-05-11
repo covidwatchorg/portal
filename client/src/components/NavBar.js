@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
-import { Redirect } from 'react-router-dom';
+import { Redirect, Link } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
 import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import Menu from '@material-ui/core/Menu';
+import signin from '../util/auth';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -18,11 +19,17 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const NavBar = props => {
-  const { onNavigate } = props;
+const linkStyles = {
+  textDecoration: "none",
+  fontFamily: "Montserrat",
+  color: "#2c58b1",
+  fontSize: 20
+};
+
+const NavBar = () => {
   const classes = useStyles();
 
-  const [redirect, setRedirect] = useState(false);
+  const [redirect, setRedirect] = useState(-1);
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
   
@@ -36,7 +43,7 @@ const NavBar = props => {
 
   const onClickMenuItem = num => {
     setAnchorEl(null);
-    onNavigate(num);
+    setRedirect(num);
   };
 
   return (
@@ -66,15 +73,28 @@ const NavBar = props => {
         open={open}
         onClose={handleClose}
       >
-        <MenuItem onClick={() => onClickMenuItem(0)}>Positive Test Validations</MenuItem>
-        <MenuItem onClick={() => onClickMenuItem(1)}>Manage Members</MenuItem>
-        <MenuItem onClick={() => onClickMenuItem(2)}>Account Branding</MenuItem>
-        <MenuItem onClick={() => onClickMenuItem(3)}>My Settings</MenuItem>
-        <MenuItem onClick={() => setRedirect(true)}>Logout</MenuItem>
+        <MenuItem style={linkStyles} onClick={() => onClickMenuItem(0)}>
+          Positive Test Validations
+        </MenuItem>
+        <MenuItem style={linkStyles} onClick={() => onClickMenuItem(1)}>
+          Manage Members
+        </MenuItem>
+        <MenuItem style={linkStyles} onClick={() => onClickMenuItem(2)}>
+          Account Branding
+        </MenuItem>
+        <MenuItem style={linkStyles} onClick={() => onClickMenuItem(3)}>
+          My Settings
+        </MenuItem>
+        <MenuItem style={linkStyles} onClick={() => onClickMenuItem(4)}>
+          Logout
+        </MenuItem>
       </Menu>
       {
-        redirect &&
-        <Redirect to='/'/>
+        (redirect === 0) ? <Redirect to='/code_validations' /> :
+        (redirect === 1) ? <Redirect to='/manage_members' /> :
+        (redirect === 2) ? <Redirect to='/branding' /> :
+        (redirect === 3) ? <Redirect to='/settings' /> :
+        (redirect === 4) && <Redirect to='/'/>
       }
     </div>
   );

@@ -29,7 +29,7 @@ const Login = () => {
   const redirectUser = () => {
     if (redirect === true) {
       console.log('redirecting');
-      return <Redirect to='/orgAdmin' />;
+      return <Redirect to='/manage_members' />;
     }
   };
 
