@@ -7,24 +7,9 @@ import 'firebase/auth';
 import 'firebase/functions';
 // tslint:disable-next-line: no-import-side-effect
 import 'firebase/firestore';
-import * as dotenv from 'dotenv';
-import path = require('path');
 
-const envPath= path.resolve(process.cwd(), `.env.${process.env.NODE_ENV}`)
-dotenv.config({path: envPath});
-
+const firebaseConfig = require(`../../config/firebase.config.${process.env.NODE_ENV}.js`)
 jest.setTimeout(60000);
-
-// Initialize client SDK
-const firebaseConfig = {
-  apiKey: process.env.apiKey,
-  authDomain: process.env.authDomain,
-  databaseURL: process.env.databaseURL,
-  projectId: process.env.projectId,
-  storageBucket: process.env.storageBucket,
-  messagingSenderId: process.env.messagingSenderId,
-  appId: process.env.appId
-}
 
 firebase.initializeApp(firebaseConfig);
 // Initialize admin SDK

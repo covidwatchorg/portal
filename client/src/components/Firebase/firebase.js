@@ -1,24 +1,30 @@
 import app from 'firebase/app';
 import "firebase/auth";
 import { functions } from "firebase";
+import * as firebaseConfigDev from '../../config/firebase.config.dev';
+import * as firebaseConfigTest from '../../config/firebase.config.test';
+import * as firebaseConfigProd from '../../config/firebase.config.prod';
 
 //require('firebase/auth')
 import "firebase/firestore";
 
-var config = require(`../../config/firebase.config.local.js`)
-if(process.env.REACT_APP_ENV) {
-  config = require(`../../config/firebase.config.${process.env.REACT_APP_ENV}.js`)
-}
 
+var firebaseConfigMap = { dev: firebaseConfigDev , test: firebaseConfigTest, prod: firebaseConfigProd};
+
+var firebaseConfigFile;
+console.log(`environment is : ${process.env.REACT_APP_ENV}`);
+var key = 'dev';
+if (process.env) {
+  key = process.env.REACT_APP_ENV;
+}
+console.log (`firebase configuration in ${key}`)
+var config = firebaseConfigMap[key];
 class Firebase {
   constructor() {
     app.initializeApp(config);
     this.auth = app.auth();
     this.firestore = app.firestore();
     this.db = app.database();
-
-
-
   }
   doCreateUserWithEmailAndPassword = (email, password) =>
     this.auth.createUserWithEmailAndPassword(email, password);

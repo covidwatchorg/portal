@@ -9,4 +9,3 @@ module.exports =  {
   appId: "1:885750041965:web:14133265537c686c1dde64"
 };
 
-//export firebaseConfig;

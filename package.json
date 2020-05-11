@@ -5,9 +5,9 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "echo \"Error: no start script specified\" && exit 1",
+    "start": "webpack-dev-server --open --hot",
     "build": "NODE_ENV=production webpack",
-    "dev": "cross-env REACT_APP_ENV=local node --nolazy --inspect-brk=9230 ./node_modules/webpack-dev-server/bin/webpack-dev-server.js --open --hot"
+    "dev": "cross-env REACT_APP_ENV=dev node --nolazy --inspect-brk=9230 ./node_modules/webpack-dev-server/bin/webpack-dev-server.js --open --hot"
   },
   "repository": {
     "type": "git"
@@ -43,6 +43,7 @@
     "babel-plugin-transform-runtime": "^6.23.0",
     "babel-polyfill": "^6.26.0",
     "concurrently": "^4.1.0",
+    "copy-webpack-plugin": "^5.1.1",
     "cross-env": "^5.2.1",
     "css-loader": "^3.5.2",
     "dotenv": "^8.2.0",

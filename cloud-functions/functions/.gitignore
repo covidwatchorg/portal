@@ -3,6 +3,8 @@
 **/*.js.map
 !firebase-repl.js
 !jest.config.js
+!config/firebase.config.*.js
+
 
 # Typescript v1 declaration files
 typings/

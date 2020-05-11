@@ -4,7 +4,12 @@ To start the application, please go to the root folder and execute:
 
 1. `npm install` to install all the dependencies
 2. `npm run dev` to start the webpack dev server.
-3.  For login and authentificatoin purposes, please enter `admin` as the email to login, pending further instruction in authentication, firebase token, dummy data, etc. 
+3.  create your personal firebase account , and export your configurations under the following locations
+    a. update your firebase configuration ( Firebase Console => Project => Settings => Website Settings ) in $ROOT/client/src/config/firebase.config.dev.js
+4. to start the front end application in any environment 
+```
+    export REACT_APP_ENV=test && npm start
+```
 
 ## Contact:
 
@@ -17,3 +22,5 @@ Nikhil Kumar = [https://github.com/therealnikhil](https://github.com/therealnikh
 Wenfei Zhou - [https://github.com/wjoe2046](https://github.com/wjoe2046)
 
 Rachel Quartararo - [https://github.com/rquartararo](https://github.com/rquartararo)
+
+Prabhu Inbarajan - [https://github.com/prabhuinbarajan] (https://github.com/prabhuinbarajan)

@@ -8,15 +8,7 @@ require('firebase/functions');
 var admin = require('firebase-admin');
 require('firebase/auth');
 
-const firebaseConfig = {
-  apiKey: process.env.apiKey,
-  authDomain: process.env.authDomain,
-  databaseURL: process.env.databaseURL,
-  projectId: process.env.projectId,
-  storageBucket: process.env.storageBucket,
-  messagingSenderId: process.env.messagingSenderId,
-  appId: process.env.appId
-}
+const firebaseConfig = require(`./config/firebase.config.${process.env.NODE_ENV}.js`)
 
 firebase.initializeApp(firebaseConfig);
 admin.initializeApp(firebaseConfig);
