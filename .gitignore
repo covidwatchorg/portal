@@ -4,3 +4,4 @@ dist
 **/.vscode/*
 .env
 .env.local
+firebase.config.dev.js
