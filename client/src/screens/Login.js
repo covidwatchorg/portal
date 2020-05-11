@@ -33,6 +33,15 @@ const Login = () => {
     }
   };
 
+  const bottomLevelContent = () => (
+    <fragment>
+      <div className="doctorContainer">
+        <div className="doctor1"><img src='/client/assets/doctor1.svg'/></div>
+        <div className="doctor2"><img src='/client/assets/doctor2.svg'/></div>
+      </div>
+    </fragment>
+  );
+
   const loginForm = () => (
     <Fragment>
       <div className="topNav">
@@ -62,6 +71,7 @@ const Login = () => {
     <React.Fragment>
       {loginForm()}
       {redirectUser()}
+      {bottomLevelContent()}
     </React.Fragment>
   );
 };

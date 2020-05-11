@@ -25,7 +25,7 @@ const NavBar = props => {
   const [redirect, setRedirect] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
-  
+
   const handleMenu = (event) => {
     setAnchorEl(event.currentTarget);
   };
@@ -39,9 +39,29 @@ const NavBar = props => {
     onNavigate(num);
   };
 
+  const getUserName = () => {
+    return "Dr. John Doe"; // TODO retrieve name from user data
+  };
+
+  const getUserTitle = () => {
+    return "Account Admin" // TODO retrieve title from user data
+  };
+
   return (
     <div className='navbarContainer'>
       <img src='/client/assets/ucsf-health.svg' id='ucsfLogo' />
+      <div class="avatar_group avatar_text">
+        <div class="name">
+          {getUserName()}
+        </div>
+        <div class="title">
+          {getUserTitle()}
+        </div>
+      </div>
+      <div class="avatar_group avatar_image">
+        <img src='client/assets/placeholder/profile.png'/>
+      </div>
+      <div class="avatar_group separator"/>
       <IconButton
         edge='start'
         className={classes.menuButton}
