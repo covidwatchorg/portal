@@ -147,7 +147,7 @@ type challengeDoc struct {
 }
 
 // GenerateChallenge generates a new challenge and stores it in the database.
-func GenerateChallenge(ctx util.Context) (*Challenge, error) {
+func GenerateChallenge(ctx *util.Context) (*Challenge, error) {
 	c := generateChallenge(defaultWorkFactor)
 
 	doc := challengeDoc{Expiration: time.Now().Add(expirationPeriod)}

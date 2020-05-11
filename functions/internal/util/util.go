@@ -7,7 +7,6 @@ import (
 	"errors"
 	"fmt"
 	"io"
-	"log"
 	"net/http"
 	"os"
 
@@ -27,9 +26,8 @@ type Context struct {
 }
 
 // NewContext constructs a new Context from an http.ResponseWriter and an
-// *http.Request. If an error occurs, NewContext takes care of writing an
-// appropriate response to w, and logs the error using log.Printf.
-func NewContext(w http.ResponseWriter, r *http.Request) (Context, error) {
+// *http.Request.
+func NewContext(w http.ResponseWriter, r *http.Request) (Context, StatusError) {
 	ctx := r.Context()
 	// In production, automatically detect credentials from the environment.
 	projectID := firestore.DetectProjectID
@@ -42,7 +40,6 @@ func NewContext(w http.ResponseWriter, r *http.Request) (Context, error) {
 	client, err := firestore.NewClient(ctx, projectID)
 	if err != nil {
 		err := NewInternalServerError(err)
-		writeStatusError(w, r, err)
 		return Context{}, err
 	}
 
@@ -64,25 +61,6 @@ func (c *Context) HTTPResponseWriter() http.ResponseWriter {
 // FirestoreClient returns the firestore Client.
 func (c *Context) FirestoreClient() *firestore.Client {
 	return c.client
-}
-
-func writeStatusError(w http.ResponseWriter, r *http.Request, err StatusError) {
-	type response struct {
-		Message string `json:"message"`
-	}
-
-	w.Header().Set("Content-Type", "application/json; charset=utf-8")
-	w.WriteHeader(err.HTTPStatusCode())
-	json.NewEncoder(w).Encode(response{Message: err.Message()})
-
-	log.Printf("[%v %v %v]: responding with error code %v and message \"%v\"",
-		r.RemoteAddr, r.Method, r.URL, err.HTTPStatusCode(), err.Message())
-}
-
-// WriteStatusError writes err to c.HTTPResponseWriter(), and logs it using
-// log.Printf.
-func (c *Context) WriteStatusError(err StatusError) {
-	writeStatusError(c.resp, c.req, err)
 }
 
 // ValidateRequestMethod validates that ctx.HTTPRequest().Method == method, and
