@@ -8,7 +8,7 @@ export const auth = {
       .signInWithEmailAndPassword(user.email, user.password)
       .then(() => {
         console.log('Successfully logged in')
-        firebase
+        return firebase
           .auth()
           .currentUser.getIdTokenResult(true)
           .then((idTokenResult) => {
