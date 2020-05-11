@@ -95,7 +95,7 @@ test('createUser cannot be called without being authenticated', () => {
       throw new Error("This shouldn't happen!");
     })
     .catch((err) => {
-      expect(err.code).toEqual('failed-precondition');
+      expect(err.code).toEqual('unauthenticated');
       expect(err.message).toEqual('The function must be called while authenticated.');
     });
 });
@@ -113,7 +113,7 @@ test('createUser cannot be called by non-admin', () => {
           throw new Error("This shouldn't happen!");
         })
         .catch((err) => {
-          expect(err.code).toEqual('failed-precondition');
+          expect(err.code).toEqual('permission-denied');
           expect(err.message).toEqual('The function must be called by an admin.');
         });
     })
@@ -349,7 +349,7 @@ test("Manually added user in users table with non-existent organizationID can't 
           })
           .then(() => {
             // delay to allow onCreate to trigger and realize users table document is faulty
-            return delay(DELAY).then(() => {
+            return delay(DELAY * 2).then(() => {
               // check that user has been deleted from Firebase Auth
               return adminAuth
                 .getUserByEmail(testUserEmail)
