@@ -9,6 +9,7 @@ import (
 	"io"
 	"log"
 	"net/http"
+	"os"
 
 	"cloud.google.com/go/firestore"
 	"google.golang.org/grpc/codes"
@@ -30,7 +31,15 @@ type Context struct {
 // appropriate response to w, and logs the error using log.Printf.
 func NewContext(w http.ResponseWriter, r *http.Request) (Context, error) {
 	ctx := r.Context()
-	client, err := firestore.NewClient(ctx, "test")
+	// In production, automatically detect credentials from the environment.
+	projectID := firestore.DetectProjectID
+	if os.Getenv("FIRESTORE_EMULATOR_HOST") != "" {
+		// If we're not in production, then `firestore.DetectProjectID` will
+		// cause `NewClient` to look for credentials which aren't there, and so
+		// the call will fail.
+		projectID = "test"
+	}
+	client, err := firestore.NewClient(ctx, projectID)
 	if err != nil {
 		err := NewInternalServerError(err)
 		writeStatusError(w, r, err)
