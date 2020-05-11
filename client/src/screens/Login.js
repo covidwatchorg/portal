@@ -1,6 +1,6 @@
 import React, { Fragment, useState } from 'react'
 import { Redirect } from 'react-router-dom'
-import { signin } from '../util/auth'
+import { auth } from '../util/auth'
 
 const Login = () => {
   const [values, setValues] = useState({
@@ -19,10 +19,14 @@ const Login = () => {
   const clickSubmit = (event) => {
     event.preventDefault()
     setValues({ ...values, error: false })
-    signin.checkIfAdmin({ email, password })
-    if (signin.isAdmin === true) {
-      setValues({ ...values, redirect: true })
-    }
+    auth
+      .signIn({ email, password })
+      .then(() => {
+        setValues({ ...values, redirect: auth.checkIfAdmin() })
+      })
+      .catch((err) => {
+        console.log(err)
+      })
   }
 
   const redirectUser = () => {
