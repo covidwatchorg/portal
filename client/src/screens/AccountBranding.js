@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import PendingOperationButton from '../components/PendingOperationButton';
 import "../../Styles/screens/branding.scss";
 
 var defaultDiagnosisText = `Next Steps:
@@ -13,35 +14,36 @@ var defaultExposureText = `Next Steps:
 -
 `;
 
-const getSavedDiagnosisText = () => {
+const getDiagnosisText = () => {
   return defaultDiagnosisText;
 };
 
-const getSavedExposureText = () => {
+const getExposureText = () => {
   return defaultExposureText
 }
 
-// TODO this operation may fail, should return success confirmation
-const SaveAccountBrandingData = (diagnosisText, setDiagnosisText, exposureText, setExposureText) => {
-  console.log("TODO save account branding data");
-  console.log(diagnosisText);
-  console.log(exposureText);
-
-  defaultDiagnosisText = diagnosisText;
-  setDiagnosisText(defaultDiagnosisText);
-
-  defaultExposureText = exposureText;
-  setExposureText(defaultExposureText);
-}
-
 const AccountBranding = () => {
-  const savedDiagnosisText = getSavedDiagnosisText();
-  const savedExposureText = getSavedExposureText();
+  const [dataDirty, setDataDirty] = useState(false);
+  const [diagnosisText, setDiagnosisText] = useState(getDiagnosisText());
+  const [exposureText, setExposureText] = useState(getExposureText());
 
-  const [diagnosisText, setDiagnosisText] = useState(savedDiagnosisText);
-  const [exposureText, setExposureText] = useState(savedExposureText);
+  const saveAccountBrandingData = () => {
+    console.log("TODO save account branding data");
+    setDataDirty(false);
+  }
 
-  const changedSinceLastSave = savedDiagnosisText !== diagnosisText || savedExposureText !== exposureText;
+  const saveOperation = () => {
+    return new Promise((resolutionFunc, rejectionFunc) => {
+      setTimeout(()=>{
+        saveAccountBrandingData();
+        resolutionFunc();
+      }, 2000);
+    });
+  };
+
+  const onContactUsClicked = () => {
+    console.log("TODO contact us");
+  };
 
   return (
     <div className="module-container">
@@ -56,7 +58,7 @@ const AccountBranding = () => {
             className="section-input"
             type="text"
             value={diagnosisText}
-            onChange={e => setDiagnosisText(e.target.value)}
+            onChange={e => {setDiagnosisText(e.target.value); setDataDirty(true)}}
           />
         </div>
         <div className="branding-section">
@@ -68,7 +70,7 @@ const AccountBranding = () => {
             className="section-input"
             type="text"
             value={exposureText}
-            onChange={e => setExposureText(e.target.value)}
+            onChange={e => {setExposureText(e.target.value); setDataDirty(true)}}
           />
         </div>
         <div className="branding-section">
@@ -76,18 +78,15 @@ const AccountBranding = () => {
           <p className="section-description">
           Your dedicated account manager will gladly help you with other branding and customization needs.
           </p>
-          <div id="contact-button" onClick={() => {}}>
+          <div id="contact-button" onClick={onContactUsClicked}>
             Contact Us
           </div>
         </div>
       </div>
       <div className="save-button-container">
-        {
-          changedSinceLastSave &&
-          <div className="save-button" onClick={() => SaveAccountBrandingData(diagnosisText, setDiagnosisText, exposureText, setExposureText)}>
+          <PendingOperationButton className="save-button" operation={saveOperation}>
             Save Changes
-          </div>
-        }
+          </PendingOperationButton>
       </div>
     </div>
   );
