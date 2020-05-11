@@ -2,7 +2,9 @@ import React, { Fragment, useState } from 'react';
 import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
 import TextField from '@material-ui/core/TextField';
+import Modal from '@material-ui/core/Modal';
 import { makeStyles } from '@material-ui/core/styles';
+
 
 const useStyles = makeStyles({
   root : {
@@ -27,43 +29,75 @@ const inputStyles = makeStyles({
     height: 30,
     fontSize: 18,
     marginTop: 10,
-    marginBottom: 40
+    marginBottom: 30
       
   }
 })
 
 const primaryButtonStyles = makeStyles({
   root : {
-  backgroundColor:'#2C58B1', 
-  color:'white',
-  width:'75%', 
-  fontSize:'18px',
-  padding:'5px',
-  borderRadius:'7px',
-  height: 40,
-  marginTop: 30
+    backgroundColor:'#2C58B1', 
+    color:'white',
+    width:'75%', 
+    fontSize:'18px',
+    padding:'5px',
+    borderRadius:'7px',
+    height: 40,
+    marginTop: 20
   }
 
 })
 const secondaryButtonStyles = makeStyles({
   root : { 
-  color:'#2C58B1', 
-  width:'195px', 
-  height: 40,
-  fontSize:'18px', 
-  padding:'5px',
-  border: '2px solid #BDBDBD',
-  borderRadius:'7px'
+    color:'#2C58B1', 
+    width:'195px', 
+    height: 40,
+    fontSize:'18px', 
+    padding:'5px',
+    border: '2px solid #BDBDBD',
+    borderRadius:'7px'
 }
 })
 
-const Settings = () => {
+const changeImageModalStyles = makeStyles({
+  root : {
+    fontFamily: 'Montserrat',
+    margin: 'auto',
+    marginTop: '200px',
+    width: '40%',
+    height: '20%',
+    backgroundColor: 'white',
+    padding: 50,
+    borderRadius: '7px'
+  }
+})
 
+const Settings = () => {
   const classes = useStyles();
   const input = inputStyles();
   const secondaryButton = secondaryButtonStyles();
-  const primaryButton = primaryButtonStyles()
- 
+  const primaryButton = primaryButtonStyles();
+  const changeImage = changeImageModalStyles();
+  const [open, setOpen] = React.useState(false);
+
+  const handleOpen = () => {
+    setOpen(true);
+  }
+  const handleClose = () => {
+    setOpen(false)
+  }
+
+  
+  const changeImageModal = (
+    <div className={changeImage.root}>
+      <input type='file' accepts='image/jpeg, image/png'/>
+      <div style={{alignContent:'right', marginTop: '35px'}}>
+        <button onClick={handleClose} className={secondaryButton.root} style={{width:'100px', border: 'none'}}>Discard</button>
+        <button onClick={handleClose} className={primaryButton.root} style={{width:'70px', borderStyle:'none'}}>Save</button>
+      </div>
+    </div>
+  )
+
   const settingsForm = () => (
     <Fragment>
    
@@ -73,15 +107,21 @@ const Settings = () => {
         <Grid item xs={4}>
           <Grid container spacing={2} direction='column'>
               Profile Photo
-              <div style={{marginTop:'20px', height:'200px', width:'195px', backgroundColor:'#E0E0E0', border: '2px dashed #828282'}}>
+              <div style={{marginTop:'10px', height:'200px', width:'195px', backgroundColor:'#E0E0E0', border: '2px dashed #828282', textAlign:'center'}}>
+                <img src='client/assets/photo-add.png' style={{height:'50px', width:'50px', display:'block', margin:'auto', marginTop:'75px'}}></img>
               </div>
-              <text style={{marginTop:'15px', fontSize:'12px', color:'#585858'}}>
+              <div style={{marginTop:'15px', fontSize:'12px', color:'#585858'}}>
                 Accepted file types: jpg or png
-              </text>
-              <text style={{ marginBottom:'15px', fontSize:'12px', color:'#585858'}}>
+              </div>
+              <div style={{ marginBottom:'15px', fontSize:'12px', color:'#585858'}}>
                 Maximum file size: __ MB
-              </text>
-              <button type='submit' className={secondaryButton.root}>Change Image</button>
+              </div>
+              <button onClick={handleOpen} type='button' className={secondaryButton.root}>Change Image</button>
+              <Modal
+              open={open}
+              onClose={handleClose}>
+              {changeImageModal}
+              </Modal>
           </Grid>
         </Grid>
 
@@ -92,11 +132,11 @@ const Settings = () => {
               </label>
               <input type="text" id='prefix' name='prefix' className={input.root}></input>
               <label for='firstName'>
-                First Name <text style={{color:'red'}}>*</text>
+                First Name <span style={{color:'red'}}>*</span>
               </label>
               <input type="text" id='firstName' name='firstName' required className={input.root}></input>
               <label for='email'>
-                Email Address <text style={{color:'red'}}>*</text>
+                Email Address <span style={{color:'red'}}>*</span>
               </label>
               <input type="text" id='email' name='email' required className={input.root}></input>
               <button type='submit' className={primaryButton.root}>Save Changes</button>
@@ -106,21 +146,20 @@ const Settings = () => {
         <Grid item xs={4}>
           <Grid container spacing={2} direction='column'>
             <label for='role'>
-              Role <text style={{color:'red'}}>*</text>
+              Role <span style={{color:'red'}}>*</span>
             </label>
-            <input type="text" id='role' name='role' value='Administrator' required className={input.root} style={{backgroundColor:'#E0E0E0'}}></input>
+            <input type="text" id='role' name='role' defaultValue='Administrator' required className={input.root} style={{backgroundColor:'#E0E0E0'}}></input>
             <label for='lastName'>
-              Last Name <text required style={{color:'red'}}>*</text>
+              Last Name <span style={{color:'red'}}>*</span>
             </label>
             <input type="text" id='lastName' name='lastName' required className={input.root}></input>
             <label for='password'>
-              Password <text style={{color:'red'}}>*</text>
+              Password <span style={{color:'red'}}>*</span>
             </label>
-            <input required className={input.root}  id='password' name='password' type="password"  value='example' style={{backgroundColor: '#E0E0E0'}}/>
+            <input required className={input.root}  id='password' name='password' type="password"  defaultValue='example' style={{backgroundColor: '#E0E0E0'}}/>
             <a href='' style={{fontSize:'12px', textAlign:'right', marginRight:'50px', color:'#2C58B1', fontStyle:'underline'}}>Change Password</a>
           </Grid>
-        </Grid>
-    
+        </Grid> 
       </Grid>
     </form>
 
