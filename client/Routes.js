@@ -16,7 +16,10 @@ const Routes = () => {
         <Route path='/code_validations' exact component={CodeValidations} />
         <AdminRoute path='/orgAdmin' component={AdminDashboard} />
       </Switch>
-      <Footer />
+      <Switch>
+          <Route exact path="/" component={Footer} />
+          <Route component={() => <Footer branded={true} />}/>
+      </Switch>
     </BrowserRouter>
   );
 };
