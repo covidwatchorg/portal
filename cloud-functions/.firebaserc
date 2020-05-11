@@ -3,6 +3,6 @@
     "default": "permission-portal-test",
     "test": "permission-portal-test",
     "prod": "permission-portal",
-    "local": "permission-portal-dev"
+    "dev": "permission-portal-dev"
   }
 }
