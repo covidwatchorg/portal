@@ -44,8 +44,8 @@ const clientDb = firebase.firestore();
 const clientAuth = firebase.auth();
 
 // Constants taken from database
-const soylentGreenID: string = 'rpFcyXGn0a6xeWYvEEns';
-const initechID: string = 'xIvCjnRAkbHWEufBgZag';
+const soylentGreenID: string = 'wV6rYRcd6ujaxiOWb9qa';
+const initechID: string = 'Y2QXOHIx643m7FceqU5R';
 
 describe("Unauthenticated users can't do anything", () => {
   test("Unauthenticated user can't read users", () => {
