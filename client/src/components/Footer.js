@@ -1,9 +1,5 @@
 import React from 'react';
 
-const constructClassName = (isBranded) => {
-    return ;
-};
-
 const Footer = (props) => {
   return (
     <div className={"footerContainer" + (props.branded ? " branded" : "")}>
