@@ -29,9 +29,18 @@ const Login = () => {
   const redirectUser = () => {
     if (redirect === true) {
       console.log('redirecting');
-      return <Redirect to='/orgAdmin' />;
+      return <Redirect to='/manage_members' />;
     }
   };
+
+  const bottomLevelContent = () => (
+    <fragment>
+      <div className="doctorContainer">
+        <div className="doctor1"><img src='/client/assets/doctor1.svg'/></div>
+        <div className="doctor2"><img src='/client/assets/doctor2.svg'/></div>
+      </div>
+    </fragment>
+  );
 
   const loginForm = () => (
     <Fragment>
@@ -62,6 +71,7 @@ const Login = () => {
     <React.Fragment>
       {loginForm()}
       {redirectUser()}
+      {bottomLevelContent()}
     </React.Fragment>
   );
 };

@@ -1,9 +1,15 @@
 @import 'screens/login';
+@import 'screens/settings';
 @import 'components/footer';
 @import 'components/navbar';
 
 body {
   margin: 0px;
+
+  // Default text style
+  font-family: Montserrat;
+  font-style: normal;
+  color: #333333;
 }
 
 h1 {
@@ -13,8 +19,6 @@ h1 {
   font-size: 40px;
   line-height: 49px;
   color: #333333;
+  margin-left: 32px;
 }
 
-.module-container {
-  margin: 32px;
-}
