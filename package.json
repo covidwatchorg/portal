@@ -22,18 +22,11 @@
     "@material-ui/core": "^4.9.12",
     "@material-ui/icons": "^4.9.1",
     "@material-ui/pickers": "^3.2.10",
-<<<<<<< HEAD
-=======
-    "@material-ui/styles": "^4.9.13",
->>>>>>> a876c7e58a6734c5601f418fec9672031dd52bb8
     "babel-polyfill": "^6.26.0",
     "cors": "^2.8.5",
     "express": "^4.17.1",
     "file-system": "^2.2.2",
-<<<<<<< HEAD
     "material-icons": "^0.3.1",
-=======
->>>>>>> a876c7e58a6734c5601f418fec9672031dd52bb8
     "material-table": "^1.57.2",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
