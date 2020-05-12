@@ -12,7 +12,7 @@ const User = types
 
         const idTokenResult = yield firebase.auth.currentUser.getIdTokenResult(true)
 
-        self.isAdmin = idTokenResult.claims.isAdmin
+        this.isAdmin = idTokenResult.claims.isAdmin
         console.log(`isAdmin set to ${self.isAdmin}`)
       } catch (e) {
         console.log(e)
@@ -33,7 +33,7 @@ const Store = types
       try {
         yield firebase.auth.signOut()
         console.log('Successfully logged out')
-        self.user.isAdmin = false
+        this.user.isAdmin = false
       } catch (e) {
         console.log(e)
       }
