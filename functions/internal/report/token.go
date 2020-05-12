@@ -7,7 +7,7 @@ import (
 	"strconv"
 	"strings"
 
-	"functions/internal/util"
+	"upload-token.functions/internal/util"
 )
 
 // On the design of the upload token (see [1] for more details):

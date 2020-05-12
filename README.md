@@ -59,8 +59,7 @@ the new one and cause confusion).
 
 If the `--host-port` flag is omitted, the emulator will choose a random port,
 which has a high likelihood of not being in use. The emulator will output which
-address to use by displaying a line like `export
-FIRESTORE_EMULATOR_HOST=::1:8195`.
+address to use by displaying a line like `export FIRESTORE_EMULATOR_HOST=::1:8195`.
 
 Note that, if the local IP address is an IPv6 address (like `::1`), then you
 will need to put square brackets around the address for compatibility with Go's
@@ -71,16 +70,51 @@ FIRESTORE_EMULATOR_HOST=[::1]:8195`.
 
 You can hit the endpoints with curl or Postman.
 
+Try:
+
+```
+curl --request GET 'http://localhost:8080/challenge' \
+     --header 'X-Forwarded-Proto: https'
+```
+
+### HTTPS
+
+The local dev server uses HTTP so you must send a fake HTTPS header to prevent the
+request from being rejected.
+
+If you see an error message like this with HTTP Code 426:
+
+```
+{"Error":"Please use HTTPS"}
+```
+
+You should add either:
+
+```
+X-Forwarded-Proto: https
+```
+
+or
+
+```
+Forwarded: for=\"localhost\";proto=https
+```
+
 ## Firebase Security
 
-Unauthenticated Firestore access is disabled. If you want to access the emulator
-you can send the following header to override the security with the bearer token
-"owner".
+Unauthenticated Firestore access is disabled. If you want to bypass the firestore.rules
+on the emulator REST interface just supply the auth bearer header value "owner":
 
-```text
-curl --location \
-  --request GET 'http://localhost:8080/v1/projects/covidwatch-354ce/databases/(default)/documents/challenges' \
-  --header 'Authorization: Bearer owner'
+```
+Authorization: Bearer owner
+```
+
+## Deployment
+
+You can deploy the functions with:
+
+```
+$ ./deploy.sh
 ```
 
 ### Postman Collection
