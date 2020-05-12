@@ -1,6 +1,7 @@
 import app from 'firebase/app';
 import "firebase/auth";
 import { functions } from "firebase";
+import * as firebaseConfigLocal from '../../config/firebase.config.local';
 import * as firebaseConfigDev from '../../config/firebase.config.dev';
 import * as firebaseConfigTest from '../../config/firebase.config.test';
 import * as firebaseConfigProd from '../../config/firebase.config.prod';
@@ -9,13 +10,13 @@ import * as firebaseConfigProd from '../../config/firebase.config.prod';
 import "firebase/firestore";
 
 
-var firebaseConfigMap = { dev: firebaseConfigDev , test: firebaseConfigTest, prod: firebaseConfigProd};
+var firebaseConfigMap = { dev: firebaseConfigDev , test: firebaseConfigTest, prod: firebaseConfigProd, local: firebaseConfigLocal};
 
 var firebaseConfigFile;
-console.log(`environment is : ${process.env.REACT_APP_ENV}`);
+console.log(`environment is : ${process.env.NODE_ENV}`);
 var key = 'dev';
 if (process.env) {
-  key = process.env.REACT_APP_ENV;
+  key = process.env.NODE_ENV;
 }
 console.log (`firebase configuration in ${key}`)
 var config = firebaseConfigMap[key];

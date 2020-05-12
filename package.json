@@ -4,10 +4,15 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "init": "cpy ./config/ client/src/config/ &&  cpy --no-overwrite client/src/config/firebase.config.local.template client/src/config --rename=firebase.config.local.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "webpack-dev-server --open --hot",
+    "start:local": "NODE_ENV=local npm start",
+    "start:dev": "NODE_ENV=dev npm start",
     "build": "NODE_ENV=production webpack",
-    "dev": "cross-env REACT_APP_ENV=dev node --nolazy --inspect-brk=9230 ./node_modules/webpack-dev-server/bin/webpack-dev-server.js --open --hot"
+    "debug": "node --nolazy --inspect-brk=9230 ./node_modules/webpack-dev-server/bin/webpack-dev-server.js --open --hot",
+    "debug:dev": "NODE_ENV=dev npm run debug",
+    "debug:local": "NODE_ENV=local npm run debug"
   },
   "repository": {
     "type": "git"
@@ -21,6 +26,7 @@
     "@material-ui/core": "^4.9.12",
     "@material-ui/icons": "^4.9.1",
     "cors": "^2.8.5",
+    "cpy-cli": "^3.1.1",
     "express": "^4.17.1",
     "file-system": "^2.2.2",
     "firebase": "^7.14.2",

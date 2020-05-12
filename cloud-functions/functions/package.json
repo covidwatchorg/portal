@@ -2,19 +2,23 @@
   "name": "functions",
   "scripts": {
     "lint": "tslint --project tsconfig.json",
+    "init": "cpy ../../config/ config/ && cpy --no-overwrite config/firebase.config.local.template config --rename=firebase.config.local.js",
     "build": "tsc",
     "serve": "npm run build && firebase emulators:start --only functions",
     "shell": "npm run build && firebase functions:shell",
     "start": "npm run shell",
     "deploy": "firebase deploy --only functions",
     "logs": "firebase functions:log",
-    "test": "NODE_ENV=dev jest --forceExit"
+    "test": "jest --forceExit",
+    "test:dev": "NODE_ENV=dev npm run test",
+    "test:local": "NODE_ENV=local npm run test"
   },
   "engines": {
     "node": "8"
   },
   "main": "lib/src/index.js",
   "dependencies": {
+    "cpy-cli": "^3.1.1",
     "dotenv": "^8.2.0",
     "firebase": "^7.14.2",
     "firebase-admin": "^8.10.0",
