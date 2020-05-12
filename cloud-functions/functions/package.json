@@ -13,7 +13,7 @@
     "test:dev": "NODE_ENV=dev npm run test",
     "test:local": "NODE_ENV=local npm run test",
     "test:test": "NODE_ENV=test npm run test",
-    "test:ci": "NODE_ENV=ci npm run test"
+    "test_ci": "NODE_ENV=ci npm run test"
   },
   "engines": {
     "node": "8"
