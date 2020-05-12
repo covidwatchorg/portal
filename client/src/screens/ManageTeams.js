@@ -1,6 +1,11 @@
 import React from 'react';
 import Grid from '@material-ui/core/Grid';
 import MaterialTable from 'material-table';
+import Button from '@material-ui/core/Button';
+import Modal from '@material-ui/core/Modal';
+import Backdrop from '@material-ui/core/Backdrop';
+import Fade from '@material-ui/core/Fade';
+import { makeStyles, useTheme } from '@material-ui/styles';
 
 //enabling button icons in material table
 import { forwardRef } from 'react';
@@ -46,7 +51,47 @@ const tableIcons = {
 };
 //enabling button icons in material table
 
+const useStyles = makeStyles((theme) => ({
+  addMember: {
+    ...theme.typography.button,
+  },
+  saveChanges: {
+    ...theme.typography.button,
+    backgroundColor: '#2C58B1',
+    color: 'white',
+    '&:hover': {
+      backgroundColor: '#4168b8',
+    },
+  },
+  modal: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  paper: {
+    backgroundColor: theme.palette.background.paper,
+    border: '2px solid #000',
+    boxShadow: theme.shadows[5],
+    padding: theme.spacing(2, 4, 3),
+  },
+}));
+
 const ManageTeams = () => {
+  const classes = useStyles();
+  const theme = useTheme();
+  //Modal
+  const [open, setOpen] = React.useState(false);
+
+  const handleOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+  //Modal
+
   const [state, setState] = React.useState({
     columns: [
       {
@@ -55,7 +100,7 @@ const ManageTeams = () => {
         cellStyle: {
           fontFamily: 'Montserrat',
           alignContent: 'left',
-          paddingLeft: 0,
+          paddingLeft: 5,
         },
       },
       {
@@ -65,7 +110,7 @@ const ManageTeams = () => {
         cellStyle: {
           fontFamily: 'Montserrat',
           alignContent: 'left',
-          paddingLeft: 0,
+          paddingLeft: 5,
         },
       },
       {
@@ -75,7 +120,7 @@ const ManageTeams = () => {
         cellStyle: {
           fontFamily: 'Montserrat',
           alignContent: 'left',
-          paddingLeft: 0,
+          paddingLeft: 5,
         },
       },
     ],
@@ -87,8 +132,34 @@ const ManageTeams = () => {
   });
 
   return (
-    <div className='manage-teams-container'>
+    <Grid container direction='column' style={{ padding: '3em' }}>
       <h1>Manage Teams</h1>
+
+      <Grid item style={{ paddingBottom: '1.5em' }}>
+        <Button className={classes.addMember} onClick={handleOpen}>
+          Add Member
+          <Modal
+            aria-labelledby='transition-modal-title'
+            aria-describedby='transition-modal-description'
+            className={classes.modal}
+            open={open}
+            onClose={handleClose}
+            closeAfterTransition
+            BackdropComponent={Backdrop}
+            BackdropProps={{
+              timeout: 500,
+            }}
+          >
+            <Fade in={open}>
+              <div className={classes.paper}>
+                <h2 id='transition-modal-title'>Add a member</h2>
+                <p id='transition-modal-description'>Add a member</p>
+              </div>
+            </Fade>
+          </Modal>
+        </Button>
+      </Grid>
+
       <MaterialTable
         icons={tableIcons}
         title=''
@@ -100,7 +171,7 @@ const ManageTeams = () => {
             fontFamily: 'Montserrat',
             height: 10,
             fontWeight: 'bold',
-            padding: 0,
+            paddingLeft: 5,
             alignContent: 'left',
           },
           actionsColumnIndex: -1,
@@ -143,7 +214,10 @@ const ManageTeams = () => {
             }),
         }}
       />
-    </div>
+      <Grid item>
+        <Button className={classes.saveChanges}>Save Changes</Button>
+      </Grid>
+    </Grid>
   );
 };
 
