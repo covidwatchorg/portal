@@ -13,9 +13,17 @@ const User = types
     organizationID: types.string
   });
 
+const Organization = types
+  .model({
+    name: types.string,
+    diagnosisText: types.string,
+    exposureText: types.string
+  })
+
 const Store = types
   .model({
     user: types.maybeNull(User),
+    organization: types.maybeNull(Organization)
   })
   .actions((self) => {
     const signIn = flow(function* (email, password) {
@@ -25,10 +33,14 @@ const Store = types
 
         yield firebase.auth.currentUser.getIdTokenResult(true)
         const userDoc = yield firebase.getUserDocument(email)
-        console.log(userDoc)
 
         self.user = userDoc
-        console.log(self.user)
+        console.log("user: ", self.user)
+
+        const orgDoc = yield firebase.getOrganizationDocument(self.user.organizationID)
+
+        self.organization = orgDoc
+        console.log("organization: ", self.organization)
       } catch (e) {
         console.log(e)
       }
@@ -51,5 +63,6 @@ const Store = types
   })
 
 export default Store.create({
-  user: null
+  user: null,
+  organization: null
 })

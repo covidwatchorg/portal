@@ -42,32 +42,41 @@ class Firebase {
     this.auth.currentUser.updatePassword(password);
 
   generateUserDocument = async (user, additionalData) => {
-      if (!user) return;
+    if (!user) return;
+  
+    const userRef = this.firestore.doc(`users/${user.email}`);
+    const snapshot = await userRef.get();
+  
     
-      const userRef = this.firestore.doc(`users/${user.email}`);
-      const snapshot = await userRef.get();
+    return this.getUserDocument(user.email);
+  };
     
-      
-      return this.getUserDocument(user.email);
-    };
-    
-    getUserDocument = async uid => {
-      if (!uid) return null;
-      try {
-        const userDocument = await this.firestore.doc(`users/${uid}`).get();
-    
-        return {
-          uid,
-          ...userDocument.data()
-        };
-      } catch (error) {
-        console.error("Error fetching user", error);
-      }
-    };
+  getUserDocument = async uid => {
+    if (!uid) return null;
+    try {
+      const userDocument = await this.firestore.doc(`users/${uid}`).get();
+  
+      return {
+        uid,
+        ...userDocument.data()
+      };
+    } catch (error) {
+      console.error("Error fetching user", error);
+    }
+  };
 
+  getOrganizationDocument = async orgid => {
+    if (!orgid) return null;
+    try {
+      const orgDocument = await this.firestore.doc(`organizations/${orgid}`).get();
 
+      return orgDocument.data()
+    } catch (err) {
+      console.error("Error fetching organization", error);
+    }
+  };
 
-onAuthUserListener = (next, fallback) =>
+  onAuthUserListener = (next, fallback) =>
     this.auth.onAuthStateChanged(authUser => {
       if (authUser) {
              this.getUserDocument(authUser.email).then(userDoc => {
@@ -96,9 +105,9 @@ onAuthUserListener = (next, fallback) =>
 
   // *** User API ***
 
-user = uid => this.db.ref(`/users/${uid}`);
+  user = uid => this.db.ref(`/users/${uid}`);
 
-users = () => this.db.ref('/users');
+  users = () => this.db.ref('/users');
 
 }
 export default new Firebase();
