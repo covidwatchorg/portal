@@ -1,6 +1,6 @@
-import React from 'react';
-import { Route, Redirect } from 'react-router-dom';
-import { signin } from './auth';
+import React from 'react'
+import { Route, Redirect } from 'react-router-dom'
+import { auth } from './auth'
 
 const AdminRoute = ({component : Component, ...rest}) => {
     return (
@@ -12,4 +12,4 @@ const AdminRoute = ({component : Component, ...rest}) => {
     )
 }
 
-export default AdminRoute;
+export default AdminRoute

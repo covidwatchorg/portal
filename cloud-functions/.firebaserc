@@ -1,10 +1,9 @@
 {
   "projects": {
-    "default": "permission-portal-test",
-    "test": "permission-portal-test",
+    "default": "permission-portal-dev",
     "prod": "permission-portal",
+    "test": "permission-portal-test",
     "dev": "permission-portal-dev",
     "local": "permission-portal-prabhu"
-
   }
 }

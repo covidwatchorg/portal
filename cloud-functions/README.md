@@ -4,6 +4,7 @@ Cloud functions for the Covid Watch Permission Portal.
 Firebase project can be found here:
 
 - [prod](https://console.firebase.google.com/project/permission-portal/)
+- [dev](https://console.firebase.google.com/project/permission-portal-dev/)
 - [test](https://console.firebase.google.com/project/permission-portal-test/)
 - [dev](https://console.firebase.google.com/project/permission-portal-dev/)
 
@@ -12,7 +13,7 @@ In depth discussion of app and data model can be found in [Notion](https://www.n
 ## Setup 
 1. `npm install` to install dependencies
 
-## Setup local environment
+## Setup your own local environment
 2. `npm run init` to initialize common firebase files 
 3. Local mode runs in your personal firebase account. Create your own firebase project
     a. create your personal firebase account ,
@@ -22,6 +23,27 @@ In depth discussion of app and data model can be found in [Notion](https://www.n
    b. save the json under $ROOT/cloud-functions/functions/permission-portal-local-firebase-admin-key.json. 
    NOTE: It is important to have this specific file name because this is how the environment is tied to the firebase secret.
 
+4. In all the below steps , your local environment can be used with environment parameter="local"
+
+## Development
+
+Unfortunately the Firebase emulators don't support many auth features, so because this is an auth heavy application we are running a live dev infrastructure (see link above). Deploy the latest cloud functions to the dev infrastructure by running:
+
+```
+firebase deploy --only functions --project=dev
+firebase deploy --only firestore:rules --project=dev
+```
+
+Once functions are deployed, the dev infrastructure can loaded with some fake sample data by navigating to the `functions/` directory and running:
+
+```
+node reset-dev-infrastructure.js
+```
+
+This script can be run repeatedly to clear out the dev infrastructure and reset it with only the sample data. However try to be mindful of other developers working with the same infrastructure, and check with them before resetting.
+
+## Testing
+
 #### Automated Tests
 
 Firebase doesn't support much in the way of testing for Firebase Auth, so because this is an auth-heavy application we are maintaining a parallel implementation of Firebase project for testing [here](https://console.firebase.google.com/project/permission-portal-test/).
@@ -29,12 +51,12 @@ Firebase doesn't support much in the way of testing for Firebase Auth, so becaus
 This means that in order for tests to run properly, they must be deployed first to the cloud in the right environment. To do so, run:
 
 ```
-1. firebase deploy --only functions --project=local
-
+firebase deploy --only functions --project=test
+firebase deploy --only firestore:rules --project=test
 ## use the below commands to deploy in other environments
-2. firebase deploy --only functions --project=dev
-3. firebase deploy --only functions --project=test
-4. firebase deploy --only functions --project=prod
+
+firebase deploy --only functions --project=<dev/local/prod>
+firebase deploy --only firestore:rules --project=<dev/local/prod>
 ```
 
 Once changes are deployed, tests can be run from the `functions/` directory. Tests require a firebase admin key to run properly, stored as `functions/permission-portal-{environment}-firebase-admin-key.json` (ask maintainer for private key of test container).  To test in your local environment
@@ -44,11 +66,13 @@ Because they are written in Typescript, they must be built first:
 ```
 cd functions
 npm run build
-npm run test:local ## shortcut to run tests against local
+npm run test:dev ## shortcut to run tests against dev
 
 ## to run against other environments
-npm run test:dev ## run tests against dev
-NODE_ENV=<env> npm run test  ## run tests against any environment
+npm run test:<local> ## run tests against local
+
+## run tests against any environment
+NODE_ENV=<dev/local/test/prod> npm run test  
 ```
 
 #### Manual Testing

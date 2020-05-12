@@ -22,6 +22,7 @@ To start the application, please go to the root folder and execute:
     npm run debug:dev # node the debugger in the dev environment
     npm run debug:local  # node the debugger in the local environment
 ```
+6.  In Dev Environment , For login and authentication purposes, please enter `admin@soylentgreen.com` as the email and password, for testing.
 
 ## Contact:
 

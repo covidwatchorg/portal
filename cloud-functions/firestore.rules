@@ -1,0 +1,35 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+		// Disallow all reads and writes by default
+    match /{document=**} {
+      allow read, write: if false;
+    }
+    
+   	function isSignedIn() {
+    	return request.auth != null;
+    }
+
+    function isAdmin() {
+      return request.auth.token.isAdmin == true;
+    }
+
+    function isInOrganization(organizationID) {
+      return request.auth.token.organizationID == organizationID;
+    }
+    
+    function isSelfOrAdminInOrg(email, organizationID) {
+    	let isSelf = request.auth.token.email == email;
+      return isSelf || (isAdmin() && isInOrganization(organizationID));
+    }
+
+    match /users/{email} {
+    	allow read, write: if isSignedIn() && isSelfOrAdminInOrg(email, resource.data.organizationID);
+    }
+
+    match /organizations/{organizationID} {
+      allow read: if isSignedIn() && isInOrganization(organizationID);
+      allow write: if isSignedIn() && isAdmin() && isInOrganization(organizationID);
+    }
+  }
+}

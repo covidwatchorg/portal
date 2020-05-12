@@ -11,7 +11,9 @@
     "logs": "firebase functions:log",
     "test": "jest --forceExit",
     "test:dev": "NODE_ENV=dev npm run test",
-    "test:local": "NODE_ENV=local npm run test"
+    "test:local": "NODE_ENV=local npm run test",
+    "test:test": "NODE_ENV=test npm run test",
+    "test:ci": "NODE_ENV=ci npm run test"
   },
   "engines": {
     "node": "8"
@@ -30,6 +32,7 @@
     "@types/jest": "^24.9.1",
     "@types/node": "^13.13.4",
     "firebase-functions-test": "^0.2.0",
+    "firebase-tools": "^8.2.0",
     "jest": "^24.0.0",
     "node-env-run": "^3.0.2",
     "ts-jest": "^24.0.0",
