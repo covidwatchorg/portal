@@ -47,17 +47,17 @@ const NavBarBase = (props) => {
   const onClickMenuItem = num => {
     setAnchorEl(null);
     if (num === 4) {
-      store.signOut(props.firebase);
+      store.signOut();
     }
     setRedirect(num);
   };
 
   const getUserName = () => {
-    return "Dr. John Doe"; // TODO retrieve name from user data
+    return store.user.firstName + ' ' + store.user.lastName
   };
 
   const getUserTitle = () => {
-    return "Account Admin" // TODO retrieve title from user data
+    return store.user.role
   };
 
   return (

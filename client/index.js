@@ -4,10 +4,10 @@ import Routes from './Routes';
 import "regenerator-runtime/runtime";
 
 import './styles/application.scss';
-import Firebase, { FirebaseContext } from './src/components/Firebase';
+import { firebase, FirebaseContext } from './src/components/Firebase';
 
 ReactDOM.render(
-    <FirebaseContext.Provider value={new Firebase()}>
+    <FirebaseContext.Provider value={firebase}>
         <Routes />  
     </FirebaseContext.Provider>,
     document.getElementById('root'));
