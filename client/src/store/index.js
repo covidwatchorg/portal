@@ -29,7 +29,7 @@ const Store = types
     user: types.maybeNull(User),
   })
   .actions((self) => {
-    const signOut = flow(function* () {
+    const signOut = flow(function* (firebase) {
       try {
         yield firebase.auth.signOut()
         console.log('Successfully logged out')

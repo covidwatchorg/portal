@@ -5,7 +5,10 @@ import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import Menu from '@material-ui/core/Menu';
-//import store from '../store'
+import { compose } from 'recompose';
+import { withRouter } from 'react-router-dom';
+import { withFirebase } from '../components/Firebase';
+import store from '../store'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -26,7 +29,7 @@ const linkStyles = {
   fontSize: 20
 };
 
-const NavBar = () => {
+const NavBarBase = (props) => {
   const classes = useStyles();
 
   const [redirect, setRedirect] = useState(-1);
@@ -44,7 +47,7 @@ const NavBar = () => {
   const onClickMenuItem = num => {
     setAnchorEl(null);
     if (num === 4) {
-      store.signOut();
+      store.signOut(props.firebase);
     }
     setRedirect(num);
   };
@@ -122,5 +125,10 @@ const NavBar = () => {
     </div>
   );
 };
+
+const NavBar = compose(
+  withRouter,
+  withFirebase,
+)(NavBarBase);
 
 export default NavBar;

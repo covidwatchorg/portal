@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
 import PendingOperationButton from '../components/PendingOperationButton';
 import "../../Styles/screens/branding.scss";
+import { withAuthorization } from '../components/Session';
+import * as ROLES from '../constants/roles';
+import { compose } from 'recompose';
 
 var defaultDiagnosisText = `Next Steps:
 - Please quarantine yourself
@@ -22,7 +25,7 @@ const getExposureText = () => {
   return defaultExposureText
 }
 
-const AccountBranding = () => {
+const AccountBrandingBase = () => {
   const [dataDirty, setDataDirty] = useState(false);
   const [diagnosisText, setDiagnosisText] = useState(getDiagnosisText());
   const [exposureText, setExposureText] = useState(getExposureText());
@@ -91,5 +94,14 @@ const AccountBranding = () => {
     </div>
   );
 };
+
+const condition = authUser => {
+  var result = authUser && authUser.roles[ROLES.ADMIN];
+  return result;
+}
+
+const AccountBranding =  compose(
+  withAuthorization(condition),
+)(AccountBrandingBase);
 
 export default AccountBranding;

@@ -3,6 +3,9 @@ import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
 import TextField from '@material-ui/core/TextField';
 import { makeStyles } from '@material-ui/core/styles';
+import { withAuthorization } from '../components/Session';
+import * as ROLES from '../constants/roles';
+import { compose } from 'recompose';
 
 const useStyles = makeStyles({
   root : {
@@ -28,7 +31,7 @@ const inputStyles = makeStyles({
   }
 })
 
-const Settings = () => {
+const SettingsBase = () => {
 
   const classes = useStyles();
   const input = inputStyles();
@@ -99,5 +102,14 @@ return(
      </React.Fragment>
    )
 };
+
+const condition = authUser => {
+  var result = authUser && authUser.roles[ROLES.ADMIN];
+  return result;
+}
+
+const Settings =  compose(
+  withAuthorization(condition),
+)(SettingsBase);
 
 export default Settings;
