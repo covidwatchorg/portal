@@ -20,6 +20,7 @@ if (process.env) {
 }
 console.log (`firebase configuration in ${key}`)
 var config = firebaseConfigMap[key];
+
 class Firebase {
   constructor() {
     app.initializeApp(config);

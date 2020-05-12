@@ -5,7 +5,7 @@ import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import Menu from '@material-ui/core/Menu';
-import signin from '../util/auth';
+//import store from '../store'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -43,6 +43,9 @@ const NavBar = () => {
 
   const onClickMenuItem = num => {
     setAnchorEl(null);
+    if (num === 4) {
+      store.signOut();
+    }
     setRedirect(num);
   };
 

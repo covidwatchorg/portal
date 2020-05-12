@@ -16,7 +16,10 @@ module.exports = function(env, argv) {
     fs: "empty"
   }, 
   plugins : [
-    new DefinePlugin(envKeys)
+    new DefinePlugin(envKeys),
+    new webpack.ProvidePlugin({
+      "React": "react",
+   }),
   ],
   entry: {
     polyfill: 'babel-polyfill',
@@ -42,7 +45,16 @@ module.exports = function(env, argv) {
         use: [{  
           loader: 'babel-loader',
           options: {
-            presets: ['@babel/preset-env', '@babel/preset-react',
+            presets: [
+              [
+                '@babel/preset-env',
+                {
+                  "targets": {
+                    "node": "10"
+                  }
+                },
+              ],
+              '@babel/preset-react',
               {
                 'plugins': ['@babel/plugin-proposal-class-properties']
               }
