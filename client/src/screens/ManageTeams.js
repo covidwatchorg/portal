@@ -165,6 +165,14 @@ const ManageTeams = () => {
         title=''
         columns={state.columns}
         data={state.data}
+        actions={[
+          {
+            icon: tableIcons.ThirdStateCheck,
+            tooltip: 'Edit Password',
+            onClick: (event, rowData) =>
+              alert('You are going to change ' + rowData.name + 'password'),
+          },
+        ]}
         options={{
           headerStyle: {
             backgroundColor: '#E5E5E5',
