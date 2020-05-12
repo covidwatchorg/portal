@@ -8,7 +8,8 @@
     "start": "npm run shell",
     "deploy": "firebase deploy --only functions",
     "logs": "firebase functions:log",
-    "test": "jest --forceExit"
+    "test": "NODE_ENV=test jest --forceExit",
+    "test_ci": "NODE_ENV=ci jest --forceExit"
   },
   "engines": {
     "node": "8"
@@ -25,6 +26,7 @@
     "@types/jest": "^24.9.1",
     "@types/node": "^13.13.4",
     "firebase-functions-test": "^0.2.0",
+    "firebase-tools": "^8.2.0",
     "jest": "^24.0.0",
     "ts-jest": "^24.0.0",
     "tslint": "^5.12.0",

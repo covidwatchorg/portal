@@ -8,17 +8,21 @@ const auth = admin.auth();
 
 // Checks that an entry (or pending entry) to the users table contains the required fields
 function isCovidWatchUserProperlyFormatted(covidWatchUser: any): boolean {
-  console.log(`checking that ${covidWatchUser} is properly formatted`);
+  console.log(`checking that ${JSON.stringify(covidWatchUser)} is properly formatted`);
   return (
-    covidWatchUser.isAdmin !== undefined &&
-    covidWatchUser.isSuperAdmin !== undefined &&
-    covidWatchUser.organizationID !== undefined
+    typeof covidWatchUser.isAdmin === 'boolean' &&
+    typeof covidWatchUser.isSuperAdmin === 'boolean' &&
+    typeof covidWatchUser.organizationID === 'string'
   );
 }
 
 function isCreateUserRequestProperlyFormatted(newUser: any): boolean {
-  console.log(`checking that ${newUser} is properly formatted`);
-  return newUser.email !== undefined && newUser.password !== undefined && newUser.organizationID !== undefined;
+  console.log(`checking that createUser request with body ${JSON.stringify(newUser)} is properly formatted`);
+  return (
+    typeof newUser.email === 'string' &&
+    typeof newUser.password === 'string' &&
+    typeof newUser.organizationID === 'string'
+  );
 }
 
 function doesOrganizationExist(organizationID: string): Promise<boolean> {
@@ -77,7 +81,7 @@ function authGuard(context: functions.https.CallableContext): Promise<void> {
   return new Promise((resolve, reject) => {
     if (!context.auth) {
       // Throwing an HttpsError so that the client gets the error details.
-      reject(new functions.https.HttpsError('failed-precondition', 'The function must be called while authenticated.'));
+      reject(new functions.https.HttpsError('unauthenticated', 'The function must be called while authenticated.'));
     }
     resolve();
   });
@@ -88,7 +92,7 @@ function isAdminGuard(context: functions.https.CallableContext): Promise<void> {
   return authGuard(context).then(() => {
     // Force unwrapping warranted, because existence of context.auth is checked by authGuard
     if (context.auth!.token.isAdmin !== true) {
-      throw new functions.https.HttpsError('failed-precondition', 'The function must be called by an admin.');
+      throw new functions.https.HttpsError('permission-denied', 'The function must be called by an admin.');
     }
   });
 }
@@ -103,7 +107,7 @@ export const createUser = functions.https.onCall((newUser, context) => {
           reject(
             new functions.https.HttpsError(
               'invalid-argument',
-              'user object must have email, password, and organizationID specified'
+              'user object must have email <string>, password <string>, and organizationID <string> specified'
             )
           );
         }
@@ -181,7 +185,9 @@ export const onCreate = functions.auth.user().onCreate((firebaseAuthUser) => {
         if (!isCovidWatchUserProperlyFormatted(covidWatchUserData)) {
           // delete from auth
           console.error(
-            'Attempted to register new user, but corresponding entry in the users collection was not properly formatted'
+            `Attempted to register new user, but corresponding entry in the users collection was not properly defined: ${JSON.stringify(
+              covidWatchUserData
+            )}`
           );
           deleteUser(firebaseAuthUser.uid);
         } else {
@@ -228,6 +234,7 @@ export const onCreate = functions.auth.user().onCreate((firebaseAuthUser) => {
             })
             .catch((err) => {
               console.error(err);
+              deleteUser(firebaseAuthUser.uid);
             });
         }
       } else {
@@ -236,7 +243,44 @@ export const onCreate = functions.auth.user().onCreate((firebaseAuthUser) => {
       }
     })
     .catch((err) => {
+      deleteUser(firebaseAuthUser.uid);
       console.error(err);
       throw err;
     });
+});
+
+// Cloud function for validating upload tokens. Naturally this can only be called by an authenticated user.
+// This validate calls the report server's /validate endpoint with both the upload token and the user's organization ID.
+// The organizationID is taken from the user's authentication token's claims, to ensure that users can only
+// ever validate upload tokens corresponding to their own organizations. There should be a system in place
+// to ensure that only the server running this function can talk to the report server's /validate.
+export const validate = functions.https.onCall((body, context) => {
+  return new Promise((resolve, reject) => {
+    authGuard(context)
+      .then(() => {
+        const uploadToken = body.uploadToken;
+        // validate request body
+        if (typeof uploadToken !== 'string') {
+          reject(new functions.https.HttpsError('invalid-argument', 'request body must have uploadToken <string>'));
+        }
+        fetch(functions.config().token_server.validate_url, {
+          method: 'POST',
+          body: JSON.stringify({
+            upload_token: uploadToken,
+            organization_id: context.auth!.token.organizationID,
+          }),
+        })
+          .then((res) => {
+            // TODO: set differing responses based on whether token was just validated, or is already valid
+            resolve({ message: 'upload_token validated' });
+          })
+          .catch((err) => {
+            // TODO: set response based on /validate's error specification
+            reject(err);
+          });
+      })
+      .catch((err) => {
+        reject(err);
+      });
+  });
 });

@@ -1,4 +1,9 @@
 <<<<<<< HEAD
+node_modules
+.DS_Store
+dist
+=======
+<<<<<<< HEAD
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
 # dependencies
@@ -28,3 +33,4 @@ node_modules
 .DS_Store
 dist
 >>>>>>> 3d20c6305eb4b7251e142d0ff25d250adc99104e
+>>>>>>> 06f0cf445bc35f59e3da76e92493f499f5067f55

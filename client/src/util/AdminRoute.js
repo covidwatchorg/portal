@@ -1,14 +1,9 @@
-import React from 'react';
-import { Route, Redirect } from 'react-router-dom';
-import { signin } from './auth';
+import React from 'react'
+import { Route, Redirect } from 'react-router-dom'
+import { auth } from './auth'
 
-const AdminRoute = ({component : Component, ...rest}) => {
-    return (
-    <Route {...rest} render={(props) => (
-    signin.isAdmin === true ? 
-    <Component {...props}/>
-    : <Redirect to='/'/> )} />
-    )
+const AdminRoute = (props) => {
+  return <Route path={props.path}>{auth.isAdmin ? props.children : <Redirect to="/" />}</Route>
 }
 
-export default AdminRoute;
+export default AdminRoute
