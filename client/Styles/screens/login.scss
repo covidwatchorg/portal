@@ -36,6 +36,10 @@
   }
 }
 
+.doctorContainer > * {
+  z-index: -1;
+}
+
 .doctor1 {
   position: absolute;
   left: 7.43%;
