@@ -25,12 +25,11 @@ class SignInFormBase extends React.Component {
   clickSubmit = async (event) => {
     event.preventDefault()
     //this.setValues({ ...values, error: false })
-    console.log(`isAdmin = ${store.user.isAdmin}`)
     const { email, password } = this.state;
 
 
     try {
-      await store.user.signIn(this.props.firebase, email, password);
+      await store.signIn(email, password);
       if (store.user.isAdmin === true) {
         this.props.history.push(ROUTES.MANAGE_MEMBERS);
       }
