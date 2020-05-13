@@ -1,6 +1,6 @@
 import React, { useState, Fragment } from 'react';
 import { BrowserRouter, Switch, Route } from 'react-router-dom';
-import Login from './src/screens/Login.v1';
+import Login from './src/screens/Login';
 import CodeValidations from './src/screens/CodeValidations';
 import Settings from './src/screens/Settings';
 import AccountBranding from './src/screens/AccountBranding';
