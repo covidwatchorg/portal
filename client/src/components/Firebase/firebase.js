@@ -5,6 +5,7 @@ import * as firebaseConfigDev from '../../config/firebase.config.dev';
 import * as firebaseConfigTest from '../../config/firebase.config.test';
 import * as firebaseConfigProd from '../../config/firebase.config.prod';
 import "firebase/firestore";
+import "firebase/database";
 
 
 var firebaseConfigMap = { dev: firebaseConfigDev , test: firebaseConfigTest, prod: firebaseConfigProd, local: firebaseConfigLocal};
