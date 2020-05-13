@@ -4,7 +4,9 @@ import Grid from '@material-ui/core/Grid';
 import TextField from '@material-ui/core/TextField';
 import Modal from '@material-ui/core/Modal';
 import { makeStyles } from '@material-ui/core/styles';
-
+import { withAuthorization } from '../components/Session';
+import * as ROLES from '../constants/roles';
+import { compose } from 'recompose';
 
 const useStyles = makeStyles({
   root : {
@@ -72,7 +74,7 @@ const changeImageModalStyles = makeStyles({
   }
 })
 
-const Settings = () => {
+const SettingsBase = () => {
   const classes = useStyles();
   const input = inputStyles();
   const secondaryButton = secondaryButtonStyles();
@@ -173,5 +175,14 @@ return(
      </React.Fragment>
    )
 };
+
+const condition = authUser => {
+  var result = authUser && authUser.roles[ROLES.ADMIN];
+  return result;
+}
+
+const Settings = compose(
+  withAuthorization(condition),
+)(SettingsBase);
 
 export default Settings;

@@ -8,21 +8,12 @@ import 'firebase/functions';
 // tslint:disable-next-line: no-import-side-effect
 import 'firebase/firestore';
 
+const firebaseConfig = require(`../../config/firebase.config.${process.env.NODE_ENV}.js`)
 jest.setTimeout(60000);
 
-// Initialize client SDK
-const firebaseConfig = {
-  apiKey: 'AIzaSyAHVZXO-wFnGmUIBLxF6-mY3tuleK4ENVo',
-  authDomain: 'permission-portal-test.firebaseapp.com',
-  databaseURL: 'https://permission-portal-test.firebaseio.com',
-  projectId: 'permission-portal-test',
-  storageBucket: 'permission-portal-test.appspot.com',
-  messagingSenderId: '1090782248577',
-  appId: '1:1090782248577:web:184d481f492cfa4edc1780',
-};
 firebase.initializeApp(firebaseConfig);
-
 // Initialize admin SDK
+const serviceCredentials = `../../permission-portal-${process.env.NODE_ENV}-firebase-admin-key.json`;
 const serviceAccount =
   process.env.NODE_ENV === 'ci'
     ? {
@@ -33,10 +24,11 @@ const serviceAccount =
           '\n-----END PRIVATE KEY-----\n',
         clientEmail: 'firebase-adminsdk-nqxd8@permission-portal-test.iam.gserviceaccount.com',
       }
-    : require('../../permission-portal-test-firebase-admin-key.json');
+    : require(serviceCredentials);
+    
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
-  databaseURL: 'https://permission-portal-test.firebaseio.com',
+  databaseURL: firebaseConfig.databaseURL,
 });
 
 // Initialize commonly used vars
