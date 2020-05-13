@@ -5,12 +5,15 @@ import SnackbarContent from '@material-ui/core/SnackbarContent';
 import CircularProgress from "@material-ui/core/CircularProgress";
 
 import "../../Styles/screens/code_validations.scss";
+import { withAuthorization } from '../components/Session';
+import * as ROLES from '../constants/roles';
+import { compose } from 'recompose';
 
 // snackbars docs can be found here:
 // https://material-ui.com/components/snackbars/
 
 
-const CodeValidations = () => {
+const CodeValidationsBase = () => {
   const [state, setState] = React.useState({
     open: false,
     vertical: "top",
@@ -156,5 +159,13 @@ const CodeValidations = () => {
       </div>
     );
 }
+const condition = authUser => {
+  var result = authUser && authUser.roles[ROLES.ADMIN];
+  return result;
+}
+
+const CodeValidations =  compose(
+  withAuthorization(condition),
+)(CodeValidationsBase);
 
 export default CodeValidations;
