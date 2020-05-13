@@ -1,7 +1,6 @@
 const path = require('path');
 
 module.exports = {
-  mode: 'development',
   entry: {
     polyfill: 'babel-polyfill',
     app: './client/index.js',
@@ -9,14 +8,6 @@ module.exports = {
   output: {
     path: path.resolve(__dirname, 'dist'),
     filename: '[name].js',
-  },
-  devServer: {
-    port: 8080,
-    publicPath: '/dist',
-    proxy: {
-      '/api': 'http://localhost:3000',
-    },
-    historyApiFallback: true,
   },
   module: {
     rules: [
