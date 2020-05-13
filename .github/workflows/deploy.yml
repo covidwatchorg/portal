@@ -4,9 +4,10 @@
 # TO ADD AT SOME POINT: prod branch deploy to production
 
 name: Deploy
+
+on:
   push:
-    branches:
-      - dev
+    branches: [ dev ]
 
 jobs:
   build:
@@ -25,7 +26,7 @@ jobs:
           CI: true
         run: |
           npm ci
-          npm run generate --fail-on-error
+          npm run build
 
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
