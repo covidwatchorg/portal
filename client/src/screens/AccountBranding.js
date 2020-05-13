@@ -36,7 +36,7 @@ const AccountBrandingBase = () => {
   }
 
   const saveOperation = () => {
-    return new Promise((resolutionFunc, rejectionFunc) => {
+    return new Promise((resolutionFunc, _) => {
       setTimeout(()=>{
         saveAccountBrandingData();
         resolutionFunc();

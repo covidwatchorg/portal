@@ -1,4 +1,4 @@
-import React, { useState, Fragment } from 'react';
+import React, { Fragment } from 'react';
 import { BrowserRouter, Switch, Route } from 'react-router-dom';
 import Login from './src/screens/Login';
 import CodeValidations from './src/screens/CodeValidations';
@@ -7,7 +7,6 @@ import AccountBranding from './src/screens/AccountBranding';
 import ManageTeams from './src/screens/ManageTeams';
 import Footer from './src/components/Footer';
 import NavBar from './src/components/NavBar';
-//import AdminRoute from './src/util/AdminRoute';
 import * as ROUTES from './src/constants/routes';
 import { withAuthentication } from './src/components/Session';
 

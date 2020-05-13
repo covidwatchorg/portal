@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Redirect, Link } from 'react-router-dom';
+import { Redirect } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
 import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
@@ -29,7 +29,7 @@ const linkStyles = {
   fontSize: 20
 };
 
-const NavBarBase = (props) => {
+const NavBarBase = () => {
   const classes = useStyles();
 
   const [redirect, setRedirect] = useState(-1);
