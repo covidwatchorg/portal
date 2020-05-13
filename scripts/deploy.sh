@@ -15,19 +15,13 @@ echo
 echo Deploying to $BUCKETNAME
 echo
 
-FOLDERNAME=permissions
+FOLDERNAME=dist
+S3_BUCKET_URI="s3://$BUCKETNAME"
 
-S3_BUILDFOLDER_SUFFIX=`date +%s`
-S3_TARGET_URI="s3://$BUCKETNAME/$FOLDERNAME/"
-S3_BUILD_URI="s3://$BUCKETNAME/$FOLDERNAME--build-$S3_BUILDFOLDER_SUFFIX/"
-S3_DEPRECATE_URI="s3://$BUCKETNAME/$FOLDERNAME--deprecate-$S3_BUILDFOLDER_SUFFIX/"
+aws s3 cp index.html $S3_BUCKET_URI  --acl public-read --cache-control max-age=31557600,public --metadata-directive REPLACE --expires 2034-01-01T00:00:00Z 
 
-aws s3 cp --recursive dist/ "$S3_BUILD_URI" --acl public-read --cache-control max-age=31557600,public --metadata-directive REPLACE --expires 2034-01-01T00:00:00Z --only-show-errors
- 
- 
-aws s3 mv "$S3_TARGET_URI" "$S3_DEPRECATE_URI" --recursive --only-show-errors
-aws s3 mv "$S3_BUILD_URI" "$S3_TARGET_URI" --recursive --only-show-errors
-aws s3 rm "$S3_DEPRECATE_URI" --recursive --only-show-errors
+aws s3 sync $FOLDERNAME "$S3_BUCKET_URI/$FOLDERNAME" --acl public-read --cache-control max-age=31557600,public --metadata-directive REPLACE --expires 2034-01-01T00:00:00Z
+
 
 aws cloudfront create-invalidation \
     --distribution-id $CLOUDFRONT_INVALIDATION_ID \
