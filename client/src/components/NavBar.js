@@ -6,6 +6,8 @@ import MenuIcon from '@material-ui/icons/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import Menu from '@material-ui/core/Menu';
 import store from '../store'
+import ucsf_health from '../../assets/ucsf-health.svg'
+import profile from '../../assets/placeholder/profile.png'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -59,7 +61,7 @@ const NavBar = () => {
 
   return (
     <div className='navbarContainer'>
-      <img src='/client/assets/ucsf-health.svg' id='ucsfLogo' />
+      <img src={ucsf_health} id='ucsfLogo' />
       <div className="avatar_group avatar_text">
         <div className="name">
           {getUserName()}
@@ -69,7 +71,7 @@ const NavBar = () => {
         </div>
       </div>
       <div className="avatar_group avatar_image">
-        <img src='client/assets/placeholder/profile.png'/>
+        <img src={profile}/>
       </div>
       <div className="avatar_group separator"/>
       <IconButton

@@ -1,6 +1,10 @@
 import React, { Fragment, useState } from 'react'
 import { Redirect } from 'react-router-dom'
 import store from '../store'
+import doctor1 from '../../assets/doctor1.svg'
+import doctor2 from '../../assets/doctor2.svg'
+import ucsf_health from '../../assets/ucsf-health.svg'
+import powered_by_cw from '../../assets/powered-by-cw.svg'
 
 const Login = () => {
   const [values, setValues] = useState({
@@ -41,10 +45,10 @@ const Login = () => {
     <fragment>
       <div className="doctorContainer">
         <div className="doctor1">
-          <img src="/client/assets/doctor1.svg" />
+          <img src={doctor1} />
         </div>
         <div className="doctor2">
-          <img src="/client/assets/doctor2.svg" />
+          <img src={doctor2} />
         </div>
       </div>
     </fragment>
@@ -53,8 +57,8 @@ const Login = () => {
   const loginForm = () => (
     <Fragment>
       <div className="topNav">
-        <img src="/client/assets/ucsf-health.svg" id="ucsfLogo" />
-        <img src="/client/assets/powered-by-cw.svg" id="poweredByCWLogo" />
+        <img src={ucsf_health} id="ucsfLogo" />
+        <img src={powered_by_cw}  id="poweredByCWLogo" />
       </div>
       <div className="mainContainer">
         <div className="welcome">

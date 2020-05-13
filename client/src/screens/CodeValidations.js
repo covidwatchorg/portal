@@ -6,6 +6,9 @@ import CircularProgress from "@material-ui/core/CircularProgress";
 
 import "../../Styles/screens/code_validations.scss";
 
+import info_icon from "../../assets/info-icon.svg"
+import white_check_success_icon from "../../assets/white_check_success_icon.svg"
+
 // snackbars docs can be found here:
 // https://material-ui.com/components/snackbars/
 
@@ -39,7 +42,7 @@ const CodeValidations = () => {
             <div className="section-heading-container">
               <h2 className="section-heading">Validation Code</h2>
               <div className="tooltip">
-                <img src="/client/assets/info-icon.svg" alt="info" />
+                <img src={info_icon} alt="info" />
                 <div className="tooltip-msg">
                   {/* to replace tooltip text here: */}
                   <div className="tooltip-title">This the tooltip title</div>
@@ -110,7 +113,7 @@ const CodeValidations = () => {
               <span id="success-msg">
                 <div>Code verification confirmed</div>
                 <img
-                  src="/client/assets/white_check_success_icon.svg"
+                  src={white_check_success_icon}
                   alt="check"
                 />
               </span>
@@ -146,7 +149,7 @@ const CodeValidations = () => {
                 <div>Alert message here</div>
                 // might want a ! symbol or something
                 // <img
-                //   src="/client/assets/white_check_success_icon.svg"
+                //   src={white_check_success_icon.svg}
                 //   alt="check"
                 // />
               </span>
