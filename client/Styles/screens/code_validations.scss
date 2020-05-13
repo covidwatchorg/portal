@@ -12,10 +12,6 @@
   text-align: center;
   color: #FFFFFF;
   padding: 10px;
-
-  &:hover {
-      cursor: pointer;
-  }
 }
 
  .tooltip {
@@ -92,7 +88,9 @@
         width: 33.33%;
         display: flex;
         flex-direction: column;
-        justify-content: center;
+        justify-content: space-between;
+        margin-top: 30px;
+        height: 220px;
 
         input {
             /* White */
@@ -104,6 +102,7 @@
             box-shadow: inset 0px 2px 10px rgba(0, 0, 0, 0.2);
             border-radius: 7px;
             padding: 10px 8px 10px 8px;
+            height: 48px;
 
             font-family: Montserrat;
             font-style: normal;
@@ -126,6 +125,13 @@
 
     .white-background {
         background-color: white;
+        padding-left: 6vw;
+        padding-right: 6vw;
+        width: 33.33%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        height: 300px;
     }
 
 .section-description {
@@ -137,5 +143,28 @@
 
   /* Dark Gray */
   color: #585858;
+}
+
+#success-msg {
+    display: flex;
+    align-items: center;
+
+    img {
+        margin-left: 26px;
+    }
+}
+
+#failure-msg {
+    display: flex;
+    align-items: center;
+
+    img {
+        margin-left: 26px;
+    }
+}
+
+#progress-container {
+    display: flex;
+    justify-content: center;
 }
 

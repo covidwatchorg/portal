@@ -1,26 +1,56 @@
-import React from 'react';
-import { BrowserRouter, Switch, Route } from 'react-router-dom';
-import Login from './src/screens/Login';
-import CodeValidations from './src/screens/CodeValidations';
-import AdminDashboard from './src/components/AdminDashboard';
-import Footer from './src/components/Footer';
-import AdminRoute from './src/util/AdminRoute';
-import theme from './ui/Theme';
-import { ThemeProvider } from '@material-ui/styles';
+import React, { Fragment } from 'react'
+import { BrowserRouter, Switch, Route } from 'react-router-dom'
+import Login from './src/screens/Login'
+import CodeValidations from './src/screens/CodeValidations'
+import Settings from './src/screens/Settings'
+import AccountBranding from './src/screens/AccountBranding'
+import ManageTeams from './src/screens/ManageTeams'
+import Footer from './src/components/Footer'
+import NavBar from './src/components/NavBar'
+import * as ROUTES from './src/constants/routes'
+import { withAuthentication } from './src/components/Session'
+import { ThemeProvider } from '@material-ui/styles'
+import theme from './ui/Theme'
 
 const Routes = () => {
   return (
-    <ThemeProvider theme={theme}>
-      <BrowserRouter>
+    <BrowserRouter>
+      <ThemeProvider theme={theme}>
         <Switch>
-          <Route path='/' exact component={Login} />
-          <Route path='/test' exact component={CodeValidations} />
-          <AdminRoute path='/orgAdmin' component={AdminDashboard} />
+          <Route path={ROUTES.LANDING} exact component={Login} />
+          <Route path={ROUTES.SETTINGS}>
+            <Fragment>
+              <NavBar />
+              <Settings />
+            </Fragment>
+          </Route>
+          <Route path={ROUTES.CODE_VALIDATIONS}>
+            <Fragment>
+              <NavBar />
+              <CodeValidations />
+            </Fragment>
+          </Route>
+          <Route path={ROUTES.BRANDING}>
+            <Fragment>
+              <NavBar />
+              <AccountBranding />
+            </Fragment>
+          </Route>
+          <Route path={ROUTES.MANAGE_MEMBERS}>
+            <Fragment>
+              <NavBar />
+              <ManageTeams />
+            </Fragment>
+          </Route>
         </Switch>
-        <Footer />
-      </BrowserRouter>
-    </ThemeProvider>
-  );
-};
 
-export default Routes;
+        <Switch>
+          <Route exact path="/" component={Footer} />
+          <Route exact component={() => <Footer branded={true} />} />
+        </Switch>
+      </ThemeProvider>
+    </BrowserRouter>
+  )
+}
+
+export default withAuthentication(Routes)

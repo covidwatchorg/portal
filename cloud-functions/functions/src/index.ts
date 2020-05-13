@@ -1,10 +1,13 @@
 import * as admin from 'firebase-admin';
 import * as functions from 'firebase-functions';
+import * as sgMail from '@sendgrid/mail';
 
 // Initialize firebse admin and get db instance
-admin.initializeApp();
+admin.initializeApp(functions.config().firebase);
 const db = admin.firestore();
 const auth = admin.auth();
+// Initialize SendGrid
+sgMail.setApiKey(functions.config().sendgrid.key);
 
 // Checks that an entry (or pending entry) to the users table contains the required fields
 function isCovidWatchUserProperlyFormatted(covidWatchUser: any): boolean {
@@ -81,7 +84,7 @@ function authGuard(context: functions.https.CallableContext): Promise<void> {
   return new Promise((resolve, reject) => {
     if (!context.auth) {
       // Throwing an HttpsError so that the client gets the error details.
-      reject(new functions.https.HttpsError('failed-precondition', 'The function must be called while authenticated.'));
+      reject(new functions.https.HttpsError('unauthenticated', 'The function must be called while authenticated.'));
     }
     resolve();
   });
@@ -92,9 +95,41 @@ function isAdminGuard(context: functions.https.CallableContext): Promise<void> {
   return authGuard(context).then(() => {
     // Force unwrapping warranted, because existence of context.auth is checked by authGuard
     if (context.auth!.token.isAdmin !== true) {
-      throw new functions.https.HttpsError('failed-precondition', 'The function must be called by an admin.');
+      throw new functions.https.HttpsError('permission-denied', 'The function must be called by an admin.');
     }
   });
+}
+
+// Send email to new users instructing them to change their password
+function sendNewUserEmail(email: string) {
+  auth
+    .generatePasswordResetLink(email, {
+      // URL you want to redirect back to. The domain (www.example.com) for
+      // this URL must be whitelisted in the Firebase Console.
+      url: functions.config().client.url,
+    })
+    .then((pwdResetLink) => {
+      const msg = {
+        to: email,
+        from: 'welcome@covid-watch.org',
+        subject: 'Welcome to the Covid Watch Permission Portal',
+        html: `
+        <p>Welcome to the Covid Watch Permission Portal! For security reasons, as a first step we ask that you set your password by following the link below. If that link has expired by the time you click it, navigate to the Covid Watch Permission Portal login page and follow the 'Forgot password?' link.</p>
+        <a href=${pwdResetLink}>Set Password</a>
+        `,
+      };
+      sgMail
+        .send(msg)
+        .then(() => {
+          console.log(`Welcome email sent to ${email}`);
+        })
+        .catch((err) => {
+          console.error(JSON.stringify(err));
+        });
+    })
+    .catch((err) => {
+      console.error(err);
+    });
 }
 
 // Cloud function for creating new users. Allows admins to create new non-admin users.
@@ -220,6 +255,7 @@ export const onCreate = functions.auth.user().onCreate((firebaseAuthUser) => {
                             'organizationID claim set to ' +
                             covidWatchUserData.organizationID
                         );
+                        sendNewUserEmail(firebaseAuthUser.email!);
                       })
                       .catch((err) => {
                         console.error(err);
@@ -247,4 +283,40 @@ export const onCreate = functions.auth.user().onCreate((firebaseAuthUser) => {
       console.error(err);
       throw err;
     });
+});
+
+// Cloud function for validating upload tokens. Naturally this can only be called by an authenticated user.
+// This validate calls the report server's /validate endpoint with both the upload token and the user's organization ID.
+// The organizationID is taken from the user's authentication token's claims, to ensure that users can only
+// ever validate upload tokens corresponding to their own organizations. There should be a system in place
+// to ensure that only the server running this function can talk to the report server's /validate.
+export const validate = functions.https.onCall((body, context) => {
+  return new Promise((resolve, reject) => {
+    authGuard(context)
+      .then(() => {
+        const uploadToken = body.uploadToken;
+        // validate request body
+        if (typeof uploadToken !== 'string') {
+          reject(new functions.https.HttpsError('invalid-argument', 'request body must have uploadToken <string>'));
+        }
+        fetch(functions.config().token_server.validate_url, {
+          method: 'POST',
+          body: JSON.stringify({
+            upload_token: uploadToken,
+            organization_id: context.auth!.token.organizationID,
+          }),
+        })
+          .then((res) => {
+            // TODO: set differing responses based on whether token was just validated, or is already valid
+            resolve({ message: 'upload_token validated' });
+          })
+          .catch((err) => {
+            // TODO: set response based on /validate's error specification
+            reject(err);
+          });
+      })
+      .catch((err) => {
+        reject(err);
+      });
+  });
 });

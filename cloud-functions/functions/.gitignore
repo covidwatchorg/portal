@@ -8,6 +8,6 @@
 typings/
 
 node_modules/
-permission-portal-test-firebase-admin-key.json
-permission-portal-dev-firebase-admin-key.json
+permission-portal-*-firebase-admin*.json
 !reset-dev-infrastructure.js
+!reset-test-infrastructure.js

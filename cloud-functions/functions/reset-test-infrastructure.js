@@ -2,10 +2,10 @@ var admin = require('firebase-admin');
 var client = require('firebase-tools');
 
 // Initialize admin SDK
-const serviceAccount = require('./permission-portal-dev-firebase-admin-key.json');
+const serviceAccount = require('./permission-portal-test-firebase-admin-key.json');
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
-  databaseURL: 'https://permission-portal-dev.firebaseio.com',
+  databaseURL: 'https://permission-portal-test.firebaseio.com'
 });
 
 const db = admin.firestore();
@@ -19,7 +19,7 @@ function addSampleData() {
 
   return soylentGreenRef
     .set({
-      name: 'Soylent Green',
+      name: 'Soylent Green'
     })
     .then(() => {
       console.log(`Successfully created organization Soylent Green with document ID ${soylentGreenID}`);
@@ -29,13 +29,13 @@ function addSampleData() {
         .set({
           isSuperAdmin: false,
           isAdmin: true,
-          organizationID: soylentGreenID,
+          organizationID: soylentGreenID
         })
         .then(() => {
           return auth
             .createUser({
               email: 'admin@soylentgreen.com',
-              password: 'admin@soylentgreen.com',
+              password: 'admin@soylentgreen.com'
             })
             .then(() => {
               console.log(
@@ -47,13 +47,13 @@ function addSampleData() {
                 .set({
                   isSuperAdmin: false,
                   isAdmin: false,
-                  organizationID: soylentGreenID,
+                  organizationID: soylentGreenID
                 })
                 .then(() => {
                   return auth
                     .createUser({
                       email: 'user@soylentgreen.com',
-                      password: 'user@soylentgreen.com',
+                      password: 'user@soylentgreen.com'
                     })
                     .then(() => {
                       console.log(
@@ -61,7 +61,7 @@ function addSampleData() {
                       );
                       return initechRef
                         .set({
-                          name: 'Initech',
+                          name: 'Initech'
                         })
                         .then(() => {
                           console.log(`Successfully created organization Initech with document ID ${initechID}`);
@@ -71,13 +71,13 @@ function addSampleData() {
                             .set({
                               isSuperAdmin: false,
                               isAdmin: true,
-                              organizationID: initechID,
+                              organizationID: initechID
                             })
                             .then(() => {
                               return auth
                                 .createUser({
                                   email: 'admin@initech.com',
-                                  password: 'admin@initech.com',
+                                  password: 'admin@initech.com'
                                 })
                                 .then(() => {
                                   console.log(
@@ -89,56 +89,56 @@ function addSampleData() {
                                     .set({
                                       isSuperAdmin: false,
                                       isAdmin: false,
-                                      organizationID: initechID,
+                                      organizationID: initechID
                                     })
                                     .then(() => {
                                       return auth
                                         .createUser({
                                           email: 'user@initech.com',
-                                          password: 'user@initech.com',
+                                          password: 'user@initech.com'
                                         })
                                         .then(() => {
                                           console.log(
                                             `Successfully created Initech regular user with username/password user@initech.com`
                                           );
                                         })
-                                        .catch((err) => {
+                                        .catch(err => {
                                           throw err;
                                         });
                                     })
-                                    .catch((err) => {
+                                    .catch(err => {
                                       throw err;
                                     });
                                 })
-                                .catch((err) => {
+                                .catch(err => {
                                   throw err;
                                 });
                             })
-                            .catch((err) => {
+                            .catch(err => {
                               throw err;
                             });
                         })
-                        .catch((err) => {
+                        .catch(err => {
                           throw err;
                         });
                     })
-                    .catch((err) => {
+                    .catch(err => {
                       throw err;
                     });
                 })
-                .catch((err) => {
+                .catch(err => {
                   throw err;
                 });
             })
-            .catch((err) => {
+            .catch(err => {
               throw err;
             });
         })
-        .catch((err) => {
+        .catch(err => {
           throw err;
         });
     })
-    .catch((err) => {
+    .catch(err => {
       throw err;
     });
 }
@@ -155,7 +155,7 @@ async function deleteUser(uid) {
 async function deleteAllUsers(nextPageToken) {
   try {
     const listUsersResult = await admin.auth().listUsers(100, nextPageToken);
-    listUsersResult.users.forEach(function (userRecord) {
+    listUsersResult.users.forEach(function(userRecord) {
       uid = userRecord.toJSON().uid;
       return deleteUser(uid);
     });
@@ -170,17 +170,17 @@ async function deleteAllUsers(nextPageToken) {
 function hardReset() {
   return client.firestore
     .delete('/organizations', {
-      project: 'dev',
+      project: 'test',
       recursive: true,
-      yes: true,
+      yes: true
     })
     .then(() => {
       console.log('Successfully deleted organizations collection');
       return client.firestore
         .delete('/users', {
-          project: 'dev',
+          project: 'test',
           recursive: true,
-          yes: true,
+          yes: true
         })
         .then(() => {
           console.log('Successfully deleted users collection');

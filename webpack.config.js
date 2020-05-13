@@ -1,14 +1,33 @@
 const path = require('path');
+const webpack = require('webpack');
+const DefinePlugin = require('webpack/lib/DefinePlugin');
 
-module.exports = {
+const envKeys = Object.keys(process.env).reduce((prev, next) => {
+  prev[`process.env.${next}`] = JSON.stringify(process.env[next]);
+  return prev;
+}, {});
+
+module.exports = function(env, argv) {
+  return {
   mode: 'development',
+  devtool: 'source-map',
+
+  node: {
+    fs: "empty"
+  }, 
+  plugins : [
+    new DefinePlugin(envKeys),
+    new webpack.ProvidePlugin({
+      "React": "react",
+   }),
+  ],
   entry: {
     polyfill: 'babel-polyfill',
     app: './client/index.js',
   },
   output: {
     path: path.resolve(__dirname, 'dist'),
-    filename: 'bundle.js',
+    filename: '[name].bundle.js',
   },
   devServer: {
     port: 8080,
@@ -23,12 +42,25 @@ module.exports = {
       {
         test: /\.jsx?/,
         exclude: /node_modules/,
-        use: {
+        use: [{  
           loader: 'babel-loader',
           options: {
-            presets: ['@babel/preset-env', '@babel/preset-react'],
+            presets: [
+              [
+                '@babel/preset-env',
+                {
+                  "targets": {
+                    "node": "10"
+                  }
+                },
+              ],
+              '@babel/preset-react',
+              {
+                'plugins': ['@babel/plugin-proposal-class-properties']
+              }
+            ],
           },
-        },
+        }],
       },
       {
         test: /\.s[ac]ss$/i,
@@ -46,4 +78,5 @@ module.exports = {
       }
     ],
   },
+  };
 };
