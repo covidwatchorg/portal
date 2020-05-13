@@ -1,4 +1,4 @@
-import React, { useState, Fragment } from 'react';
+import React, { Fragment } from 'react';
 import { BrowserRouter, Switch, Route } from 'react-router-dom';
 import Login from './src/screens/Login';
 import CodeValidations from './src/screens/CodeValidations';
@@ -7,37 +7,39 @@ import AccountBranding from './src/screens/AccountBranding';
 import ManageTeams from './src/screens/ManageTeams';
 import Footer from './src/components/Footer';
 import NavBar from './src/components/NavBar';
-import AdminRoute from './src/util/AdminRoute';
+import * as ROUTES from './src/constants/routes';
+import { withAuthentication } from './src/components/Session';
+
 
 const Routes = () => {
   return (
     <BrowserRouter>
       <Switch>
-        <Route path='/' exact component={Login} />
-        <AdminRoute path='/settings'>
+        <Route path={ROUTES.LANDING} exact component={Login} />
+        <Route path={ROUTES.SETTINGS}>
           <Fragment>
             <NavBar />
             <Settings />
           </Fragment>
-        </AdminRoute>
-        <AdminRoute path='/code_validations'>
+        </Route>
+        <Route path={ROUTES.CODE_VALIDATIONS}>
           <Fragment>
             <NavBar />
             <CodeValidations />
           </Fragment>
-        </AdminRoute>
-        <AdminRoute path='/branding'>
+        </Route>
+        <Route path={ROUTES.BRANDING}>
           <Fragment>
             <NavBar />
             <AccountBranding />
           </Fragment>
-        </AdminRoute>
-        <AdminRoute path='/manage_members'>
+        </Route>
+        <Route path={ROUTES.MANAGE_MEMBERS}>
           <Fragment>
             <NavBar />
             <ManageTeams />
           </Fragment>
-        </AdminRoute>
+        </Route>
       </Switch>
       <Switch>
           <Route exact path="/" component={Footer} />
@@ -47,4 +49,4 @@ const Routes = () => {
   );
 };
 
-export default Routes;
+export default withAuthentication(Routes);
