@@ -5,6 +5,7 @@ import { makeStyles } from '@material-ui/core/styles'
 import { withAuthorization } from '../components/Session'
 import * as ROLES from '../constants/roles'
 import { compose } from 'recompose'
+import store from '../store'
 
 const useStyles = makeStyles({
   root: {
@@ -27,6 +28,7 @@ const inputStyles = makeStyles({
     paddingLeft: 10,
     width: '75%',
     height: 30,
+    lineHeight: 30,
     fontSize: 18,
     marginTop: 10,
     marginBottom: 30,
@@ -157,15 +159,22 @@ const SettingsBase = () => {
               <label for="role">
                 Role <span style={{ color: 'red' }}>*</span>
               </label>
-              <input
+              <select
                 type="text"
                 id="role"
                 name="role"
-                defaultValue="Administrator"
+                disabled={!store.user.isAdmin}
                 required
                 className={input.root}
-                style={{ backgroundColor: '#E0E0E0' }}
-              ></input>
+                style={!store.user.isAdmin ? { backgroundColor: '#E0E0E0' } : {}}
+              >
+                <option value={ROLES.ADMIN_LABEL} selected={store.user.isAdmin}>
+                  {ROLES.ADMIN_LABEL}
+                </option>
+                <option value={ROLES.NON_ADMIN_LABEL} selected={!store.user.isAdmin}>
+                  {ROLES.NON_ADMIN_LABEL}
+                </option>
+              </select>
               <label for="lastName">
                 Last Name <span style={{ color: 'red' }}>*</span>
               </label>
@@ -210,7 +219,7 @@ const SettingsBase = () => {
 }
 
 const condition = (authUser) => {
-  var result = authUser && authUser.roles[ROLES.ADMIN]
+  var result = authUser
   return result
 }
 
