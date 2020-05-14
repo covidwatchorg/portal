@@ -6,6 +6,7 @@ import addMember from '../../assets/add-member.svg'
 import arrowLeft from '../../assets/arrow-left.svg'
 import arrowRight from '../../assets/arrow-right.svg'
 import '../../Styles/screens/manage_teams.scss'
+import AddMemberModal from './AddMemberModal'
 
 var dummyData = [
   { name: 'Smitherson, Dr.Rebecca', role: 0, status: 1 },
@@ -31,9 +32,12 @@ var dummyData = [
   { name: 'Nikhil Kumar', role: 1, status: 0 },
 ]
 
+
+
 const ManageTeamsBase = () => {
   const [currentPage, setCurrentPage] = useState(0)
   const pages = [...Array(Math.ceil(dummyData.length / 15)).keys()]
+  const [showModal, setShowModal] = useState(false);
 
   const getPageData = () => {
     const pageStart = 15 * currentPage
@@ -43,10 +47,11 @@ const ManageTeamsBase = () => {
   return (
     <div className="module-container">
       <h1>Manage Members</h1>
-      <div className="add-member-button">
+      <div className="add-member-button" onClick={() => setShowModal(true)}>
         <img src={addMember} />
         <span className="add-button-text">Add Member</span>
       </div>
+      {showModal ? <AddMemberModal showModal={showModal} setShowModal={setShowModal} /> : null}
       <table>
         <tr>
           <th style={{ borderTopLeftRadius: 5 }}>Name</th>
@@ -72,7 +77,7 @@ const ManageTeamsBase = () => {
               </td>
               <td style={{ padding: 0 }}>
                 <div className="custom-select">
-                  <select className={data.status === 1 ? 'active':'inactive'}>
+                  <select className={data.status === 1 ? 'active' : 'inactive'}>
                     <option selected={(data.status === 1)}>
                       Active
                     </option>
@@ -84,8 +89,8 @@ const ManageTeamsBase = () => {
               </td>
               <td>
                 <div className="settings-container">
-                  <a onClick={() => {}}>Delete Account</a>
-                  <a onClick={() => {}}>Reset Password</a>
+                  <a onClick={() => { }}>Delete Account</a>
+                  <a onClick={() => { }}>Reset Password</a>
                 </div>
               </td>
             </tr>
@@ -97,7 +102,7 @@ const ManageTeamsBase = () => {
         <div className="pages-container">
           <div
             className="arrow"
-            onClick={currentPage === 0 ? () => {} :
+            onClick={currentPage === 0 ? () => { } :
               () => setCurrentPage(currentPage - 1)}
           >
             <img src={arrowLeft} />
@@ -105,8 +110,8 @@ const ManageTeamsBase = () => {
           {
             pages.map(page => (
               <a
-                className={`${page === currentPage ? 'current-':''}page`}
-                onClick={page === currentPage ? () => {} : () => setCurrentPage(page)}
+                className={`${page === currentPage ? 'current-' : ''}page`}
+                onClick={page === currentPage ? () => { } : () => setCurrentPage(page)}
               >
                 {page + 1}
               </a>
@@ -114,7 +119,7 @@ const ManageTeamsBase = () => {
           }
           <div
             className="arrow"
-            onClick={currentPage === pages[pages.length - 1] ? () => {} :
+            onClick={currentPage === pages[pages.length - 1] ? () => { } :
               () => setCurrentPage(currentPage + 1)}
           >
             <img src={arrowRight} />
