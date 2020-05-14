@@ -1,4 +1,4 @@
-![CI](https://github.com/covid19risk/covidwatch-cloud-functions/workflows/CI/badge.svg)
+![CI master](https://github.com/covid19risk/covidwatch-cloud-functions/workflows/CI%20master/badge.svg)
 ![Built with GO](https://img.shields.io/badge/go-1.13%7C1.14-blue.svg)
 [![Stop COVID-19](https://img.shields.io/badge/stop-covid--19-red.svg)](https://www.covid-watch.org/)
 
