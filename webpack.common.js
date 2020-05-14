@@ -1,4 +1,6 @@
 const path = require('path');
+const webpack = require('webpack');
+const DefinePlugin = require('webpack/lib/DefinePlugin');
 
 module.exports = {
   entry: {
@@ -15,7 +17,7 @@ module.exports = {
       {
         test: /\.jsx?/,
         exclude: /node_modules/,
-        use: {
+        use: [{  
           loader: 'babel-loader',
           options: {
             presets: [
@@ -27,10 +29,13 @@ module.exports = {
                   }
                 },
               ],
-              '@babel/preset-react'
+              '@babel/preset-react',
+              {
+                'plugins': ['@babel/plugin-proposal-class-properties']
+              }
             ],
           },
-        },
+        }],
       },
       {
         test: /\.s[ac]ss$/i,
@@ -55,6 +60,6 @@ module.exports = {
             },
          },
       }
-],
+    ],
   },
 };

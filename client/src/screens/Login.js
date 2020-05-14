@@ -1,48 +1,77 @@
-import React, { Fragment, useState } from 'react'
-import { Redirect } from 'react-router-dom'
+import React, { Fragment, useState } from 'react';
+import { withRouter } from 'react-router-dom';
+import { withFirebase } from '../components/Firebase';
+import { compose } from 'recompose';
+import  * as ROUTES from '../constants/routes';
 import store from '../store'
 import doctor1 from '../../assets/doctor1.svg'
 import doctor2 from '../../assets/doctor2.svg'
 import ucsf_health from '../../assets/ucsf-health.svg'
 import powered_by_cw from '../../assets/powered-by-cw.svg'
 
-const Login = () => {
-  const [values, setValues] = useState({
-    email: '',
-    password: '',
-    error: '',
-    redirect: false,
-  })
 
-  const { email, password, error, redirect } = values
+const INITIAL_STATE = {
+  email: '',
+  password: '',
+  error: null,
+  redirect: false,
+};
 
-  const handleChange = (name) => (event) => {
-    setValues({ ...values, error: false, [name]: event.target.value })
+
+class SignInFormBase extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { ...INITIAL_STATE };
+    this.onChange = this.onChange.bind(this);
+    this.onSubmit = this.onSubmit.bind(this);
   }
 
-  const clickSubmit = async (event) => {
+  clickSubmit = async (event) => {
     event.preventDefault()
-    setValues({ ...values, error: false })
-    console.log(`isAdmin = ${store.user.isAdmin}`)
+    //this.setValues({ ...values, error: false })
+    const { email, password } = this.state;
+
 
     try {
-      await store.user.signIn(email, password);
-      setValues({ ...values, redirect: store.user.isAdmin })
+      await store.signIn(email, password);
+      if (store.user) {
+        this.props.history.push(store.user.isAdmin ?
+          ROUTES.MANAGE_MEMBERS : ROUTES.CODE_VALIDATIONS);
+      }
+      //setValues({ ...values, redirect: store.user.isAdmin })
     } catch (err) {
       console.log(err)
       setValues({ ...values, redirect: store.user.isAdmin })
     }
   }
 
-  const redirectUser = () => {
-    if (redirect === true) {
-      console.log('redirecting')
-      return <Redirect to="/manage_members" />
-    }
-  }
 
-  const bottomLevelContent = () => (
-    <fragment>
+  onSubmit = event => {
+    event.preventDefault();
+    const { email, password } = this.state;
+    this.props.firebase
+      .doSignInWithEmailAndPassword(email, password)
+      .then((user) => {
+        this.setState({ ...INITIAL_STATE });
+        this.props.firebase.generateUserDocument(user.user).then( userDoc => { 
+          if (userDoc.isAdmin === true) {
+            this.props.history.push(ROUTES.MANAGE_MEMBERS);
+          }
+        })
+      })
+      .catch(error => {
+        this.setState({ error });
+      });
+
+    event.preventDefault();
+  };
+
+  onChange = name => event => {
+    this.setState({ [name]: event.target.value });
+  };
+
+  bottomLevelContent = () => (
+    <Fragment>
       <div className="doctorContainer">
         <div className="doctor1">
           <img src={doctor1} />
@@ -51,10 +80,10 @@ const Login = () => {
           <img src={doctor2} />
         </div>
       </div>
-    </fragment>
+    </Fragment>
   )
 
-  const loginForm = () => (
+  loginForm = () => (
     <Fragment>
       <div className="topNav">
         <img src={ucsf_health} id="ucsfLogo" />
@@ -68,24 +97,37 @@ const Login = () => {
           </h3>
         </div>
         <div className="loginContainer">
-          <label for="email">Email</label>
-          <input onChange={handleChange('email')} type="email" id="email" name="email" />
-          <label for="password">Password</label>
-          <input onChange={handleChange('password')} type="password" id="password" name="password" />
-          <button onClick={clickSubmit}>Login</button>
+          <label htmlFor="email">Email</label>
+          <input onChange={this.onChange('email')} type="email" id="email" name="email" />
+          <label htmlFor="password">Password</label>
+          <input onChange={this.onChange('password')} type="password" id="password" name="password" />
+          <button onClick={this.clickSubmit}>Login</button>
           <a href="url">Forgot password?</a>
         </div>
       </div>
     </Fragment>
   )
 
-  return (
-    <React.Fragment>
-      {loginForm()}
-      {redirectUser()}
-      {bottomLevelContent()}
-    </React.Fragment>
-  )
+  render() {
+    return (
+      <Fragment>
+        {this.loginForm()}
+        {this.bottomLevelContent()}
+      </Fragment>
+
+    );
+  }
 }
 
-export default Login
+
+const SignInForm = compose(
+  withRouter,
+  withFirebase,
+)(SignInFormBase);
+
+const Login = () => (
+    <SignInForm />
+);
+ 
+
+export default Login;

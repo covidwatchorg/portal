@@ -5,6 +5,9 @@ import SnackbarContent from '@material-ui/core/SnackbarContent';
 import CircularProgress from "@material-ui/core/CircularProgress";
 
 import "../../Styles/screens/code_validations.scss";
+import { withAuthorization } from '../components/Session';
+import * as ROLES from '../constants/roles';
+import { compose } from 'recompose';
 
 import info_icon from "../../assets/info-icon.svg"
 import white_check_success_icon from "../../assets/white_check_success_icon.svg"
@@ -13,7 +16,7 @@ import white_check_success_icon from "../../assets/white_check_success_icon.svg"
 // https://material-ui.com/components/snackbars/
 
 
-const CodeValidations = () => {
+const CodeValidationsBase = () => {
   const [state, setState] = React.useState({
     open: false,
     vertical: "top",
@@ -159,5 +162,13 @@ const CodeValidations = () => {
       </div>
     );
 }
+const condition = authUser => {
+  var result = authUser;
+  return result;
+}
+
+const CodeValidations =  compose(
+  withAuthorization(condition),
+)(CodeValidationsBase);
 
 export default CodeValidations;

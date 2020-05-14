@@ -1,10 +1,13 @@
 import React, { useState } from 'react';
-import { Redirect, Link } from 'react-router-dom';
+import { Redirect } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
 import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import Menu from '@material-ui/core/Menu';
+import { compose } from 'recompose';
+import { withRouter } from 'react-router-dom';
+import { withFirebase } from '../components/Firebase';
 import store from '../store'
 import ucsf_health from '../../assets/ucsf-health.svg'
 import profile from '../../assets/placeholder/profile.png'
@@ -28,7 +31,7 @@ const linkStyles = {
   fontSize: 20
 };
 
-const NavBar = () => {
+const NavBarBase = () => {
   const classes = useStyles();
 
   const [redirect, setRedirect] = useState(-1);
@@ -52,11 +55,11 @@ const NavBar = () => {
   };
 
   const getUserName = () => {
-    return "Dr. John Doe"; // TODO retrieve name from user data
+    return store.user.firstName + ' ' + store.user.lastName
   };
 
   const getUserTitle = () => {
-    return "Account Admin" // TODO retrieve title from user data
+    return store.user.role
   };
 
   return (
@@ -101,12 +104,18 @@ const NavBar = () => {
         <MenuItem style={linkStyles} onClick={() => onClickMenuItem(0)}>
           Positive Test Validations
         </MenuItem>
-        <MenuItem style={linkStyles} onClick={() => onClickMenuItem(1)}>
-          Manage Members
-        </MenuItem>
-        <MenuItem style={linkStyles} onClick={() => onClickMenuItem(2)}>
-          Account Branding
-        </MenuItem>
+        {
+          store.user.isAdmin &&
+          <MenuItem style={linkStyles} onClick={() => onClickMenuItem(1)}>
+            Manage Members
+          </MenuItem>
+        }
+        {
+          store.user.isAdmin &&
+          <MenuItem style={linkStyles} onClick={() => onClickMenuItem(2)}>
+            Account Branding
+          </MenuItem>
+        }
         <MenuItem style={linkStyles} onClick={() => onClickMenuItem(3)}>
           My Settings
         </MenuItem>
@@ -124,5 +133,10 @@ const NavBar = () => {
     </div>
   );
 };
+
+const NavBar = compose(
+  withRouter,
+  withFirebase,
+)(NavBarBase);
 
 export default NavBar;

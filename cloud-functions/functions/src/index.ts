@@ -1,10 +1,13 @@
 import * as admin from 'firebase-admin';
 import * as functions from 'firebase-functions';
+import * as sgMail from '@sendgrid/mail';
 
 // Initialize firebse admin and get db instance
-admin.initializeApp();
+admin.initializeApp(functions.config().firebase);
 const db = admin.firestore();
 const auth = admin.auth();
+// Initialize SendGrid
+sgMail.setApiKey(functions.config().sendgrid.key);
 
 // Checks that an entry (or pending entry) to the users table contains the required fields
 function isCovidWatchUserProperlyFormatted(covidWatchUser: any): boolean {
@@ -95,6 +98,38 @@ function isAdminGuard(context: functions.https.CallableContext): Promise<void> {
       throw new functions.https.HttpsError('permission-denied', 'The function must be called by an admin.');
     }
   });
+}
+
+// Send email to new users instructing them to change their password
+function sendNewUserEmail(email: string) {
+  auth
+    .generatePasswordResetLink(email, {
+      // URL you want to redirect back to. The domain (www.example.com) for
+      // this URL must be whitelisted in the Firebase Console.
+      url: functions.config().client.url,
+    })
+    .then((pwdResetLink) => {
+      const msg = {
+        to: email,
+        from: 'welcome@covid-watch.org',
+        subject: 'Welcome to the Covid Watch Permission Portal',
+        html: `
+        <p>Welcome to the Covid Watch Permission Portal! For security reasons, as a first step we ask that you set your password by following the link below. If that link has expired by the time you click it, navigate to the Covid Watch Permission Portal login page and follow the 'Forgot password?' link.</p>
+        <a href=${pwdResetLink}>Set Password</a>
+        `,
+      };
+      sgMail
+        .send(msg)
+        .then(() => {
+          console.log(`Welcome email sent to ${email}`);
+        })
+        .catch((err) => {
+          console.error(JSON.stringify(err));
+        });
+    })
+    .catch((err) => {
+      console.error(err);
+    });
 }
 
 // Cloud function for creating new users. Allows admins to create new non-admin users.
@@ -220,6 +255,7 @@ export const onCreate = functions.auth.user().onCreate((firebaseAuthUser) => {
                             'organizationID claim set to ' +
                             covidWatchUserData.organizationID
                         );
+                        sendNewUserEmail(firebaseAuthUser.email!);
                       })
                       .catch((err) => {
                         console.error(err);
