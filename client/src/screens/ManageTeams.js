@@ -128,8 +128,8 @@ const ManageTeams = () => {
   })
 
   return (
-    <Grid container direction="column" style={{ padding: '3em' }}>
-      <h1>Manage Teams</h1>
+    <Grid container direction="column" style={{ padding: '32px' }}>
+      <h1 style={{ marginLeft: 0 }}>Manage Members</h1>
 
       <Grid item style={{ paddingBottom: '1.5em' }}>
         <Button className={classes.addMember} onClick={handleOpen}>
