@@ -160,7 +160,7 @@ const CodeValidationsBase = () => {
     );
 }
 const condition = authUser => {
-  var result = authUser && authUser.roles[ROLES.ADMIN];
+  var result = authUser;
   return result;
 }
 

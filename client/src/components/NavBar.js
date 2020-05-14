@@ -102,12 +102,18 @@ const NavBarBase = () => {
         <MenuItem style={linkStyles} onClick={() => onClickMenuItem(0)}>
           Positive Test Validations
         </MenuItem>
-        <MenuItem style={linkStyles} onClick={() => onClickMenuItem(1)}>
-          Manage Members
-        </MenuItem>
-        <MenuItem style={linkStyles} onClick={() => onClickMenuItem(2)}>
-          Account Branding
-        </MenuItem>
+        {
+          store.user.isAdmin &&
+          <MenuItem style={linkStyles} onClick={() => onClickMenuItem(1)}>
+            Manage Members
+          </MenuItem>
+        }
+        {
+          store.user.isAdmin &&
+          <MenuItem style={linkStyles} onClick={() => onClickMenuItem(2)}>
+            Account Branding
+          </MenuItem>
+        }
         <MenuItem style={linkStyles} onClick={() => onClickMenuItem(3)}>
           My Settings
         </MenuItem>
