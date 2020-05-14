@@ -69,8 +69,21 @@ class Firebase {
       const orgDocument = await this.firestore.doc(`organizations/${orgid}`).get();
 
       return orgDocument.data()
-    } catch (err) {
+    } catch (error) {
       console.error("Error fetching organization", error);
+    }
+  };
+
+  getMembersOfOrg = async orgid => {
+    try {
+      const snapshot = await this.firestore.collection('users')
+        .where('organizationID', '==', orgid)
+        .get()
+      
+      const userDocs = snapshot.docs.map(userDoc => userDoc.data())
+      return userDocs
+    } catch (error) {
+      console.error("Error fetching organization members", error);
     }
   };
 
