@@ -1,11 +1,14 @@
-name: CI
-on: [push, pull_request]
+# To reduce noise and wasted github actions we only run the 1.13 linux target on
+# pull requests
+name: CI dev
+on: [pull_request]
+
 jobs:
   test:
     strategy:
       matrix:
-        go-version: [1.13.x, 1.14.x]
-        platform: [ubuntu-latest, macos-latest, windows-latest]
+        go-version: [1.13.x]
+        platform: [ubuntu-latest]
       fail-fast: false
     runs-on: ${{ matrix.platform }}
     steps:
