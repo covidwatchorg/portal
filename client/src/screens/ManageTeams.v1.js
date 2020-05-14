@@ -1,4 +1,7 @@
 import React, { useState } from 'react'
+import * as ROLES from '../constants/roles'
+import { withAuthorization } from '../components/Session'
+import { compose } from 'recompose'
 import addMember from '../../assets/add-member.svg'
 import arrowLeft from '../../assets/arrow-left.svg'
 import arrowRight from '../../assets/arrow-right.svg'
@@ -28,7 +31,7 @@ var dummyData = [
   { name: 'Nikhil Kumar', role: 1, status: 0 },
 ]
 
-const ManageTeams = () => {
+const ManageTeamsBase = () => {
   const [currentPage, setCurrentPage] = useState(0)
   const pages = [...Array(Math.ceil(dummyData.length / 15)).keys()]
 
@@ -121,5 +124,12 @@ const ManageTeams = () => {
     </div>
   )
 }
+
+const condition = (authUser) => {
+  var result = authUser && authUser.roles[ROLES.ADMIN]
+  return result
+}
+
+const ManageTeams = compose(withAuthorization(condition))(ManageTeamsBase)
 
 export default ManageTeams
