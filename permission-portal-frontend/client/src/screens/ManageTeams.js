@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import * as ROLES from '../constants/roles'
 import { withAuthorization } from '../components/Session'
 import { compose } from 'recompose'
+import store from '../store'
 import addMember from '../../assets/add-member.svg'
 import arrowLeft from '../../assets/arrow-left.svg'
 import arrowRight from '../../assets/arrow-right.svg'
@@ -41,7 +42,7 @@ const ManageTeamsBase = () => {
 
   const getPageData = () => {
     const pageStart = 15 * currentPage
-    return dummyData.slice(pageStart, pageStart + 15)
+    return store.organization.members.slice(pageStart, pageStart + 15)
   };
 
   return (
@@ -53,49 +54,56 @@ const ManageTeamsBase = () => {
       </div>
       {showModal ? <AddMemberModal showModal={showModal} setShowModal={setShowModal} /> : null}
       <table>
-        <tr>
-          <th style={{ borderTopLeftRadius: 5 }}>Name</th>
-          <th>Role</th>
-          <th>Status</th>
-          <th style={{ borderTopRightRadius: 5 }}>Settings</th>
-        </tr>
-        {
-          getPageData().map(data => (
-            <tr>
-              <td>{data.name}</td>
-              <td style={{ padding: 0 }}>
-                <div className="custom-select">
-                  <select>
-                    <option selected={(data.role === 0)}>
-                      Account Administrator
+        <thead>
+          <tr>
+            <th style={{ borderTopLeftRadius: 5 }}>Name</th>
+            <th>Role</th>
+            <th>Status</th>
+            <th style={{ borderTopRightRadius: 5 }}>Settings</th>
+          </tr>
+        </thead>
+        <tbody>
+          {
+            getPageData().map((data, index) => (
+              <tr key={index}>
+                <td>{data.lastName + ', ' + data.firstName}</td>
+                <td style={{ padding: 0 }}>
+                  <div className="custom-select">
+                    <select defaultValue={data.isAdmin ? ROLES.ADMIN_LABEL : ROLES.NON_ADMIN_LABEL}>
+                      <option value={ROLES.ADMIN_LABEL}>
+                        {ROLES.ADMIN_LABEL}
+                      </option>
+                      <option value={ROLES.NON_ADMIN_LABEL}>
+                        {ROLES.NON_ADMIN_LABEL}
+                      </option>
+                    </select>
+                  </div>
+                </td>
+                <td style={{ padding: 0 }}>
+                  <div className="custom-select">
+                    <select
+                      className={data.isActive ? 'active' : 'inactive'}
+                      defaultValue={data.isActive ? 'active' : 'deactivated'}
+                    >
+                      <option value='active'>
+                        Active
                     </option>
-                    <option selected={(data.role === 1)}>
-                      Contributor
+                      <option value='deactivated'>
+                        Deactivated
                     </option>
-                  </select>
-                </div>
-              </td>
-              <td style={{ padding: 0 }}>
-                <div className="custom-select">
-                  <select className={data.status === 1 ? 'active' : 'inactive'}>
-                    <option selected={(data.status === 1)}>
-                      Active
-                    </option>
-                    <option selected={(data.status === 0)}>
-                      Deactivated
-                    </option>
-                  </select>
-                </div>
-              </td>
-              <td>
-                <div className="settings-container">
-                  <a onClick={() => { }}>Delete Account</a>
-                  <a onClick={() => { }}>Reset Password</a>
-                </div>
-              </td>
-            </tr>
-          ))
-        }
+                    </select>
+                  </div>
+                </td>
+                <td>
+                  <div className="settings-container">
+                    <a onClick={() => { }}>Delete Account</a>
+                    <a onClick={() => { }}>Reset Password</a>
+                  </div>
+                </td>
+              </tr>
+            ))
+          }
+        </tbody>
       </table>
       <div className="table-bottom-container">
         <div className="save-button">Save Changes</div>
@@ -110,6 +118,7 @@ const ManageTeamsBase = () => {
           {
             pages.map(page => (
               <a
+                key={page}
                 className={`${page === currentPage ? 'current-' : ''}page`}
                 onClick={page === currentPage ? () => { } : () => setCurrentPage(page)}
               >

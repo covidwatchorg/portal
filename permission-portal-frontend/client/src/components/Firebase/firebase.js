@@ -1,14 +1,14 @@
 import app from 'firebase/app';
 import "firebase/auth";
-import * as firebaseConfigLocal from '../../config/firebase.config.local';
-import * as firebaseConfigDev from '../../config/firebase.config.dev';
-import * as firebaseConfigTest from '../../config/firebase.config.test';
-import * as firebaseConfigProd from '../../config/firebase.config.prod';
+import * as firebaseConfigLocal from '../../../../config/firebase.config.local.template';
+import * as firebaseConfigDev from '../../../../config/firebase.config.dev';
+import * as firebaseConfigTest from '../../../../config/firebase.config.test';
+import * as firebaseConfigProd from '../../../../config/firebase.config.prod';
 import "firebase/firestore";
 import "firebase/database";
 
 
-var firebaseConfigMap = { dev: firebaseConfigDev , test: firebaseConfigTest, prod: firebaseConfigProd, local: firebaseConfigLocal};
+var firebaseConfigMap = { development: firebaseConfigDev , test: firebaseConfigTest, prod: firebaseConfigProd, local: firebaseConfigLocal};
 
 var firebaseConfigFile;
 console.log(`environment is : ${process.env.NODE_ENV}`);
@@ -69,8 +69,21 @@ class Firebase {
       const orgDocument = await this.firestore.doc(`organizations/${orgid}`).get();
 
       return orgDocument.data()
-    } catch (err) {
+    } catch (error) {
       console.error("Error fetching organization", error);
+    }
+  };
+
+  getMembersOfOrg = async orgid => {
+    try {
+      const snapshot = await this.firestore.collection('users')
+        .where('organizationID', '==', orgid)
+        .get()
+      
+      const userDocs = snapshot.docs.map(userDoc => userDoc.data())
+      return userDocs
+    } catch (error) {
+      console.error("Error fetching organization members", error);
     }
   };
 
