@@ -1,9 +1,8 @@
 .add-member-modal-container{
   position: absolute;
-  top: 20%;
-  left: 40%; 
-  width: 300px;
-  height: 300px;  
+  top: 30%;
+  left: 30%;
+  width: 40%;
   background-color: white;
   z-index: 1; 
   padding: 20px;
@@ -11,6 +10,9 @@
   .add-member-form {
     display: flex;
     flex-direction: column;
+  }
+  .close-btn:hover {
+    cursor: pointer;
   }
 }
 

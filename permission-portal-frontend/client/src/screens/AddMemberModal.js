@@ -1,9 +1,9 @@
 import React from 'react'
 
-const AddMemberModal = ({ showModal, setShowModal }) => {
+const AddMemberModal = ({ setShowModal }) => {
   return (
     <div className="add-member-modal-container">
-      <span onClick={() => setShowModal(false)}>X</span>
+      <span className="close-btn" onClick={() => setShowModal(false)}>X</span>
       <div className="add-member-form">
         <label for="fname">First Name</label>
         <input type="text" id="fname" name="fname" />

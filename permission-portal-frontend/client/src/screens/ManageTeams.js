@@ -9,32 +9,6 @@ import arrowRight from '../../assets/arrow-right.svg'
 import '../../Styles/screens/manage_teams.scss'
 import AddMemberModal from './AddMemberModal'
 
-var dummyData = [
-  { name: 'Smitherson, Dr.Rebecca', role: 0, status: 1 },
-  { name: 'Jesse Colligan', role: 0, status: 1 },
-  { name: 'Donald J Trump', role: 1, status: 0 },
-  { name: 'Smitherson, Dr.Rebecca', role: 0, status: 1 },
-  { name: 'Jesse Colligan', role: 0, status: 1 },
-  { name: 'Donald J Trump', role: 1, status: 0 },
-  { name: 'Smitherson, Dr.Rebecca', role: 0, status: 1 },
-  { name: 'Jesse Colligan', role: 0, status: 1 },
-  { name: 'Donald J Trump', role: 1, status: 0 },
-  { name: 'Smitherson, Dr.Rebecca', role: 0, status: 1 },
-  { name: 'Jesse Colligan', role: 0, status: 1 },
-  { name: 'Donald J Trump', role: 1, status: 0 },
-  { name: 'Smitherson, Dr.Rebecca', role: 0, status: 1 },
-  { name: 'Jesse Colligan', role: 0, status: 1 },
-  { name: 'Donald J Trump', role: 1, status: 0 },
-  { name: 'Smitherson, Dr.Rebecca', role: 0, status: 1 },
-  { name: 'Jesse Colligan', role: 0, status: 1 },
-  { name: 'Donald J Trump', role: 1, status: 0 },
-  { name: 'Smitherson, Dr.Rebecca', role: 0, status: 1 },
-  { name: 'Jesse Colligan', role: 0, status: 1 },
-  { name: 'Nikhil Kumar', role: 1, status: 0 },
-]
-
-
-
 const ManageTeamsBase = () => {
   const [currentPage, setCurrentPage] = useState(0)
   const pages = [...Array(Math.ceil(store.organization.members.length / 15)).keys()]
@@ -52,7 +26,7 @@ const ManageTeamsBase = () => {
         <img src={addMember} />
         <span className="add-button-text">Add Member</span>
       </div>
-      {showModal ? <AddMemberModal showModal={showModal} setShowModal={setShowModal} /> : null}
+      {showModal && <AddMemberModal setShowModal={setShowModal} />}
       <table>
         <thead>
           <tr>
