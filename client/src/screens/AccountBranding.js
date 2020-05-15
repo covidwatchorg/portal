@@ -4,6 +4,7 @@ import "../../Styles/screens/branding.scss";
 import { withAuthorization } from '../components/Session';
 import * as ROLES from '../constants/roles';
 import { compose } from 'recompose';
+import store from '../store'
 
 var defaultDiagnosisText = `Next Steps:
 - Please quarantine yourself
@@ -17,36 +18,31 @@ var defaultExposureText = `Next Steps:
 -
 `;
 
-const getDiagnosisText = () => {
-  return defaultDiagnosisText;
-};
-
-const getExposureText = () => {
-  return defaultExposureText
-}
-
 const AccountBrandingBase = () => {
-  const [dataDirty, setDataDirty] = useState(false);
-  const [diagnosisText, setDiagnosisText] = useState(getDiagnosisText());
-  const [exposureText, setExposureText] = useState(getExposureText());
+  var localDiagnosisText = store.organization ? store.organization.diagnosisText : defaultDiagnosisText;
+  var localExposureText = store.organization ? store.organization.exposureText : defaultExposureText;
+
+  const [diagnosisText, setDiagnosisText] = useState(localDiagnosisText);
+  const [exposureText, setExposureText] = useState(localExposureText);
 
   const saveAccountBrandingData = () => {
     console.log("TODO save account branding data");
-    setDataDirty(false);
   }
-
-  const saveOperation = () => {
-    return new Promise((resolutionFunc, _) => {
-      setTimeout(()=>{
-        saveAccountBrandingData();
-        resolutionFunc();
-      }, 2000);
-    });
-  };
 
   const onContactUsClicked = () => {
     console.log("TODO contact us");
   };
+
+  const saveData = () => {
+    return store.setOrganizationalBranding(diagnosisText, exposureText).then(()=>{
+      console.log("Branding data saved successfully");
+      // TODO show success toast
+    },
+    ()=>{
+      console.log("Branding data failed to save");
+      // TODO show failure toast
+    });
+  }
 
   return (
     <div className="module-container">
@@ -55,25 +51,25 @@ const AccountBrandingBase = () => {
         <div className="branding-section">
           <h2 className="section-heading">Share Positive Diagnosis</h2>
           <p className="section-description">
-          This text wil be displayed ot anyone who shares a positive diagnosis and notifies everyone.
+          This text will be displayed to anyone who shares a positive diagnosis and notifies everyone.
           </p>
           <textarea
             className="section-input"
             type="text"
             value={diagnosisText}
-            onChange={e => {setDiagnosisText(e.target.value); setDataDirty(true)}}
+            onChange={e => setDiagnosisText(e.target.value)}
           />
         </div>
         <div className="branding-section">
           <h2 className="section-heading">Possible Exposure</h2>
           <p className="section-description">
-          This text wil be displayed to anyone who is notified of a potential exposure.
+          This text will be displayed to anyone who is notified of a potential exposure.
           </p>
           <textarea
             className="section-input"
             type="text"
             value={exposureText}
-            onChange={e => {setExposureText(e.target.value); setDataDirty(true)}}
+            onChange={e => setExposureText(e.target.value)}
           />
         </div>
         <div className="branding-section">
@@ -87,7 +83,7 @@ const AccountBrandingBase = () => {
         </div>
       </div>
       <div className="save-button-container">
-          <PendingOperationButton className="save-button" operation={saveOperation}>
+          <PendingOperationButton className="save-button" operation={saveData}>
             Save Changes
           </PendingOperationButton>
       </div>

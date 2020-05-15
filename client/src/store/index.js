@@ -9,7 +9,7 @@ const User = types
     prefix: types.string,
     firstName: types.string,
     lastName: types.string,
-    role: types.string,
+    role: types.maybeNull(types.string),
     organizationID: types.string
   });
 
@@ -45,7 +45,7 @@ const Store = types
         console.log(e)
       }
     })
-    
+
     const signOut = flow(function* () {
       try {
         yield firebase.doSignOut()
@@ -56,9 +56,19 @@ const Store = types
       }
     })
 
+    const setOrganizationalBranding = flow(function* (diagnosisMessage, exposureMessage) {
+      console.log('Setting organization branding');
+      console.log(diagnosisMessage);
+      console.log(exposureMessage);
+      self.organization.diagnosisMessage = diagnosisMessage;
+      self.organization.exposureText = exposureMessage;
+      console.log('Succeeded');
+    });
+
     return {
       signIn,
-      signOut
+      signOut,
+      setOrganizationalBranding
     }
   })
 
