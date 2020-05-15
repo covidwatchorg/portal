@@ -8,7 +8,7 @@ import 'firebase/functions';
 // tslint:disable-next-line: no-import-side-effect
 import 'firebase/firestore';
 
-const firebaseConfig = require(`../../config/firebase.config.${process.env.NODE_ENV}.js`)
+const firebaseConfig = require(`../../../../permission-portal-frontend/config/firebase.config.test.js`);
 jest.setTimeout(60000);
 
 firebase.initializeApp(firebaseConfig);
@@ -25,7 +25,7 @@ const serviceAccount =
         clientEmail: 'firebase-adminsdk-nqxd8@permission-portal-test.iam.gserviceaccount.com',
       }
     : require(serviceCredentials);
-    
+
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
   databaseURL: firebaseConfig.databaseURL,
