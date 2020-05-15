@@ -11,7 +11,7 @@ import 'firebase/firestore';
 jest.setTimeout(60000);
 
 // Initialize client SDK
-const firebaseConfig = require(`../../../../config/firebase.config.${process.env.NODE_ENV}.js`);
+const firebaseConfig = require(`../../../../config/firebase.config.test.js`);
 firebase.initializeApp(firebaseConfig);
 
 // Initialize admin SDK
@@ -379,7 +379,7 @@ describe('Test proper read/write permissions for admins', () => {
           .get()
           .then((collectionsSnapshot) => {
             const userDocs = collectionsSnapshot.docs.map((userDoc) => userDoc.data());
-            expect(userDocs.length).toEqual(2);
+            expect(userDocs.length).toEqual(3);
           })
           .catch((err) => {
             throw err;

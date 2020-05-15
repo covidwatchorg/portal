@@ -256,6 +256,20 @@ export const onCreate = functions.auth.user().onCreate((firebaseAuthUser) => {
                             covidWatchUserData.organizationID
                         );
                         sendNewUserEmail(firebaseAuthUser.email!);
+                        if (typeof covidWatchUserData.disabled === 'boolean') {
+                          auth
+                            .updateUser(firebaseAuthUser.uid, {
+                              disabled: covidWatchUserData.disabled,
+                            })
+                            .then(() => {
+                              console.log(
+                                `User ${covidWatchUserData.id}'s disabled flag in Auth updated to ${covidWatchUserData}`
+                              );
+                            })
+                            .catch((err) => {
+                              console.error(err);
+                            });
+                        }
                       })
                       .catch((err) => {
                         console.error(err);
@@ -319,4 +333,41 @@ export const validate = functions.https.onCall((body, context) => {
         reject(err);
       });
   });
+});
+
+// Triggered whenever a user's document in the users/ collection is updated
+// This can be used to keep Firebase Auth records in sync with user collection records
+export const userOnUpdate = functions.firestore.document('users/{email}').onUpdate((change, context) => {
+  const previousValue = change.before.data();
+  const newValue = change.after.data();
+  const email = context.params.email;
+
+  // Force unwrap ok because document is guaranteed to exist (by definition its being updated)
+  if (previousValue!.disabled !== newValue!.disabled) {
+    console.log(
+      `User.disabled update detected for user ${email}. Value changed from ${previousValue!.disabled} to ${
+        newValue!.disabled
+      }`
+    );
+    return auth
+      .getUserByEmail(email)
+      .then((userRecord) => {
+        auth
+          .updateUser(userRecord.uid, {
+            disabled: newValue!.disabled ? newValue!.disabled : false,
+          })
+          .then(() => {
+            console.log(
+              `User ${email}'s disabled flag in Auth updated to ${newValue!.disabled ? newValue!.disabled : false}`
+            );
+          })
+          .catch((err) => {
+            console.error(err);
+          });
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+  }
+  return new Promise((resolve) => resolve());
 });

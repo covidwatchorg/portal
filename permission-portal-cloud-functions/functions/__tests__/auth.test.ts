@@ -8,7 +8,7 @@ import 'firebase/functions';
 // tslint:disable-next-line: no-import-side-effect
 import 'firebase/firestore';
 
-const firebaseConfig = require(`../../../../config/firebase.config.${process.env.NODE_ENV}.js`);
+const firebaseConfig = require(`../../../../config/firebase.config.test.js`);
 jest.setTimeout(60000);
 
 firebase.initializeApp(firebaseConfig);
@@ -421,4 +421,37 @@ test("Manually added user in users table with empty string organizationID can't 
         throw err;
       })
   );
+});
+
+test('User can be toggled between enabled and disabled', () => {
+  return adminDb
+    .collection('users')
+    .doc('disabled@soylentgreen.com')
+    .update({
+      disabled: false,
+    })
+    .then(() => {
+      // Delay to allow userOnUpdate time to run
+      return delay(DELAY).then(() => {
+        return adminAuth.getUserByEmail('disabled@soylentgreen.com').then((userRecordDisabled) => {
+          expect(userRecordDisabled.disabled).toBe(false);
+          return adminDb
+            .collection('users')
+            .doc('disabled@soylentgreen.com')
+            .update({
+              disabled: true,
+            })
+            .then(() => {
+              return delay(DELAY).then(() => {
+                return adminAuth.getUserByEmail('disabled@soylentgreen.com').then((userRecordEnabled) => {
+                  expect(userRecordEnabled.disabled).toBe(true);
+                });
+              });
+            });
+        });
+      });
+    })
+    .catch((err) => {
+      throw err;
+    });
 });
