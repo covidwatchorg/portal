@@ -1,18 +1,17 @@
 .footerContainer {
   display: flex;
   flex-direction: row;
-  position: absolute;
+  position: relative;
   left: 0;
   bottom: 0;
   height: 100px;
   width: 100%;
-  justify-content: flex-end;
   align-items: center;
   a {
     font-family: Montserrat;
     font-size: 16px;
     text-align: center;
-    color: #2C58B1;
+    color: #2c58b1;
     text-decoration: none;
     margin-right: 50px;
   }
@@ -20,13 +19,13 @@
     font-family: Montserrat;
     font-size: 16px;
     text-align: center;
-    color: #2C58B1;
+    color: #2c58b1;
     margin: 0px;
     margin-right: 50px;
   }
 
   &.branded {
-    background:url('../assets/powered-by-cw.svg');
+    background: url('/client/assets/powered-by-cw.svg');
     background-repeat: no-repeat;
     background-position-x: 115px;
     background-position-y: 36px;
