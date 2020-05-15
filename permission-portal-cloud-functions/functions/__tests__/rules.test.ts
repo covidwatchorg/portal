@@ -10,7 +10,7 @@ import 'firebase/firestore';
 
 jest.setTimeout(60000);
 
-const firebaseConfig = require(`../../config/firebase.config.${process.env.NODE_ENV}.js`)
+const firebaseConfig = require(`../../config/firebase.config.test.js`)
 firebase.initializeApp(firebaseConfig);
 
 // Initialize admin SDK
