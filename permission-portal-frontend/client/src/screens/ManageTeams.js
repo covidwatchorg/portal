@@ -7,10 +7,12 @@ import addMember from '../../assets/add-member.svg'
 import arrowLeft from '../../assets/arrow-left.svg'
 import arrowRight from '../../assets/arrow-right.svg'
 import '../../Styles/screens/manage_teams.scss'
+import AddMemberModal from './AddMemberModal'
 
 const ManageTeamsBase = () => {
   const [currentPage, setCurrentPage] = useState(0)
   const pages = [...Array(Math.ceil(store.organization.members.length / 15)).keys()]
+  const [showModal, setShowModal] = useState(false);
 
   const getPageData = () => {
     const pageStart = 15 * currentPage
@@ -20,10 +22,11 @@ const ManageTeamsBase = () => {
   return (
     <div className="module-container">
       <h1>Manage Members</h1>
-      <div className="add-member-button">
+      <div className="add-member-button" onClick={() => setShowModal(true)}>
         <img src={addMember} />
         <span className="add-button-text">Add Member</span>
       </div>
+      {showModal && <AddMemberModal setShowModal={setShowModal} />}
       <table>
         <thead>
           <tr>
@@ -34,46 +37,46 @@ const ManageTeamsBase = () => {
           </tr>
         </thead>
         <tbody>
-        {
-          getPageData().map((data, index) => (
-            <tr key={index}>
-              <td>{data.lastName + ', ' + data.firstName}</td>
-              <td style={{ padding: 0 }}>
-                <div className="custom-select">
-                  <select defaultValue={data.isAdmin ? ROLES.ADMIN_LABEL : ROLES.NON_ADMIN_LABEL}>
-                    <option value={ROLES.ADMIN_LABEL}>
-                      {ROLES.ADMIN_LABEL}
+          {
+            getPageData().map((data, index) => (
+              <tr key={index}>
+                <td>{data.lastName + ', ' + data.firstName}</td>
+                <td style={{ padding: 0 }}>
+                  <div className="custom-select">
+                    <select defaultValue={data.isAdmin ? ROLES.ADMIN_LABEL : ROLES.NON_ADMIN_LABEL}>
+                      <option value={ROLES.ADMIN_LABEL}>
+                        {ROLES.ADMIN_LABEL}
+                      </option>
+                      <option value={ROLES.NON_ADMIN_LABEL}>
+                        {ROLES.NON_ADMIN_LABEL}
+                      </option>
+                    </select>
+                  </div>
+                </td>
+                <td style={{ padding: 0 }}>
+                  <div className="custom-select">
+                    <select
+                      className={data.isActive ? 'active' : 'inactive'}
+                      defaultValue={data.isActive ? 'active' : 'deactivated'}
+                    >
+                      <option value='active'>
+                        Active
                     </option>
-                    <option value={ROLES.NON_ADMIN_LABEL}>
-                      {ROLES.NON_ADMIN_LABEL}
+                      <option value='deactivated'>
+                        Deactivated
                     </option>
-                  </select>
-                </div>
-              </td>
-              <td style={{ padding: 0 }}>
-                <div className="custom-select">
-                  <select
-                    className={data.isActive ? 'active':'inactive'}
-                    defaultValue={data.isActive ? 'active':'deactivated'}
-                  >
-                    <option value='active'>
-                      Active
-                    </option>
-                    <option value='deactivated'>
-                      Deactivated
-                    </option>
-                  </select>
-                </div>
-              </td>
-              <td>
-                <div className="settings-container">
-                  <a onClick={() => {}}>Delete Account</a>
-                  <a onClick={() => {}}>Reset Password</a>
-                </div>
-              </td>
-            </tr>
-          ))
-        }
+                    </select>
+                  </div>
+                </td>
+                <td>
+                  <div className="settings-container">
+                    <a onClick={() => { }}>Delete Account</a>
+                    <a onClick={() => { }}>Reset Password</a>
+                  </div>
+                </td>
+              </tr>
+            ))
+          }
         </tbody>
       </table>
       <div className="table-bottom-container">
@@ -81,7 +84,7 @@ const ManageTeamsBase = () => {
         <div className="pages-container">
           <div
             className="arrow"
-            onClick={currentPage === 0 ? () => {} :
+            onClick={currentPage === 0 ? () => { } :
               () => setCurrentPage(currentPage - 1)}
           >
             <img src={arrowLeft} />
@@ -90,8 +93,8 @@ const ManageTeamsBase = () => {
             pages.map(page => (
               <a
                 key={page}
-                className={`${page === currentPage ? 'current-':''}page`}
-                onClick={page === currentPage ? () => {} : () => setCurrentPage(page)}
+                className={`${page === currentPage ? 'current-' : ''}page`}
+                onClick={page === currentPage ? () => { } : () => setCurrentPage(page)}
               >
                 {page + 1}
               </a>
@@ -99,7 +102,7 @@ const ManageTeamsBase = () => {
           }
           <div
             className="arrow"
-            onClick={currentPage === pages[pages.length - 1] ? () => {} :
+            onClick={currentPage === pages[pages.length - 1] ? () => { } :
               () => setCurrentPage(currentPage + 1)}
           >
             <img src={arrowRight} />
