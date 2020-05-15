@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import PendingOperationButton from '../components/PendingOperationButton';
+import Toast from '../components/Toast';
 import "../../Styles/screens/branding.scss";
 import { withAuthorization } from '../components/Session';
 import * as ROLES from '../constants/roles';
@@ -22,6 +23,8 @@ const AccountBrandingBase = () => {
   var localDiagnosisText = store.organization ? store.organization.diagnosisText : defaultDiagnosisText;
   var localExposureText = store.organization ? store.organization.exposureText : defaultExposureText;
 
+  const [successToastShouldOpen, setSuccessToastShouldOpen] = useState(false);
+  const [failureToastShouldOpen, setFailureToastShouldOpen] = useState(false);
   const [diagnosisText, setDiagnosisText] = useState(localDiagnosisText);
   const [exposureText, setExposureText] = useState(localExposureText);
 
@@ -36,11 +39,13 @@ const AccountBrandingBase = () => {
   const saveData = () => {
     return store.setOrganizationalBranding(diagnosisText, exposureText).then(()=>{
       console.log("Branding data saved successfully");
-      // TODO show success toast
+      setSuccessToastShouldOpen(true);
+      setFailureToastShouldOpen(false);
     },
     ()=>{
       console.log("Branding data failed to save");
-      // TODO show failure toast
+      setSuccessToastShouldOpen(false);
+      setFailureToastShouldOpen(true);
     });
   }
 
@@ -87,6 +92,8 @@ const AccountBrandingBase = () => {
             Save Changes
           </PendingOperationButton>
       </div>
+      <Toast open={successToastShouldOpen} onClose={()=> setSuccessToastShouldOpen(false) } isSuccess={true} message="Branding saved successfully" />
+      <Toast open={failureToastShouldOpen} onClose={()=> setSuccessToastShouldOpen(false) } isSuccess={false} message="Failed to save branding" />
     </div>
   );
 };
