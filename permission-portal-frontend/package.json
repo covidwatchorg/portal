@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "init": "cpy ./config/ client/src/config/ &&  cpy --no-overwrite client/src/config/firebase.config.local.template client/src/config --rename=firebase.config.local.js",
+    "init": "cpy ../config/ client/src/config/ &&  cpy --no-overwrite client/src/config/firebase.config.local.template client/src/config --rename=firebase.config.local.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "webpack-dev-server --open --hot --config webpack.dev.js",
     "start:local": "NODE_ENV=local npm start",

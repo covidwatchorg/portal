@@ -27,6 +27,7 @@ jobs:
           CI: true
         run: |
           npm ci
+          npm run init
           npm run build
 
       - name: Configure AWS Credentials

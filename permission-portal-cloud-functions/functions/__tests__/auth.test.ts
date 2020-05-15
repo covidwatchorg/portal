@@ -8,12 +8,13 @@ import 'firebase/functions';
 // tslint:disable-next-line: no-import-side-effect
 import 'firebase/firestore';
 
-const firebaseConfig = require(`../../../../permission-portal-frontend/config/firebase.config.test.js`);
+
+const firebaseConfig = require(`../../config/firebase.config.test.js`)
 jest.setTimeout(60000);
 
 firebase.initializeApp(firebaseConfig);
 // Initialize admin SDK
-const serviceCredentials = `../../permission-portal-${process.env.NODE_ENV}-firebase-admin-key.json`;
+const serviceCredentials = `../../permission-portal-test-firebase-admin-key.json`;
 const serviceAccount =
   process.env.NODE_ENV === 'ci'
     ? {

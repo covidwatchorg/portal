@@ -2,7 +2,7 @@
   "name": "functions",
   "scripts": {
     "lint": "tslint --project tsconfig.json",
-    "init": "cpy ../../permission-portal-frontend/config/ config/ && cpy --no-overwrite config/firebase.config.local.template config --rename=firebase.config.local.js",
+    "init": "cpy ../../config/ config/ && cpy --no-overwrite config/firebase.config.local.template config --rename=firebase.config.local.js",
     "build": "tsc",
     "serve": "npm run build && firebase emulators:start --only functions",
     "shell": "npm run build && firebase functions:shell",

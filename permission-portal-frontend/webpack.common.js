@@ -3,6 +3,7 @@ const webpack = require('webpack')
 const DefinePlugin = require('webpack/lib/DefinePlugin')
 
 module.exports = {
+  devtool: 'source-map',
   entry: {
     polyfill: 'babel-polyfill',
     app: './client/index.js',
