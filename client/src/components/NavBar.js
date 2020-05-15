@@ -8,6 +8,7 @@ import Menu from '@material-ui/core/Menu';
 import { compose } from 'recompose';
 import { withRouter } from 'react-router-dom';
 import { withFirebase } from '../components/Firebase';
+import AuthAwareMenuItem from '../components/AuthAwareComponents/AuthAwareMenuItem';
 import store from '../store'
 
 const useStyles = makeStyles((theme) => ({
@@ -103,16 +104,14 @@ const NavBarBase = () => {
           Positive Test Validations
         </MenuItem>
         {
-          store.user.isAdmin &&
-          <MenuItem style={linkStyles} onClick={() => onClickMenuItem(1)}>
+          <AuthAwareMenuItem style={linkStyles} roleguard="ADMIN"  onClick={() => onClickMenuItem(1)}>
             Manage Members
-          </MenuItem>
+          </AuthAwareMenuItem>
         }
         {
-          store.user.isAdmin &&
-          <MenuItem style={linkStyles} onClick={() => onClickMenuItem(2)}>
+          <AuthAwareMenuItem style={linkStyles} roleguard="ADMIN" onClick={() => onClickMenuItem(2)}>
             Account Branding
-          </MenuItem>
+          </AuthAwareMenuItem>
         }
         <MenuItem style={linkStyles} onClick={() => onClickMenuItem(3)}>
           My Settings

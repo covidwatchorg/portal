@@ -77,24 +77,37 @@ class Firebase {
   onAuthUserListener = (next, fallback) =>
     this.auth.onAuthStateChanged(authUser => {
       if (authUser) {
-             this.getUserDocument(authUser.email).then(userDoc => {
-                if (!userDoc.roles) {
-                  userDoc.roles = {
-                    ADMIN: userDoc.isAdmin,
-                    SUPER_ADMIN: userDoc.isSuperAdmin
-                  }
-                  
-                }
-                // merge auth and db user
-                authUser = {
-                  uid: authUser.uid,
-                  email: authUser.email,
-                  emailVerified: authUser.emailVerified,
-                  providerData: authUser.providerData,
-                  ...userDoc,
-                };
-                next(authUser);
-              });
+
+      authUser.getIdToken(/* forceRefresh */ true).then(token => {
+        // if here, this user is still authorised.
+        this.getUserDocument(authUser.email).then(userDoc => {
+          if (!userDoc.roles) {
+            userDoc.roles = {
+              ADMIN: userDoc.isAdmin,
+              SUPER_ADMIN: userDoc.isSuperAdmin
+            }
+            
+          }
+          // merge auth and db user
+          authUser = {
+            uid: authUser.uid,
+            email: authUser.email,
+            emailVerified: authUser.emailVerified,
+            providerData: authUser.providerData,
+            ...userDoc,
+          };
+          next(authUser);
+        });
+      }, error => {
+        if (error.code === 'auth/user-token-expired') {
+          // token invalidated. No action required as onAuthStateChanged will be fired again with null
+          console.log('token expired. relogin')
+        } else {
+          console.error('Unexpected error: ' + error.code);
+          fallback();
+        }
+      });
+             
               
       } else {
         fallback();

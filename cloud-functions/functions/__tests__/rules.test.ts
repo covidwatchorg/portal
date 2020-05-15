@@ -10,16 +10,9 @@ import 'firebase/firestore';
 
 jest.setTimeout(60000);
 
-// Initialize client SDK
-const firebaseConfig = {
-  apiKey: 'AIzaSyAHVZXO-wFnGmUIBLxF6-mY3tuleK4ENVo',
-  authDomain: 'permission-portal-test.firebaseapp.com',
-  databaseURL: 'https://permission-portal-test.firebaseio.com',
-  projectId: 'permission-portal-test',
-  storageBucket: 'permission-portal-test.appspot.com',
-  messagingSenderId: '1090782248577',
-  appId: '1:1090782248577:web:184d481f492cfa4edc1780'
-};
+const firebaseConfig = require(`../../config/firebase.config.${process.env.NODE_ENV}.js`)
+jest.setTimeout(60000);
+
 firebase.initializeApp(firebaseConfig);
 
 // Initialize admin SDK

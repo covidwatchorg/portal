@@ -1,15 +1,17 @@
-import { types, flow } from 'mobx-state-tree'
+import { types, flow , onSnapshot, getRoot, getSnapshot} from 'mobx-state-tree'
 import { firebase } from '../components/Firebase'
+
 
 const User = types
   .model({
+    uuid: types.string, 
     uid: types.string,
     isAdmin: types.boolean,
     isSuperAdmin: types.boolean,
     prefix: types.string,
     firstName: types.string,
     lastName: types.string,
-    role: types.string,
+    role: types.optional(types.string, "", [null, undefined]),
     organizationID: types.string
   });
 
@@ -55,14 +57,53 @@ const Store = types
         console.log(e)
       }
     })
+    
 
     return {
       signIn,
-      signOut
+      signOut,
+       afterCreate() {
+        onSnapshot(self, () => {
+          try {
+            const transformedSnapshot = getSnapshot(self);
+            saveState(transformedSnapshot)
+          } catch (err) {
+            console.warn('unexpected error ' + err);
+          }
+        });
+      }
     }
   })
 
-export default Store.create({
-  user: null,
-  organization: null
-})
+export const loadState = () => {
+  try {
+    const serializedState = localStorage.getItem('state');
+    if (serializedState === null) {
+      return undefined;
+    }
+    return JSON.parse(serializedState);
+  } catch (err) {
+    return undefined;
+  }
+};
+
+
+export const saveState = (state) => {
+  try {
+    const serializedState = JSON.stringify(state);
+    localStorage.setItem('state', serializedState);
+  } catch (err) {
+    // Ignore write errors.
+  }
+};
+
+
+var store = loadState();
+if(!store) {
+  store = Store.create({
+    user: null,
+    organization: null
+  });
+}
+
+export default store;
