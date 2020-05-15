@@ -5,7 +5,6 @@ import { firebase } from '../components/Firebase'
 const User = types
   .model({
     uuid: types.string, 
-    uid: types.optional(types.string, "", [null, undefined]),
     isAdmin: types.boolean,
     isSuperAdmin: types.boolean,
     isActive: types.boolean,
