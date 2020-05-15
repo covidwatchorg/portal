@@ -93,7 +93,7 @@ const AccountBrandingBase = () => {
           </PendingOperationButton>
       </div>
       <Toast open={successToastShouldOpen} onClose={()=> setSuccessToastShouldOpen(false) } isSuccess={true} message="Branding saved successfully" />
-      <Toast open={failureToastShouldOpen} onClose={()=> setSuccessToastShouldOpen(false) } isSuccess={false} message="Failed to save branding" />
+      <Toast open={failureToastShouldOpen} onClose={()=> setFailureToastShouldOpen(false) } isSuccess={false} message="Failed to save branding" />
     </div>
   );
 };
