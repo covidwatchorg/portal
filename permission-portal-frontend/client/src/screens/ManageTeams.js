@@ -144,6 +144,7 @@ const condition = (authUser) => {
   return result
 }
 
+
 const ManageTeams = compose(withAuthorization(condition))(ManageTeamsBase)
 
 export default ManageTeams
