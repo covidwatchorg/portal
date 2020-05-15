@@ -10,7 +10,8 @@ import 'firebase/firestore';
 
 jest.setTimeout(60000);
 
-const firebaseConfig = require(`../../config/firebase.config.test.js`)
+// Initialize client SDK
+const firebaseConfig = require(`../../../../config/firebase.config.${process.env.NODE_ENV}.js`);
 firebase.initializeApp(firebaseConfig);
 
 // Initialize admin SDK
@@ -366,6 +367,24 @@ describe('Test proper read/write permissions for admins', () => {
         .catch((err) => {
           throw err;
         });
+    });
+  });
+
+  test('Authenticated admin user can read a list of all the other users in his organization', () => {
+    return clientAuth.signInWithEmailAndPassword('admin@initech.com', 'admin@initech.com').then(() => {
+      return clientAuth.currentUser!.getIdTokenResult(true).then((idTokenResult) => {
+        return clientDb
+          .collection('users')
+          .where('organizationID', '==', idTokenResult.claims.organizationID)
+          .get()
+          .then((collectionsSnapshot) => {
+            const userDocs = collectionsSnapshot.docs.map((userDoc) => userDoc.data());
+            expect(userDocs.length).toEqual(2);
+          })
+          .catch((err) => {
+            throw err;
+          });
+      });
     });
   });
 

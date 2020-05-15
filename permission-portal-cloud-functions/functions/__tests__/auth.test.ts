@@ -8,8 +8,7 @@ import 'firebase/functions';
 // tslint:disable-next-line: no-import-side-effect
 import 'firebase/firestore';
 
-
-const firebaseConfig = require(`../../config/firebase.config.test.js`)
+const firebaseConfig = require(`../../../../config/firebase.config.${process.env.NODE_ENV}.js`);
 jest.setTimeout(60000);
 
 firebase.initializeApp(firebaseConfig);
