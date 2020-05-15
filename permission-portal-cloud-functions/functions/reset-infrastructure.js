@@ -2,10 +2,10 @@ var admin = require('firebase-admin');
 var client = require('firebase-tools');
 
 // Initialize admin SDK
-const serviceAccount = require('./permission-portal-dev-firebase-admin-key.json');
+const serviceAccount = require(`./permission-portal-${process.env.NODE_ENV}-firebase-admin-key.json`);
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
-  databaseURL: 'https://permission-portal-dev.firebaseio.com',
+  databaseURL: `https://permission-portal-${process.env.NODE_ENV}.firebaseio.com`,
 });
 
 const db = admin.firestore();
@@ -170,7 +170,7 @@ async function deleteAllUsers(nextPageToken) {
 function hardReset() {
   return client.firestore
     .delete('/organizations', {
-      project: 'dev',
+      project: process.env.NODE_ENV,
       recursive: true,
       yes: true,
     })
@@ -178,7 +178,7 @@ function hardReset() {
       console.log('Successfully deleted organizations collection');
       return client.firestore
         .delete('/users', {
-          project: 'dev',
+          project: process.env.NODE_ENV,
           recursive: true,
           yes: true,
         })
