@@ -181,7 +181,7 @@ test('createUser works for admins', () => {
                           // Make sure the users collection uuid was updated with firebase auth uuid
                           expect(user.uuid).toEqual(currentUser.uid);
                         } else {
-                          throw new Error("Couldn't find test@email.com in our users collection");
+                          throw new Error("Couldn't find " + testUserEmail + ' in our users collection');
                         }
                       })
                       .catch((err) => {
