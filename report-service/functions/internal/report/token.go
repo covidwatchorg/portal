@@ -7,7 +7,7 @@ import (
 	"strconv"
 	"strings"
 
-	"upload-token.functions/internal/util"
+	"report.functions/internal/util"
 )
 
 // On the design of the upload token (see [1] for more details):
@@ -46,7 +46,7 @@ import (
 //   token.
 //
 // [1]
-// https://www.notion.so/covidwatch/Upload-Token-Design-f8566186489e40529c017cdb3356c1b9
+// https://www.notion.so/covidwatch/report-Design-f8566186489e40529c017cdb3356c1b9
 
 type UploadToken struct {
 	// The token. The leading 64 - 9 = 55 bits are the ID which identifies a

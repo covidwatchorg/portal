@@ -14,7 +14,7 @@ import (
 
 	"golang.org/x/crypto/argon2"
 
-	"upload-token.functions/internal/util"
+	"report.functions/internal/util"
 )
 
 const (

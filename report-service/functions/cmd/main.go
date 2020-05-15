@@ -5,7 +5,7 @@ import (
 	"log"
 	"os"
 
-	"upload-token.functions"
+	functions "report.functions"
 
 	"github.com/GoogleCloudPlatform/functions-framework-go/funcframework"
 )

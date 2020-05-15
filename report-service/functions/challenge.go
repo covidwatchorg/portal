@@ -3,8 +3,8 @@ package functions
 import (
 	"encoding/json"
 
-	"upload-token.functions/internal/pow"
-	"upload-token.functions/internal/util"
+	"report.functions/internal/pow"
+	"report.functions/internal/util"
 )
 
 // ChallengeHandler is a handler for the /challenge endpoint.
