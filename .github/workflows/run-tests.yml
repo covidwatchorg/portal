@@ -15,6 +15,9 @@ jobs:
       - name: Install
         working-directory: permission-portal-cloud-functions/functions
         run: npm install
+      - name: Initialize config files
+        working-directory: permission-portal-cloud-functions/functions
+        run: npm run init        
       - name: Build and Deploy to Firebase
         uses: w9jds/firebase-action@master
         with:

@@ -30,18 +30,14 @@ class SignInFormBase extends React.Component {
     event.preventDefault()
     //this.setValues({ ...values, error: false })
     const { email, password } = this.state;
-
-
     try {
       await store.signIn(email, password);
       if (store.user) {
         this.props.history.push(store.user.isAdmin ?
           ROUTES.MANAGE_MEMBERS : ROUTES.CODE_VALIDATIONS);
       }
-      //setValues({ ...values, redirect: store.user.isAdmin })
     } catch (err) {
       console.log(err)
-      setValues({ ...values, redirect: store.user.isAdmin })
     }
   }
 

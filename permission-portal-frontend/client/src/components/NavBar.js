@@ -7,10 +7,11 @@ import MenuItem from '@material-ui/core/MenuItem';
 import Menu from '@material-ui/core/Menu';
 import { compose } from 'recompose';
 import { withRouter } from 'react-router-dom';
-import { withFirebase } from '../components/Firebase';
+import AuthAwareMenuItem from '../components/AuthAwareComponents/AuthAwareMenuItem';
 import store from '../store'
 import ucsf_health from '../../assets/ucsf-health.svg'
 import profile from '../../assets/placeholder/profile.png'
+import { withAuthentication } from './Session';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -55,11 +56,19 @@ const NavBarBase = () => {
   };
 
   const getUserName = () => {
-    return store.user.firstName + ' ' + store.user.lastName
+    if(store.user) {
+      return store.user.firstName + ' ' + store.user.lastName
+    }else {
+      return null;
+    }
   };
 
   const getUserTitle = () => {
-    return store.user.role
+    if(store.user) {
+      return store.user.role
+    }else {
+      return null;
+    }
   };
 
   return (
@@ -105,16 +114,14 @@ const NavBarBase = () => {
           Positive Test Validations
         </MenuItem>
         {
-          store.user.isAdmin &&
-          <MenuItem style={linkStyles} onClick={() => onClickMenuItem(1)}>
+          <AuthAwareMenuItem style={linkStyles} roleguard="ADMIN"  onClick={() => onClickMenuItem(1)}>
             Manage Members
-          </MenuItem>
+          </AuthAwareMenuItem>
         }
         {
-          store.user.isAdmin &&
-          <MenuItem style={linkStyles} onClick={() => onClickMenuItem(2)}>
+          <AuthAwareMenuItem style={linkStyles} roleguard="ADMIN" onClick={() => onClickMenuItem(2)}>
             Account Branding
-          </MenuItem>
+          </AuthAwareMenuItem>
         }
         <MenuItem style={linkStyles} onClick={() => onClickMenuItem(3)}>
           My Settings
@@ -136,7 +143,7 @@ const NavBarBase = () => {
 
 const NavBar = compose(
   withRouter,
-  withFirebase,
+  withAuthentication
 )(NavBarBase);
 
 export default NavBar;
