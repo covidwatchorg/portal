@@ -37,7 +37,7 @@ var dummyData = [
 
 const ManageTeamsBase = () => {
   const [currentPage, setCurrentPage] = useState(0)
-  const pages = [...Array(Math.ceil(dummyData.length / 15)).keys()]
+  const pages = [...Array(Math.ceil(store.organization.members.length / 15)).keys()]
   const [showModal, setShowModal] = useState(false);
 
   const getPageData = () => {
@@ -143,7 +143,6 @@ const condition = (authUser) => {
   var result = authUser && authUser.roles[ROLES.ADMIN]
   return result
 }
-
 
 const ManageTeams = compose(withAuthorization(condition))(ManageTeamsBase)
 
