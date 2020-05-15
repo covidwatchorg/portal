@@ -22,6 +22,9 @@ coverage
 # production
 build
 
+#build
+scripts/build.sh
+
 # misc
 .DS_Store
 .env
