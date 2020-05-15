@@ -138,13 +138,13 @@ const SettingsBase = () => {
 
           <Grid item xs={4}>
             <Grid container spacing={2} direction="column">
-              <label for="prefix">Prefix</label>
+              <label htmlFor="prefix">Prefix</label>
               <input type="text" id="prefix" name="prefix" className={input.root}></input>
-              <label for="firstName">
+              <label htmlFor="firstName">
                 First Name <span style={{ color: 'red' }}>*</span>
               </label>
               <input type="text" id="firstName" name="firstName" required className={input.root}></input>
-              <label for="email">
+              <label htmlFor="email">
                 Email Address <span style={{ color: 'red' }}>*</span>
               </label>
               <input type="text" id="email" name="email" required className={input.root}></input>
@@ -156,7 +156,7 @@ const SettingsBase = () => {
 
           <Grid item xs={4}>
             <Grid container spacing={2} direction="column">
-              <label for="role">
+              <label htmlFor="role">
                 Role <span style={{ color: 'red' }}>*</span>
               </label>
               <select
@@ -168,18 +168,18 @@ const SettingsBase = () => {
                 className={input.root}
                 style={!store.user.isAdmin ? { backgroundColor: '#E0E0E0' } : {}}
               >
-                <option value={ROLES.ADMIN_LABEL} selected={store.user.isAdmin}>
+                <option value={ROLES.ADMIN_LABEL} defaultValue={store.user.isAdmin}>
                   {ROLES.ADMIN_LABEL}
                 </option>
-                <option value={ROLES.NON_ADMIN_LABEL} selected={!store.user.isAdmin}>
+                <option value={ROLES.NON_ADMIN_LABEL} defaultValue={!store.user.isAdmin}>
                   {ROLES.NON_ADMIN_LABEL}
                 </option>
               </select>
-              <label for="lastName">
+              <label htmlFor="lastName">
                 Last Name <span style={{ color: 'red' }}>*</span>
               </label>
               <input type="text" id="lastName" name="lastName" required className={input.root}></input>
-              <label for="password">
+              <label htmlFor="password">
                 Password <span style={{ color: 'red' }}>*</span>
               </label>
               <input

@@ -2,6 +2,7 @@ import React from 'react';
 
 import AuthUserContext from './context';
 import { withFirebase } from '../Firebase';
+import * as ROUTES from '../../constants/routes';
 
 const withAuthentication = Component => {
   class WithAuthentication extends React.Component {
@@ -22,6 +23,9 @@ const withAuthentication = Component => {
         () => {
           localStorage.removeItem('authUser');
           this.setState({ authUser: null });
+          if(this.props.history) {
+            this.props.history.push(ROUTES.LANDING);
+          }
         },
       );
     }

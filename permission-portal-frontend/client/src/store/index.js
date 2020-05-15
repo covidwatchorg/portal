@@ -1,15 +1,17 @@
-import { types, flow } from 'mobx-state-tree'
+import { types, flow , onSnapshot, getRoot, getSnapshot} from 'mobx-state-tree'
 import { firebase } from '../components/Firebase'
+
 
 const User = types
   .model({
-    uuid: types.string,
+    uuid: types.string, 
     isAdmin: types.boolean,
     isSuperAdmin: types.boolean,
     isActive: types.boolean,
     prefix: types.string,
     firstName: types.string,
     lastName: types.string,
+    role: types.optional(types.string, "", [null, undefined]),
     organizationID: types.string
   });
 
@@ -53,20 +55,61 @@ const Store = types
     const signOut = flow(function* () {
       try {
         yield firebase.doSignOut()
+
         console.log('Successfully logged out')
+        localStorage.removeItem('state');
+        localStorage.removeItem('authUser');
         self.user.isAdmin = false
       } catch (e) {
         console.log(e)
       }
     })
+    
 
     return {
       signIn,
-      signOut
+      signOut,
+       afterCreate() {
+        onSnapshot(self, () => {
+          try {
+            const transformedSnapshot = getSnapshot(self);
+            saveState(transformedSnapshot)
+          } catch (err) {
+            console.warn('unexpected error ' + err);
+          }
+        });
+      }
     }
   })
 
-export default Store.create({
-  user: null,
-  organization: null
-})
+export const loadState = () => {
+  try {
+    const serializedState = localStorage.getItem('state');
+    if (serializedState === null) {
+      return undefined;
+    }
+    return JSON.parse(serializedState);
+  } catch (err) {
+    return undefined;
+  }
+};
+
+
+export const saveState = (state) => {
+  try {
+    const serializedState = JSON.stringify(state);
+    localStorage.setItem('state', serializedState);
+  } catch (err) {
+    // Ignore write errors.
+  }
+};
+
+
+var lstore = loadState();
+
+var store = Store.create({
+  user: (lstore ? lstore.user: null),
+  organization: (lstore ? lstore.organization: null)
+});
+
+export default store;
