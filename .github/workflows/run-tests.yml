@@ -13,7 +13,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Install
-        working-directory: cloud-functions/functions
+        working-directory: permission-portal-cloud-functions/functions
         run: npm install
       - name: Build and Deploy to Firebase
         uses: w9jds/firebase-action@master
@@ -21,9 +21,9 @@ jobs:
           args: deploy --project=test
         env:
           FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
-          PROJECT_PATH: cloud-functions/
+          PROJECT_PATH: permission-portal-cloud-functions/
       - name: Run Tests
-        working-directory: cloud-functions/functions
+        working-directory: permission-portal-cloud-functions/functions
         run: npm run test_ci
         env:
           FIREBASE_PRIVATE_KEY: ${{ secrets.FIREBASE_PRIVATE_KEY }}
