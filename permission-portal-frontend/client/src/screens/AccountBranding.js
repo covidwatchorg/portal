@@ -44,8 +44,9 @@ const AccountBrandingBase = () => {
       setSuccessToastShouldOpen(true);
       setFailureToastShouldOpen(false);
     },
-    ()=>{
+    (e)=>{
       console.log("Branding data failed to save");
+      console.log(e)
       setSuccessToastShouldOpen(false);
       setFailureToastShouldOpen(true);
     });
