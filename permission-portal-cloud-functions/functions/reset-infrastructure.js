@@ -34,6 +34,7 @@ function addSampleData() {
           isSuperAdmin: false,
           isAdmin: true,
           organizationID: soylentGreenID,
+          disabled: false,
         })
         .then(() => {
           return auth
@@ -52,6 +53,7 @@ function addSampleData() {
                   isSuperAdmin: false,
                   isAdmin: false,
                   organizationID: soylentGreenID,
+                  disabled: false,
                 })
                 .then(() => {
                   return auth
@@ -76,6 +78,7 @@ function addSampleData() {
                               isSuperAdmin: false,
                               isAdmin: true,
                               organizationID: initechID,
+                              disabled: false,
                             })
                             .then(() => {
                               return auth
@@ -94,6 +97,7 @@ function addSampleData() {
                                       isSuperAdmin: false,
                                       isAdmin: false,
                                       organizationID: initechID,
+                                      disabled: false,
                                     })
                                     .then(() => {
                                       return auth

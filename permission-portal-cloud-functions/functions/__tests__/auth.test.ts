@@ -139,7 +139,7 @@ test('Email address can only be used once', () => {
     });
 });
 
-test('createUser works for admins', () => {
+test.only('createUser works for admins', () => {
   return clientAuth
     .signInWithEmailAndPassword('admin@soylentgreen.com', 'admin@soylentgreen.com')
     .then(() => {

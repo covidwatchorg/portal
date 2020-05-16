@@ -15,7 +15,8 @@ function isCovidWatchUserProperlyFormatted(covidWatchUser: any): boolean {
   return (
     typeof covidWatchUser.isAdmin === 'boolean' &&
     typeof covidWatchUser.isSuperAdmin === 'boolean' &&
-    typeof covidWatchUser.organizationID === 'string'
+    typeof covidWatchUser.organizationID === 'string' &&
+    typeof covidWatchUser.disabled === 'boolean'
   );
 }
 
@@ -153,6 +154,7 @@ export const createUser = functions.https.onCall((newUser, context) => {
                 isAdmin: false,
                 isSuperAdmin: false,
                 organizationID: newUser.organizationID,
+                disabled: false,
               };
               db.collection('users')
                 .doc(newUser.email)
@@ -163,8 +165,6 @@ export const createUser = functions.https.onCall((newUser, context) => {
                     .createUser({
                       email: newUser.email,
                       password: newUser.password,
-                      emailVerified: false,
-                      disabled: false,
                     })
                     .then((userRecord) => {
                       resolve(userRecord.toJSON());
