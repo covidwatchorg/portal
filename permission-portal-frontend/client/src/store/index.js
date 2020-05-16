@@ -1,17 +1,17 @@
-import { types, flow , onSnapshot, getRoot, getSnapshot} from 'mobx-state-tree'
+import { types, flow , onSnapshot, getSnapshot, getParent } from 'mobx-state-tree'
 import { firebase } from '../components/Firebase'
 
 
 const User = types
   .model({
-    uuid: types.string, 
+    uuid: types.string,
+    email: types.maybeNull(types.string),
     isAdmin: types.boolean,
     isSuperAdmin: types.boolean,
-    isActive: types.boolean,
+    disabled: types.boolean,
     prefix: types.string,
     firstName: types.string,
     lastName: types.string,
-    role: types.optional(types.string, "", [null, undefined]),
     organizationID: types.string
   });
 
@@ -20,7 +20,27 @@ const Organization = types
     name: types.string,
     diagnosisText: types.string,
     exposureText: types.string,
-    members: types.array(User)
+    members: types.maybeNull(types.array(User))
+  })
+  .actions(self => {
+    const store = getParent(self)
+    const setOrganizationalBranding = flow(function* (diagnosisText, exposureText) {
+      try {
+        yield firebase.updateOrgTexts(store.user.organizationID, {
+          diagnosisText: diagnosisText,
+          exposureText: exposureText
+        })
+        self.diagnosisText = diagnosisText
+        self.exposureText = exposureText
+        saveState(store)
+      } catch (err) {
+        console.warn(err)
+      }
+    })
+
+    return {
+      setOrganizationalBranding
+    }
   })
 
 const Store = types
@@ -37,7 +57,7 @@ const Store = types
         yield firebase.auth.currentUser.getIdTokenResult(true)
         const userDoc = yield firebase.getUserDocument(email)
 
-        self.user = userDoc
+        self.user = {email: email, ...userDoc}
 
         const orgDoc = yield firebase.getOrganizationDocument(self.user.organizationID)
 
@@ -47,8 +67,36 @@ const Store = types
           const members = yield firebase.getMembersOfOrg(self.user.organizationID)
           self.organization.members = members
         }
+
+        saveState(self)
       } catch (e) {
         console.log(e)
+      }
+    })
+
+    const afterCreate = flow(function* () {
+      try {
+        const oldState = loadState()
+        console.log(oldState)
+        if (oldState) {
+          console.log('Email', oldState.user.email)
+          const userDoc = yield firebase.getUserDocument(oldState.user.email)
+    
+          self.user = userDoc
+          console.log(self.user)
+    
+          const orgDoc = yield firebase.getOrganizationDocument(oldState.user.organizationID)
+    
+          self.organization = orgDoc
+    
+          if (oldState.user.isAdmin) {
+            const members = yield firebase.getMembersOfOrg(oldState.user.organizationID)
+            self.organization.members = members
+          }
+          console.log(self.organization)
+        }
+      } catch (err) {
+        console.warn('unexpected error ', err);
       }
     })
     
@@ -64,52 +112,45 @@ const Store = types
         console.log(e)
       }
     })
-    
 
     return {
       signIn,
       signOut,
-       afterCreate() {
-        onSnapshot(self, () => {
-          try {
-            const transformedSnapshot = getSnapshot(self);
-            saveState(transformedSnapshot)
-          } catch (err) {
-            console.warn('unexpected error ' + err);
-          }
-        });
-      }
+      afterCreate
     }
   })
 
-export const loadState = () => {
+const saveState = (state) => {
+  try {
+    const serializedState = JSON.stringify(state)
+    localStorage.setItem('state', serializedState)
+  } catch (err) {
+    console.warn(err)
+  }
+}
+
+const loadState = () => {
   try {
     const serializedState = localStorage.getItem('state');
     if (serializedState === null) {
-      return undefined;
+      return null
     }
-    return JSON.parse(serializedState);
+    return JSON.parse(serializedState)
   } catch (err) {
-    return undefined;
+    return null
   }
-};
+}
 
-
-export const saveState = (state) => {
+var store = Store.create((() => {
   try {
-    const serializedState = JSON.stringify(state);
-    localStorage.setItem('state', serializedState);
+    const snapshot = loadState()
+    if (snapshot) {
+      console.log('Data', snapshot)
+      self = snapshot
+    }
   } catch (err) {
-    // Ignore write errors.
+    console.warn('unexpected error ', err);
   }
-};
-
-
-var lstore = loadState();
-
-var store = Store.create({
-  user: (lstore ? lstore.user: null),
-  organization: (lstore ? lstore.organization: null)
-});
+})());
 
 export default store;

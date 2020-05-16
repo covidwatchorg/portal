@@ -63,10 +63,10 @@ class Firebase {
     }
   };
 
-  getOrganizationDocument = async orgid => {
-    if (!orgid) return null;
+  getOrganizationDocument = async orgID => {
+    if (!orgID) return null;
     try {
-      const orgDocument = await this.firestore.doc(`organizations/${orgid}`).get();
+      const orgDocument = await this.firestore.doc(`organizations/${orgID}`).get();
 
       return orgDocument.data()
     } catch (error) {
@@ -74,16 +74,25 @@ class Firebase {
     }
   };
 
-  getMembersOfOrg = async orgid => {
+  getMembersOfOrg = async orgID => {
     try {
       const snapshot = await this.firestore.collection('users')
-        .where('organizationID', '==', orgid)
+        .where('organizationID', '==', orgID)
         .get()
       
       const userDocs = snapshot.docs.map(userDoc => userDoc.data())
       return userDocs
     } catch (error) {
-      console.error("Error fetching organization members", error);
+      console.error("Error fetching organization members", error)
+    }
+  };
+
+  updateOrgTexts = async (orgID, texts) => {
+    try {
+      const sc = await this.firestore.collection('organizations').doc(orgID).update(texts)
+      console.log('sc', sc)
+    } catch (error) {
+      console.error("Error updating organization texts", error)
     }
   };
 
