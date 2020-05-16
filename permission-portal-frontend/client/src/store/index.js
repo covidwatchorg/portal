@@ -25,17 +25,13 @@ const Organization = types
   .actions(self => {
     const store = getParent(self)
     const setOrganizationalBranding = flow(function* (diagnosisText, exposureText) {
-      try {
-        yield firebase.updateOrgTexts(store.user.organizationID, {
-          diagnosisText: diagnosisText,
-          exposureText: exposureText
-        })
-        self.diagnosisText = diagnosisText
-        self.exposureText = exposureText
-        saveState(store)
-      } catch (err) {
-        console.warn(err)
-      }
+      yield firebase.updateOrgTexts(store.user.organizationID, {
+        diagnosisText: diagnosisText,
+        exposureText: exposureText
+      })
+      self.diagnosisText = diagnosisText
+      self.exposureText = exposureText
+      saveState(store)
     })
 
     return {
@@ -118,7 +114,7 @@ const Store = types
       console.log(diagnosisMessage);
       console.log(exposureMessage);
 
-      self.organization.setOrganizationalBranding(diagnosisMessage, exposureMessage);
+      return self.organization.setOrganizationalBranding(diagnosisMessage, exposureMessage);
     });
 
     return {
