@@ -1,0 +1,135 @@
+{
+	"info": {
+		"_postman_id": "82f0dd05-50ae-4e45-b1d4-9c77824286e2",
+		"name": "Covid Watch",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Emulator DELETE ALL",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8081/emulator/v1/projects/test/databases/(default)/documents",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8081",
+					"path": [
+						"emulator",
+						"v1",
+						"projects",
+						"test",
+						"databases",
+						"(default)",
+						"documents"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Emulator GET ALL challenges",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "owner",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8081/v1/projects/test/databases/(default)/documents/challenges",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8081",
+					"path": [
+						"v1",
+						"projects",
+						"test",
+						"databases",
+						"(default)",
+						"documents",
+						"challenges"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "v1 GET /challenge POW",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "owner",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "X-Forwarded-Proto",
+						"value": "https",
+						"description": "Bypass HTTP check (only 1 required)",
+						"type": "text"
+					},
+					{
+						"key": "Forwarded",
+						"value": "for=\\\"localhost\\\";proto=https",
+						"description": "Bypass HTTP check (only 1 required)",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"url": {
+					"raw": "http://localhost:8080/challenge",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"challenge"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "7e3831e8-b404-4dbe-830c-4290d06b7715",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "4ddc2ad9-9394-4392-97b5-65317ca81e6e",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"protocolProfileBehavior": {}
+}
