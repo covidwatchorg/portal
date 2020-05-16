@@ -117,20 +117,8 @@ const Store = types
       console.log('Setting organization branding');
       console.log(diagnosisMessage);
       console.log(exposureMessage);
-      self.organization.diagnosisMessage = diagnosisMessage;
-      self.organization.exposureText = exposureMessage;
 
-      const oldState = loadState()
-      console.log('Email', oldState.user.email)
-      const userDoc = yield firebase.getUserDocument(oldState.user.email)
-
-      self.user = userDoc
-      console.log(self.user)
-
-      const orgDoc = yield firebase.getOrganizationDocument(oldState.user.organizationID)
-
-      orgDoc.diagnosisMessage = diagnosisMessage;
-      orgDoc.exposureText = exposureMessage;
+      self.organization.setOrganizationalBranding(diagnosisMessage, exposureMessage);
     });
 
     return {
