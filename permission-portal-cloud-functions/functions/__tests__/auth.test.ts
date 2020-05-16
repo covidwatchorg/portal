@@ -8,12 +8,12 @@ import 'firebase/functions';
 // tslint:disable-next-line: no-import-side-effect
 import 'firebase/firestore';
 
-const firebaseConfig = require(`../../config/firebase.config.${process.env.NODE_ENV}.js`)
+const firebaseConfig = require(`../../../../config/firebase.config.${process.env.NODE_ENV}.js`);
 jest.setTimeout(60000);
 
 firebase.initializeApp(firebaseConfig);
 // Initialize admin SDK
-const serviceCredentials = `../../permission-portal-${process.env.NODE_ENV}-firebase-admin-key.json`;
+const serviceCredentials = `../../permission-portal-test-firebase-admin-key.json`;
 const serviceAccount =
   process.env.NODE_ENV === 'ci'
     ? {
@@ -25,7 +25,7 @@ const serviceAccount =
         clientEmail: 'firebase-adminsdk-nqxd8@permission-portal-test.iam.gserviceaccount.com',
       }
     : require(serviceCredentials);
-    
+
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
   databaseURL: firebaseConfig.databaseURL,
@@ -181,7 +181,7 @@ test('createUser works for admins', () => {
                           // Make sure the users collection uuid was updated with firebase auth uuid
                           expect(user.uuid).toEqual(currentUser.uid);
                         } else {
-                          throw new Error("Couldn't find test@email.com in our users collection");
+                          throw new Error("Couldn't find " + testUserEmail + ' in our users collection');
                         }
                       })
                       .catch((err) => {

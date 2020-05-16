@@ -11,15 +11,7 @@ import 'firebase/firestore';
 jest.setTimeout(60000);
 
 // Initialize client SDK
-const firebaseConfig = {
-  apiKey: 'AIzaSyAHVZXO-wFnGmUIBLxF6-mY3tuleK4ENVo',
-  authDomain: 'permission-portal-test.firebaseapp.com',
-  databaseURL: 'https://permission-portal-test.firebaseio.com',
-  projectId: 'permission-portal-test',
-  storageBucket: 'permission-portal-test.appspot.com',
-  messagingSenderId: '1090782248577',
-  appId: '1:1090782248577:web:184d481f492cfa4edc1780'
-};
+const firebaseConfig = require(`../../../../config/firebase.config.${process.env.NODE_ENV}.js`);
 firebase.initializeApp(firebaseConfig);
 
 // Initialize admin SDK
@@ -31,12 +23,12 @@ const serviceAccount =
           '-----BEGIN PRIVATE KEY-----\n' +
           process.env.FIREBASE_PRIVATE_KEY!.replace(/\\n/g, '\n') +
           '\n-----END PRIVATE KEY-----\n',
-        clientEmail: 'firebase-adminsdk-nqxd8@permission-portal-test.iam.gserviceaccount.com'
+        clientEmail: 'firebase-adminsdk-nqxd8@permission-portal-test.iam.gserviceaccount.com',
       }
     : require('../../permission-portal-test-firebase-admin-key.json');
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
-  databaseURL: 'https://permission-portal-test.firebaseio.com'
+  databaseURL: 'https://permission-portal-test.firebaseio.com',
 });
 
 // Initialize commonly used vars
@@ -56,7 +48,7 @@ describe("Unauthenticated users can't do anything", () => {
       .then(() => {
         throw new Error('Unauthenticated user should not be able to read from users collection');
       })
-      .catch(err => {
+      .catch((err) => {
         expect(err.code).toEqual('permission-denied');
         expect(err.message).toEqual('Missing or insufficient permissions.');
       });
@@ -67,12 +59,12 @@ describe("Unauthenticated users can't do anything", () => {
       .collection('users')
       .doc('some doc in users')
       .update({
-        someField: 'someValue'
+        someField: 'someValue',
       })
       .then(() => {
         throw new Error('Unauthenticated user should not be able to write to users collection');
       })
-      .catch(err => {
+      .catch((err) => {
         expect(err.code).toEqual('permission-denied');
         expect(err.message).toEqual('7 PERMISSION_DENIED: Missing or insufficient permissions.');
       });
@@ -86,7 +78,7 @@ describe("Unauthenticated users can't do anything", () => {
       .then(() => {
         throw new Error('Unauthenticated user should not be able to read from organizations table');
       })
-      .catch(err => {
+      .catch((err) => {
         expect(err.code).toEqual('permission-denied');
         expect(err.message).toEqual('Missing or insufficient permissions.');
       });
@@ -97,12 +89,12 @@ describe("Unauthenticated users can't do anything", () => {
       .collection('organizations')
       .doc('some doc in organizations')
       .update({
-        someField: 'someValue'
+        someField: 'someValue',
       })
       .then(() => {
         throw new Error('Unauthenticated user should not be able to write to organizations table');
       })
-      .catch(err => {
+      .catch((err) => {
         expect(err.code).toEqual('permission-denied');
         expect(err.message).toEqual('7 PERMISSION_DENIED: Missing or insufficient permissions.');
       });
@@ -116,10 +108,10 @@ describe('Test proper read/write permissions for regular users (non-admins)', ()
         .collection('users')
         .doc('user@soylentgreen.com')
         .get()
-        .then(userSnapshot => {
+        .then((userSnapshot) => {
           expect(userSnapshot.id).toEqual('user@soylentgreen.com');
         })
-        .catch(err => {
+        .catch((err) => {
           throw err;
         });
     });
@@ -131,20 +123,20 @@ describe('Test proper read/write permissions for regular users (non-admins)', ()
         .collection('users')
         .doc('user@soylentgreen.com')
         .update({
-          newField: 'newValue'
+          newField: 'newValue',
         })
         .then(() => {
           return clientDb
             .collection('users')
             .doc('user@soylentgreen.com')
             .get()
-            .then(userSnapshot => userSnapshot.data())
-            .then(user => {
+            .then((userSnapshot) => userSnapshot.data())
+            .then((user) => {
               expect(user).toBeDefined();
               expect(user!.newField).toEqual('newValue');
             });
         })
-        .catch(err => {
+        .catch((err) => {
           throw err;
         });
     });
@@ -159,7 +151,7 @@ describe('Test proper read/write permissions for regular users (non-admins)', ()
         .then(() => {
           throw new Error("Authenticated regular users should not be able to read other user's data");
         })
-        .catch(err => {
+        .catch((err) => {
           expect(err.code).toEqual('permission-denied');
           expect(err.message).toEqual('Missing or insufficient permissions.');
           return clientDb
@@ -169,7 +161,7 @@ describe('Test proper read/write permissions for regular users (non-admins)', ()
             .then(() => {
               throw new Error("Authenticated regular users should not be able to read other user's data");
             })
-            .catch(err2 => {
+            .catch((err2) => {
               expect(err2.code).toEqual('permission-denied');
               expect(err2.message).toEqual('Missing or insufficient permissions.');
               return clientDb
@@ -179,7 +171,7 @@ describe('Test proper read/write permissions for regular users (non-admins)', ()
                 .then(() => {
                   throw new Error("Authenticated regular users should not be able to read other user's data");
                 })
-                .catch(err3 => {
+                .catch((err3) => {
                   expect(err3.code).toEqual('permission-denied');
                   expect(err3.message).toEqual('Missing or insufficient permissions.');
                 });
@@ -194,36 +186,36 @@ describe('Test proper read/write permissions for regular users (non-admins)', ()
         .collection('users')
         .doc('admin@soylentgreen.com')
         .update({
-          newField: 'newValue'
+          newField: 'newValue',
         })
         .then(() => {
           throw new Error("Authenticated regular users should not be able to write other user's data");
         })
-        .catch(err => {
+        .catch((err) => {
           expect(err.code).toEqual('permission-denied');
           expect(err.message).toEqual('7 PERMISSION_DENIED: Missing or insufficient permissions.');
           return clientDb
             .collection('users')
             .doc('admin@initech.com')
             .update({
-              newField: 'newValue'
+              newField: 'newValue',
             })
             .then(() => {
               throw new Error("Authenticated regular users should not be able to read other user's data");
             })
-            .catch(err2 => {
+            .catch((err2) => {
               expect(err2.code).toEqual('permission-denied');
               expect(err2.message).toEqual('7 PERMISSION_DENIED: Missing or insufficient permissions.');
               return clientDb
                 .collection('users')
                 .doc('user@initech.com')
                 .update({
-                  newField: 'newValue'
+                  newField: 'newValue',
                 })
                 .then(() => {
                   throw new Error("Authenticated regular users should not be able to read other user's data");
                 })
-                .catch(err3 => {
+                .catch((err3) => {
                   expect(err3.code).toEqual('permission-denied');
                   expect(err3.message).toEqual('7 PERMISSION_DENIED: Missing or insufficient permissions.');
                 });
@@ -239,28 +231,28 @@ describe('Test proper read/write permissions for regular users (non-admins)', ()
         expect(clientAuth.currentUser).toBeTruthy();
         return clientAuth
           .currentUser!.getIdTokenResult(true)
-          .then(idTokenResult => {
+          .then((idTokenResult) => {
             return clientDb
               .collection('organizations')
               .doc(idTokenResult.claims.organizationID)
               .get()
-              .then(orgSnapshot => {
+              .then((orgSnapshot) => {
                 expect(orgSnapshot.id).toEqual(idTokenResult.claims.organizationID);
                 return orgSnapshot.data();
               })
-              .then(org => {
+              .then((org) => {
                 expect(org).toBeDefined();
                 expect(org!.name).toEqual('Soylent Green');
               })
-              .catch(err => {
+              .catch((err) => {
                 throw err;
               });
           })
-          .catch(err => {
+          .catch((err) => {
             throw err;
           });
       })
-      .catch(err => {
+      .catch((err) => {
         throw err;
       });
   });
@@ -279,12 +271,12 @@ describe('Test proper read/write permissions for regular users (non-admins)', ()
               "Authenticated regular user shouldn't have been able to read an organization he doesn't belong to"
             );
           })
-          .catch(err => {
+          .catch((err) => {
             expect(err.code).toEqual('permission-denied');
             expect(err.message).toEqual('Missing or insufficient permissions.');
           });
       })
-      .catch(err => {
+      .catch((err) => {
         throw err;
       });
   });
@@ -296,26 +288,26 @@ describe('Test proper read/write permissions for regular users (non-admins)', ()
         expect(clientAuth.currentUser).toBeTruthy();
         return clientAuth
           .currentUser!.getIdTokenResult(true)
-          .then(idTokenResult => {
+          .then((idTokenResult) => {
             return clientDb
               .collection('organizations')
               .doc(idTokenResult.claims.organizationID)
               .update({
-                newField: 'newValue'
+                newField: 'newValue',
               })
               .then(() => {
                 throw new Error("Authenticated regular user shouldn't be able to write to his own organization");
               })
-              .catch(err => {
+              .catch((err) => {
                 expect(err.code).toEqual('permission-denied');
                 expect(err.message).toEqual('7 PERMISSION_DENIED: Missing or insufficient permissions.');
               });
           })
-          .catch(err => {
+          .catch((err) => {
             throw err;
           });
       })
-      .catch(err => {
+      .catch((err) => {
         throw err;
       });
   });
@@ -329,19 +321,19 @@ describe('Test proper read/write permissions for regular users (non-admins)', ()
           .collection('organizations')
           .doc(initechID)
           .update({
-            newField: 'newValue'
+            newField: 'newValue',
           })
           .then(() => {
             throw new Error(
               "Authenticated regular user shouldn't be able to write to an organization he doesn't belong to"
             );
           })
-          .catch(err => {
+          .catch((err) => {
             expect(err.code).toEqual('permission-denied');
             expect(err.message).toEqual('7 PERMISSION_DENIED: Missing or insufficient permissions.');
           });
       })
-      .catch(err => {
+      .catch((err) => {
         throw err;
       });
   });
@@ -354,10 +346,10 @@ describe('Test proper read/write permissions for admins', () => {
         .collection('users')
         .doc('admin@soylentgreen.com')
         .get()
-        .then(userSnapshot => {
+        .then((userSnapshot) => {
           expect(userSnapshot.id).toEqual('admin@soylentgreen.com');
         })
-        .catch(err => {
+        .catch((err) => {
           throw err;
         });
     });
@@ -369,12 +361,30 @@ describe('Test proper read/write permissions for admins', () => {
         .collection('users')
         .doc('user@soylentgreen.com')
         .get()
-        .then(userSnapshot => {
+        .then((userSnapshot) => {
           expect(userSnapshot.id).toEqual('user@soylentgreen.com');
         })
-        .catch(err => {
+        .catch((err) => {
           throw err;
         });
+    });
+  });
+
+  test('Authenticated admin user can read a list of all the other users in his organization', () => {
+    return clientAuth.signInWithEmailAndPassword('admin@initech.com', 'admin@initech.com').then(() => {
+      return clientAuth.currentUser!.getIdTokenResult(true).then((idTokenResult) => {
+        return clientDb
+          .collection('users')
+          .where('organizationID', '==', idTokenResult.claims.organizationID)
+          .get()
+          .then((collectionsSnapshot) => {
+            const userDocs = collectionsSnapshot.docs.map((userDoc) => userDoc.data());
+            expect(userDocs.length).toEqual(2);
+          })
+          .catch((err) => {
+            throw err;
+          });
+      });
     });
   });
 
@@ -389,7 +399,7 @@ describe('Test proper read/write permissions for admins', () => {
             "Authenticated admin users should not be able to read other user's data if they're not in the same organization"
           );
         })
-        .catch(err => {
+        .catch((err) => {
           expect(err.code).toEqual('permission-denied');
           expect(err.message).toEqual('Missing or insufficient permissions.');
           return clientDb
@@ -401,7 +411,7 @@ describe('Test proper read/write permissions for admins', () => {
                 "Authenticated admin users should not be able to read other user's data if they're not in the same organization"
               );
             })
-            .catch(err2 => {
+            .catch((err2) => {
               expect(err2.code).toEqual('permission-denied');
               expect(err2.message).toEqual('Missing or insufficient permissions.');
             });
@@ -415,20 +425,20 @@ describe('Test proper read/write permissions for admins', () => {
         .collection('users')
         .doc('admin@soylentgreen.com')
         .update({
-          newField: 'newValue'
+          newField: 'newValue',
         })
         .then(() => {
           return clientDb
             .collection('users')
             .doc('admin@soylentgreen.com')
             .get()
-            .then(userSnapshot => userSnapshot.data())
-            .then(user => {
+            .then((userSnapshot) => userSnapshot.data())
+            .then((user) => {
               expect(user).toBeDefined();
               expect(user!.newField).toEqual('newValue');
             });
         })
-        .catch(err => {
+        .catch((err) => {
           throw err;
         });
     });
@@ -440,20 +450,20 @@ describe('Test proper read/write permissions for admins', () => {
         .collection('users')
         .doc('user@soylentgreen.com')
         .update({
-          newField: 'newValue'
+          newField: 'newValue',
         })
         .then(() => {
           return clientDb
             .collection('users')
             .doc('user@soylentgreen.com')
             .get()
-            .then(userSnapshot => userSnapshot.data())
-            .then(user => {
+            .then((userSnapshot) => userSnapshot.data())
+            .then((user) => {
               expect(user).toBeDefined();
               expect(user!.newField).toEqual('newValue');
             });
         })
-        .catch(err => {
+        .catch((err) => {
           throw err;
         });
     });
@@ -465,28 +475,28 @@ describe('Test proper read/write permissions for admins', () => {
         .collection('users')
         .doc('admin@initech.com')
         .update({
-          newField: 'newValue'
+          newField: 'newValue',
         })
         .then(() => {
           throw new Error(
             "Authenticated admin users should not be able to write other user's data if they're not in the same organization"
           );
         })
-        .catch(err => {
+        .catch((err) => {
           expect(err.code).toEqual('permission-denied');
           expect(err.message).toEqual('7 PERMISSION_DENIED: Missing or insufficient permissions.');
           return clientDb
             .collection('users')
             .doc('user@initech.com')
             .update({
-              newField: 'newValue'
+              newField: 'newValue',
             })
             .then(() => {
               throw new Error(
                 "Authenticated admin users should not be able to write other user's data if they're not in the same organization"
               );
             })
-            .catch(err2 => {
+            .catch((err2) => {
               expect(err2.code).toEqual('permission-denied');
               expect(err2.message).toEqual('7 PERMISSION_DENIED: Missing or insufficient permissions.');
             });
@@ -501,29 +511,29 @@ describe('Test proper read/write permissions for admins', () => {
         expect(clientAuth.currentUser).toBeTruthy();
         return clientAuth
           .currentUser!.getIdTokenResult(true)
-          .then(idTokenResult => {
+          .then((idTokenResult) => {
             expect(idTokenResult.claims.isAdmin).toEqual(true);
             return clientDb
               .collection('organizations')
               .doc(idTokenResult.claims.organizationID)
               .get()
-              .then(orgSnapshot => {
+              .then((orgSnapshot) => {
                 expect(orgSnapshot.id).toEqual(idTokenResult.claims.organizationID);
                 return orgSnapshot.data();
               })
-              .then(org => {
+              .then((org) => {
                 expect(org).toBeDefined();
                 expect(org!.name).toEqual('Soylent Green');
               })
-              .catch(err => {
+              .catch((err) => {
                 throw err;
               });
           })
-          .catch(err => {
+          .catch((err) => {
             throw err;
           });
       })
-      .catch(err => {
+      .catch((err) => {
         throw err;
       });
   });
@@ -535,7 +545,7 @@ describe('Test proper read/write permissions for admins', () => {
         expect(clientAuth.currentUser).toBeTruthy();
         return clientAuth
           .currentUser!.getIdTokenResult(true)
-          .then(idTokenResult => {
+          .then((idTokenResult) => {
             expect(idTokenResult.claims.isAdmin).toEqual(true);
             return clientDb
               .collection('organizations')
@@ -546,16 +556,16 @@ describe('Test proper read/write permissions for admins', () => {
                   "Authenticated admin user shouldn't have been able to read an organization he doesn't belong to"
                 );
               })
-              .catch(err => {
+              .catch((err) => {
                 expect(err.code).toEqual('permission-denied');
                 expect(err.message).toEqual('Missing or insufficient permissions.');
               });
           })
-          .catch(err => {
+          .catch((err) => {
             throw err;
           });
       })
-      .catch(err => {
+      .catch((err) => {
         throw err;
       });
   });
@@ -567,40 +577,40 @@ describe('Test proper read/write permissions for admins', () => {
         expect(clientAuth.currentUser).toBeTruthy();
         return clientAuth
           .currentUser!.getIdTokenResult(true)
-          .then(idTokenResult => {
+          .then((idTokenResult) => {
             expect(idTokenResult.claims.isAdmin).toEqual(true);
             return clientDb
               .collection('organizations')
               .doc(idTokenResult.claims.organizationID)
               .update({
-                newField: 'newValue'
+                newField: 'newValue',
               })
               .then(() => {
                 return clientDb
                   .collection('organizations')
                   .doc(idTokenResult.claims.organizationID)
                   .get()
-                  .then(orgSnapshot => {
+                  .then((orgSnapshot) => {
                     expect(orgSnapshot.id).toEqual(idTokenResult.claims.organizationID);
                     return orgSnapshot.data();
                   })
-                  .then(org => {
+                  .then((org) => {
                     expect(org).toBeDefined();
                     expect(org!.newField).toEqual('newValue');
                   })
-                  .catch(err => {
+                  .catch((err) => {
                     throw err;
                   });
               })
-              .catch(err => {
+              .catch((err) => {
                 throw err;
               });
           })
-          .catch(err => {
+          .catch((err) => {
             throw err;
           });
       })
-      .catch(err => {
+      .catch((err) => {
         throw err;
       });
   });
@@ -612,29 +622,29 @@ describe('Test proper read/write permissions for admins', () => {
         expect(clientAuth.currentUser).toBeTruthy();
         return clientAuth
           .currentUser!.getIdTokenResult(true)
-          .then(idTokenResult => {
+          .then((idTokenResult) => {
             expect(idTokenResult.claims.isAdmin).toEqual(true);
             return clientDb
               .collection('organizations')
               .doc(initechID)
               .update({
-                newField: 'newValue'
+                newField: 'newValue',
               })
               .then(() => {
                 throw new Error(
                   "Authenticated admin user shouldn't have been able to write to an organization he doesn't belong to"
                 );
               })
-              .catch(err => {
+              .catch((err) => {
                 expect(err.code).toEqual('permission-denied');
                 expect(err.message).toEqual('7 PERMISSION_DENIED: Missing or insufficient permissions.');
               });
           })
-          .catch(err => {
+          .catch((err) => {
             throw err;
           });
       })
-      .catch(err => {
+      .catch((err) => {
         throw err;
       });
   });
