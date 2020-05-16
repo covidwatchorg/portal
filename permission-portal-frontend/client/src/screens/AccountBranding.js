@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import PendingOperationButton from '../components/PendingOperationButton';
+import Toast from '../components/Toast';
 import "../../Styles/screens/branding.scss";
 import { withAuthorization } from '../components/Session';
 import * as ROLES from '../constants/roles';
@@ -9,6 +10,9 @@ import { useObserver } from 'mobx-react'
 import 'mobx-react/batchingForReactDom'
 
 const AccountBrandingBase = () => {
+  const [successToastShouldOpen, setSuccessToastShouldOpen] = useState(false);
+  const [failureToastShouldOpen, setFailureToastShouldOpen] = useState(false);
+
   const getDiagnosisText = () => {
     if (diagnosisText !== "Loading text...") {
       return diagnosisText
@@ -34,15 +38,17 @@ const AccountBrandingBase = () => {
     console.log("TODO contact us");
   };
 
-  const saveData = async () => {
-    try {
-      await store.organization
-        .setOrganizationalBranding(diagnosisText, exposureText)
-      
-      console.log("Branding data saved successfully")
-    } catch (err) {
-      console.warn("Branding data failed to save", err)
-    }
+  const saveData = () => {
+    return store.setOrganizationalBranding(diagnosisText, exposureText).then(()=>{
+      console.log("Branding data saved successfully");
+      setSuccessToastShouldOpen(true);
+      setFailureToastShouldOpen(false);
+    },
+    ()=>{
+      console.log("Branding data failed to save");
+      setSuccessToastShouldOpen(false);
+      setFailureToastShouldOpen(true);
+    });
   }
 
   return useObserver(() => (
@@ -88,6 +94,8 @@ const AccountBrandingBase = () => {
             Save Changes
           </PendingOperationButton>
       </div>
+      <Toast open={successToastShouldOpen} onClose={()=> setSuccessToastShouldOpen(false) } isSuccess={true} message="Branding saved successfully" />
+      <Toast open={failureToastShouldOpen} onClose={()=> setFailureToastShouldOpen(false) } isSuccess={false} message="Failed to save branding" />
     </div>
   ));
 };
