@@ -382,6 +382,7 @@ test("Manually added user in users table with empty string organizationID can't 
         isAdmin: false,
         isSuperAdmin: false,
         organizationID: '',
+        disabled: false,
       })
       .then(() => {
         // try to create corresponding user in Firebase auth
