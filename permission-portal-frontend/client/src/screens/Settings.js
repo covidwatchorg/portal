@@ -6,6 +6,7 @@ import { withAuthorization } from '../components/Session'
 import * as ROLES from '../constants/roles'
 import { compose } from 'recompose'
 import store from '../store'
+import { useObserver } from 'mobx-react'
 
 const useStyles = makeStyles({
   root: {
@@ -139,15 +140,35 @@ const SettingsBase = () => {
           <Grid item xs={4}>
             <Grid container spacing={2} direction="column">
               <label htmlFor="prefix">Prefix</label>
-              <input type="text" id="prefix" name="prefix" className={input.root}></input>
+              <input
+                type="text"
+                id="prefix"
+                name="prefix"
+                className={input.root}
+                defaultValue={store.user ? store.user.prefix : ''}>
+              </input>
               <label htmlFor="firstName">
                 First Name <span style={{ color: 'red' }}>*</span>
               </label>
-              <input type="text" id="firstName" name="firstName" required className={input.root}></input>
+              <input
+                type="text"
+                id="firstName"
+                name="firstName"
+                required
+                className={input.root}
+                defaultValue={store.user ? store.user.firstName : ''}>
+              </input>
               <label htmlFor="email">
                 Email Address <span style={{ color: 'red' }}>*</span>
               </label>
-              <input type="text" id="email" name="email" required className={input.root}></input>
+              <input
+                type="text"
+                id="email"
+                name="email"
+                required
+                className={input.root}
+                defaultValue={store.user ? store.user.email : ''}>
+              </input>
               <button type="submit" className={primaryButton.root}>
                 Save Changes
               </button>
@@ -159,26 +180,36 @@ const SettingsBase = () => {
               <label htmlFor="role">
                 Role <span style={{ color: 'red' }}>*</span>
               </label>
-              <select
-                type="text"
-                id="role"
-                name="role"
-                disabled={!store.user.isAdmin}
-                required
-                className={input.root}
-                style={!store.user.isAdmin ? { backgroundColor: '#E0E0E0' } : {}}
-              >
-                <option value={ROLES.ADMIN_LABEL} defaultValue={store.user.isAdmin}>
-                  {ROLES.ADMIN_LABEL}
-                </option>
-                <option value={ROLES.NON_ADMIN_LABEL} defaultValue={!store.user.isAdmin}>
-                  {ROLES.NON_ADMIN_LABEL}
-                </option>
-              </select>
+              {
+                store.user &&
+                <select
+                  type="text"
+                  id="role"
+                  name="role"
+                  disabled={!store.user.isAdmin}
+                  required
+                  className={input.root}
+                  style={!store.user.isAdmin ? { backgroundColor: '#E0E0E0' } : {}}
+                >
+                  <option value={ROLES.ADMIN_LABEL} defaultValue={store.user.isAdmin}>
+                    {ROLES.ADMIN_LABEL}
+                  </option>
+                  <option value={ROLES.NON_ADMIN_LABEL} defaultValue={!store.user.isAdmin}>
+                    {ROLES.NON_ADMIN_LABEL}
+                  </option>
+                </select>
+              }
               <label htmlFor="lastName">
                 Last Name <span style={{ color: 'red' }}>*</span>
               </label>
-              <input type="text" id="lastName" name="lastName" required className={input.root}></input>
+              <input
+                type="text"
+                id="lastName"
+                name="lastName"
+                required
+                className={input.root}
+                defaultValue={store.user ? store.user.lastName : ''}>
+              </input>
               <label htmlFor="password">
                 Password <span style={{ color: 'red' }}>*</span>
               </label>
@@ -210,12 +241,12 @@ const SettingsBase = () => {
     </Fragment>
   )
 
-  return (
+  return useObserver(() => (
     <React.Fragment>
       <h1>My Settings</h1>
       {settingsForm()}
     </React.Fragment>
-  )
+  ))
 }
 
 const condition = (authUser) => {

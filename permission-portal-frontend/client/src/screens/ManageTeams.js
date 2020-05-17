@@ -1,5 +1,6 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import * as ROLES from '../constants/roles'
+import { useObserver } from 'mobx-react'
 import { withAuthorization } from '../components/Session'
 import { compose } from 'recompose'
 import store from '../store'
@@ -11,7 +12,8 @@ import AddMemberModal from './AddMemberModal'
 
 const ManageTeamsBase = () => {
   const [currentPage, setCurrentPage] = useState(0)
-  const pages = [...Array(Math.ceil(store.organization.members.length / 15)).keys()]
+  const pages = store.organization && store.organization.members ?
+    [...Array(Math.ceil(store.organization.members.length / 15)).keys()] : []
   const [showModal, setShowModal] = useState(false);
 
   const getPageData = () => {
@@ -19,7 +21,11 @@ const ManageTeamsBase = () => {
     return store.organization.members.slice(pageStart, pageStart + 15)
   };
 
-  return (
+  useEffect(() => {
+    console.log('Store', store)
+  }, [])
+
+  return useObserver(() => (
     <div className="module-container">
       <h1>Manage Members</h1>
       <div className="add-member-button" onClick={() => setShowModal(true)}>
@@ -38,7 +44,7 @@ const ManageTeamsBase = () => {
         </thead>
         <tbody>
           {
-            getPageData().map((data, index) => (
+            store.organization && store.organization.members && getPageData().map((data, index) => (
               <tr key={index}>
                 <td>{data.lastName + ', ' + data.firstName}</td>
                 <td style={{ padding: 0 }}>
@@ -56,8 +62,8 @@ const ManageTeamsBase = () => {
                 <td style={{ padding: 0 }}>
                   <div className="custom-select">
                     <select
-                      className={data.isActive ? 'active' : 'inactive'}
-                      defaultValue={data.isActive ? 'active' : 'deactivated'}
+                      className={!data.disabled ? 'active' : 'inactive'}
+                      defaultValue={!data.disabled ? 'active' : 'deactivated'}
                     >
                       <option value='active'>
                         Active
@@ -110,7 +116,7 @@ const ManageTeamsBase = () => {
         </div>
       </div>
     </div>
-  )
+  ))
 }
 
 const condition = (authUser) => {
