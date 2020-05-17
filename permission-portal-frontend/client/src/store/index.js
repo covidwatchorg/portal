@@ -18,6 +18,21 @@ const User = types
 const Organization = types
   .model({
     name: types.string,
+    welcomeText: types.maybeNull(types.string),
+    enableExposureText: types.maybeNull(types.string),
+    recommendExposureText: types.maybeNull(types.string),
+    notifyingOthersText: types.maybeNull(types.string),
+    exposureInfoText: types.maybeNull(types.string),
+    exposureAboutText: types.maybeNull(types.string),
+    exposureDetailsText: types.maybeNull(types.string),
+    exposureDetailsLearnText: types.maybeNull(types.string),
+    verificationStartText: types.maybeNull(types.string),
+    verificationIdentifierText: types.maybeNull(types.string),
+    verificationIdentifierAboutText: types.maybeNull(types.string),
+    verificationAdministrationDateText: types.maybeNull(types.string),
+    verificationReviewText: types.maybeNull(types.string),
+    verificationSharedText: types.maybeNull(types.string),
+    verificationNotSharedText: types.maybeNull(types.string),
     diagnosisText: types.string,
     exposureText: types.string,
     members: types.maybeNull(types.array(User))
