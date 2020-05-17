@@ -5,6 +5,10 @@
 @import 'components/navbar';
 @import 'components/toast';
 
+.hidden {
+  display: none;
+}
+
 body {
   margin: 0px;
 
