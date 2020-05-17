@@ -1,8 +1,8 @@
 var admin = require('firebase-admin');
 var client = require('firebase-tools');
 
-if (process.env.NODE_ENV !== 'dev' && process.env.NODE_ENV !== 'test') {
-  throw new Error('Environment variable NODE_ENV must be set to one of `dev` or `test`');
+if (process.env.NODE_ENV !== 'dev' && process.env.NODE_ENV !== 'test' && process.env.NODE_ENV !== 'staging') {
+  throw new Error('Environment variable NODE_ENV must be set to one of `dev` or `test` or `staging`');
 }
 
 // Initialize admin SDK

@@ -1,43 +1,4 @@
-import * as firebase from 'firebase/app';
-import * as admin from 'firebase-admin';
-// Add the Firebase services that you want to use
-// tslint:disable-next-line: no-import-side-effect
-import 'firebase/auth';
-// tslint:disable-next-line: no-import-side-effect
-import 'firebase/functions';
-// tslint:disable-next-line: no-import-side-effect
-import 'firebase/firestore';
-
-jest.setTimeout(60000);
-
-// Initialize client SDK
-const firebaseConfig = require(`../../../../config/firebase.config.test.js`);
-firebase.initializeApp(firebaseConfig);
-
-// Initialize admin SDK
-const serviceAccount =
-  process.env.NODE_ENV === 'ci'
-    ? {
-        projectId: 'permission-portal-test',
-        privateKey:
-          '-----BEGIN PRIVATE KEY-----\n' +
-          process.env.FIREBASE_PRIVATE_KEY!.replace(/\\n/g, '\n') +
-          '\n-----END PRIVATE KEY-----\n',
-        clientEmail: 'firebase-adminsdk-nqxd8@permission-portal-test.iam.gserviceaccount.com',
-      }
-    : require('../../permission-portal-test-firebase-admin-key.json');
-admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount),
-  databaseURL: 'https://permission-portal-test.firebaseio.com',
-});
-
-// Initialize commonly used vars
-const clientDb = firebase.firestore();
-const clientAuth = firebase.auth();
-
-// Constants taken from database
-const soylentGreenID: string = 'wV6rYRcd6ujaxiOWb9qa';
-const initechID: string = 'Y2QXOHIx643m7FceqU5R';
+import { clientDb, clientAuth, soylentGreenID, initechID } from './config';
 
 describe("Unauthenticated users can't do anything", () => {
   test("Unauthenticated user can't read users", () => {
