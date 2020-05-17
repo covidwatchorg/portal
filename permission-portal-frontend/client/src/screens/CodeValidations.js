@@ -13,6 +13,8 @@ import { compose } from 'recompose';
 
 const CodeValidationsBase = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [code, setCode] = useState("");
+  const [date, setDate] = useState("");
 
   return (
     <div className="module-container">
@@ -40,7 +42,7 @@ const CodeValidationsBase = () => {
             Enter the positive test validation code the user gave to you over
             the phone.
           </p>
-          <input type="text" placeholder="281-177-9"></input>
+          <input type="text" placeholder="281-177-9" onChange={e => setCode(e.target.value)}></input>
         </div>
 
         <div className="action-section">
@@ -49,7 +51,7 @@ const CodeValidationsBase = () => {
             Enter facilisis etiam. Felis sed blandit in lacus urna et, arcu
             notiar, dui, lorem.
           </p>
-          <input type="date"></input>
+          <input type="date" onChange={e => setDate(e.target.value)}></input>
         </div>
 
         <div id="white-box" className="white-background">
@@ -61,8 +63,9 @@ const CodeValidationsBase = () => {
           </div> */}
 
           <Button
-            id="verify-code-btn"
+            id={`verify-code-btn${date === "" || code === "" ? "-disabled" : ""}`}
             onClick={() => setIsOpen(true)}
+            disabled={date === "" || code === ""}
           >
             Verify Code
           </Button>
