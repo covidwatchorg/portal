@@ -56,7 +56,7 @@ const ManageTeamsBase = () => {
         <img src={addMember} />
         <span className="add-button-text">Add Member</span>
       </div>
-      <AddMemberModal hidden={!showModal} onCancel={onCancel} onSuccess={onSuccess} onFailure={onFailure} />
+      <AddMemberModal hidden={!showModal} onClose={onCancel} onSuccess={onSuccess} onFailure={onFailure} />
       <table>
         <thead>
           <tr>

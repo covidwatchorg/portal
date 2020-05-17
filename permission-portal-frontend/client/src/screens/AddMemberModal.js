@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import PendingOperationButton from '../components/PendingOperationButton';
 import store from '../store'
 import RoleSelector from '../components/RoleSelector';
+import Modal from '../components/Modal';
 
 const ValidationResult = (succeeded, failureReason) => {
   return {
@@ -86,51 +87,48 @@ const AddMemberModal = (props) => {
   // TODO require stars
   // TODO needs to fail but not close on validation failure and high light invalid fields (can do that before touching the store)
   return (
-    <div className={"modal-background" + (props.hidden === true ? ' hidden' : '')}>
-      <div className={"add-member-modal-container"}>
-        <span className="close-btn" onClick={props.onCancel}>X</span>
-        <h1>Add Member</h1>
-        <div className="add-member-form">
-          <label for="fname">First Name<span>*</span></label>
-          <input type="text" id="fname" name="fname" />
-          {
-            state.firstNameValidationFailed &&
-            <div className="validationResult">
-              {state.firstNameValidationMessage}
-            </div>
-          }
-          <label for="lname">Last Name<span>*</span></label>
-          <input type="text" id="lname" name="lname" />
-          {
-            state.lastNameValidationFailed &&
-            <div className="validationResult">
-              {state.lastNameValidationMessage}
-            </div>
-          }
-          <label for="email">Email<span>*</span></label>
-          <input type="text" id="email" name="email" />
-          {
-            state.emailValidationFailed &&
-            <div className="validationResult">
-              {state.emailValidationMessage}
-            </div>
-          }
-          <label for="role">Role<span>*</span></label>
-          <RoleSelector isAdmin={true} />
-          {
-            state.roleValidationFailed &&
-            <div className="validationResult">
-              {state.roleValidationMessage}
-            </div>
-          }
-          <div className="save-button-container">
-            <PendingOperationButton className="save-button" operation={submitMemberInvitation}>
-              Submit
-            </PendingOperationButton>
+    <Modal hidden={props.hidden} onClose={props.onClose}>
+      <h1>Add Member</h1>
+      <div className="add-member-form">
+        <label for="fname">First Name<span>*</span></label>
+        <input type="text" id="fname" name="fname" />
+        {
+          state.firstNameValidationFailed &&
+          <div className="validationResult">
+            {state.firstNameValidationMessage}
           </div>
+        }
+        <label for="lname">Last Name<span>*</span></label>
+        <input type="text" id="lname" name="lname" />
+        {
+          state.lastNameValidationFailed &&
+          <div className="validationResult">
+            {state.lastNameValidationMessage}
+          </div>
+        }
+        <label for="email">Email<span>*</span></label>
+        <input type="text" id="email" name="email" />
+        {
+          state.emailValidationFailed &&
+          <div className="validationResult">
+            {state.emailValidationMessage}
+          </div>
+        }
+        <label for="role">Role<span>*</span></label>
+        <RoleSelector isAdmin={true} />
+        {
+          state.roleValidationFailed &&
+          <div className="validationResult">
+            {state.roleValidationMessage}
+          </div>
+        }
+        <div className="save-button-container">
+          <PendingOperationButton className="save-button" operation={submitMemberInvitation}>
+            Submit
+          </PendingOperationButton>
         </div>
       </div>
-    </div>
+    </Modal>
   )
 }
 
