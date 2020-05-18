@@ -13,6 +13,21 @@ const User = types
     firstName: types.string,
     lastName: types.string,
     organizationID: types.string
+  })
+  .actions((self) => {
+    const sendPasswordResetEmail = flow(function * () {
+      try {
+        yield firebase.sendPasswordResetEmail(self.email)
+        return true
+      } catch (err) {
+        console.warn(err)
+        return false
+      }
+    })
+
+    return {
+      sendPasswordResetEmail
+    }
   });
 
 const Organization = types
@@ -64,6 +79,27 @@ const Store = types
     organization: types.maybeNull(Organization)
   })
   .actions((self) => {
+    const initialize = flow(function* () {
+      try {
+        const oldState = loadState()
+        console.log(oldState)
+        if (oldState) {
+          console.log('Email', oldState.user.email)
+          const userDoc = yield firebase.getUserDocument(oldState.user.email)
+          self.user = {email: oldState.user.email, ...userDoc}
+          let orgDoc = yield firebase.getOrganizationDocument(oldState.user.organizationID)
+          self.organization = orgDoc
+    
+          if (oldState.user.isAdmin) {
+            const members = yield firebase.getMembersOfOrg(oldState.user.organizationID)
+            self.organization.members = members
+          }
+        }
+      } catch (err) {
+        console.warn('unexpected error ', err);
+      }
+    })
+    
     const signIn = flow(function* (email, password) {
       try {
         yield firebase.doSignInWithEmailAndPassword(email, password)
@@ -88,32 +124,6 @@ const Store = types
         console.log(e)
       }
     })
-
-    const afterCreate = flow(function* () {
-      try {
-        const oldState = loadState()
-        console.log(oldState)
-        if (oldState) {
-          console.log('Email', oldState.user.email)
-          const userDoc = yield firebase.getUserDocument(oldState.user.email)
-    
-          self.user = userDoc
-          console.log(self.user)
-    
-          const orgDoc = yield firebase.getOrganizationDocument(oldState.user.organizationID)
-    
-          self.organization = orgDoc
-    
-          if (oldState.user.isAdmin) {
-            const members = yield firebase.getMembersOfOrg(oldState.user.organizationID)
-            self.organization.members = members
-          }
-          console.log(self.organization)
-        }
-      } catch (err) {
-        console.warn('unexpected error ', err);
-      }
-    })
     
     const signOut = flow(function* () {
       try {
@@ -128,10 +138,17 @@ const Store = types
       }
     })
 
+    const sendMemberInvitationEmail = flow(function* (state) {
+      // TODO state validation
+      // throw "TODO implement sendMemberInvitationEmail";
+      return true
+    })
+
     return {
+      initialize,
       signIn,
       signOut,
-      afterCreate
+      sendMemberInvitationEmail
     }
   })
 
@@ -156,16 +173,9 @@ const loadState = () => {
   }
 }
 
-var store = Store.create((() => {
-  try {
-    const snapshot = loadState()
-    if (snapshot) {
-      console.log('Data', snapshot)
-      self = snapshot
-    }
-  } catch (err) {
-    console.warn('unexpected error ', err);
-  }
-})());
+var store = Store.create({
+  user: null,
+  organization: null
+});
 
 export default store;
