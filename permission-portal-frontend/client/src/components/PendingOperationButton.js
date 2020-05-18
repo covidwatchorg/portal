@@ -17,18 +17,26 @@ const PendingOperationButton = (props) => {
         operationSucceeded: false
     });
     const onSuccess = () => {
-        setState({
-            isOperationStarted: false,
-            operationSucceeded: true
-        });
+      setState({
+          isOperationStarted: false,
+          operationSucceeded: true
+      });
     };
     const onFailure = () => {
-        setState({
-            isOperationStarted: false,
-            operationSucceeded: false
-        });
+      setState({
+          isOperationStarted: false,
+          operationSucceeded: false
+      });
     };
-    operation().then(onSuccess, onFailure);
+    const operationValue = operation();
+    if (operationValue) {
+      operationValue.then(onSuccess, onFailure);
+    } else {
+      setState({
+          isOperationStarted: false,
+          operationSucceeded: false
+      });
+    }
   };
 
   if (!state.isOperationStarted) {

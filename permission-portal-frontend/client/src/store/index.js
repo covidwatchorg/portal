@@ -113,10 +113,16 @@ const Store = types
       }
     })
 
+    const sendMemberInvitationEmail = flow(function* (state) {
+      // TODO state validation
+      throw "TODO implement sendMemberInvitationEmail";
+    })
+
     return {
       signIn,
       signOut,
-      afterCreate
+      afterCreate,
+      sendMemberInvitationEmail
     }
   })
 
