@@ -1,6 +1,7 @@
 import * as admin from 'firebase-admin';
 import * as functions from 'firebase-functions';
 import * as sgMail from '@sendgrid/mail';
+import { randomBytes } from 'crypto';
 
 // Initialize firebse admin and get db instance
 admin.initializeApp(functions.config().firebase);
@@ -16,16 +17,21 @@ function isCovidWatchUserProperlyFormatted(covidWatchUser: any): boolean {
     typeof covidWatchUser.isAdmin === 'boolean' &&
     typeof covidWatchUser.isSuperAdmin === 'boolean' &&
     typeof covidWatchUser.organizationID === 'string' &&
-    typeof covidWatchUser.disabled === 'boolean'
+    typeof covidWatchUser.disabled === 'boolean' &&
+    typeof covidWatchUser.firstName === 'string' &&
+    typeof covidWatchUser.lastName === 'string'
   );
 }
 
 function isCreateUserRequestProperlyFormatted(newUser: any): boolean {
-  console.log(`checking that createUser request with body ${JSON.stringify(newUser)} is properly formatted`);
+  console.log(`checking that createUser request is properly formatted`);
+  // password field is optional. If there is no password field, a random password will be generated.
   return (
     typeof newUser.email === 'string' &&
-    typeof newUser.password === 'string' &&
-    typeof newUser.organizationID === 'string'
+    typeof newUser.organizationID === 'string' &&
+    typeof newUser.firstName === 'string' &&
+    typeof newUser.lastName === 'string' &&
+    typeof newUser.isAdmin === 'boolean'
   );
 }
 
@@ -102,7 +108,32 @@ function isAdminGuard(context: functions.https.CallableContext): Promise<void> {
 }
 
 // Send email to new users instructing them to change their password
-function sendNewUserEmail(email: string) {
+function sendNewUserEmail(email: string, password: string, firstName: string, lastName: string) {
+  const msg = {
+    to: email,
+    from: 'welcome@covid-watch.org',
+    subject: 'Welcome to the Covid Watch Permission Portal',
+    html: `
+    <p>${firstName} ${lastName},</p>
+    <p>You are receiving this email because you were added as a new member of Covid Watch by an Account Administrator.</p>
+    <p><em>Your user name:</em> ${email}<br />  <em>Your password:</em> ${password}</p>
+    <p>Please click the following link or copy-paste it in your browser to sign in to your new account.</p>
+    <p>${functions.config().client.url}</p>
+    <p>If you recieved this message in error, you can safely ignore it.</p>
+    <p>You can reply to this message, or email support@covid-watch.org if you have any questions.</p>
+    <p>Thank you,<br />Covid Watch Team</p>`,
+  };
+  sgMail
+    .send(msg)
+    .then(() => {
+      console.log(`New user email sent to ${email}`);
+    })
+    .catch((err) => {
+      console.error(JSON.stringify(err));
+    });
+}
+
+function _sendPasswordResetEmail(email: string) {
   auth
     .generatePasswordResetLink(email, {
       // URL you want to redirect back to. The domain (www.example.com) for
@@ -112,11 +143,13 @@ function sendNewUserEmail(email: string) {
     .then((pwdResetLink) => {
       const msg = {
         to: email,
-        from: 'welcome@covid-watch.org',
-        subject: 'Welcome to the Covid Watch Permission Portal',
+        from: 'password-reset@covid-watch.org',
+        subject: 'Covid Watch Permission Portal password reset',
         html: `
-        <p>Welcome to the Covid Watch Permission Portal! For security reasons, as a first step we ask that you set your password by following the link below. If that link has expired by the time you click it, navigate to the Covid Watch Permission Portal login page and follow the 'Forgot password?' link.</p>
-        <a href=${pwdResetLink}>Set Password</a>
+        <p>You are recieving this email because somebody requested a password reset for the account associated with this email address.</p>
+        <p>To reset your password, click the link below</p>
+        <a href=${pwdResetLink}>Reset Password</a>
+        <p>If you recieved this message in error, you can safely ignore it.</p>
         `,
       };
       sgMail
@@ -140,12 +173,7 @@ export const createUser = functions.https.onCall((newUser, context) => {
       .then(() => {
         // Check that data is formatted properly
         if (!isCreateUserRequestProperlyFormatted(newUser)) {
-          reject(
-            new functions.https.HttpsError(
-              'invalid-argument',
-              'user object must have email <string>, password <string>, and organizationID <string> specified'
-            )
-          );
+          reject(new functions.https.HttpsError('invalid-argument', 'Request body is invalidly formatted.'));
         }
         doesOrganizationExist(newUser.organizationID)
           .then((doesExist) => {
@@ -160,13 +188,16 @@ export const createUser = functions.https.onCall((newUser, context) => {
                 .doc(newUser.email)
                 .set(newUserPrivileges) /* Create new user in our Firestore record */
                 .then(() => {
+                  // If request contains a password field, set that password. If not, generate a random password.
+                  const password: string = newUser.password ? newUser.password : randomBytes(16).toString('hex');
                   // Create Firebase Auth record of the user
                   auth
                     .createUser({
                       email: newUser.email,
-                      password: newUser.password,
+                      password: password,
                     })
                     .then((userRecord) => {
+                      sendNewUserEmail(newUser.email, password, newUser.firstName, newUser.lastName);
                       resolve(userRecord.toJSON());
                     })
                     .catch((err) => {
@@ -255,7 +286,6 @@ export const onCreate = functions.auth.user().onCreate((firebaseAuthUser) => {
                             'organizationID claim set to ' +
                             covidWatchUserData.organizationID
                         );
-                        sendNewUserEmail(firebaseAuthUser.email!);
                         if (typeof covidWatchUserData.disabled === 'boolean') {
                           auth
                             .updateUser(firebaseAuthUser.uid, {
