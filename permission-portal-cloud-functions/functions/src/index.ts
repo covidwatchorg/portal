@@ -29,7 +29,6 @@ function isCreateUserRequestProperlyFormatted(newUser: any): boolean {
   // password field is optional. If there is no password field, a random password will be generated.
   return (
     typeof newUser.email === 'string' &&
-    typeof newUser.organizationID === 'string' &&
     typeof newUser.firstName === 'string' &&
     typeof newUser.lastName === 'string' &&
     typeof newUser.isAdmin === 'boolean'
@@ -183,7 +182,7 @@ export const createUser = functions.https.onCall((newUser, context) => {
               const newUserPrivileges = {
                 isAdmin: newUser.isAdmin,
                 isSuperAdmin: false,
-                organizationID: newUser.organizationID,
+                organizationID: context.auth!.token.organizationID,
                 disabled: false,
                 firstName: newUser.firstName,
                 lastName: newUser.lastName,

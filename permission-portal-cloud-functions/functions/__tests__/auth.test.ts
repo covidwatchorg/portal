@@ -37,11 +37,7 @@ afterEach(() => {
 });
 
 test('createUser cannot be called without being authenticated', () => {
-  return createUser({
-    email: testUserEmail,
-    password: testUserEmail,
-    organizationID: soylentGreenID,
-  })
+  return createUser({})
     .then((result) => {
       throw new Error("This shouldn't happen!");
     })
@@ -55,11 +51,7 @@ test('createUser cannot be called by non-admin', () => {
   return clientAuth
     .signInWithEmailAndPassword('user@soylentgreen.com', 'user@soylentgreen.com')
     .then(() => {
-      return createUser({
-        email: testUserEmail,
-        password: testUserEmail,
-        organizationID: soylentGreenID,
-      })
+      return createUser({})
         .then((result) => {
           throw new Error("This shouldn't happen!");
         })
@@ -74,14 +66,13 @@ test('createUser cannot be called by non-admin', () => {
     });
 });
 
-test('Email address can only be used once', () => {
+test.only('Email address can only be used once', () => {
   return clientAuth
     .signInWithEmailAndPassword('admin@soylentgreen.com', 'admin@soylentgreen.com')
     .then(() => {
       return createUser({
         email: 'user@soylentgreen.com',
         password: 'user@soylentgreen.com',
-        organizationID: soylentGreenID,
         firstName: 'Heather',
         lastName: 'Sykes',
         isAdmin: false,
@@ -108,7 +99,6 @@ test('createUser works for admins', () => {
       return createUser({
         email: testUserEmail,
         password: testUserEmail,
-        organizationID: soylentGreenID,
         firstName: 'test',
         lastName: 'user',
         isAdmin: false,
@@ -174,24 +164,7 @@ test('createUser fails if invalid request body', () => {
     return createUser({
       email: testUserEmail,
       password: testUserEmail,
-      organization: 'This field should be organizationID',
-    })
-      .then((result) => {
-        throw new Error('createUser returned a 200 despite improperly formatted request');
-      })
-      .catch((err) => {
-        expect(err.code).toEqual('invalid-argument');
-        expect(err.message).toEqual('Request body is invalidly formatted.');
-      });
-  });
-});
-
-test('createUser fails if non-existent organizationID', () => {
-  return clientAuth.signInWithEmailAndPassword('admin@soylentgreen.com', 'admin@soylentgreen.com').then(() => {
-    return createUser({
-      email: testUserEmail,
-      password: testUserEmail,
-      organizationID: "This id doesn't exist",
+      // Missing required fields
     })
       .then((result) => {
         throw new Error('createUser returned a 200 despite improperly formatted request');
