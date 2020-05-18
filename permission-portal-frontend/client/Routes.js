@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react'
+import React, { Fragment, useEffect } from 'react'
 import { BrowserRouter, Switch, Route } from 'react-router-dom'
 import Login from './src/screens/Login'
 import CodeValidations from './src/screens/CodeValidations'
@@ -11,8 +11,24 @@ import * as ROUTES from './src/constants/routes'
 import { withAuthentication } from './src/components/Session'
 import { ThemeProvider } from '@material-ui/styles'
 import theme from './ui/Theme'
+import store from './src/store'
 
 const Routes = () => {
+  useEffect(() => {
+    if (!store.user) {
+      storeInit()
+    }
+  }, [])
+
+  const storeInit = async () => {
+    try {
+      await store.initialize()
+      console.log(store)
+    } catch (err) {
+      console.error(err)
+    }
+  }
+  
   return (
     <BrowserRouter>
       <ThemeProvider theme={theme}>
