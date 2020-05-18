@@ -10,7 +10,8 @@ const auth = admin.auth();
 // Initialize SendGrid
 sgMail.setApiKey(functions.config().sendgrid.key);
 
-// Checks that an entry (or pending entry) to the users table contains the required fields
+// Enforces the data model for documents in the users table
+// If an entry DNE or is improperly formatted, its corresponding entry in Firebase Auth will be deleted
 function isCovidWatchUserProperlyFormatted(covidWatchUser: any): boolean {
   console.log(`checking that ${JSON.stringify(covidWatchUser)} is properly formatted`);
   return (
@@ -133,7 +134,8 @@ function sendNewUserEmail(email: string, password: string, firstName: string, la
     });
 }
 
-function _sendPasswordResetEmail(email: string) {
+// @ts-ignore: TODO remove this once sendPasswordResetEmail is called
+function sendPasswordResetEmail(email: string) {
   auth
     .generatePasswordResetLink(email, {
       // URL you want to redirect back to. The domain (www.example.com) for
@@ -179,10 +181,12 @@ export const createUser = functions.https.onCall((newUser, context) => {
           .then((doesExist) => {
             if (doesExist) {
               const newUserPrivileges = {
-                isAdmin: false,
+                isAdmin: newUser.isAdmin,
                 isSuperAdmin: false,
                 organizationID: newUser.organizationID,
                 disabled: false,
+                firstName: newUser.firstName,
+                lastName: newUser.lastName,
               };
               db.collection('users')
                 .doc(newUser.email)
