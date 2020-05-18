@@ -95,6 +95,14 @@ class Firebase {
     }
   }
 
+  sendPasswordResetEmail = async (email) => {
+    try {
+      await this.auth.sendPasswordResetEmail(email)
+    } catch (error) {
+      console.error('Error sending password reset email', error)
+    }
+  }
+
   onAuthUserListener = (next, fallback) =>
     this.auth.onAuthStateChanged((authUser) => {
       if (authUser) {

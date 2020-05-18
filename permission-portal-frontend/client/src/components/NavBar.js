@@ -12,6 +12,7 @@ import store from '../store'
 import ucsf_health from '../../assets/ucsf-health.svg'
 import profile from '../../assets/placeholder/profile.png'
 import { withAuthentication } from './Session';
+import * as ROLES from '../constants/roles';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -65,7 +66,7 @@ const NavBarBase = () => {
 
   const getUserTitle = () => {
     if(store.user) {
-      return store.user.role
+      return store.user.isAdmin ? ROLES.ADMIN_LABEL : ROLES.NON_ADMIN_LABEL
     }else {
       return null;
     }
