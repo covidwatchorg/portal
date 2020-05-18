@@ -176,55 +176,40 @@ export const createUser = functions.https.onCall((newUser, context) => {
         if (!isCreateUserRequestProperlyFormatted(newUser)) {
           reject(new functions.https.HttpsError('invalid-argument', 'Request body is invalidly formatted.'));
         }
-        doesOrganizationExist(newUser.organizationID)
-          .then((doesExist) => {
-            if (doesExist) {
-              const newUserPrivileges = {
-                isAdmin: newUser.isAdmin,
-                isSuperAdmin: false,
-                organizationID: context.auth!.token.organizationID,
-                disabled: false,
-                firstName: newUser.firstName,
-                lastName: newUser.lastName,
-              };
-              db.collection('users')
-                .doc(newUser.email)
-                .set(newUserPrivileges) /* Create new user in our Firestore record */
-                .then(() => {
-                  // If request contains a password field, set that password. If not, generate a random password.
-                  const password: string = newUser.password ? newUser.password : randomBytes(16).toString('hex');
-                  // Create Firebase Auth record of the user
-                  auth
-                    .createUser({
-                      email: newUser.email,
-                      password: password,
-                    })
-                    .then((userRecord) => {
-                      sendNewUserEmail(newUser.email, password, newUser.firstName, newUser.lastName);
-                      resolve(userRecord.toJSON());
-                    })
-                    .catch((err) => {
-                      if (err.errorInfo.code === 'auth/email-already-exists') {
-                        reject(new functions.https.HttpsError('already-exists', err.errorInfo.message));
-                      } else {
-                        reject(new functions.https.HttpsError('internal', err.errorInfo.message));
-                      }
-                    });
-                })
-                .catch((err) => {
-                  reject(err);
-                });
-            } else {
-              reject(
-                new functions.https.HttpsError(
-                  'invalid-argument',
-                  'attempted to sign up user with an organization id that DNE: ' + newUser.organizationID
-                )
-              );
-            }
+        const newUserPrivileges = {
+          isAdmin: newUser.isAdmin,
+          isSuperAdmin: false,
+          organizationID: context.auth!.token.organizationID,
+          disabled: false,
+          firstName: newUser.firstName,
+          lastName: newUser.lastName,
+        };
+        db.collection('users')
+          .doc(newUser.email)
+          .set(newUserPrivileges) /* Create new user in our Firestore record */
+          .then(() => {
+            // If request contains a password field, set that password. If not, generate a random password.
+            const password: string = newUser.password ? newUser.password : randomBytes(16).toString('hex');
+            // Create Firebase Auth record of the user
+            auth
+              .createUser({
+                email: newUser.email,
+                password: password,
+              })
+              .then((userRecord) => {
+                sendNewUserEmail(newUser.email, password, newUser.firstName, newUser.lastName);
+                resolve(userRecord.toJSON());
+              })
+              .catch((err) => {
+                if (err.errorInfo.code === 'auth/email-already-exists') {
+                  reject(new functions.https.HttpsError('already-exists', err.errorInfo.message));
+                } else {
+                  reject(new functions.https.HttpsError('internal', err.errorInfo.message));
+                }
+              });
           })
           .catch((err) => {
-            reject(new functions.https.HttpsError('internal', err.errorInfo.message));
+            reject(err);
           });
       })
       .catch((err) => {

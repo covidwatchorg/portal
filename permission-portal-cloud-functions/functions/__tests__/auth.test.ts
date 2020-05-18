@@ -66,7 +66,7 @@ test('createUser cannot be called by non-admin', () => {
     });
 });
 
-test.only('Email address can only be used once', () => {
+test('Email address can only be used once', () => {
   return clientAuth
     .signInWithEmailAndPassword('admin@soylentgreen.com', 'admin@soylentgreen.com')
     .then(() => {
@@ -215,7 +215,6 @@ test("Manually added, improperly formatted user in users table can't be signed u
       .set({
         isAdmin: false,
         isSuperAdmin: false,
-        organization: 'This field should be organizationID',
         // This is missing fields
       })
       .then(() => {
@@ -266,6 +265,9 @@ test("Manually added user in users table with non-existent organizationID can't 
         isAdmin: false,
         isSuperAdmin: false,
         organizationID: "This id doesn't exist",
+        disabled: false,
+        firstName: 'test',
+        lastName: 'user',
       })
       .then(() => {
         // try to create corresponding user in Firebase auth
@@ -318,6 +320,8 @@ test("Manually added user in users table with empty string organizationID can't 
         isSuperAdmin: false,
         organizationID: '',
         disabled: false,
+        firstName: 'test',
+        lastName: 'user',
       })
       .then(() => {
         // try to create corresponding user in Firebase auth
