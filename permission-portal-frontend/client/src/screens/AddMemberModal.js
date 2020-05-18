@@ -76,14 +76,19 @@ const AddMemberModal = (props) => {
       }
     })
 
-    console.log(state)
-
     if (validationSucceeded === false) {
       setState({ ...state, ...newState })
       return
     }
 
-    return store.sendMemberInvitationEmail(state).then(props.onSuccess, props.onFailure)
+    return store
+      .sendMemberInvitationEmail({
+        email: state.email,
+        firstName: state.firstName,
+        lastName: state.lastName,
+        isAdmin: state.role === ROLES.ADMIN_LABEL,
+      })
+      .then(props.onSuccess, props.onFailure)
   }
 
   function handleChange(e) {
