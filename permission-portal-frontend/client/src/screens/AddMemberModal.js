@@ -103,7 +103,6 @@ const AddMemberModal = (props) => {
     }
   }
 
-  // TODO require stars
   // TODO needs to fail but not close on validation failure and high light invalid fields (can do that before touching the store)
   return (
     <Modal hidden={props.hidden} onClose={props.onClose}>
