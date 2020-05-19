@@ -1,53 +1,7 @@
-import * as firebase from 'firebase/app';
-import * as admin from 'firebase-admin';
-// Add the Firebase services that you want to use
-// tslint:disable-next-line: no-import-side-effect
-import 'firebase/auth';
-// tslint:disable-next-line: no-import-side-effect
-import 'firebase/functions';
-// tslint:disable-next-line: no-import-side-effect
-import 'firebase/firestore';
+import { clientDb, adminDb, clientAuth, adminAuth, createUser, delay, DELAY, soylentGreenID } from './config';
 
-const firebaseConfig = require(`../../../../config/firebase.config.${process.env.NODE_ENV}.js`);
 jest.setTimeout(60000);
 
-firebase.initializeApp(firebaseConfig);
-// Initialize admin SDK
-const serviceCredentials = `../../permission-portal-test-firebase-admin-key.json`;
-const serviceAccount =
-  process.env.NODE_ENV === 'ci'
-    ? {
-        projectId: 'permission-portal-test',
-        privateKey:
-          '-----BEGIN PRIVATE KEY-----\n' +
-          process.env.FIREBASE_PRIVATE_KEY!.replace(/\\n/g, '\n') +
-          '\n-----END PRIVATE KEY-----\n',
-        clientEmail: 'firebase-adminsdk-nqxd8@permission-portal-test.iam.gserviceaccount.com',
-      }
-    : require(serviceCredentials);
-
-admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount),
-  databaseURL: firebaseConfig.databaseURL,
-});
-
-// Initialize commonly used vars
-const clientDb = firebase.firestore();
-const adminDb = admin.firestore();
-const clientAuth = firebase.auth();
-const adminAuth = admin.auth();
-const clientFunctions = firebase.functions();
-const createUser = clientFunctions.httpsCallable('createUser');
-
-// Delay function to deal with Cloud Functions triggers needing time to propagate.
-const delay = (t: number) => new Promise((resolve) => setTimeout(resolve, t));
-// Milliseconds to delay at certain points in the test suite. Incredibly annoying, but because
-// our system relies on the onCreate trigger for various features, we need to provide delays in the tests in order
-// to give the trigger time to run.
-const DELAY = 10000;
-
-// Taken from permission-portal-test infra
-const soylentGreenID: string = 'wV6rYRcd6ujaxiOWb9qa';
 // Track so user can be deleted after each test
 let testUid: string;
 // create random email each run so that concurrent runs of the test suite don't cause conflict
@@ -382,6 +336,7 @@ test("Manually added user in users table with empty string organizationID can't 
         isAdmin: false,
         isSuperAdmin: false,
         organizationID: '',
+        disabled: false,
       })
       .then(() => {
         // try to create corresponding user in Firebase auth
@@ -421,4 +376,37 @@ test("Manually added user in users table with empty string organizationID can't 
         throw err;
       })
   );
+});
+
+test('User can be toggled between enabled and disabled', () => {
+  return adminDb
+    .collection('users')
+    .doc('disabled@soylentgreen.com')
+    .update({
+      disabled: false,
+    })
+    .then(() => {
+      // Delay to allow userOnUpdate time to run
+      return delay(DELAY).then(() => {
+        return adminAuth.getUserByEmail('disabled@soylentgreen.com').then((userRecordDisabled) => {
+          expect(userRecordDisabled.disabled).toBe(false);
+          return adminDb
+            .collection('users')
+            .doc('disabled@soylentgreen.com')
+            .update({
+              disabled: true,
+            })
+            .then(() => {
+              return delay(DELAY).then(() => {
+                return adminAuth.getUserByEmail('disabled@soylentgreen.com').then((userRecordEnabled) => {
+                  expect(userRecordEnabled.disabled).toBe(true);
+                });
+              });
+            });
+        });
+      });
+    })
+    .catch((err) => {
+      throw err;
+    });
 });

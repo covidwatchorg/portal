@@ -9,8 +9,13 @@ import arrowLeft from '../../assets/arrow-left.svg'
 import arrowRight from '../../assets/arrow-right.svg'
 import '../../Styles/screens/manage_teams.scss'
 import AddMemberModal from './AddMemberModal'
+import Toast from '../components/Toast';
+import RoleSelector from '../components/RoleSelector';
 
 const ManageTeamsBase = () => {
+  const [successToastShouldOpen, setSuccessToastShouldOpen] = useState(false);
+  const [failureToastShouldOpen, setFailureToastShouldOpen] = useState(false);
+
   const [currentPage, setCurrentPage] = useState(0)
   const pages = store.organization && store.organization.members ?
     [...Array(Math.ceil(store.organization.members.length / 15)).keys()] : []
@@ -25,6 +30,25 @@ const ManageTeamsBase = () => {
     console.log('Store', store)
   }, [])
 
+  const onCancel = () => {
+    setSuccessToastShouldOpen(false);
+    setFailureToastShouldOpen(false);
+    setShowModal(false);
+  };
+
+  const onSuccess = () => {
+    setSuccessToastShouldOpen(true);
+    setFailureToastShouldOpen(false);
+    setShowModal(false);
+  };
+
+  const onFailure = (e) => {
+    console.log(e);
+    setSuccessToastShouldOpen(false);
+    setFailureToastShouldOpen(true);
+    setShowModal(false);
+  };
+
   return useObserver(() => (
     <div className="module-container">
       <h1>Manage Members</h1>
@@ -32,7 +56,7 @@ const ManageTeamsBase = () => {
         <img src={addMember} />
         <span className="add-button-text">Add Member</span>
       </div>
-      {showModal && <AddMemberModal setShowModal={setShowModal} />}
+      <AddMemberModal hidden={!showModal} onClose={onCancel} onSuccess={onSuccess} onFailure={onFailure} />
       <table>
         <thead>
           <tr>
@@ -48,16 +72,7 @@ const ManageTeamsBase = () => {
               <tr key={index}>
                 <td>{data.lastName + ', ' + data.firstName}</td>
                 <td style={{ padding: 0 }}>
-                  <div className="custom-select">
-                    <select defaultValue={data.isAdmin ? ROLES.ADMIN_LABEL : ROLES.NON_ADMIN_LABEL}>
-                      <option value={ROLES.ADMIN_LABEL}>
-                        {ROLES.ADMIN_LABEL}
-                      </option>
-                      <option value={ROLES.NON_ADMIN_LABEL}>
-                        {ROLES.NON_ADMIN_LABEL}
-                      </option>
-                    </select>
-                  </div>
+                  <RoleSelector isAdmin={data.isAdmin} />
                 </td>
                 <td style={{ padding: 0 }}>
                   <div className="custom-select">
@@ -115,6 +130,8 @@ const ManageTeamsBase = () => {
           </div>
         </div>
       </div>
+      <Toast open={successToastShouldOpen} onClose={()=> setSuccessToastShouldOpen(false) } isSuccess={true} message="Member Email Invitation Sent" />
+      <Toast open={failureToastShouldOpen} onClose={()=> setFailureToastShouldOpen(false) } isSuccess={false} message="Member Email Failed To Send" />
     </div>
   ))
 }

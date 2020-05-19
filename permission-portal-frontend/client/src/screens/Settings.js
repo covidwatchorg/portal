@@ -4,6 +4,7 @@ import Modal from '@material-ui/core/Modal'
 import { makeStyles } from '@material-ui/core/styles'
 import { withAuthorization } from '../components/Session'
 import * as ROLES from '../constants/roles'
+import Toast from '../components/Toast'
 import { compose } from 'recompose'
 import store from '../store'
 import { useObserver } from 'mobx-react'
@@ -79,13 +80,28 @@ const SettingsBase = () => {
   const secondaryButton = secondaryButtonStyles()
   const primaryButton = primaryButtonStyles()
   const changeImage = changeImageModalStyles()
-  const [open, setOpen] = React.useState(false)
+  const [open, setOpen] = useState(false)
+  const [showBanner, setShowBanner] = useState(false)
+  const [pwdResetSuccess, setPwdResetSuccess] = useState(false)
 
   const handleOpen = () => {
     setOpen(true)
   }
   const handleClose = () => {
     setOpen(false)
+  }
+
+  const resetPassword = async (e) => {
+    e.preventDefault()
+    try {
+      const success = await store.user.sendPasswordResetEmail()
+      setPwdResetSuccess(success)
+      setShowBanner(true)
+    } catch (err) {
+      console.warn(err)
+      setPwdResetSuccess(false)
+      setShowBanner(true)
+    }
   }
 
   const changeImageModal = (
@@ -231,6 +247,7 @@ const SettingsBase = () => {
                   color: '#2C58B1',
                   fontStyle: 'underline',
                 }}
+                onClick={e => resetPassword(e)}
               >
                 Change Password
               </a>
@@ -238,6 +255,13 @@ const SettingsBase = () => {
           </Grid>
         </Grid>
       </form>
+      <Toast
+        open={showBanner}
+        onClose={() => setShowBanner(false)}
+        isSuccess={pwdResetSuccess}
+        message={pwdResetSuccess ? "Password reset email has been sent" :
+          "Failed to send password email. Please try again"}
+      />
     </Fragment>
   )
 
