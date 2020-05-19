@@ -30,7 +30,6 @@ class Firebase {
     app.initializeApp(config)
     this.auth = app.auth()
     this.firestore = app.firestore()
-    this.db = app.database()
   }
 
   doCreateUser = async (newUser) => {
@@ -152,11 +151,5 @@ class Firebase {
         fallback()
       }
     })
-
-  // *** User API ***
-
-  user = (uid) => this.db.ref(`/users/${uid}`)
-
-  users = () => this.db.ref('/users')
 }
 export default new Firebase()

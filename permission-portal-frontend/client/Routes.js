@@ -28,7 +28,7 @@ const Routes = () => {
       console.error(err)
     }
   }
-  
+
   return (
     <BrowserRouter>
       <ThemeProvider theme={theme}>
@@ -59,11 +59,7 @@ const Routes = () => {
             </Fragment>
           </Route>
         </Switch>
-
-        <Switch>
-          <Route exact path="/" component={Footer} />
-          <Route exact component={() => <Footer branded={true} />} />
-        </Switch>
+        <Footer branded={true} />
       </ThemeProvider>
     </BrowserRouter>
   )
