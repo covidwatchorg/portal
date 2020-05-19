@@ -55,7 +55,7 @@ const NavBarBase = observer((props) => {
 
   return (
     <div className="navbarContainer">
-      <img src={ucsf_health} id="ucsfLogo" />
+      <img src={ucsf_health} id="ucsfLogo" alt="UCSF Health" />
       <div className="avatar_group avatar_text">
         <div className="name">{props.store.user.firstName + ' ' + props.store.user.lastName}</div>
         <div className="title">{props.store.user.isAdmin ? ROLES.ADMIN_LABEL : ROLES.NON_ADMIN_LABEL}</div>

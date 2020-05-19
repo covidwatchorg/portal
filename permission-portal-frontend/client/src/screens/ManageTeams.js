@@ -54,7 +54,7 @@ const ManageTeamsBase = observer((props) => {
     <div className="module-container">
       <h1>Manage Members</h1>
       <div className="add-member-button" onClick={() => setShowModal(true)}>
-        <img src={addMember} />
+        <img src={addMember} alt="" />
         <span className="add-button-text">Add Member</span>
       </div>
       <AddMemberModal hidden={!showModal} onClose={onCancel} onSuccess={onSuccess} onFailure={onFailure} />

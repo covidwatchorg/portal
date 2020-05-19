@@ -51,10 +51,10 @@ const SignInFormBase = observer(
       <Fragment>
         <div className="doctorContainer">
           <div className="doctor1">
-            <img src={doctor1} />
+            <img src={doctor1} alt="" />
           </div>
           <div className="doctor2">
-            <img src={doctor2} />
+            <img src={doctor2} alt="" />
           </div>
         </div>
       </Fragment>
@@ -63,8 +63,8 @@ const SignInFormBase = observer(
     loginForm = () => (
       <Fragment>
         <div className="topNav">
-          <img src={ucsf_health} id="ucsfLogo" />
-          <img src={powered_by_cw} id="poweredByCWLogo" />
+          <img src={ucsf_health} id="ucsfLogo" alt="UCSF Health" />
+          <img src={powered_by_cw} id="poweredByCWLogo" alt="Powered by Covid Watch" />
         </div>
         <div className="mainContainer">
           <div className="welcome">
