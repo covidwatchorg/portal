@@ -118,7 +118,7 @@ function sendNewUserEmail(email: string, password: string, firstName: string, la
     <p>You are receiving this email because you were added as a new member of Covid Watch by an Account Administrator.</p>
     <p><em>Your user name:</em> ${email}<br />  <em>Your password:</em> ${password}</p>
     <p>Please click the following link or copy-paste it in your browser to sign in to your new account.</p>
-    <p>${functions.config().client.url}</p>
+    <p><a href=${functions.config().client.url}>Sign In</a></p>
     <p>If you recieved this message in error, you can safely ignore it.</p>
     <p>You can reply to this message, or email support@covid-watch.org if you have any questions.</p>
     <p>Thank you,<br />Covid Watch Team</p>`,

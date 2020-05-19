@@ -108,22 +108,22 @@ const AddMemberModal = (props) => {
     <Modal hidden={props.hidden} onClose={props.onClose}>
       <h1>Add Member</h1>
       <div className="add-member-form">
-        <label for="fname">
+        <label>
           First Name<span>*</span>
         </label>
         <input type="text" name="firstName" value={state.firstName} onChange={handleChange} />
         {state.firstNameValidationFailed && <div className="validationResult">{state.firstNameValidationMessage}</div>}
-        <label for="lname">
+        <label>
           Last Name<span>*</span>
         </label>
         <input type="text" name="lastName" value={state.lastName} onChange={handleChange} />
         {state.lastNameValidationFailed && <div className="validationResult">{state.lastNameValidationMessage}</div>}
-        <label for="email">
+        <label>
           Email<span>*</span>
         </label>
         <input type="text" name="email" value={state.email} onChange={handleChange} />
         {state.emailValidationFailed && <div className="validationResult">{state.emailValidationMessage}</div>}
-        <label for="role">
+        <label>
           Role<span>*</span>
         </label>
         <RoleSelector isAdmin={false} onChange={handleChange} />

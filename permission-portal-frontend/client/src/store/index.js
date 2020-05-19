@@ -121,7 +121,7 @@ const Store = types
 
         saveState(self)
       } catch (e) {
-        console.log(e)
+        console.error(e)
       }
     })
 
