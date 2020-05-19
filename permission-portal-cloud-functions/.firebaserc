@@ -4,6 +4,7 @@
     "prod": "permission-portal",
     "test": "permission-portal-test",
     "dev": "permission-portal-dev",
-    "local": "permission-portal-prabhu"
+    "local": "permission-portal-prabhu",
+    "staging": "permission-portal-staging"
   }
 }
