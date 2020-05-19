@@ -64,6 +64,7 @@ const Organization = types
         saveState(store)
       } catch (err) {
         console.warn(err)
+        throw err
       }
     })
 
