@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import CircularProgress from "@material-ui/core/CircularProgress";
 
 // Encapsulates a button driven operation which takes time and may succeed or fail
 const PendingOperationButton = (props) => {
@@ -46,9 +47,10 @@ const PendingOperationButton = (props) => {
       </div>)
   } else {
     return (
-      <div className={className}>
-        Saving...
-      </div>)
+      <div id="progress-container">
+        <CircularProgress />
+      </div>
+    )
   }
 };
 
