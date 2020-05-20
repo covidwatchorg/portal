@@ -8,7 +8,7 @@ const Modal = (props) => {
   return (
     <div className={"modal-background" + (props.hidden === true ? ' hidden' : '')}>
       <div className={"add-member-modal-container"}>
-        <span className="close-btn" onClick={props.onClose}><img src={close} /></span>
+        <span className="close-btn" onClick={props.onClose}><img src={close} alt="Close" /></span>
           {props.children}
       </div>
     </div>
