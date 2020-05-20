@@ -1,9 +1,6 @@
 import React from 'react'
-import store from '../../store'
 import MenuItem from '@material-ui/core/MenuItem'
 import AuthUserContext from '../Session/context'
-import firebase from '../Firebase/firebase'
-import { withAuthorization } from '../Session'
 import { compose } from 'recompose'
 import { withFirebase } from '../Firebase'
 
@@ -16,7 +13,6 @@ class AuthAwareMenuItemBase extends React.Component {
       return false
     }
     const roles = (this.props.roleguard ? this.props.roleguard.split(',') : []).map((string) => string.trim())
-    //const condition = this.props.roleGuard ? store.user && store.user.role.some(r=> roles.includes(r)) : false;
     var result = this.props.roleguard ? roles.some((r) => authUser.roles.hasOwnProperty(r) && authUser.roles[r]) : false
     return result
   }

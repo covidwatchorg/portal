@@ -5,7 +5,7 @@ import white_check_success_icon from '../../assets/white_check_success_icon.svg'
 
 // Encapsulates a button driven operation which takes time and may succeed or fail
 const Toast = (props) => {
-  const [state, setState] = useState({
+  const [state] = useState({
     vertical: 'top',
     horizontal: 'center',
   })

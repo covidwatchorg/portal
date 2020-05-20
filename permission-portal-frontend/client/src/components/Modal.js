@@ -1,6 +1,4 @@
-import React, { useState } from 'react'
-import Snackbar from '@material-ui/core/Snackbar'
-import SnackbarContent from '@material-ui/core/SnackbarContent'
+import React from 'react'
 
 // Encapsulates a button driven operation which takes time and may succeed or fail
 const Modal = (props) => {

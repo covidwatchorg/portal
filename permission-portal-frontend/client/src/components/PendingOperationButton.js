@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 
 // Encapsulates a button driven operation which takes time and may succeed or fail
 const PendingOperationButton = (props) => {
@@ -8,7 +8,6 @@ const PendingOperationButton = (props) => {
   })
 
   const className = props.className || ''
-  const timeoutInSeconds = props.timeoutInSeconds || 3
   const operation = props.operation || (() => {})
 
   const startOperation = () => {
