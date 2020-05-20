@@ -103,6 +103,26 @@ describe('Test proper read/write permissions for regular users (non-admins)', ()
     });
   });
 
+  test('Authenticated user cannot escalate his previleges', (done) => {
+    return clientAuth.signInWithEmailAndPassword('user@soylentgreen.com', 'user@soylentgreen.com').then(() => {
+      return clientDb
+        .collection('users')
+        .doc('user@soylentgreen.com')
+        .update({
+          isAdmin: true,
+          isSuperAdmin: true
+        })
+        .then((msg) => {
+          console.log(msg)
+          done.fail(new Error("user should not be able to escalate their own privileges"));
+        })
+        .catch((err) => {
+          console.log(err);
+          expect(err.code).toEqual('permission-denied');
+        });
+    });
+  });
+
   test("Authenticated regular user can't read other user's data", () => {
     return clientAuth.signInWithEmailAndPassword('user@soylentgreen.com', 'user@soylentgreen.com').then(() => {
       return clientDb
