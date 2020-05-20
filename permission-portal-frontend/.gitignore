@@ -36,4 +36,4 @@ yarn-error.log*
 node_modules
 .DS_Store
 dist
-
+_git_commit.js

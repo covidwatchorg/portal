@@ -100,9 +100,6 @@ class SettingsBase extends React.Component {
     this.setState({open: false});  
   }
 
-  isOpen() {
-    return this.state.open;
-  }
 
   resetPassword = async (e) => {
     e.preventDefault()
