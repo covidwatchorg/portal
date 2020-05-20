@@ -3,7 +3,6 @@ import { firebase } from '../components/Firebase'
 
 const User = types
   .model({
-    uuid: types.string,
     email: types.maybeNull(types.string),
     isAdmin: types.boolean,
     isSuperAdmin: types.boolean,
