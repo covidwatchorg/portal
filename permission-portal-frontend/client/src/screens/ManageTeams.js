@@ -123,7 +123,7 @@ const ManageTeamsBase = () => {
         open={toastShouldOpen}
         onClose={() => setToastShouldOpen(false)}
         isSuccess={isSuccess}
-        message={isSuccess ? "Member Email Invitation set" : "Member Email Invitation failed to send"}
+        message={isSuccess ? 'Member Email Invitation set' : 'Member Email Invitation failed to send'}
       />
     </div>
   ))

@@ -1,7 +1,7 @@
 module.exports = {
   env: {
     browser: true,
-    es6: true
+    es6: true,
   },
   parser: 'babel-eslint',
   parserOptions: {
@@ -9,17 +9,17 @@ module.exports = {
     sourceType: 'module',
     ecmaFeatures: {
       jsx: true,
-      modules: true
-    }
+      modules: true,
+    },
   },
   plugins: ['prettier', 'react'],
   extends: ['prettier', 'eslint:recommended', 'plugin:react/recommended'],
   rules: {
-    'prettier/prettier': 'error'
+    'prettier/prettier': 'error',
   },
   settings: {
     react: {
-      version: 'detetect'
-    }
-  }
-};
+      version: 'detetect',
+    },
+  },
+}

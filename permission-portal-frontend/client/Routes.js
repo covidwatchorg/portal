@@ -28,7 +28,7 @@ const Routes = () => {
       console.error(err)
     }
   }
-  
+
   return (
     <BrowserRouter>
       <ThemeProvider theme={theme}>

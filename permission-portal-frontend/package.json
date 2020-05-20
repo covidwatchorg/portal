@@ -17,7 +17,8 @@
     "debug:local": "NODE_ENV=local npm run debug",
     "build_win": "set NODE_ENV=production & webpack --config webpack.prod.js",
     "dev_win": "set NODE_ENV=development & webpack-dev-server --open --hot --config webpack.dev.js",
-    "format": "prettier-eslint --write \"{,!(node_modules)/**/}*.{js,jsx}\""
+    "lint": "eslint .",
+    "format": "prettier --write \"**/*.+(js|jsx|json|yml|yaml|css|md|vue)\""
   },
   "repository": {
     "type": "git"
@@ -33,6 +34,7 @@
     "@material-ui/icons": "^4.9.1",
     "@material-ui/pickers": "^3.2.10",
     "@material-ui/styles": "^4.9.14",
+    "babel-eslint": "^10.1.0",
     "babel-polyfill": "^6.26.0",
     "cors": "^2.8.5",
     "cpy-cli": "^3.1.1",
