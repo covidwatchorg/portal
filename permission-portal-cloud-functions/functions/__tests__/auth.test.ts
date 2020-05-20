@@ -9,7 +9,12 @@ const testUserEmail =
   Math.random()
     .toString(36)
     .replace(/[^a-z]+/g, '')
-    .substr(0, 5) + '@soylentgreen.com';
+    .substr(0, 5) +
+  Math.random()
+    .toString(36)
+    .replace(/[^a-z]+/g, '')
+    .substr(0, 5) +
+  '@soylentgreen.com';
 
 afterEach(() => {
   return (
@@ -32,11 +37,7 @@ afterEach(() => {
 });
 
 test('createUser cannot be called without being authenticated', () => {
-  return createUser({
-    email: testUserEmail,
-    password: testUserEmail,
-    organizationID: soylentGreenID,
-  })
+  return createUser({})
     .then((result) => {
       throw new Error("This shouldn't happen!");
     })
@@ -50,11 +51,7 @@ test('createUser cannot be called by non-admin', () => {
   return clientAuth
     .signInWithEmailAndPassword('user@soylentgreen.com', 'user@soylentgreen.com')
     .then(() => {
-      return createUser({
-        email: testUserEmail,
-        password: testUserEmail,
-        organizationID: soylentGreenID,
-      })
+      return createUser({})
         .then((result) => {
           throw new Error("This shouldn't happen!");
         })
@@ -76,7 +73,9 @@ test('Email address can only be used once', () => {
       return createUser({
         email: 'user@soylentgreen.com',
         password: 'user@soylentgreen.com',
-        organizationID: soylentGreenID,
+        firstName: 'Heather',
+        lastName: 'Sykes',
+        isAdmin: false,
       })
         .then((result) => {
           throw new Error(
@@ -100,7 +99,9 @@ test('createUser works for admins', () => {
       return createUser({
         email: testUserEmail,
         password: testUserEmail,
-        organizationID: soylentGreenID,
+        firstName: 'test',
+        lastName: 'user',
+        isAdmin: false,
       })
         .then((result) => result.data)
         .then((userRecord) => {
@@ -163,35 +164,14 @@ test('createUser fails if invalid request body', () => {
     return createUser({
       email: testUserEmail,
       password: testUserEmail,
-      organization: 'This field should be organizationID',
+      // Missing required fields
     })
       .then((result) => {
         throw new Error('createUser returned a 200 despite improperly formatted request');
       })
       .catch((err) => {
         expect(err.code).toEqual('invalid-argument');
-        expect(err.message).toEqual(
-          'user object must have email <string>, password <string>, and organizationID <string> specified'
-        );
-      });
-  });
-});
-
-test('createUser fails if non-existent organizationID', () => {
-  return clientAuth.signInWithEmailAndPassword('admin@soylentgreen.com', 'admin@soylentgreen.com').then(() => {
-    return createUser({
-      email: testUserEmail,
-      password: testUserEmail,
-      organizationID: "This id doesn't exist",
-    })
-      .then((result) => {
-        throw new Error('createUser returned a 200 despite improperly formatted request');
-      })
-      .catch((err) => {
-        expect(err.code).toEqual('invalid-argument');
-        expect(err.message).toEqual(
-          "attempted to sign up user with an organization id that DNE: This id doesn't exist"
-        );
+        expect(err.message).toEqual('Request body is invalidly formatted.');
       });
   });
 });
@@ -205,7 +185,7 @@ test('Attempting to sign up a user through clientAuth.createUserWithEmailAndPass
         testUid = userCredential.user.uid;
       }
       // Give onCreate some time to delete the user
-      return delay(DELAY)
+      return delay(DELAY * 2)
         .then(() => {
           return adminDb
             .doc('users/' + testUserEmail)
@@ -235,7 +215,7 @@ test("Manually added, improperly formatted user in users table can't be signed u
       .set({
         isAdmin: false,
         isSuperAdmin: false,
-        organization: 'This field should be organizationID',
+        // This is missing fields
       })
       .then(() => {
         // try to create corresponding user in Firebase auth
@@ -285,6 +265,9 @@ test("Manually added user in users table with non-existent organizationID can't 
         isAdmin: false,
         isSuperAdmin: false,
         organizationID: "This id doesn't exist",
+        disabled: false,
+        firstName: 'test',
+        lastName: 'user',
       })
       .then(() => {
         // try to create corresponding user in Firebase auth
@@ -337,6 +320,8 @@ test("Manually added user in users table with empty string organizationID can't 
         isSuperAdmin: false,
         organizationID: '',
         disabled: false,
+        firstName: 'test',
+        lastName: 'user',
       })
       .then(() => {
         // try to create corresponding user in Firebase auth

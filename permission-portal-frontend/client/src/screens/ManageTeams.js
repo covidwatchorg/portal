@@ -9,45 +9,45 @@ import arrowLeft from '../../assets/arrow-left.svg'
 import arrowRight from '../../assets/arrow-right.svg'
 import '../../Styles/screens/manage_teams.scss'
 import AddMemberModal from './AddMemberModal'
-import Toast from '../components/Toast';
-import RoleSelector from '../components/RoleSelector';
+import Toast from '../components/Toast'
+import RoleSelector from '../components/RoleSelector'
 
 const ManageTeamsBase = () => {
-  const [successToastShouldOpen, setSuccessToastShouldOpen] = useState(false);
-  const [failureToastShouldOpen, setFailureToastShouldOpen] = useState(false);
+  const [toastShouldOpen, setToastShouldOpen] = useState(false)
+  const [isSuccess, setIsSuccess] = useState(false)
 
   const [currentPage, setCurrentPage] = useState(0)
-  const pages = store.organization && store.organization.members ?
-    [...Array(Math.ceil(store.organization.members.length / 15)).keys()] : []
-  const [showModal, setShowModal] = useState(false);
+  const pages =
+    store.organization && store.organization.members
+      ? [...Array(Math.ceil(store.organization.members.length / 15)).keys()]
+      : []
+  const [showModal, setShowModal] = useState(false)
 
   const getPageData = () => {
     const pageStart = 15 * currentPage
     return store.organization.members.slice(pageStart, pageStart + 15)
-  };
+  }
 
   useEffect(() => {
     console.log('Store', store)
   }, [])
 
   const onCancel = () => {
-    setSuccessToastShouldOpen(false);
-    setFailureToastShouldOpen(false);
-    setShowModal(false);
-  };
+    setShowModal(false)
+  }
 
   const onSuccess = () => {
-    setSuccessToastShouldOpen(true);
-    setFailureToastShouldOpen(false);
-    setShowModal(false);
-  };
+    setIsSuccess(true)
+    setToastShouldOpen(true)
+    setShowModal(false)
+  }
 
   const onFailure = (e) => {
-    console.log(e);
-    setSuccessToastShouldOpen(false);
-    setFailureToastShouldOpen(true);
-    setShowModal(false);
-  };
+    console.error(e)
+    setIsSuccess(false)
+    setToastShouldOpen(true)
+    setShowModal(false)
+  }
 
   return useObserver(() => (
     <div className="module-container">
@@ -67,8 +67,9 @@ const ManageTeamsBase = () => {
           </tr>
         </thead>
         <tbody>
-          {
-            store.organization && store.organization.members && getPageData().map((data, index) => (
+          {store.organization &&
+            store.organization.members &&
+            getPageData().map((data, index) => (
               <tr key={index}>
                 <td>{data.lastName + ', ' + data.firstName}</td>
                 <td style={{ padding: 0 }}>
@@ -80,58 +81,50 @@ const ManageTeamsBase = () => {
                       className={!data.disabled ? 'active' : 'inactive'}
                       defaultValue={!data.disabled ? 'active' : 'deactivated'}
                     >
-                      <option value='active'>
-                        Active
-                    </option>
-                      <option value='deactivated'>
-                        Deactivated
-                    </option>
+                      <option value="active">Active</option>
+                      <option value="deactivated">Deactivated</option>
                     </select>
                   </div>
                 </td>
                 <td>
                   <div className="settings-container">
-                    <a onClick={() => { }}>Delete Account</a>
-                    <a onClick={() => { }}>Reset Password</a>
+                    <a onClick={() => {}}>Delete Account</a>
+                    <a onClick={() => {}}>Reset Password</a>
                   </div>
                 </td>
               </tr>
-            ))
-          }
+            ))}
         </tbody>
       </table>
       <div className="table-bottom-container">
         <div className="save-button">Save Changes</div>
         <div className="pages-container">
-          <div
-            className="arrow"
-            onClick={currentPage === 0 ? () => { } :
-              () => setCurrentPage(currentPage - 1)}
-          >
+          <div className="arrow" onClick={currentPage === 0 ? () => {} : () => setCurrentPage(currentPage - 1)}>
             <img src={arrowLeft} />
           </div>
-          {
-            pages.map(page => (
-              <a
-                key={page}
-                className={`${page === currentPage ? 'current-' : ''}page`}
-                onClick={page === currentPage ? () => { } : () => setCurrentPage(page)}
-              >
-                {page + 1}
-              </a>
-            ))
-          }
+          {pages.map((page) => (
+            <a
+              key={page}
+              className={`${page === currentPage ? 'current-' : ''}page`}
+              onClick={page === currentPage ? () => {} : () => setCurrentPage(page)}
+            >
+              {page + 1}
+            </a>
+          ))}
           <div
             className="arrow"
-            onClick={currentPage === pages[pages.length - 1] ? () => { } :
-              () => setCurrentPage(currentPage + 1)}
+            onClick={currentPage === pages[pages.length - 1] ? () => {} : () => setCurrentPage(currentPage + 1)}
           >
             <img src={arrowRight} />
           </div>
         </div>
       </div>
-      <Toast open={successToastShouldOpen} onClose={()=> setSuccessToastShouldOpen(false) } isSuccess={true} message="Member Email Invitation Sent" />
-      <Toast open={failureToastShouldOpen} onClose={()=> setFailureToastShouldOpen(false) } isSuccess={false} message="Member Email Failed To Send" />
+      <Toast
+        open={toastShouldOpen}
+        onClose={() => setToastShouldOpen(false)}
+        isSuccess={isSuccess}
+        message={isSuccess ? "Member Email Invitation set" : "Member Email Invitation failed to send"}
+      />
     </div>
   ))
 }

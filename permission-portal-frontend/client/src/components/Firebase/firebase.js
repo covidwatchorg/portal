@@ -1,12 +1,13 @@
 import app from 'firebase/app'
 import 'firebase/auth'
+import 'firebase/firestore'
+import 'firebase/database'
+import 'firebase/functions'
 import * as firebaseConfigLocal from '../../config/firebase.config.local'
 import * as firebaseConfigDev from '../../config/firebase.config.dev'
 import * as firebaseConfigTest from '../../config/firebase.config.test'
 import * as firebaseConfigProd from '../../config/firebase.config.prod'
 import * as firebaseConfigStaging from '../../config/firebase.config.staging'
-import 'firebase/firestore'
-import 'firebase/database'
 
 var firebaseConfigMap = {
   development: firebaseConfigDev,
@@ -31,7 +32,17 @@ class Firebase {
     this.firestore = app.firestore()
     this.db = app.database()
   }
-  doCreateUserWithEmailAndPassword = (email, password) => this.auth.createUserWithEmailAndPassword(email, password)
+
+  doCreateUser = async (newUser) => {
+    const createUser = app.functions().httpsCallable('createUser')
+    try {
+      const result = await createUser(newUser)
+      console.log(`Created new user: ${JSON.stringify(result.data)}`)
+      return result.data
+    } catch (err) {
+      throw err
+    }
+  }
 
   doSignInWithEmailAndPassword = (email, password) => this.auth.signInWithEmailAndPassword(email, password)
 
