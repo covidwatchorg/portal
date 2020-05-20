@@ -94,6 +94,8 @@ const Store = types
             const members = yield firebase.getMembersOfOrg(oldState.user.organizationID)
             self.organization.members = members
           }
+        } else {
+          console.log('No cached user info')
         }
       } catch (err) {
         console.warn('unexpected error ', err)
