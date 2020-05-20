@@ -248,46 +248,29 @@ export const onCreate = functions.auth.user().onCreate((firebaseAuthUser) => {
           doesOrganizationExist(covidWatchUserData.organizationID)
             .then((doesExist) => {
               if (doesExist) {
-                // User has been properly pre-registered in `users` collection, update the `users` entry with
-                // their automatically generated UID and set custom claims in their token
-                covidWatchUser.ref
-                  .update({
-                    uuid: firebaseAuthUser.uid,
+                // User has been properly pre-registered in `users` collection, set custom claims in their token
+                auth
+                  .setCustomUserClaims(firebaseAuthUser.uid, {
+                    isSuperAdmin: covidWatchUserData.isSuperAdmin,
+                    isAdmin: covidWatchUserData.isAdmin,
+                    organizationID: covidWatchUserData.organizationID,
                   })
                   .then(() => {
-                    console.log('user ' + covidWatchUser.id + 'uuid updated to ' + firebaseAuthUser.uid);
+                    console.log(
+                      'user ' + covidWatchUser.id + 'isSuperAdmin claim set to ' + covidWatchUserData.isSuperAdmin
+                    );
+                    console.log('user ' + covidWatchUser.id + 'isAdmin claim set to ' + covidWatchUserData.isAdmin);
+                    console.log(
+                      'user ' + covidWatchUser.id + 'organizationID claim set to ' + covidWatchUserData.organizationID
+                    );
                     auth
-                      .setCustomUserClaims(firebaseAuthUser.uid, {
-                        // Forced unwrapping is warranted, because data integrity is checked above
-                        isSuperAdmin: covidWatchUserData.isSuperAdmin,
-                        isAdmin: covidWatchUserData.isAdmin,
-                        organizationID: covidWatchUserData.organizationID,
+                      .updateUser(firebaseAuthUser.uid, {
+                        disabled: covidWatchUserData.disabled,
                       })
                       .then(() => {
                         console.log(
-                          'user ' + covidWatchUser.id + 'isSuperAdmin claim set to ' + covidWatchUserData.isSuperAdmin
+                          `User ${covidWatchUserData.id}'s disabled flag in Auth updated to ${covidWatchUserData}`
                         );
-                        console.log('user ' + covidWatchUser.id + 'isAdmin claim set to ' + covidWatchUserData.isAdmin);
-                        console.log(
-                          'user ' +
-                            covidWatchUser.id +
-                            'organizationID claim set to ' +
-                            covidWatchUserData.organizationID
-                        );
-                        if (typeof covidWatchUserData.disabled === 'boolean') {
-                          auth
-                            .updateUser(firebaseAuthUser.uid, {
-                              disabled: covidWatchUserData.disabled,
-                            })
-                            .then(() => {
-                              console.log(
-                                `User ${covidWatchUserData.id}'s disabled flag in Auth updated to ${covidWatchUserData}`
-                              );
-                            })
-                            .catch((err) => {
-                              console.error(err);
-                            });
-                        }
                       })
                       .catch((err) => {
                         console.error(err);
@@ -297,6 +280,9 @@ export const onCreate = functions.auth.user().onCreate((firebaseAuthUser) => {
                     console.error(err);
                   });
               } else {
+                console.error(
+                  `Attempted to create user with organizationID set to ${covidWatchUserData.organizationID}, but that id doesn't exist.`
+                );
                 deleteUser(firebaseAuthUser.uid);
               }
             })

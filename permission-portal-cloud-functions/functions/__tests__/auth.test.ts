@@ -1,4 +1,4 @@
-import { clientDb, adminDb, clientAuth, adminAuth, createUser, delay, DELAY, soylentGreenID } from './config';
+import { adminDb, clientAuth, adminAuth, createUser, delay, DELAY, soylentGreenID } from './config';
 
 jest.setTimeout(60000);
 
@@ -125,23 +125,6 @@ test('createUser works for admins', () => {
                     expect(idTokenResult.claims.isSuperAdmin).toEqual(false);
                     expect(idTokenResult.claims.isAdmin).toEqual(false);
                     expect(idTokenResult.claims.organizationID).toEqual(soylentGreenID);
-                    // Check that we have a corresponding user in our users collection whose uuid field has been filled out appropriately
-                    return clientDb
-                      .collection('users')
-                      .doc(testUserEmail)
-                      .get()
-                      .then((userSnapshot) => userSnapshot.data())
-                      .then((user) => {
-                        if (user !== undefined) {
-                          // Make sure the users collection uuid was updated with firebase auth uuid
-                          expect(user.uuid).toEqual(currentUser.uid);
-                        } else {
-                          throw new Error("Couldn't find " + testUserEmail + ' in our users collection');
-                        }
-                      })
-                      .catch((err) => {
-                        throw err;
-                      });
                   });
                 });
               })

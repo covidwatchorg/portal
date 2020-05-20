@@ -10,8 +10,8 @@ import { useObserver } from 'mobx-react'
 import 'mobx-react/batchingForReactDom'
 
 const AccountBrandingBase = () => {
-  const [successToastShouldOpen, setSuccessToastShouldOpen] = useState(false)
-  const [failureToastShouldOpen, setFailureToastShouldOpen] = useState(false)
+  const [isSuccess, setIsSuccess] = useState(false)
+  const [toastShouldOpen, setToastShouldOpen] = useState(false)
 
   const getDiagnosisText = () => {
     if (diagnosisText !== 'Loading text...') {
@@ -42,12 +42,12 @@ const AccountBrandingBase = () => {
     try {
       await store.organization.setOrganizationalBranding(diagnosisText, exposureText)
       console.log('Branding data saved successfully')
-      setSuccessToastShouldOpen(true)
-      setFailureToastShouldOpen(false)
+      setIsSuccess(true)
+      setToastShouldOpen(true)
     } catch (err) {
       console.log(`Branding data failed to save: ${err}`)
-      setSuccessToastShouldOpen(false)
-      setFailureToastShouldOpen(true)
+      setIsSuccess(false)
+      setToastShouldOpen(true)
     }
   }
 
@@ -95,16 +95,10 @@ const AccountBrandingBase = () => {
         </PendingOperationButton>
       </div>
       <Toast
-        open={successToastShouldOpen}
-        onClose={() => setSuccessToastShouldOpen(false)}
-        isSuccess={true}
-        message="Branding saved successfully"
-      />
-      <Toast
-        open={failureToastShouldOpen}
-        onClose={() => setFailureToastShouldOpen(false)}
-        isSuccess={false}
-        message="Failed to save branding"
+        open={toastShouldOpen}
+        onClose={() => setToastShouldOpen(false)}
+        isSuccess={isSuccess}
+        message={isSuccess ? "Branding saved successfully" : "Failed to save branding"}
       />
     </div>
   ))

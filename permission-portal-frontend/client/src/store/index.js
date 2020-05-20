@@ -3,7 +3,6 @@ import { firebase } from '../components/Firebase'
 
 const User = types
   .model({
-    uuid: types.string,
     email: types.maybeNull(types.string),
     isAdmin: types.boolean,
     isSuperAdmin: types.boolean,
@@ -94,6 +93,8 @@ const Store = types
             const members = yield firebase.getMembersOfOrg(oldState.user.organizationID)
             self.organization.members = members
           }
+        } else {
+          console.log('No cached user info')
         }
       } catch (err) {
         console.warn('unexpected error ', err)

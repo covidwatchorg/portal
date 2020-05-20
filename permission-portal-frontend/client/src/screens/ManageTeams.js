@@ -13,8 +13,8 @@ import Toast from '../components/Toast'
 import RoleSelector from '../components/RoleSelector'
 
 const ManageTeamsBase = () => {
-  const [successToastShouldOpen, setSuccessToastShouldOpen] = useState(false)
-  const [failureToastShouldOpen, setFailureToastShouldOpen] = useState(false)
+  const [toastShouldOpen, setToastShouldOpen] = useState(false)
+  const [isSuccess, setIsSuccess] = useState(false)
 
   const [currentPage, setCurrentPage] = useState(0)
   const pages =
@@ -33,21 +33,19 @@ const ManageTeamsBase = () => {
   }, [])
 
   const onCancel = () => {
-    setSuccessToastShouldOpen(false)
-    setFailureToastShouldOpen(false)
     setShowModal(false)
   }
 
   const onSuccess = () => {
-    setSuccessToastShouldOpen(true)
-    setFailureToastShouldOpen(false)
+    setIsSuccess(true)
+    setToastShouldOpen(true)
     setShowModal(false)
   }
 
   const onFailure = (e) => {
     console.error(e)
-    setSuccessToastShouldOpen(false)
-    setFailureToastShouldOpen(true)
+    setIsSuccess(false)
+    setToastShouldOpen(true)
     setShowModal(false)
   }
 
@@ -122,16 +120,10 @@ const ManageTeamsBase = () => {
         </div>
       </div>
       <Toast
-        open={successToastShouldOpen}
-        onClose={() => setSuccessToastShouldOpen(false)}
-        isSuccess={true}
-        message="Member Email Invitation Sent"
-      />
-      <Toast
-        open={failureToastShouldOpen}
-        onClose={() => setFailureToastShouldOpen(false)}
-        isSuccess={false}
-        message="Member Email Failed To Send"
+        open={toastShouldOpen}
+        onClose={() => setToastShouldOpen(false)}
+        isSuccess={isSuccess}
+        message={isSuccess ? "Member Email Invitation set" : "Member Email Invitation failed to send"}
       />
     </div>
   ))
