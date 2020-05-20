@@ -7,7 +7,7 @@ import * as ROLES from '../constants/roles'
 import Toast from '../components/Toast'
 import { compose } from 'recompose'
 import store from '../store'
-import { useObserver } from 'mobx-react'
+import {Observer} from 'mobx-react' 
 
 const useStyles = makeStyles({
   root: {
@@ -74,54 +74,67 @@ const changeImageModalStyles = makeStyles({
   },
 })
 
-const SettingsBase = () => {
-  const classes = useStyles()
-  const input = inputStyles()
-  const secondaryButton = secondaryButtonStyles()
-  const primaryButton = primaryButtonStyles()
-  const changeImage = changeImageModalStyles()
-  const [open, setOpen] = useState(false)
-  const [showBanner, setShowBanner] = useState(false)
-  const [pwdResetSuccess, setPwdResetSuccess] = useState(false)
+const INITIAL_STATE = {
+  open: false,
+  showBanner: false,
+  pwdResetSuccess: false
+};
 
-  const handleOpen = () => {
-    setOpen(true)
+ 
+class SettingsBase extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { ...INITIAL_STATE };
+    this.classes  = () => useStyles()
+    this.input  = () =>  inputStyles()
   }
-  const handleClose = () => {
-    setOpen(false)
+  
+  changeImage = () =>  changeImageModalStyles()
+  secondaryButton = () =>  secondaryButtonStyles()
+  primaryButton = () => primaryButtonStyles()
+
+  handleOpen = () => {
+    this.setState({open: true});
+  }
+  handleClose = () => {
+    this.setState({open: false});  
   }
 
-  const resetPassword = async (e) => {
+  isOpen() {
+    return this.state.open;
+  }
+
+  resetPassword = async (e) => {
     e.preventDefault()
     try {
       const success = await store.user.sendPasswordResetEmail()
-      setPwdResetSuccess(success)
-      setShowBanner(true)
+      this.setState({showBanner: true, pwdResetSuccess: success});
     } catch (err) {
       console.warn(err)
-      setPwdResetSuccess(false)
-      setShowBanner(true)
+      this.setState({showBanner: true, pwdResetSuccess: false});
+
     }
   }
 
-  const changeImageModal = (
-    <div className={changeImage.root}>
+  changeImageModal = (
+    <div className={this.changeImage.root}>
       <input type="file" accepts="image/jpeg, image/png" />
       <div style={{ alignContent: 'right', marginTop: '35px' }}>
-        <button onClick={handleClose} className={secondaryButton.root} style={{ width: '100px', border: 'none' }}>
+        <button onClick={this.handleClose} className={this.secondaryButton.root} style={{ width: '100px', border: 'none' }}>
           Discard
         </button>
-        <button onClick={handleClose} className={primaryButton.root} style={{ width: '70px', borderStyle: 'none' }}>
+        <button onClick={this.handleClose} className={this.primaryButton.root} style={{ width: '70px', borderStyle: 'none' }}>
           Save
         </button>
       </div>
     </div>
   )
 
-  const settingsForm = () => (
+  settingsForm = () => (
     <Fragment>
+      <h1>My Settings</h1>
       <form>
-        <Grid container className={classes.root} spacing={2} direction="row" justify="center">
+        <Grid container className={this.classes.root} spacing={2} direction="row" justify="center">
           <Grid item xs={4}>
             <Grid container spacing={2} direction="column">
               Profile Photo
@@ -144,11 +157,11 @@ const SettingsBase = () => {
                 Accepted file types: jpg or png
               </div>
               <div style={{ marginBottom: '15px', fontSize: '12px', color: '#585858' }}>Maximum file size: __ MB</div>
-              <button onClick={handleOpen} type="button" className={secondaryButton.root}>
+              <button onClick={this.handleOpen} type="button" className={this.secondaryButton.root}>
                 Change Image
               </button>
-              <Modal open={open} onClose={handleClose}>
-                {changeImageModal}
+              <Modal open={this.state.open} onClose={this.handleClose}>
+                {this.changeImageModal}
               </Modal>
             </Grid>
           </Grid>
@@ -160,7 +173,7 @@ const SettingsBase = () => {
                 type="text"
                 id="prefix"
                 name="prefix"
-                className={input.root}
+                className={this.input.root}
                 defaultValue={store.user ? store.user.prefix : ''}>
               </input>
               <label htmlFor="firstName">
@@ -171,7 +184,7 @@ const SettingsBase = () => {
                 id="firstName"
                 name="firstName"
                 required
-                className={input.root}
+                className={this.input.root}
                 defaultValue={store.user ? store.user.firstName : ''}>
               </input>
               <label htmlFor="email">
@@ -182,10 +195,10 @@ const SettingsBase = () => {
                 id="email"
                 name="email"
                 required
-                className={input.root}
+                className={this.input.root}
                 defaultValue={store.user ? store.user.email : ''}>
               </input>
-              <button type="submit" className={primaryButton.root}>
+              <button type="submit" className={this.primaryButton.root}>
                 Save Changes
               </button>
             </Grid>
@@ -204,7 +217,7 @@ const SettingsBase = () => {
                   name="role"
                   disabled={!store.user.isAdmin}
                   required
-                  className={input.root}
+                  className={this.input.root}
                   style={!store.user.isAdmin ? { backgroundColor: '#E0E0E0' } : {}}
                 >
                   <option value={ROLES.ADMIN_LABEL} defaultValue={store.user.isAdmin}>
@@ -223,7 +236,7 @@ const SettingsBase = () => {
                 id="lastName"
                 name="lastName"
                 required
-                className={input.root}
+                className={this.input.root}
                 defaultValue={store.user ? store.user.lastName : ''}>
               </input>
               <label htmlFor="password">
@@ -231,7 +244,7 @@ const SettingsBase = () => {
               </label>
               <input
                 required
-                className={input.root}
+                className={this.input.root}
                 id="password"
                 name="password"
                 type="password"
@@ -247,7 +260,7 @@ const SettingsBase = () => {
                   color: '#2C58B1',
                   fontStyle: 'underline',
                 }}
-                onClick={e => resetPassword(e)}
+                onClick={e => this.resetPassword(e)}
               >
                 Change Password
               </a>
@@ -255,22 +268,23 @@ const SettingsBase = () => {
           </Grid>
         </Grid>
       </form>
-      <Toast
-        open={showBanner}
-        onClose={() => setShowBanner(false)}
-        isSuccess={pwdResetSuccess}
-        message={pwdResetSuccess ? "Password reset email has been sent" :
+      <Toast      
+
+        open={this.showBanner}
+        onClose={() => this.setState({showBanner: true})}
+        isSuccess={this.pwdResetSuccess}
+        message={this.pwdResetSuccess ? "Password reset email has been sent" :
           "Failed to send password email. Please try again"}
       />
     </Fragment>
   )
-
-  return useObserver(() => (
-    <React.Fragment>
-      <h1>My Settings</h1>
-      {settingsForm()}
-    </React.Fragment>
-  ))
+  render()  {
+      return (<Observer>{() => 
+        <React.Fragment>
+          {this.settingsForm()}
+        </React.Fragment>
+    }</Observer>);
+  }
 }
 
 const condition = (authUser) => {

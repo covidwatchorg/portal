@@ -23,7 +23,6 @@ class SignInFormBase extends React.Component {
     super(props);
     this.state = { ...INITIAL_STATE };
     this.onChange = this.onChange.bind(this);
-    this.onSubmit = this.onSubmit.bind(this);
   }
 
   clickSubmit = async (event) => {
@@ -40,27 +39,6 @@ class SignInFormBase extends React.Component {
       console.log(err)
     }
   }
-
-
-  onSubmit = event => {
-    event.preventDefault();
-    const { email, password } = this.state;
-    this.props.firebase
-      .doSignInWithEmailAndPassword(email, password)
-      .then((user) => {
-        this.setState({ ...INITIAL_STATE });
-        this.props.firebase.generateUserDocument(user.user).then( userDoc => { 
-          if (userDoc.isAdmin === true) {
-            this.props.history.push(ROUTES.MANAGE_MEMBERS);
-          }
-        })
-      })
-      .catch(error => {
-        this.setState({ error });
-      });
-
-    event.preventDefault();
-  };
 
   onChange = name => event => {
     this.setState({ [name]: event.target.value });
