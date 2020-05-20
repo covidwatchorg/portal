@@ -1,7 +1,5 @@
-import React, { useState, useRef } from 'react';
+import React, { useRef } from 'react';
 import close from '../../assets/close.svg'
-import Snackbar from "@material-ui/core/Snackbar";
-import SnackbarContent from '@material-ui/core/SnackbarContent';
 
 // Encapsulates a button driven operation which takes time and may succeed or fail
 const Modal = (props) => {
