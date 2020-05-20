@@ -1,4 +1,4 @@
-import { createMuiTheme } from '@material-ui/core/styles';
+import { createMuiTheme } from '@material-ui/core/styles'
 
 export default createMuiTheme({
   typography: {
@@ -17,7 +17,7 @@ export default createMuiTheme({
       padding: '10px',
     },
   },
-});
+})
 
 //  ?  margin-top: 32px;
 //   /* Gradient White */

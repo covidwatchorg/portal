@@ -161,8 +161,8 @@ const SettingsBase = () => {
                 id="prefix"
                 name="prefix"
                 className={input.root}
-                defaultValue={store.user ? store.user.prefix : ''}>
-              </input>
+                defaultValue={store.user ? store.user.prefix : ''}
+              ></input>
               <label htmlFor="firstName">
                 First Name <span style={{ color: 'red' }}>*</span>
               </label>
@@ -172,8 +172,8 @@ const SettingsBase = () => {
                 name="firstName"
                 required
                 className={input.root}
-                defaultValue={store.user ? store.user.firstName : ''}>
-              </input>
+                defaultValue={store.user ? store.user.firstName : ''}
+              ></input>
               <label htmlFor="email">
                 Email Address <span style={{ color: 'red' }}>*</span>
               </label>
@@ -183,8 +183,8 @@ const SettingsBase = () => {
                 name="email"
                 required
                 className={input.root}
-                defaultValue={store.user ? store.user.email : ''}>
-              </input>
+                defaultValue={store.user ? store.user.email : ''}
+              ></input>
               <button type="submit" className={primaryButton.root}>
                 Save Changes
               </button>
@@ -196,8 +196,7 @@ const SettingsBase = () => {
               <label htmlFor="role">
                 Role <span style={{ color: 'red' }}>*</span>
               </label>
-              {
-                store.user &&
+              {store.user && (
                 <select
                   type="text"
                   id="role"
@@ -214,7 +213,7 @@ const SettingsBase = () => {
                     {ROLES.NON_ADMIN_LABEL}
                   </option>
                 </select>
-              }
+              )}
               <label htmlFor="lastName">
                 Last Name <span style={{ color: 'red' }}>*</span>
               </label>
@@ -224,8 +223,8 @@ const SettingsBase = () => {
                 name="lastName"
                 required
                 className={input.root}
-                defaultValue={store.user ? store.user.lastName : ''}>
-              </input>
+                defaultValue={store.user ? store.user.lastName : ''}
+              ></input>
               <label htmlFor="password">
                 Password <span style={{ color: 'red' }}>*</span>
               </label>
@@ -247,7 +246,7 @@ const SettingsBase = () => {
                   color: '#2C58B1',
                   fontStyle: 'underline',
                 }}
-                onClick={e => resetPassword(e)}
+                onClick={(e) => resetPassword(e)}
               >
                 Change Password
               </a>
@@ -259,8 +258,9 @@ const SettingsBase = () => {
         open={showBanner}
         onClose={() => setShowBanner(false)}
         isSuccess={pwdResetSuccess}
-        message={pwdResetSuccess ? "Password reset email has been sent" :
-          "Failed to send password email. Please try again"}
+        message={
+          pwdResetSuccess ? 'Password reset email has been sent' : 'Failed to send password email. Please try again'
+        }
       />
     </Fragment>
   )

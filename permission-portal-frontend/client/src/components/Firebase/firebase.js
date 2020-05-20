@@ -52,12 +52,8 @@ class Firebase {
 
   doPasswordUpdate = (password) => this.auth.currentUser.updatePassword(password)
 
-  generateUserDocument = async (user, additionalData) => {
+  generateUserDocument = async (user) => {
     if (!user) return
-
-    const userRef = this.firestore.doc(`users/${user.email}`)
-    const snapshot = await userRef.get()
-
     return this.getUserDocument(user.email)
   }
 
@@ -118,7 +114,7 @@ class Firebase {
     this.auth.onAuthStateChanged((authUser) => {
       if (authUser) {
         authUser.getIdToken(/* forceRefresh */ true).then(
-          (token) => {
+          () => {
             // if here, this user is still authorised.
             this.getUserDocument(authUser.email).then((userDoc) => {
               if (!userDoc.roles) {
