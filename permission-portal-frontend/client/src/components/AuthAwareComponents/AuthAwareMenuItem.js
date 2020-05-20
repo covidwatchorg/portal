@@ -1,9 +1,6 @@
 import React from 'react'
-import store from '../../store'
 import MenuItem from '@material-ui/core/MenuItem'
 import AuthUserContext from '../Session/context'
-import firebase from '../Firebase/firebase'
-import { withAuthorization } from '../Session'
 import { compose } from 'recompose'
 import { withFirebase } from '../Firebase'
 
