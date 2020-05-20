@@ -11,7 +11,8 @@ service cloud.firestore {
     }
 
     function isAdmin() {
-      return request.auth.token.isAdmin == true;
+      //return request.auth.token.isAdmin == true;
+      return get(/databases/$(database)/documents/users/$(request.auth.uid)).data.isAdmin;
     }
 
     function isInOrganization(organizationID) {
@@ -23,8 +24,22 @@ service cloud.firestore {
       return isSelf || (isAdmin() && isInOrganization(organizationID));
     }
 
+    //match /users/{email} {
+    //	allow read, write: if isSignedIn() && isSelfOrAdminInOrg(email, resource.data.organizationID);
+    //}
+    
+    function isSelf(){
+      return isSignedIn() && (request.auth.token.email == resource.id)
+    } 
+    
+    function isNotEscalatingPrevileges() {
+      return ( resource.data.isAdmin == request.resource.data.isAdmin && resource.data.isSuperAdmin == request.resource.data.isSuperAdmin )
+    }
+
     match /users/{email} {
-    	allow read, write: if isSignedIn() && isSelfOrAdminInOrg(email, resource.data.organizationID);
+    	allow read, write: if isSignedIn() && isAdmin() && isInOrganization(resource.data.organizationID);
+      allow read : if isSelf();
+      allow update : if isSelf() && isNotEscalatingPrevileges();
     }
 
     match /organizations/{organizationID} {
