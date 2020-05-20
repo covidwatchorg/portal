@@ -87,6 +87,8 @@ class SettingsBase extends React.Component {
     this.state = { ...INITIAL_STATE };
     this.classes  = () => useStyles()
     this.input  = () =>  inputStyles()
+    this.saveSettings = this.saveSettings.bind(this);
+
   }
   
   changeImage = () =>  changeImageModalStyles()
@@ -98,6 +100,20 @@ class SettingsBase extends React.Component {
   }
   handleClose = () => {
     this.setState({open: false});  
+  }
+
+  saveSettings = async (event) => {
+    event.preventDefault()
+    //this.setValues({ ...values, error: false })
+    try {
+      await store.user
+      if (store.user) {
+        this.props.history.push(store.user.isAdmin ?
+          ROUTES.MANAGE_MEMBERS : ROUTES.CODE_VALIDATIONS);
+      }
+    } catch (err) {
+      console.log(err)
+    }
   }
 
 
@@ -191,11 +207,12 @@ class SettingsBase extends React.Component {
                 type="text"
                 id="email"
                 name="email"
+                readOnly
                 required
                 className={this.input.root}
                 defaultValue={store.user ? store.user.email : ''}>
               </input>
-              <button type="submit" className={this.primaryButton.root}>
+              <button type="submit" onClick={this.saveSettings} className={this.primaryButton.root}>
                 Save Changes
               </button>
             </Grid>
