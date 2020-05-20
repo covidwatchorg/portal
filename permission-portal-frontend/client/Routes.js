@@ -21,14 +21,9 @@ const Routes = () => {
   }, [])
 
   const storeInit = async () => {
-    try {
-      await store.initialize()
-      console.log(store)
-    } catch (err) {
-      console.error(err)
-    }
+    await store.initialize()
   }
-  
+
   return (
     <BrowserRouter>
       <ThemeProvider theme={theme}>

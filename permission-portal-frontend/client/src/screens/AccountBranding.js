@@ -98,7 +98,7 @@ const AccountBrandingBase = () => {
         open={toastShouldOpen}
         onClose={() => setToastShouldOpen(false)}
         isSuccess={isSuccess}
-        message={isSuccess ? "Branding saved successfully" : "Failed to save branding"}
+        message={isSuccess ? 'Branding saved successfully' : 'Failed to save branding'}
       />
     </div>
   ))
