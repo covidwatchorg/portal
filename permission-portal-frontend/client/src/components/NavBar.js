@@ -11,7 +11,6 @@ import AuthAwareMenuItem from '../components/AuthAwareComponents/AuthAwareMenuIt
 import store from '../store'
 import ucsf_health from '../../assets/ucsf-health.svg'
 import profile from '../../assets/placeholder/profile.png'
-import { withAuthentication } from './Session'
 import * as ROLES from '../constants/roles'
 
 const useStyles = makeStyles((theme) => ({
