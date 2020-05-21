@@ -1,22 +1,20 @@
-import React, { Fragment, useState } from 'react';
-import { withRouter } from 'react-router-dom';
-import { withFirebase } from '../components/Firebase';
-import { compose } from 'recompose';
-import  * as ROUTES from '../constants/routes';
+import React, { Fragment } from 'react'
+import { withRouter } from 'react-router-dom'
+import { withFirebase } from '../components/Firebase'
+import { compose } from 'recompose'
+import * as ROUTES from '../constants/routes'
 import store from '../store'
 import doctor1 from '../../assets/doctor1.svg'
 import doctor2 from '../../assets/doctor2.svg'
 import ucsf_health from '../../assets/ucsf-health.svg'
 import powered_by_cw from '../../assets/powered-by-cw.svg'
 
-
 const INITIAL_STATE = {
   email: '',
   password: '',
   error: null,
   redirect: false,
-};
-
+}
 
 class SignInFormBase extends React.Component {
   constructor(props) {
@@ -28,21 +26,20 @@ class SignInFormBase extends React.Component {
   clickSubmit = async (event) => {
     event.preventDefault()
     //this.setValues({ ...values, error: false })
-    const { email, password } = this.state;
+    const { email, password } = this.state
     try {
-      await store.signIn(email, password);
+      await store.signIn(email, password)
       if (store.user) {
-        this.props.history.push(store.user.isAdmin ?
-          ROUTES.MANAGE_MEMBERS : ROUTES.CODE_VALIDATIONS);
+        this.props.history.push(store.user.isAdmin ? ROUTES.MANAGE_MEMBERS : ROUTES.CODE_VALIDATIONS)
       }
     } catch (err) {
       console.log(err)
     }
   }
 
-  onChange = name => event => {
-    this.setState({ [name]: event.target.value });
-  };
+  onChange = (name) => (event) => {
+    this.setState({ [name]: event.target.value })
+  }
 
   bottomLevelContent = () => (
     <Fragment>
@@ -61,7 +58,7 @@ class SignInFormBase extends React.Component {
     <Fragment>
       <div className="topNav">
         <img src={ucsf_health} id="ucsfLogo" />
-        <img src={powered_by_cw}  id="poweredByCWLogo" />
+        <img src={powered_by_cw} id="poweredByCWLogo" />
       </div>
       <div className="mainContainer">
         <div className="welcome">
@@ -88,20 +85,12 @@ class SignInFormBase extends React.Component {
         {this.loginForm()}
         {this.bottomLevelContent()}
       </Fragment>
-
-    );
+    )
   }
 }
 
+const SignInForm = compose(withRouter, withFirebase)(SignInFormBase)
 
-const SignInForm = compose(
-  withRouter,
-  withFirebase,
-)(SignInFormBase);
+const Login = () => <SignInForm />
 
-const Login = () => (
-    <SignInForm />
-);
- 
-
-export default Login;
+export default Login

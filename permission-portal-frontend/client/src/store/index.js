@@ -1,4 +1,4 @@
-import { types, flow, onSnapshot, getSnapshot, getParent } from 'mobx-state-tree'
+import { types, flow, getParent } from 'mobx-state-tree'
 import { firebase } from '../components/Firebase'
 
 const User = types

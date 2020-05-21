@@ -187,8 +187,8 @@ class SettingsBase extends React.Component {
                 id="prefix"
                 name="prefix"
                 className={this.input.root}
-                defaultValue={store.user ? store.user.prefix : ''}>
-              </input>
+                defaultValue={store.user ? store.user.prefix : ''}
+              ></input>
               <label htmlFor="firstName">
                 First Name <span style={{ color: 'red' }}>*</span>
               </label>
@@ -198,8 +198,8 @@ class SettingsBase extends React.Component {
                 name="firstName"
                 required
                 className={this.input.root}
-                defaultValue={store.user ? store.user.firstName : ''}>
-              </input>
+                defaultValue={store.user ? store.user.firstName : ''}
+              ></input>
               <label htmlFor="email">
                 Email Address <span style={{ color: 'red' }}>*</span>
               </label>
@@ -210,9 +210,9 @@ class SettingsBase extends React.Component {
                 readOnly
                 required
                 className={this.input.root}
-                defaultValue={store.user ? store.user.email : ''}>
-              </input>
-              <button type="submit" onClick={this.saveSettings} className={this.primaryButton.root}>
+                defaultValue={store.user ? store.user.email : ''}
+              ></input>
+              <button type="submit" onClick={this.saveSettings}  className={this.primaryButton.root}>
                 Save Changes
               </button>
             </Grid>
@@ -223,8 +223,7 @@ class SettingsBase extends React.Component {
               <label htmlFor="role">
                 Role <span style={{ color: 'red' }}>*</span>
               </label>
-              {
-                store.user &&
+              {store.user && (
                 <select
                   type="text"
                   id="role"
@@ -241,7 +240,7 @@ class SettingsBase extends React.Component {
                     {ROLES.NON_ADMIN_LABEL}
                   </option>
                 </select>
-              }
+              )}
               <label htmlFor="lastName">
                 Last Name <span style={{ color: 'red' }}>*</span>
               </label>
@@ -251,8 +250,8 @@ class SettingsBase extends React.Component {
                 name="lastName"
                 required
                 className={this.input.root}
-                defaultValue={store.user ? store.user.lastName : ''}>
-              </input>
+                defaultValue={store.user ? store.user.lastName : ''}
+              ></input>
               <label htmlFor="password">
                 Password <span style={{ color: 'red' }}>*</span>
               </label>
@@ -274,7 +273,7 @@ class SettingsBase extends React.Component {
                   color: '#2C58B1',
                   fontStyle: 'underline',
                 }}
-                onClick={e => this.resetPassword(e)}
+                onClick={(e) => this.resetPassword(e)}
               >
                 Change Password
               </a>
@@ -282,13 +281,13 @@ class SettingsBase extends React.Component {
           </Grid>
         </Grid>
       </form>
-      <Toast      
-
+      <Toast
         open={this.showBanner}
         onClose={() => this.setState({showBanner: true})}
         isSuccess={this.pwdResetSuccess}
-        message={this.pwdResetSuccess ? "Password reset email has been sent" :
-          "Failed to send password email. Please try again"}
+        message={
+          this.pwdResetSuccess ? 'Password reset email has been sent' : 'Failed to send password email. Please try again'
+        }
       />
     </Fragment>
   )
