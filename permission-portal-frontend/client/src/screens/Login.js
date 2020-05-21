@@ -1,5 +1,5 @@
 import React, { Fragment } from 'react'
-import { withRouter } from 'react-router-dom'
+import { Redirect } from 'react-router-dom'
 import { compose } from 'recompose'
 import * as ROUTES from '../constants/routes'
 import doctor1 from '../../assets/doctor1.svg'
@@ -27,7 +27,6 @@ class SignInFormBase extends React.Component {
     const { email, password } = this.state
     try {
       await this.props.store.signInWithEmailAndPassword(email, password)
-      this.props.history.push(this.props.store.user.isAdmin ? ROUTES.MANAGE_MEMBERS : ROUTES.CODE_VALIDATIONS)
     } catch (err) {
       console.warn(err)
     }
@@ -76,7 +75,13 @@ class SignInFormBase extends React.Component {
   )
 
   render() {
-    return (
+    return this.props.store.user.isSignedIn ? (
+      this.props.store.user.isAdmin ? (
+        <Redirect to={ROUTES.MANAGE_MEMBERS} />
+      ) : (
+        <Redirect to={ROUTES.CODE_VALIDATIONS} />
+      )
+    ) : (
       <Fragment>
         {this.loginForm()}
         {this.bottomLevelContent()}
@@ -85,8 +90,6 @@ class SignInFormBase extends React.Component {
   }
 }
 
-const SignInForm = compose(withStore, withRouter)(SignInFormBase)
+const SignInForm = compose(withStore)(SignInFormBase)
 
-const Login = () => <SignInForm />
-
-export default Login
+export default SignInForm

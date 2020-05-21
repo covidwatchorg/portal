@@ -18,9 +18,21 @@ var firebaseConfigMap = {
   staging: firebaseConfigStaging,
 }
 
-var config = firebaseConfigMap[process.env ? process.env.NODE_ENV : 'dev']
+const config = firebaseConfigMap[process.env ? process.env.NODE_ENV : 'dev']
 
 const StoreContext = React.createContext()
+
+const defaultUser = {
+  isSignedIn: false,
+  email: '',
+  isAdmin: false,
+  isSuperAdmin: false,
+  disabled: false,
+  prefix: '',
+  firstName: '',
+  lastName: '',
+  organizationID: '',
+}
 
 const createStore = (WrappedComponent) => {
   return class extends React.Component {
@@ -29,12 +41,13 @@ const createStore = (WrappedComponent) => {
       app.initializeApp(config)
       this.auth = app.auth()
       this.db = app.firestore()
-      this.authStateListener = this.auth.onAuthStateChanged((user) => {
+      this.authStateListener = this.auth.onAuthStateChanged(async (user) => {
         const state = this.state
         if (user) {
-          state.user.isSignedIn = true
+          const userDocumentSnapshot = await this.db.collection('users').doc(user.email).get()
+          state.user = { ...userDocumentSnapshot.data(), email: userDocumentSnapshot.id, isSignedIn: true }
         } else {
-          state.user.isSignedIn = false
+          state.user = defaultUser
         }
         this.setState(state)
       })
@@ -43,17 +56,7 @@ const createStore = (WrappedComponent) => {
     displayName = 'storeProvider'
 
     state = {
-      user: {
-        isSignedIn: false,
-        email: '',
-        isAdmin: false,
-        isSuperAdmin: false,
-        disabled: false,
-        prefix: '',
-        firstName: '',
-        lastName: '',
-        organizationID: '',
-      },
+      user: defaultUser,
       get: (key) => {
         return this.state[key]
       },
@@ -68,12 +71,8 @@ const createStore = (WrappedComponent) => {
         this.setState(state)
       },
       signInWithEmailAndPassword: async (email, password) => {
-        const state = this.state
         try {
-          const userCredential = await this.auth.signInWithEmailAndPassword(email, password)
-          const userDocumentSnapshot = await this.db.collection('users').doc(userCredential.user.email).get()
-          state.user = { ...userDocumentSnapshot.data(), email: userDocumentSnapshot.id, isSignedIn: true }
-          this.setState(state)
+          await this.auth.signInWithEmailAndPassword(email, password)
         } catch (err) {
           console.error(err)
         }
