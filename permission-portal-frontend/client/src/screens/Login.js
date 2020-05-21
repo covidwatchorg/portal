@@ -16,15 +16,14 @@ const INITIAL_STATE = {
   error: null,
   redirect: false,
   showPassModal: false,
-};
-
+}
 
 class SignInFormBase extends React.Component {
   constructor(props) {
-        super(props);
-    this.state = { ...INITIAL_STATE };
-    this.onChange = this.onChange.bind(this);
-    this.onSubmit = this.onSubmit.bind(this);
+    super(props)
+    this.state = { ...INITIAL_STATE }
+    this.onChange = this.onChange.bind(this)
+    this.onSubmit = this.onSubmit.bind(this)
   }
 
   clickSubmit = async (event) => {
@@ -65,13 +64,13 @@ class SignInFormBase extends React.Component {
     this.setState({ [name]: event.target.value })
   }
 
-    showModal = () => {
-        this.setState({ showPassModal: true });
-    };
+  showModal = () => {
+    this.setState({ showPassModal: true })
+  }
 
-    hideModal = () => {
-        this.setState({ showPassModal: false });
-    };
+  hideModal = () => {
+    this.setState({ showPassModal: false })
+  }
 
   bottomLevelContent = () => (
     <Fragment>
@@ -106,10 +105,9 @@ class SignInFormBase extends React.Component {
           <input onChange={this.onChange('password')} type="password" id="password" name="password" />
           <button onClick={this.clickSubmit}>Login</button>
           <a onClick={this.showModal}>Forgot password?</a>
-          </div>
-       <ForgotPasswordModal hidden={!this.state.showPassModal} onClose={this.hideModal}/>
+        </div>
+        <ForgotPasswordModal hidden={!this.state.showPassModal} onClose={this.hideModal} />
       </div>
-          
     </Fragment>
   )
 

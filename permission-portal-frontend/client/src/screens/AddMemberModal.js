@@ -139,4 +139,4 @@ const AddMemberModal = (props) => {
   )
 }
 
-export default AddMemberModal;
+export default AddMemberModal
