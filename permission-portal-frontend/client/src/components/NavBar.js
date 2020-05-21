@@ -53,28 +53,12 @@ const NavBarBase = (props) => {
     setRedirect(num)
   }
 
-  const getUserName = () => {
-    if (props.store.user) {
-      return props.store.user.firstName + ' ' + props.store.user.lastName
-    } else {
-      return null
-    }
-  }
-
-  const getUserTitle = () => {
-    if (props.store.user) {
-      return props.store.user.isAdmin ? ROLES.ADMIN_LABEL : ROLES.NON_ADMIN_LABEL
-    } else {
-      return null
-    }
-  }
-
   return (
     <div className="navbarContainer">
       <img src={ucsf_health} id="ucsfLogo" />
       <div className="avatar_group avatar_text">
-        <div className="name">{getUserName()}</div>
-        <div className="title">{getUserTitle()}</div>
+        <div className="name">{props.store.user.firstName + ' ' + props.store.user.lastName}</div>
+        <div className="title">{props.store.user.isAdmin ? ROLES.ADMIN_LABEL : ROLES.NON_ADMIN_LABEL}</div>
       </div>
       <div className="avatar_group avatar_image">
         <img src={profile} />
