@@ -12,7 +12,7 @@ import { ThemeProvider } from '@material-ui/styles'
 import theme from './ui/Theme'
 import { createStore } from './src/state'
 
-const Routes = () => {
+const App = () => {
   return (
     <BrowserRouter>
       <ThemeProvider theme={theme}>
@@ -49,4 +49,4 @@ const Routes = () => {
   )
 }
 
-export default createStore(Routes)
+export default createStore(App)
