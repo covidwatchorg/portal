@@ -1,6 +1,5 @@
 import React, { Fragment } from 'react'
 import { Redirect } from 'react-router-dom'
-import { compose } from 'recompose'
 import * as ROUTES from '../constants/routes'
 import doctor1 from '../../assets/doctor1.svg'
 import doctor2 from '../../assets/doctor2.svg'
@@ -90,6 +89,6 @@ class SignInFormBase extends React.Component {
   }
 }
 
-const SignInForm = compose(withStore)(SignInFormBase)
+const SignInForm = withStore(SignInFormBase)
 
 export default SignInForm

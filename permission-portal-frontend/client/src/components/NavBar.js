@@ -5,7 +5,6 @@ import IconButton from '@material-ui/core/IconButton'
 import MenuIcon from '@material-ui/icons/Menu'
 import MenuItem from '@material-ui/core/MenuItem'
 import Menu from '@material-ui/core/Menu'
-import { compose } from 'recompose'
 import ucsf_health from '../../assets/ucsf-health.svg'
 import profile from '../../assets/placeholder/profile.png'
 import * as ROLES from '../constants/roles'
@@ -117,6 +116,6 @@ const NavBarBase = (props) => {
   )
 }
 
-const NavBar = compose(withStore)(NavBarBase)
+const NavBar = withStore(NavBarBase)
 
 export default NavBar

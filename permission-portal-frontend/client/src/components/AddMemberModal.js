@@ -4,7 +4,6 @@ import RoleSelector from '../components/RoleSelector'
 import Modal from '../components/Modal'
 import * as ROLES from '../constants/roles'
 import { withStore } from '../store'
-import { compose } from 'recompose'
 
 const ValidationResult = (succeeded, failureReason) => {
   return {
@@ -140,6 +139,6 @@ const AddMemberModalBase = (props) => {
   )
 }
 
-const AddMemberModal = compose(withStore)(AddMemberModalBase)
+const AddMemberModal = withStore(AddMemberModalBase)
 
 export default AddMemberModal

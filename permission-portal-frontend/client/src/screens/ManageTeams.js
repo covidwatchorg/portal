@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import * as ROUTES from '../constants/routes'
 import { Redirect } from 'react-router-dom'
-import { compose } from 'recompose'
 import addMember from '../../assets/add-member.svg'
 import arrowLeft from '../../assets/arrow-left.svg'
 import arrowRight from '../../assets/arrow-right.svg'
@@ -133,6 +132,6 @@ const ManageTeamsBase = (props) => {
   )
 }
 
-const ManageTeams = compose(withStore)(ManageTeamsBase)
+const ManageTeams = withStore(ManageTeamsBase)
 
 export default ManageTeams

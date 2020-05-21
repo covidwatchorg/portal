@@ -4,7 +4,6 @@ import Modal from '@material-ui/core/Modal'
 import { makeStyles } from '@material-ui/core/styles'
 import * as ROLES from '../constants/roles'
 import Toast from '../components/Toast'
-import { compose } from 'recompose'
 import { Redirect } from 'react-router-dom'
 import { withStore } from '../store'
 import * as ROUTES from '../constants/routes'
@@ -275,6 +274,6 @@ const SettingsBase = (props) => {
   )
 }
 
-const Settings = compose(withStore)(SettingsBase)
+const Settings = withStore(SettingsBase)
 
 export default Settings

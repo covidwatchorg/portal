@@ -54,7 +54,7 @@ const defaultOrganization = {
   verificationNotSharedText: '',
   diagnosisText: '',
   exposureText: '',
-  membersPage: 1, // controls pagination
+  membersPage: 1, // TODO: controls pagination
   members: [],
 }
 
@@ -173,19 +173,6 @@ const createStore = (WrappedComponent) => {
     state = {
       user: defaultUser,
       organization: defaultOrganization,
-      get: (key) => {
-        return this.state[key]
-      },
-      set: (key, value) => {
-        const state = this.state
-        state[key] = value
-        this.setState(state)
-      },
-      remove: (key) => {
-        const state = this.state
-        delete state[key]
-        this.setState(state)
-      },
       signInWithEmailAndPassword: async (email, password) => {
         try {
           await this.auth.signInWithEmailAndPassword(email, password)

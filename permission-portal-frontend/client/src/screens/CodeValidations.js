@@ -4,7 +4,6 @@ import Toast from '../components/Toast'
 import info_icon from '../../assets/info-icon.svg'
 import '../../Styles/screens/code_validations.scss'
 import * as ROUTES from '../constants/routes'
-import { compose } from 'recompose'
 import { withStore } from '../store'
 import { Redirect } from 'react-router-dom'
 
@@ -75,6 +74,6 @@ const CodeValidationsBase = (props) => {
   )
 }
 
-const CodeValidations = compose(withStore)(CodeValidationsBase)
+const CodeValidations = withStore(CodeValidationsBase)
 
 export default CodeValidations
