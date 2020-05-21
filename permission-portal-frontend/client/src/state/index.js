@@ -44,10 +44,26 @@ const createStore = (WrappedComponent) => {
       this.authStateListener = this.auth.onAuthStateChanged(async (user) => {
         const state = this.state
         if (user) {
+          // signed in, get user's document from the db
           const userDocumentSnapshot = await this.db.collection('users').doc(user.email).get()
-          state.user = { ...userDocumentSnapshot.data(), email: userDocumentSnapshot.id, isSignedIn: true }
+          // update the state object with data from this document and set isSignedIn to true
+          this.updateUserWithSnapshot(userDocumentSnapshot)
+          state.user.isSignedIn = true
+
+          // set up a listener to respond to current user's document changes
+          this.userDocumentListener = this.db
+            .collection('users')
+            .doc(user.email)
+            .onSnapshot((updatedUserDocumentSnapshot) => {
+              this.updateUserWithSnapshot(updatedUserDocumentSnapshot)
+            })
         } else {
+          // signed out
+          // reset user to default state
           state.user = defaultUser
+
+          // detach listener
+          this.userDocumentListener()
         }
         this.setState(state)
       })
@@ -89,6 +105,12 @@ const createStore = (WrappedComponent) => {
           return false
         }
       },
+    }
+
+    updateUserWithSnapshot(userDocumentSnapshot) {
+      const state = this.state
+      state.user = { ...state.user, ...userDocumentSnapshot.data(), email: userDocumentSnapshot.id }
+      this.setState(state)
     }
 
     render() {
