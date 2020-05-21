@@ -6,7 +6,7 @@ import SnackbarContent from '@material-ui/core/SnackbarContent';
 const Modal = (props) => {
   return (
     <div className={"modal-background" + (props.hidden === true ? ' hidden' : '')}>
-      <div className={"add-member-modal-container"}>
+      <div className={props.containerClass}>
         <span className="close-btn" onClick={props.onClose}>X</span>
           {props.children}
       </div>
