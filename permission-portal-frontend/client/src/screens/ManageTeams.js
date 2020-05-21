@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react'
-import * as ROLES from '../constants/roles'
+// import * as ROLES from '../constants/roles'
 import { useObserver } from 'mobx-react'
-import { withAuthorization } from '../components/Session'
 import { compose } from 'recompose'
 import store from '../store'
 import addMember from '../../assets/add-member.svg'
@@ -49,6 +48,7 @@ const ManageTeamsBase = () => {
     setShowModal(false)
   }
 
+  // TODO: conditional rendering
   return useObserver(() => (
     <div className="module-container">
       <h1>Manage Members</h1>
@@ -129,11 +129,6 @@ const ManageTeamsBase = () => {
   ))
 }
 
-const condition = (authUser) => {
-  var result = authUser && authUser.roles[ROLES.ADMIN]
-  return result
-}
-
-const ManageTeams = compose(withAuthorization(condition))(ManageTeamsBase)
+const ManageTeams = compose()(ManageTeamsBase)
 
 export default ManageTeams

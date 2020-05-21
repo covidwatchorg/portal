@@ -265,13 +265,13 @@ const SettingsBase = (props) => {
     </Fragment>
   )
 
-  return !props.store.user.isSignedIn ? (
-    <Redirect to={ROUTES.LANDING} />
-  ) : (
+  return props.store.user.isSignedIn ? (
     <React.Fragment>
       <h1>My Settings</h1>
       {settingsForm()}
     </React.Fragment>
+  ) : (
+    <Redirect to={ROUTES.LANDING} />
   )
 }
 

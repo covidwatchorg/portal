@@ -16,9 +16,7 @@ const CodeValidationsBase = (props) => {
   const [code, setCode] = useState('')
   const [date, setDate] = useState('')
 
-  return !props.store.user.isSignedIn ? (
-    <Redirect to={ROUTES.LANDING} />
-  ) : (
+  return props.store.user.isSignedIn ? (
     <div className="module-container">
       {/* this is a Snackbar template to use for the success/failure notifications */}
 
@@ -72,6 +70,8 @@ const CodeValidationsBase = (props) => {
       </div>
       <Toast open={isOpen} onClose={() => setIsOpen(false)} isSuccess={true} message="Code verification confirmed" />
     </div>
+  ) : (
+    <Redirect to={ROUTES.LANDING} />
   )
 }
 
