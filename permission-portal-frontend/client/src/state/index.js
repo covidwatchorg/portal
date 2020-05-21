@@ -34,6 +34,30 @@ const defaultUser = {
   organizationID: '',
 }
 
+const defaultOrganization = {
+  id: '',
+  name: '',
+  welcomeText: '',
+  enableExposureText: '',
+  recommendExposureText: '',
+  notifyingOthersText: '',
+  exposureInfoText: '',
+  exposureAboutText: '',
+  exposureDetailsText: '',
+  exposureDetailsLearnText: '',
+  verificationStartText: '',
+  verificationIdentifierText: '',
+  verificationIdentifierAboutText: '',
+  verificationAdministrationDateText: '',
+  verificationReviewText: '',
+  verificationSharedText: '',
+  verificationNotSharedText: '',
+  diagnosisText: '',
+  exposureText: '',
+  membersPage: 1, // controls pagination
+  members: [],
+}
+
 const createStore = (WrappedComponent) => {
   return class extends React.Component {
     constructor(props) {
@@ -42,36 +66,83 @@ const createStore = (WrappedComponent) => {
       this.auth = app.auth()
       this.db = app.firestore()
       this.userDocumentListener = null
+      this.organizationDocumentListener = null
       this.authStateListener = this.auth.onAuthStateChanged(async (user) => {
         const state = this.state
         if (user) {
+          console.log('User signed in')
           // signed in, get user's document from the db
           const userDocumentSnapshot = await this.db.collection('users').doc(user.email).get()
           // update the state object with data from this document and set isSignedIn to true
-          this.updateUserWithSnapshot(userDocumentSnapshot)
+          state.user = { ...state.user, ...userDocumentSnapshot.data(), email: userDocumentSnapshot.id }
           state.user.isSignedIn = true
 
+          const organizationID = userDocumentSnapshot.data().organizationID
+
+          //  get the user's organization's document from the db
+          const organizationDocumentSnapshot = await this.db.collection('organizations').doc(organizationID).get()
+          // update state object with organization document data
+          state.organization = {
+            ...state.organization,
+            ...organizationDocumentSnapshot.data(),
+            id: organizationDocumentSnapshot.id,
+          }
+
           // set up a listener to respond to current user's document changes
-          if (this.userDocumentListener !== null) {
+          if (this.userDocumentListener === null) {
             this.userDocumentListener = this.db
               .collection('users')
               .doc(user.email)
               .onSnapshot((updatedUserDocumentSnapshot) => {
-                this.updateUserWithSnapshot(updatedUserDocumentSnapshot)
+                console.log('Remote user document changed')
+                state.user = {
+                  ...state.user,
+                  ...updatedUserDocumentSnapshot.data(),
+                  email: updatedUserDocumentSnapshot.id,
+                }
+                this.setState(state)
+                console.log('state set:')
+                console.log(state)
+              })
+          }
+
+          // set up a listener to respond to current user's organization's document changes
+          if (this.organizationDocumentListener === null) {
+            this.organizationDocumentListener = this.db
+              .collection('organizations')
+              .doc(organizationID)
+              .onSnapshot((updatedOrganizationDocumentSnapshot) => {
+                console.log('Remote organization document changed')
+                state.organization = {
+                  ...state.organization,
+                  ...updatedOrganizationDocumentSnapshot.data(),
+                  id: updatedOrganizationDocumentSnapshot.id,
+                }
+                this.setState(state)
+                console.log('state set:')
+                console.log(state)
               })
           }
         } else {
+          console.log('User signed out')
           // signed out
-          // reset user to default state
+          // reset to default state
           state.user = defaultUser
+          state.organization = defaultOrganization
 
-          // detach listener
+          // detach listeners
           if (this.userDocumentListener !== null) {
             this.userDocumentListener()
             this.userDocumentListener = null
           }
+          if (this.organizationDocumentListener !== null) {
+            this.organizationDocumentListener()
+            this.organizationDocumentListener = null
+          }
         }
         this.setState(state)
+        console.log('state set:')
+        console.log(state)
       })
     }
 
@@ -79,6 +150,7 @@ const createStore = (WrappedComponent) => {
 
     state = {
       user: defaultUser,
+      organization: defaultOrganization,
       get: (key) => {
         return this.state[key]
       },
