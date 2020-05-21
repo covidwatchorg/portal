@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import Modal from '../components/Modal'
 import PendingOperationButton from '../components/PendingOperationButton'
-import store from '../store'
+import { firebase } from '../components/Firebase'
 
 class ForgotPasswordModal extends React.Component {
   constructor(props) {
@@ -20,14 +20,10 @@ class ForgotPasswordModal extends React.Component {
       return
     }
 
-    try {
-      // TODO call sendPasswordResetEmail for the user 
+    await firebase.sendPasswordResetEmail(this.state.email)
 
-      // Show confirmation screen
-      this.setState({ emailPrompt: false, email: '', validEmail: true })
-    } catch (err) {
-      console.log(err)
-    }
+    // Show confirmation screen
+    this.setState({ emailPrompt: false, email: '', validEmail: true })
   }
 
   handleChange(event) {
