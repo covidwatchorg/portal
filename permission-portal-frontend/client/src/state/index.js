@@ -67,6 +67,7 @@ const createStore = (WrappedComponent) => {
       this.db = app.firestore()
       this.userDocumentListener = null
       this.organizationDocumentListener = null
+      this.organizationMembersListener = null
       this.authStateListener = this.auth.onAuthStateChanged(async (user) => {
         const state = this.state
         if (user) {
@@ -76,18 +77,6 @@ const createStore = (WrappedComponent) => {
           // update the state object with data from this document and set isSignedIn to true
           state.user = { ...state.user, ...userDocumentSnapshot.data(), email: userDocumentSnapshot.id }
           state.user.isSignedIn = true
-
-          const organizationID = userDocumentSnapshot.data().organizationID
-
-          //  get the user's organization's document from the db
-          const organizationDocumentSnapshot = await this.db.collection('organizations').doc(organizationID).get()
-          // update state object with organization document data
-          state.organization = {
-            ...state.organization,
-            ...organizationDocumentSnapshot.data(),
-            id: organizationDocumentSnapshot.id,
-          }
-
           // set up a listener to respond to current user's document changes
           if (this.userDocumentListener === null) {
             this.userDocumentListener = this.db
@@ -106,6 +95,16 @@ const createStore = (WrappedComponent) => {
               })
           }
 
+          const organizationID = state.user.organizationID
+
+          //  get the user's organization's document from the db
+          const organizationDocumentSnapshot = await this.db.collection('organizations').doc(organizationID).get()
+          // update state object with organization document data
+          state.organization = {
+            ...state.organization,
+            ...organizationDocumentSnapshot.data(),
+            id: organizationDocumentSnapshot.id,
+          }
           // set up a listener to respond to current user's organization's document changes
           if (this.organizationDocumentListener === null) {
             this.organizationDocumentListener = this.db
@@ -123,6 +122,25 @@ const createStore = (WrappedComponent) => {
                 console.log(state)
               })
           }
+
+          if (state.user.isAdmin) {
+            // If admin, get the user's organization's members from the db
+            // TODO will want pagination
+            const usersSnapshot = await this.db.collection('users').where('organizationID', '==', organizationID).get()
+            state.organization.members = usersSnapshot.docs.map((userDoc) => userDoc.data())
+            // Set up  a listener to respond to changes in current user's organization's members
+            if (this.organizationMembersListener === null) {
+              this.organizationMembersListener = this.db
+                .collection('users')
+                .where('organizationID', '==', organizationID)
+                .onSnapshot((updatedUsersSnapshot) => {
+                  state.organization.members = updatedUsersSnapshot.docs.map((userDoc) => userDoc.data())
+                  this.setState(state)
+                  console.log('state set:')
+                  console.log(state)
+                })
+            }
+          }
         } else {
           console.log('User signed out')
           // signed out
@@ -138,6 +156,10 @@ const createStore = (WrappedComponent) => {
           if (this.organizationDocumentListener !== null) {
             this.organizationDocumentListener()
             this.organizationDocumentListener = null
+          }
+          if (this.organizationMembersListener !== null) {
+            this.organizationMembersListener()
+            this.organizationMembersListener = null
           }
         }
         this.setState(state)

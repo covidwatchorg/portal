@@ -82,9 +82,9 @@ const AccountBrandingBase = (props) => {
       />
     </div>
   ) : props.store.user.isSignedIn ? (
-    <Redirect to={ROUTES.SETTINGS} />
+    <Redirect to={ROUTES.CODE_VALIDATIONS} />
   ) : (
-    <Redirect to={ROUTES.SETTINGS} />
+    <Redirect to={ROUTES.LANDING} />
   )
 }
 
