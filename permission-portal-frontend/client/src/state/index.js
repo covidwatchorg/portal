@@ -183,12 +183,13 @@ const createStore = (WrappedComponent) => {
           return false
         }
       },
-    }
-
-    updateUserWithSnapshot(userDocumentSnapshot) {
-      const state = this.state
-      state.user = { ...state.user, ...userDocumentSnapshot.data(), email: userDocumentSnapshot.id }
-      this.setState(state)
+      updateOrganization: async (updatesObject) => {
+        try {
+          await this.db.collection('organizations').doc(this.state.organization.id).update(updatesObject)
+        } catch (err) {
+          console.error('Error updating organization texts', err)
+        }
+      },
     }
 
     render() {
