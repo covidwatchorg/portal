@@ -20,13 +20,12 @@ service cloud.firestore {
 
     function isInOrganization(organizationID) {
       return request.auth.token.organizationID == organizationID;
+      //  in case you need to test directly in firebase console, the above rule would not work since auth token would not have the claim
+      // use the below line instead
+      // return get(/databases/$(database)/documents/users/$(request.auth.uid)).data.organizationID == organizationID;
+
     }
     
-    function isSelfOrAdminInOrg(email, organizationID) {
-    	let isSelf = request.auth.token.email == email;
-      return isSelf || (isAdmin() && isInOrganization(organizationID));
-    }
-
     function isSelf(){
       return isSignedIn() && (request.auth.token.email == resource.id)
     } 
@@ -34,11 +33,14 @@ service cloud.firestore {
     function isNotEscalatingPrevileges() {
       return ( resource.data.isAdmin == request.resource.data.isAdmin && resource.data.isSuperAdmin == request.resource.data.isSuperAdmin )
     }
+    function isModifyingOrg() {
+      return ( resource.data.organizationID != request.resource.data.organizationID )
+    }
 
     match /users/{email} {
-      allow read, write: if isSignedIn() && isAdmin() && isInOrganization(resource.data.organizationID);
+      allow read, write: if isSignedIn() && isAdmin() && isInOrganization(resource.data.organizationID) && !isModifyingOrg();
       allow read : if isSelf();
-      allow update : if isSelf() && isNotEscalatingPrevileges();
+      allow update : if isSelf() && isNotEscalatingPrevileges() && !isModifyingOrg();
     }
 
     match /organizations/{organizationID} {
