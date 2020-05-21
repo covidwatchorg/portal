@@ -6,8 +6,6 @@ import MenuIcon from '@material-ui/icons/Menu'
 import MenuItem from '@material-ui/core/MenuItem'
 import Menu from '@material-ui/core/Menu'
 import { compose } from 'recompose'
-import { withRouter } from 'react-router-dom'
-import AuthAwareMenuItem from '../components/AuthAwareComponents/AuthAwareMenuItem'
 import ucsf_health from '../../assets/ucsf-health.svg'
 import profile from '../../assets/placeholder/profile.png'
 import * as ROLES from '../constants/roles'
@@ -103,16 +101,16 @@ const NavBarBase = (props) => {
         <MenuItem style={linkStyles} onClick={() => onClickMenuItem(0)}>
           Positive Test Validations
         </MenuItem>
-        {
-          <AuthAwareMenuItem style={linkStyles} roleguard="ADMIN" onClick={() => onClickMenuItem(1)}>
+        {props.store.user.isAdmin && (
+          <MenuItem style={linkStyles} onClick={() => onClickMenuItem(1)}>
             Manage Members
-          </AuthAwareMenuItem>
-        }
-        {
-          <AuthAwareMenuItem style={linkStyles} roleguard="ADMIN" onClick={() => onClickMenuItem(2)}>
+          </MenuItem>
+        )}
+        {props.store.user.isAdmin && (
+          <MenuItem style={linkStyles} onClick={() => onClickMenuItem(2)}>
             Account Branding
-          </AuthAwareMenuItem>
-        }
+          </MenuItem>
+        )}
         <MenuItem style={linkStyles} onClick={() => onClickMenuItem(3)}>
           My Settings
         </MenuItem>
@@ -135,6 +133,6 @@ const NavBarBase = (props) => {
   )
 }
 
-const NavBar = compose(withStore, withRouter)(NavBarBase)
+const NavBar = compose(withStore)(NavBarBase)
 
 export default NavBar

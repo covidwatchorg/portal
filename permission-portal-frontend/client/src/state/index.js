@@ -41,6 +41,7 @@ const createStore = (WrappedComponent) => {
       app.initializeApp(config)
       this.auth = app.auth()
       this.db = app.firestore()
+      this.userDocumentListener = null
       this.authStateListener = this.auth.onAuthStateChanged(async (user) => {
         const state = this.state
         if (user) {
@@ -51,19 +52,24 @@ const createStore = (WrappedComponent) => {
           state.user.isSignedIn = true
 
           // set up a listener to respond to current user's document changes
-          this.userDocumentListener = this.db
-            .collection('users')
-            .doc(user.email)
-            .onSnapshot((updatedUserDocumentSnapshot) => {
-              this.updateUserWithSnapshot(updatedUserDocumentSnapshot)
-            })
+          if (this.userDocumentListener !== null) {
+            this.userDocumentListener = this.db
+              .collection('users')
+              .doc(user.email)
+              .onSnapshot((updatedUserDocumentSnapshot) => {
+                this.updateUserWithSnapshot(updatedUserDocumentSnapshot)
+              })
+          }
         } else {
           // signed out
           // reset user to default state
           state.user = defaultUser
 
           // detach listener
-          this.userDocumentListener()
+          if (this.userDocumentListener !== null) {
+            this.userDocumentListener()
+            this.userDocumentListener = null
+          }
         }
         this.setState(state)
       })
