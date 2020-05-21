@@ -7,7 +7,7 @@ import addMember from '../../assets/add-member.svg'
 import arrowLeft from '../../assets/arrow-left.svg'
 import arrowRight from '../../assets/arrow-right.svg'
 import '../../Styles/screens/manage_teams.scss'
-import AddMemberModal from './AddMemberModal'
+import AddMemberModal from '../components/AddMemberModal'
 import Toast from '../components/Toast'
 import RoleSelector from '../components/RoleSelector'
 
