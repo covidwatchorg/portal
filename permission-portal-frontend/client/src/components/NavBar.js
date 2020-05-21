@@ -9,7 +9,7 @@ import { compose } from 'recompose'
 import ucsf_health from '../../assets/ucsf-health.svg'
 import profile from '../../assets/placeholder/profile.png'
 import * as ROLES from '../constants/roles'
-import { withStore } from '../state'
+import { withStore } from '../store'
 
 const useStyles = makeStyles((theme) => ({
   root: {

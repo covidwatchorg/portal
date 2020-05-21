@@ -3,7 +3,7 @@ import PendingOperationButton from '../components/PendingOperationButton'
 import Toast from '../components/Toast'
 import '../../Styles/screens/branding.scss'
 import { compose } from 'recompose'
-import { withStore } from '../state'
+import { withStore } from '../store'
 import { Redirect } from 'react-router-dom'
 import * as ROUTES from '../constants/routes'
 

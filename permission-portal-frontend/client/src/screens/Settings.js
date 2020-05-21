@@ -6,7 +6,7 @@ import * as ROLES from '../constants/roles'
 import Toast from '../components/Toast'
 import { compose } from 'recompose'
 import { Redirect } from 'react-router-dom'
-import { withStore } from '../state'
+import { withStore } from '../store'
 import * as ROUTES from '../constants/routes'
 
 const useStyles = makeStyles({

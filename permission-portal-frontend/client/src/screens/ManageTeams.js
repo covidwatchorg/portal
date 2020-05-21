@@ -9,7 +9,7 @@ import '../../Styles/screens/manage_teams.scss'
 import AddMemberModal from '../components/AddMemberModal'
 import Toast from '../components/Toast'
 import RoleSelector from '../components/RoleSelector'
-import { withStore } from '../state'
+import { withStore } from '../store'
 
 const ManageTeamsBase = (props) => {
   const [toastShouldOpen, setToastShouldOpen] = useState(false)

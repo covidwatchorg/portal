@@ -3,7 +3,7 @@ import PendingOperationButton from '../components/PendingOperationButton'
 import RoleSelector from '../components/RoleSelector'
 import Modal from '../components/Modal'
 import * as ROLES from '../constants/roles'
-import { withStore } from '../state'
+import { withStore } from '../store'
 import { compose } from 'recompose'
 
 const ValidationResult = (succeeded, failureReason) => {

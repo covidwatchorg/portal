@@ -6,7 +6,7 @@ import doctor1 from '../../assets/doctor1.svg'
 import doctor2 from '../../assets/doctor2.svg'
 import ucsf_health from '../../assets/ucsf-health.svg'
 import powered_by_cw from '../../assets/powered-by-cw.svg'
-import { withStore } from '../state'
+import { withStore } from '../store'
 
 const INITIAL_STATE = {
   email: '',

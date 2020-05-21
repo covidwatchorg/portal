@@ -5,7 +5,7 @@ import info_icon from '../../assets/info-icon.svg'
 import '../../Styles/screens/code_validations.scss'
 import * as ROUTES from '../constants/routes'
 import { compose } from 'recompose'
-import { withStore } from '../state'
+import { withStore } from '../store'
 import { Redirect } from 'react-router-dom'
 
 // snackbars docs can be found here:

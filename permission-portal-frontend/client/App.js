@@ -10,7 +10,7 @@ import NavBar from './src/components/NavBar'
 import * as ROUTES from './src/constants/routes'
 import { ThemeProvider } from '@material-ui/styles'
 import theme from './ui/Theme'
-import { createStore } from './src/state'
+import { createStore } from './src/store'
 
 const App = () => {
   return (
