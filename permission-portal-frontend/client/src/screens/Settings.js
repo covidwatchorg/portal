@@ -161,7 +161,7 @@ const SettingsBase = (props) => {
                 id="prefix"
                 name="prefix"
                 className={input.root}
-                defaultValue={props.store.user ? props.store.user.prefix : ''}
+                defaultValue={props.store.user.prefix}
               ></input>
               <label htmlFor="firstName">
                 First Name <span style={{ color: 'red' }}>*</span>
@@ -172,7 +172,7 @@ const SettingsBase = (props) => {
                 name="firstName"
                 required
                 className={input.root}
-                defaultValue={props.store.user ? props.store.user.firstName : ''}
+                defaultValue={props.store.user.firstName}
               ></input>
               <label htmlFor="email">
                 Email Address <span style={{ color: 'red' }}>*</span>
@@ -183,7 +183,7 @@ const SettingsBase = (props) => {
                 name="email"
                 required
                 className={input.root}
-                defaultValue={props.store.user ? props.store.user.email : ''}
+                defaultValue={props.store.user.email}
               ></input>
               <button type="submit" className={primaryButton.root}>
                 Save Changes
@@ -223,7 +223,7 @@ const SettingsBase = (props) => {
                 name="lastName"
                 required
                 className={input.root}
-                defaultValue={props.store.user ? props.store.user.lastName : ''}
+                defaultValue={props.store.user.lastName}
               ></input>
               <label htmlFor="password">
                 Password <span style={{ color: 'red' }}>*</span>
