@@ -190,6 +190,16 @@ const createStore = (WrappedComponent) => {
           console.error('Error updating organization texts', err)
         }
       },
+      createUser: async (newUser) => {
+        const createUser = app.functions().httpsCallable('createUser')
+        try {
+          const result = await createUser(newUser)
+          console.log(`Created new user: ${JSON.stringify(result.data)}`)
+          return result.data
+        } catch (err) {
+          throw err
+        }
+      },
     }
 
     render() {
