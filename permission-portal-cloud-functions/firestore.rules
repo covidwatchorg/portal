@@ -38,8 +38,8 @@ service cloud.firestore {
     }
 
     match /users/{email} {
-      allow read, write: if isSignedIn() && isAdmin() && isInOrganization(resource.data.organizationID) && !isModifyingOrg();
-      allow read : if isSelf();
+      allow write: if isSignedIn() && isAdmin() && isInOrganization(resource.data.organizationID) && !isModifyingOrg();
+      allow read : if isSelf() || (isAdmin() && isInOrganization(resource.data.organizationID));
       allow update : if isSelf() && isNotEscalatingPrevileges() && !isModifyingOrg();
     }
 
