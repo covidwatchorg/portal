@@ -1,6 +1,4 @@
 const path = require('path')
-const webpack = require('webpack')
-const DefinePlugin = require('webpack/lib/DefinePlugin')
 
 module.exports = {
   devtool: 'source-map',

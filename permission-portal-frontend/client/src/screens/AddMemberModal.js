@@ -1,127 +1,134 @@
-import React, { useState } from 'react';
-import PendingOperationButton from '../components/PendingOperationButton';
+import React, { useState } from 'react'
+import PendingOperationButton from '../components/PendingOperationButton'
 import store from '../store'
-import RoleSelector from '../components/RoleSelector';
-import Modal from '../components/Modal';
+import RoleSelector from '../components/RoleSelector'
+import Modal from '../components/Modal'
+import * as ROLES from '../constants/roles'
 
 const ValidationResult = (succeeded, failureReason) => {
   return {
     succeeded: succeeded,
-    failureReason: failureReason
-  };
-};
+    failureReason: failureReason,
+  }
+}
 
-const ValidationRule = (condition) => {
-  return {
-    validationCondition: condition
-  };
-};
+function validateEmail(email) {
+  // eslint-disable-next-line no-useless-escape
+  var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+  return re.test(String(email).toLowerCase())
+}
 
 const ValidationRules = [
   (value) => {
-    // TODO valid first name
-    return ValidationResult(false, "Validation not implemented");
+    // firstName
+    return ValidationResult(value.length > 0, 'First name required')
   },
   (value) => {
-    // TODO valid last name
-    return ValidationResult(false, "Validation not implemented");
+    // lastName
+    return ValidationResult(value.length > 0, 'Last name required')
   },
   (value) => {
-    // TODO valid email, that doesn't already exist
-    return ValidationResult(false, "Validation not implemented");
+    // email
+    return ValidationResult(validateEmail(value), 'Email address must be valid')
   },
-  (value) => {
-    // TODO role is in list of valid roles
-    return ValidationResult(false, "Validation not implemented");
-  }
-];
+  () => {
+    // role
+    return ValidationResult(true, 'Not possible')
+  },
+]
 
 const AddMemberModal = (props) => {
-  const [state, setState] = React.useState({
-    firstName: "",
+  const [state, setState] = useState({
+    firstName: '',
     firstNameValidationFailed: false,
-    firstNameValidationMessage: "",
-    lastName: "",
+    firstNameValidationMessage: '',
+    lastName: '',
     lastNameValidationFailed: false,
-    lastNameValidationMessage: "",
-    email: "",
+    lastNameValidationMessage: '',
+    email: '',
     emailValidationFailed: false,
-    emailValidationMessage: "",
-    role: "",
+    emailValidationMessage: '',
+    role: ROLES.NON_ADMIN_LABEL,
     roleValidationFailed: false,
-    roleValidationMessage: ""
-  });
+    roleValidationMessage: '',
+  })
 
   const submitMemberInvitation = () => {
-    let newState = {};
-    let validationSucceeded = true;
-    const values = [state.firstName, state.lastName, state.email, state.role];
+    let newState = {}
+    let validationSucceeded = true
+    const values = [state.firstName, state.lastName, state.email, state.role]
     ValidationRules.forEach((validationRule, index) => {
-      const {succeeded, failureReason} = validationRule(values[index]);
+      const { succeeded, failureReason } = validationRule(values[index])
       if (succeeded === false) {
         if (index === 0) {
-          newState.firstNameValidationFailed = true;
-          newState.firstNameValidationMessage = failureReason;
+          newState.firstNameValidationFailed = true
+          newState.firstNameValidationMessage = failureReason
         } else if (index === 1) {
-          newState.lastNameValidationFailed = true;
-          newState.lastNameValidationMessage = failureReason;
+          newState.lastNameValidationFailed = true
+          newState.lastNameValidationMessage = failureReason
         } else if (index === 2) {
-          newState.emailValidationFailed = true;
-          newState.emailValidationMessage = failureReason;
+          newState.emailValidationFailed = true
+          newState.emailValidationMessage = failureReason
         } else if (index === 3) {
-          newState.roleValidationFailed = true;
-          newState.roleValidationMessage = failureReason;
+          newState.roleValidationFailed = true
+          newState.roleValidationMessage = failureReason
         }
-        validationSucceeded = false;
+        validationSucceeded = false
       }
-    });
+    })
 
     if (validationSucceeded === false) {
-      setState({...state, ...newState});
-      return;
+      setState({ ...state, ...newState })
+      return
     }
 
-    return store.sendMemberInvitationEmail(state).then(props.onSuccess, props.onFailure);
+    return store
+      .sendMemberInvitationEmail({
+        email: state.email,
+        firstName: state.firstName,
+        lastName: state.lastName,
+        isAdmin: state.role === ROLES.ADMIN_LABEL,
+      })
+      .then(props.onSuccess, props.onFailure)
   }
 
-  // TODO require stars
+  function handleChange(e) {
+    if (e.target.name === 'firstName') {
+      setState({ ...state, firstName: e.target.value })
+    } else if (e.target.name === 'lastName') {
+      setState({ ...state, lastName: e.target.value })
+    } else if (e.target.name === 'email') {
+      setState({ ...state, email: e.target.value })
+    } else {
+      setState({ ...state, role: e.target.value })
+    }
+  }
+
   // TODO needs to fail but not close on validation failure and high light invalid fields (can do that before touching the store)
   return (
     <Modal hidden={props.hidden} onClose={props.onClose} containerClass="add-member-modal-container">
       <h1>Add Member</h1>
       <div className="add-member-form">
-        <label for="fname">First Name<span>*</span></label>
-        <input type="text" id="fname" name="fname" />
-        {
-          state.firstNameValidationFailed &&
-          <div className="validationResult">
-            {state.firstNameValidationMessage}
-          </div>
-        }
-        <label for="lname">Last Name<span>*</span></label>
-        <input type="text" id="lname" name="lname" />
-        {
-          state.lastNameValidationFailed &&
-          <div className="validationResult">
-            {state.lastNameValidationMessage}
-          </div>
-        }
-        <label for="email">Email<span>*</span></label>
-        <input type="text" id="email" name="email" />
-        {
-          state.emailValidationFailed &&
-          <div className="validationResult">
-            {state.emailValidationMessage}
-          </div>
-        }
-        <label for="role">Role<span>*</span></label>
-        <RoleSelector isAdmin={true} />
-        {
-          state.roleValidationFailed &&
-          <div className="validationResult">
-            {state.roleValidationMessage}
-          </div>
-        }
+        <label>
+          First Name<span>*</span>
+        </label>
+        <input type="text" name="firstName" value={state.firstName} onChange={handleChange} />
+        {state.firstNameValidationFailed && <div className="validationResult">{state.firstNameValidationMessage}</div>}
+        <label>
+          Last Name<span>*</span>
+        </label>
+        <input type="text" name="lastName" value={state.lastName} onChange={handleChange} />
+        {state.lastNameValidationFailed && <div className="validationResult">{state.lastNameValidationMessage}</div>}
+        <label>
+          Email<span>*</span>
+        </label>
+        <input type="text" name="email" value={state.email} onChange={handleChange} />
+        {state.emailValidationFailed && <div className="validationResult">{state.emailValidationMessage}</div>}
+        <label>
+          Role<span>*</span>
+        </label>
+        <RoleSelector isAdmin={false} onChange={handleChange} />
+        {state.roleValidationFailed && <div className="validationResult">{state.roleValidationMessage}</div>}
         <div className="save-button-container">
           <PendingOperationButton className="save-button" operation={submitMemberInvitation}>
             Submit
