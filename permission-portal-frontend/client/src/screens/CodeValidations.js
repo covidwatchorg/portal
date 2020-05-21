@@ -7,7 +7,6 @@ import * as ROUTES from '../constants/routes'
 import { compose } from 'recompose'
 import { withStore } from '../state'
 import { Redirect } from 'react-router-dom'
-// import { withRouter } from 'react-router-dom'
 
 // snackbars docs can be found here:
 // https://material-ui.com/components/snackbars/

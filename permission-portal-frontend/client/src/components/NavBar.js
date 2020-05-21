@@ -8,10 +8,10 @@ import Menu from '@material-ui/core/Menu'
 import { compose } from 'recompose'
 import { withRouter } from 'react-router-dom'
 import AuthAwareMenuItem from '../components/AuthAwareComponents/AuthAwareMenuItem'
-import store from '../store'
 import ucsf_health from '../../assets/ucsf-health.svg'
 import profile from '../../assets/placeholder/profile.png'
 import * as ROLES from '../constants/roles'
+import { withStore } from '../state'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -32,7 +32,7 @@ const linkStyles = {
   fontSize: 20,
 }
 
-const NavBarBase = () => {
+const NavBarBase = (props) => {
   const classes = useStyles()
 
   const [redirect, setRedirect] = useState(-1)
@@ -50,22 +50,22 @@ const NavBarBase = () => {
   const onClickMenuItem = (num) => {
     setAnchorEl(null)
     if (num === 4) {
-      store.signOut()
+      props.store.signOut()
     }
     setRedirect(num)
   }
 
   const getUserName = () => {
-    if (store.user) {
-      return store.user.firstName + ' ' + store.user.lastName
+    if (props.store.user) {
+      return props.store.user.firstName + ' ' + props.store.user.lastName
     } else {
       return null
     }
   }
 
   const getUserTitle = () => {
-    if (store.user) {
-      return store.user.isAdmin ? ROLES.ADMIN_LABEL : ROLES.NON_ADMIN_LABEL
+    if (props.store.user) {
+      return props.store.user.isAdmin ? ROLES.ADMIN_LABEL : ROLES.NON_ADMIN_LABEL
     } else {
       return null
     }
@@ -135,6 +135,6 @@ const NavBarBase = () => {
   )
 }
 
-const NavBar = compose(withRouter)(NavBarBase)
+const NavBar = compose(withStore, withRouter)(NavBarBase)
 
 export default NavBar

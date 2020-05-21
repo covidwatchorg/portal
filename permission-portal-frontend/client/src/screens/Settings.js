@@ -2,12 +2,12 @@ import React, { Fragment, useState } from 'react'
 import Grid from '@material-ui/core/Grid'
 import Modal from '@material-ui/core/Modal'
 import { makeStyles } from '@material-ui/core/styles'
-import { withAuthorization } from '../components/Session'
 import * as ROLES from '../constants/roles'
 import Toast from '../components/Toast'
 import { compose } from 'recompose'
-import store from '../store'
-import { useObserver } from 'mobx-react'
+import { Redirect } from 'react-router-dom'
+import { withStore } from '../state'
+import * as ROUTES from '../constants/routes'
 
 const useStyles = makeStyles({
   root: {
@@ -74,7 +74,7 @@ const changeImageModalStyles = makeStyles({
   },
 })
 
-const SettingsBase = () => {
+const SettingsBase = (props) => {
   const classes = useStyles()
   const input = inputStyles()
   const secondaryButton = secondaryButtonStyles()
@@ -94,7 +94,7 @@ const SettingsBase = () => {
   const resetPassword = async (e) => {
     e.preventDefault()
     try {
-      const success = await store.user.sendPasswordResetEmail()
+      const success = await props.store.sendPasswordResetEmail()
       setPwdResetSuccess(success)
       setShowBanner(true)
     } catch (err) {
@@ -161,7 +161,7 @@ const SettingsBase = () => {
                 id="prefix"
                 name="prefix"
                 className={input.root}
-                defaultValue={store.user ? store.user.prefix : ''}
+                defaultValue={props.store.user ? props.store.user.prefix : ''}
               ></input>
               <label htmlFor="firstName">
                 First Name <span style={{ color: 'red' }}>*</span>
@@ -172,7 +172,7 @@ const SettingsBase = () => {
                 name="firstName"
                 required
                 className={input.root}
-                defaultValue={store.user ? store.user.firstName : ''}
+                defaultValue={props.store.user ? props.store.user.firstName : ''}
               ></input>
               <label htmlFor="email">
                 Email Address <span style={{ color: 'red' }}>*</span>
@@ -183,7 +183,7 @@ const SettingsBase = () => {
                 name="email"
                 required
                 className={input.root}
-                defaultValue={store.user ? store.user.email : ''}
+                defaultValue={props.store.user ? props.store.user.email : ''}
               ></input>
               <button type="submit" className={primaryButton.root}>
                 Save Changes
@@ -196,20 +196,20 @@ const SettingsBase = () => {
               <label htmlFor="role">
                 Role <span style={{ color: 'red' }}>*</span>
               </label>
-              {store.user && (
+              {props.store.user && (
                 <select
                   type="text"
                   id="role"
                   name="role"
-                  disabled={!store.user.isAdmin}
+                  disabled={!props.store.user.isAdmin}
                   required
                   className={input.root}
-                  style={!store.user.isAdmin ? { backgroundColor: '#E0E0E0' } : {}}
+                  style={!props.store.user.isAdmin ? { backgroundColor: '#E0E0E0' } : {}}
                 >
-                  <option value={ROLES.ADMIN_LABEL} defaultValue={store.user.isAdmin}>
+                  <option value={ROLES.ADMIN_LABEL} defaultValue={props.store.user.isAdmin}>
                     {ROLES.ADMIN_LABEL}
                   </option>
-                  <option value={ROLES.NON_ADMIN_LABEL} defaultValue={!store.user.isAdmin}>
+                  <option value={ROLES.NON_ADMIN_LABEL} defaultValue={!props.store.user.isAdmin}>
                     {ROLES.NON_ADMIN_LABEL}
                   </option>
                 </select>
@@ -223,7 +223,7 @@ const SettingsBase = () => {
                 name="lastName"
                 required
                 className={input.root}
-                defaultValue={store.user ? store.user.lastName : ''}
+                defaultValue={props.store.user ? props.store.user.lastName : ''}
               ></input>
               <label htmlFor="password">
                 Password <span style={{ color: 'red' }}>*</span>
@@ -265,19 +265,16 @@ const SettingsBase = () => {
     </Fragment>
   )
 
-  return useObserver(() => (
+  return !props.store.user.isSignedIn ? (
+    <Redirect to={ROUTES.LANDING} />
+  ) : (
     <React.Fragment>
       <h1>My Settings</h1>
       {settingsForm()}
     </React.Fragment>
-  ))
+  )
 }
 
-const condition = (authUser) => {
-  var result = authUser
-  return result
-}
-
-const Settings = compose(withAuthorization(condition))(SettingsBase)
+const Settings = compose(withStore)(SettingsBase)
 
 export default Settings

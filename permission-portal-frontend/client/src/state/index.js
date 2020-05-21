@@ -18,13 +18,7 @@ var firebaseConfigMap = {
   staging: firebaseConfigStaging,
 }
 
-console.log(`environment is : ${process.env.NODE_ENV}`)
-var key = 'dev'
-if (process.env) {
-  key = process.env.NODE_ENV
-}
-console.log(`firebase configuration in ${key}`)
-var config = firebaseConfigMap[key]
+var config = firebaseConfigMap[process.env ? process.env.NODE_ENV : 'dev']
 
 const StoreContext = React.createContext()
 
@@ -35,6 +29,15 @@ const createStore = (WrappedComponent) => {
       app.initializeApp(config)
       this.auth = app.auth()
       this.db = app.firestore()
+      this.authStateListener = this.auth.onAuthStateChanged((user) => {
+        const state = this.state
+        if (user) {
+          state.user.isSignedIn = true
+        } else {
+          state.user.isSignedIn = false
+        }
+        this.setState(state)
+      })
     }
 
     displayName = 'storeProvider'
@@ -64,20 +67,27 @@ const createStore = (WrappedComponent) => {
         delete state[key]
         this.setState(state)
       },
-      emailToShit: () => {
-        const state = this.state
-        state.user.email = 'Shit'
-        this.setState(state)
-      },
       signInWithEmailAndPassword: async (email, password) => {
         const state = this.state
         try {
           const userCredential = await this.auth.signInWithEmailAndPassword(email, password)
           const userDocumentSnapshot = await this.db.collection('users').doc(userCredential.user.email).get()
-          state.user = { ...userDocumentSnapshot.data(), email: userDocumentSnapshot.id }
+          state.user = { ...userDocumentSnapshot.data(), email: userDocumentSnapshot.id, isSignedIn: true }
           this.setState(state)
         } catch (err) {
           console.error(err)
+        }
+      },
+      signOut: async () => {
+        await this.auth.signOut()
+      },
+      sendPasswordResetEmail: async () => {
+        try {
+          await this.auth.sendPasswordResetEmail(this.state.user.email)
+          return true
+        } catch (err) {
+          console.warn(err)
+          return false
         }
       },
     }
