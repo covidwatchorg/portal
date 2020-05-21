@@ -8,10 +8,10 @@ import ManageTeams from './src/screens/ManageTeams'
 import Footer from './src/components/Footer'
 import NavBar from './src/components/NavBar'
 import * as ROUTES from './src/constants/routes'
-import { withAuthentication } from './src/components/Session'
 import { ThemeProvider } from '@material-ui/styles'
 import theme from './ui/Theme'
 import store from './src/store'
+import { createStore } from './src/state'
 
 const Routes = () => {
   useEffect(() => {
@@ -60,4 +60,4 @@ const Routes = () => {
   )
 }
 
-export default withAuthentication(Routes)
+export default createStore(Routes)

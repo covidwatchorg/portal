@@ -1,13 +1,12 @@
 import React, { Fragment } from 'react'
 import { withRouter } from 'react-router-dom'
-import { withFirebase } from '../components/Firebase'
 import { compose } from 'recompose'
 import * as ROUTES from '../constants/routes'
-import store from '../store'
 import doctor1 from '../../assets/doctor1.svg'
 import doctor2 from '../../assets/doctor2.svg'
 import ucsf_health from '../../assets/ucsf-health.svg'
 import powered_by_cw from '../../assets/powered-by-cw.svg'
+import { withStore } from '../state'
 
 const INITIAL_STATE = {
   email: '',
@@ -21,41 +20,17 @@ class SignInFormBase extends React.Component {
     super(props)
     this.state = { ...INITIAL_STATE }
     this.onChange = this.onChange.bind(this)
-    this.onSubmit = this.onSubmit.bind(this)
   }
 
   clickSubmit = async (event) => {
     event.preventDefault()
-    //this.setValues({ ...values, error: false })
     const { email, password } = this.state
     try {
-      await store.signIn(email, password)
-      if (store.user) {
-        this.props.history.push(store.user.isAdmin ? ROUTES.MANAGE_MEMBERS : ROUTES.CODE_VALIDATIONS)
-      }
+      await this.props.store.signInWithEmailAndPassword(email, password)
+      this.props.history.push(this.props.store.user.isAdmin ? ROUTES.MANAGE_MEMBERS : ROUTES.CODE_VALIDATIONS)
     } catch (err) {
-      console.log(err)
+      console.warn(err)
     }
-  }
-
-  onSubmit = (event) => {
-    event.preventDefault()
-    const { email, password } = this.state
-    this.props.firebase
-      .doSignInWithEmailAndPassword(email, password)
-      .then((user) => {
-        this.setState({ ...INITIAL_STATE })
-        this.props.firebase.generateUserDocument(user.user).then((userDoc) => {
-          if (userDoc.isAdmin === true) {
-            this.props.history.push(ROUTES.MANAGE_MEMBERS)
-          }
-        })
-      })
-      .catch((error) => {
-        this.setState({ error })
-      })
-
-    event.preventDefault()
   }
 
   onChange = (name) => (event) => {
@@ -110,7 +85,7 @@ class SignInFormBase extends React.Component {
   }
 }
 
-const SignInForm = compose(withRouter, withFirebase)(SignInFormBase)
+const SignInForm = compose(withStore, withRouter)(SignInFormBase)
 
 const Login = () => <SignInForm />
 

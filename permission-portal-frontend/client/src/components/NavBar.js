@@ -136,6 +136,6 @@ const NavBarBase = () => {
   )
 }
 
-const NavBar = compose(withRouter, withAuthentication)(NavBarBase)
+const NavBar = compose(withRouter)(NavBarBase)
 
 export default NavBar
