@@ -18,9 +18,9 @@ const INITIAL_STATE = {
 
 class SignInFormBase extends React.Component {
   constructor(props) {
-    super(props);
-    this.state = { ...INITIAL_STATE };
-    this.onChange = this.onChange.bind(this);
+    super(props)
+    this.state = { ...INITIAL_STATE }
+    this.onChange = this.onChange.bind(this)
   }
 
   clickSubmit = async (event) => {
