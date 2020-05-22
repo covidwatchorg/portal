@@ -7,6 +7,7 @@ import { withAuthorization } from '../components/Session'
 import * as ROLES from '../constants/roles'
 import Toast from '../components/Toast'
 import { compose } from 'recompose'
+//import invariant from 'invariant'
 import store from '../store'
 import { Observer } from 'mobx-react'
 import { withDatastore } from '../components/Datastore/hoc'
@@ -97,6 +98,12 @@ class SettingsBase extends React.Component {
     } catch (err) {
       console.log(err)
     }
+  }
+
+  fetchData() {
+    var query = '{({firestore}) => firestore.collection("users")}'
+    //invariant(this.props.query, '({firestore}) => firestore.collection("users")')
+    return this.props.firestore.query(query)
   }
 
   resetPassword = async (e) => {
@@ -283,6 +290,8 @@ class SettingsBase extends React.Component {
     </Fragment>
   )
   render() {
+    //data = this.fetchData()
+
     return <Observer>{() => <React.Fragment>{this.settingsForm()}</React.Fragment>}</Observer>
   }
 }
