@@ -7,7 +7,7 @@ import ucsf_health from '../../assets/ucsf-health.svg'
 import powered_by_cw from '../../assets/powered-by-cw.svg'
 import { withStore } from '../store'
 import { observer } from 'mobx-react'
-// import ForgotPasswordModal from '../screens/ForgotPasswordModal'
+import ForgotPasswordModal from '../screens/ForgotPasswordModal'
 
 const INITIAL_STATE = {
   email: '',
@@ -81,7 +81,7 @@ const SignInFormBase = observer(
             <button onClick={this.clickSubmit}>Login</button>
             <a onClick={this.showModal}>Forgot password?</a>
           </div>
-          {/* <ForgotPasswordModal hidden={!this.state.showPassModal} onClose={this.hideModal} /> */}
+          <ForgotPasswordModal hidden={!this.state.showPassModal} onClose={this.hideModal} />
         </div>
       </Fragment>
     )

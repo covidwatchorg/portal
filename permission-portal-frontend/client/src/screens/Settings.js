@@ -94,7 +94,7 @@ const SettingsBase = observer((props) => {
   const resetPassword = async (e) => {
     e.preventDefault()
     try {
-      const success = await props.store.user.sendPasswordResetEmail()
+      const success = await props.store.sendPasswordResetEmail(props.store.user.email)
       setPwdResetSuccess(success)
       setShowBanner(true)
     } catch (err) {

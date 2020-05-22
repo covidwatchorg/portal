@@ -49,17 +49,7 @@ const User = types
       console.log(self)
     }
 
-    const sendPasswordResetEmail = flow(function* () {
-      try {
-        yield auth.sendPasswordResetEmail(self.email)
-        return true
-      } catch (err) {
-        console.warn(err)
-        return false
-      }
-    })
-
-    return { __update, sendPasswordResetEmail }
+    return { __update }
   })
 
 const Organization = types
@@ -136,7 +126,17 @@ const Store = types
       }
     })
 
-    return { signInWithEmailAndPassword, signOut, createUser }
+    const sendPasswordResetEmail = flow(function* (email) {
+      try {
+        yield auth.sendPasswordResetEmail(email)
+        return true
+      } catch (err) {
+        console.warn(err)
+        return false
+      }
+    })
+
+    return { signInWithEmailAndPassword, signOut, createUser, sendPasswordResetEmail }
   })
 
 const defaultUser = {
