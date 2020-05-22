@@ -8,12 +8,14 @@ import doctor1 from '../../assets/doctor1.svg'
 import doctor2 from '../../assets/doctor2.svg'
 import ucsf_health from '../../assets/ucsf-health.svg'
 import powered_by_cw from '../../assets/powered-by-cw.svg'
+import ForgotPasswordModal from '../screens/ForgotPasswordModal'
 
 const INITIAL_STATE = {
   email: '',
   password: '',
   error: null,
   redirect: false,
+  showPassModal: false,
 }
 
 class SignInFormBase extends React.Component {
@@ -62,6 +64,14 @@ class SignInFormBase extends React.Component {
     this.setState({ [name]: event.target.value })
   }
 
+  showModal = () => {
+    this.setState({ showPassModal: true })
+  }
+
+  hideModal = () => {
+    this.setState({ showPassModal: false })
+  }
+
   bottomLevelContent = () => (
     <Fragment>
       <div className="doctorContainer">
@@ -94,8 +104,9 @@ class SignInFormBase extends React.Component {
           <label htmlFor="password">Password</label>
           <input onChange={this.onChange('password')} type="password" id="password" name="password" />
           <button onClick={this.clickSubmit}>Login</button>
-          <a href="url">Forgot password?</a>
+          <a onClick={this.showModal}>Forgot password?</a>
         </div>
+        <ForgotPasswordModal hidden={!this.state.showPassModal} onClose={this.hideModal} />
       </div>
     </Fragment>
   )
