@@ -94,7 +94,6 @@ class SettingsBase extends React.Component {
     //this.setValues({ ...values, error: false })
     try {
       await store.user
-      
     } catch (err) {
       console.log(err)
     }

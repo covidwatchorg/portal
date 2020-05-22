@@ -15,6 +15,7 @@ class DatastoreProvider extends Component {
     this.state = {}
 
     this.firestore = firebase.firestore()
+    //eslint-disable-next-line no-unused-vars
     const { query, children, ...customSettings } = props
     this.firestore.settings({ ...customSettings, timestampsInSnapshots: true })
   }
@@ -74,6 +75,7 @@ class DatastoreProvider extends Component {
     if (this.state[hash]) {
       return this.state[hash]
     } else {
+      //eslint-disable-next-line no-unused-vars
       throw new Promise((resolve, reject) => {
         query.onSnapshot((snapshot) => {
           if (snapshot.forEach) {

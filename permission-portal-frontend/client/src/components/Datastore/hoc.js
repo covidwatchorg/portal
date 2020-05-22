@@ -18,7 +18,7 @@ const withDatastore = (WrappedComponent) => {
 }
 
 const setTitle = (title) => (WrappedComponent) => {
-  return class extends React.Component {
+  return class setTitle extends React.Component {
     componentDidMount() {
       document.title = title
     }

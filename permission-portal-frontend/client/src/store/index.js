@@ -125,14 +125,14 @@ const Store = types
         console.error(e)
       }
     })
-
+    //eslint-disable-next-line no-unused-vars
     const save = flow(function* () {
       const userDoc = yield firebase.getUserDocument(self.email)
       userDoc.firstName = self.user.firstName
       userDoc.prefix = self.user.prefix
       userDoc.lastName = self.user.lastName
 
-      firebase.db.ref('users/' + email).set({
+      firebase.db.ref('users/' + self.email).set({
         ...userDoc,
       })
     })
