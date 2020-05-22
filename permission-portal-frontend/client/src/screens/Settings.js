@@ -120,7 +120,7 @@ const SettingsBase = () => {
 
   const settingsForm = () => (
     <Fragment>
-      <form>
+      <form className="module-container">
         <Grid container className={classes.root} spacing={2} direction="row" justify="center">
           <Grid item xs={4}>
             <Grid container spacing={2} direction="column">
