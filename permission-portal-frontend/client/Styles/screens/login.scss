@@ -102,7 +102,10 @@
     color: #2C58B1;
     margin-top: 30px;
     text-decoration: none;
-    
+  }
+  a:hover {
+    cursor: pointer;
+    text-decoration: underline;
   }
 }
 

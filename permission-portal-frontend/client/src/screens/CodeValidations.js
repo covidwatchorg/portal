@@ -1,20 +1,18 @@
-import React, { useState } from "react";
-import Button from "@material-ui/core/Button";
-import CircularProgress from "@material-ui/core/CircularProgress";
+import React, { useState } from 'react'
+import Button from '@material-ui/core/Button'
 import Toast from '../components/Toast'
-import info_icon from "../../assets/info-icon.svg"
-import "../../Styles/screens/code_validations.scss";
-import { withAuthorization } from '../components/Session';
-import { compose } from 'recompose';
+import info_icon from '../../assets/info-icon.svg'
+import '../../Styles/screens/code_validations.scss'
+import { withAuthorization } from '../components/Session'
+import { compose } from 'recompose'
 
 // snackbars docs can be found here:
 // https://material-ui.com/components/snackbars/
 
-
 const CodeValidationsBase = () => {
-  const [isOpen, setIsOpen] = useState(false);
-  const [code, setCode] = useState("");
-  const [date, setDate] = useState("");
+  const [isOpen, setIsOpen] = useState(false)
+  const [code, setCode] = useState('')
+  const [date, setDate] = useState('')
 
   return (
     <div className="module-container">
@@ -31,27 +29,24 @@ const CodeValidationsBase = () => {
                 {/* to replace tooltip text here: */}
                 <div className="tooltip-title">This the tooltip title</div>
                 <div className="tooltip-body">
-                  Quisque sagittis, vel hendrerit consectetur tincidunt
-                  senectus. Feugiat aenean nunc, tempus tempus, porta nibh.
-                  Nunc id donec enim ut potenti risus amet amet.
+                  Quisque sagittis, vel hendrerit consectetur tincidunt senectus. Feugiat aenean nunc, tempus tempus,
+                  porta nibh. Nunc id donec enim ut potenti risus amet amet.
                 </div>
               </div>
             </div>
           </div>
           <p className="section-description">
-            Enter the positive test validation code the user gave to you over
-            the phone.
+            Enter the positive test validation code the user gave to you over the phone.
           </p>
-          <input type="text" placeholder="281-177-9" onChange={e => setCode(e.target.value)}></input>
+          <input type="text" placeholder="281-177-9" onChange={(e) => setCode(e.target.value)}></input>
         </div>
 
         <div className="action-section">
           <h2 className="section-heading">Tracing Start Date</h2>
           <p className="section-description">
-            Enter facilisis etiam. Felis sed blandit in lacus urna et, arcu
-            notiar, dui, lorem.
+            Enter facilisis etiam. Felis sed blandit in lacus urna et, arcu notiar, dui, lorem.
           </p>
-          <input type="date" onChange={e => setDate(e.target.value)}></input>
+          <input type="date" onChange={(e) => setDate(e.target.value)}></input>
         </div>
 
         <div id="white-box" className="white-background">
@@ -63,30 +58,23 @@ const CodeValidationsBase = () => {
           </div> */}
 
           <Button
-            id={`verify-code-btn${date === "" || code === "" ? "-disabled" : ""}`}
+            id={`verify-code-btn${date === '' || code === '' ? '-disabled' : ''}`}
             onClick={() => setIsOpen(true)}
-            disabled={date === "" || code === ""}
+            disabled={date === '' || code === ''}
           >
             Verify Code
           </Button>
         </div>
       </div>
-      <Toast
-        open={isOpen}
-        onClose={() => setIsOpen(false)}
-        isSuccess={true}
-        message="Code verification confirmed"
-      />
+      <Toast open={isOpen} onClose={() => setIsOpen(false)} isSuccess={true} message="Code verification confirmed" />
     </div>
-  );
+  )
 }
-const condition = authUser => {
-  var result = authUser;
-  return result;
+const condition = (authUser) => {
+  var result = authUser
+  return result
 }
 
-const CodeValidations =  compose(
-  withAuthorization(condition),
-)(CodeValidationsBase);
+const CodeValidations = compose(withAuthorization(condition))(CodeValidationsBase)
 
-export default CodeValidations;
+export default CodeValidations
