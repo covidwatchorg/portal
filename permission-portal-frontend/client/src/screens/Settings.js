@@ -7,6 +7,7 @@ import Toast from '../components/Toast'
 import { Redirect } from 'react-router-dom'
 import { withStore } from '../store'
 import * as ROUTES from '../constants/routes'
+import { observer } from 'mobx-react'
 
 const useStyles = makeStyles({
   root: {
@@ -73,7 +74,7 @@ const changeImageModalStyles = makeStyles({
   },
 })
 
-const SettingsBase = (props) => {
+const SettingsBase = observer((props) => {
   const classes = useStyles()
   const input = inputStyles()
   const secondaryButton = secondaryButtonStyles()
@@ -93,7 +94,7 @@ const SettingsBase = (props) => {
   const resetPassword = async (e) => {
     e.preventDefault()
     try {
-      const success = await props.store.sendPasswordResetEmail()
+      const success = await props.store.user.sendPasswordResetEmail()
       setPwdResetSuccess(success)
       setShowBanner(true)
     } catch (err) {
@@ -272,7 +273,7 @@ const SettingsBase = (props) => {
   ) : (
     <Redirect to={ROUTES.LANDING} />
   )
-}
+})
 
 const Settings = withStore(SettingsBase)
 

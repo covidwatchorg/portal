@@ -4,6 +4,7 @@ import RoleSelector from '../components/RoleSelector'
 import Modal from '../components/Modal'
 import * as ROLES from '../constants/roles'
 import { withStore } from '../store'
+import { observer } from 'mobx-react'
 
 const ValidationResult = (succeeded, failureReason) => {
   return {
@@ -37,7 +38,7 @@ const ValidationRules = [
   },
 ]
 
-const AddMemberModalBase = (props) => {
+const AddMemberModalBase = observer((props) => {
   const [state, setState] = useState({
     firstName: '',
     firstNameValidationFailed: false,
@@ -137,7 +138,7 @@ const AddMemberModalBase = (props) => {
       </div>
     </Modal>
   )
-}
+})
 
 const AddMemberModal = withStore(AddMemberModalBase)
 

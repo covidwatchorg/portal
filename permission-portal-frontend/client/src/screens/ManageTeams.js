@@ -9,8 +9,9 @@ import AddMemberModal from '../components/AddMemberModal'
 import Toast from '../components/Toast'
 import RoleSelector from '../components/RoleSelector'
 import { withStore } from '../store'
+import { observer } from 'mobx-react'
 
-const ManageTeamsBase = (props) => {
+const ManageTeamsBase = observer((props) => {
   const [toastShouldOpen, setToastShouldOpen] = useState(false)
   const [isSuccess, setIsSuccess] = useState(false)
 
@@ -32,6 +33,7 @@ const ManageTeamsBase = (props) => {
 
   const onCancel = () => {
     setShowModal(false)
+    console.log(pages)
   }
 
   const onSuccess = () => {
@@ -130,7 +132,7 @@ const ManageTeamsBase = (props) => {
   ) : (
     <Redirect to={ROUTES.LANDING} />
   )
-}
+})
 
 const ManageTeams = withStore(ManageTeamsBase)
 

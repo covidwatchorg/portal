@@ -9,6 +9,7 @@ import ucsf_health from '../../assets/ucsf-health.svg'
 import profile from '../../assets/placeholder/profile.png'
 import * as ROLES from '../constants/roles'
 import { withStore } from '../store'
+import { observer } from 'mobx-react'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -29,7 +30,7 @@ const linkStyles = {
   fontSize: 20,
 }
 
-const NavBarBase = (props) => {
+const NavBarBase = observer((props) => {
   const classes = useStyles()
 
   const [redirect, setRedirect] = useState(-1)
@@ -114,7 +115,7 @@ const NavBarBase = (props) => {
       )}
     </div>
   )
-}
+})
 
 const NavBar = withStore(NavBarBase)
 

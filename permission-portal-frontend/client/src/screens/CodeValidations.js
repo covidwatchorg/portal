@@ -6,11 +6,12 @@ import '../../Styles/screens/code_validations.scss'
 import * as ROUTES from '../constants/routes'
 import { withStore } from '../store'
 import { Redirect } from 'react-router-dom'
+import { observer } from 'mobx-react'
 
 // snackbars docs can be found here:
 // https://material-ui.com/components/snackbars/
 
-const CodeValidationsBase = (props) => {
+const CodeValidationsBase = observer((props) => {
   const [isOpen, setIsOpen] = useState(false)
   const [code, setCode] = useState('')
   const [date, setDate] = useState('')
@@ -72,7 +73,7 @@ const CodeValidationsBase = (props) => {
   ) : (
     <Redirect to={ROUTES.LANDING} />
   )
-}
+})
 
 const CodeValidations = withStore(CodeValidationsBase)
 
