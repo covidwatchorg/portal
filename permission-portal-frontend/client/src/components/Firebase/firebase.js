@@ -107,6 +107,7 @@ class Firebase {
       await this.auth.sendPasswordResetEmail(email)
     } catch (error) {
       console.error('Error sending password reset email', error)
+      throw error;
     }
   }
 
