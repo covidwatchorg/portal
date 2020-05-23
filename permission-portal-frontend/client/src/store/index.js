@@ -14,12 +14,14 @@ import { types, cast, flow } from 'mobx-state-tree'
 var firebaseConfigMap = {
   development: firebaseConfigDev,
   test: firebaseConfigTest,
-  prod: firebaseConfigProd,
+  production: firebaseConfigProd,
   local: firebaseConfigLocal,
   staging: firebaseConfigStaging,
 }
 
-const config = firebaseConfigMap[process.env ? process.env.NODE_ENV : 'dev']
+const config = firebaseConfigMap[process.env ? process.env.NODE_ENV : 'development']
+
+console.log(`process.env.NODE_ENV = ${process.env.NODE_ENV}`)
 
 app.initializeApp(config)
 const auth = app.auth()
@@ -36,6 +38,7 @@ const User = types
     isSuperAdmin: types.boolean,
     disabled: types.boolean,
     prefix: types.maybe(types.string),
+    imageBlob: types.maybe(types.string),
     firstName: types.string,
     lastName: types.string,
     organizationID: types.string,
@@ -43,13 +46,20 @@ const User = types
   .actions((self) => {
     const __update = (updates) => {
       Object.keys(updates).forEach((key) => {
-        if (self.hasOwnProperty(key)) self[key] = updates[key]
+        if (self.hasOwnProperty(key)) self[key] = updates[key] // eslint-disable-line no-prototype-builtins
       })
       console.log('Updated User:')
       console.log(self)
     }
+    const update = flow(function* (updates) {
+      try {
+        yield db.collection('users').doc(self.email).update(updates)
+      } catch (err) {
+        console.error('Error updating users', err)
+      }
+    })
 
-    return { __update }
+    return { __update, update }
   })
 
 const Organization = types
@@ -79,7 +89,7 @@ const Organization = types
   .actions((self) => {
     const __update = (updates) => {
       Object.keys(updates).forEach((key) => {
-        if (self.hasOwnProperty(key)) self[key] = updates[key]
+        if (self.hasOwnProperty(key)) self[key] = updates[key] // eslint-disable-line no-prototype-builtins
       })
       console.log('Updated Organization:')
       console.log(self)
@@ -122,6 +132,7 @@ const Store = types
         console.log(`Created new user: ${JSON.stringify(result.data)}`)
         return result.data
       } catch (err) {
+        console.log(err)
         throw err
       }
     })

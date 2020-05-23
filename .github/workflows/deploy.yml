@@ -1,13 +1,11 @@
 # Builds node app and deploys to AWS S3
 # 'dev' branch deploys to staging - http://permissions-staging.s3-website-us-west-1.amazonaws.com/
 
-# TO ADD AT SOME POINT: prod branch deploy to production
-
 name: Deploy
 
 on:
   push:
-    branches: [dev]
+    branches: [dev, master]
 
 jobs:
   build:
@@ -21,14 +19,27 @@ jobs:
         with:
           node-version: "12.x"
 
-      - name: Build node app
+      - name: Build node app for staging
         working-directory: permission-portal-frontend
         env:
           CI: true
         run: |
           npm ci
           npm run init
+          npm run git-info
           npm run build:staging
+        if: github.ref == 'refs/heads/dev'
+
+      - name: Build node app for prod
+        working-directory: permission-portal-frontend
+        env:
+          CI: true
+        run: |
+          npm ci
+          npm run init
+          npm run git-info
+          npm run build
+        if: github.ref == 'refs/heads/master'
 
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
