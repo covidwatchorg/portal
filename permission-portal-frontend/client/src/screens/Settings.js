@@ -89,7 +89,6 @@ const SettingsBase = (props) => {
   const handleClose = () => {
     setOpen(false)
   }
-
   const resetPassword = async (e) => {
     e.preventDefault()
     try {
