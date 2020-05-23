@@ -171,6 +171,7 @@ const SettingsBase = observer((props) => {
                 id="firstName"
                 name="firstName"
                 required
+                aria-required="true"
                 className={input.root}
                 defaultValue={props.store.user.firstName}
               ></input>
@@ -182,6 +183,7 @@ const SettingsBase = observer((props) => {
                 id="email"
                 name="email"
                 required
+                aria-required="true"
                 className={input.root}
                 defaultValue={props.store.user.email}
               ></input>
@@ -203,6 +205,7 @@ const SettingsBase = observer((props) => {
                   name="role"
                   disabled={!props.store.user.isAdmin}
                   required
+                  aria-required="true"
                   className={input.root}
                   style={!props.store.user.isAdmin ? { backgroundColor: '#E0E0E0' } : {}}
                 >
@@ -222,6 +225,7 @@ const SettingsBase = observer((props) => {
                 id="lastName"
                 name="lastName"
                 required
+                aria-required="true"
                 className={input.root}
                 defaultValue={props.store.user.lastName}
               ></input>
@@ -230,6 +234,7 @@ const SettingsBase = observer((props) => {
               </label>
               <input
                 required
+                aria-required="true"
                 className={input.root}
                 id="password"
                 name="password"
