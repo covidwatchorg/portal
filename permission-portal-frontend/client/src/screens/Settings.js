@@ -8,6 +8,7 @@ import { Redirect } from 'react-router-dom'
 import { withStore } from '../store'
 import * as ROUTES from '../constants/routes'
 import { observer } from 'mobx-react'
+import PageTitle from '../components/PageTitle'
 
 const useStyles = makeStyles({
   root: {
@@ -135,7 +136,8 @@ const SettingsBase = observer((props) => {
                   textAlign: 'center',
                 }}
               >
-                <img alt="Your profile photo would go here."
+                <img
+                  alt="Your profile photo would go here."
                   src="client/assets/photo-add.png"
                   style={{ height: '50px', width: '50px', display: 'block', margin: 'auto', marginTop: '75px' }}
                 ></img>
@@ -272,6 +274,7 @@ const SettingsBase = observer((props) => {
 
   return props.store.user.isSignedIn ? (
     <React.Fragment>
+      <PageTitle title="My Settings" />
       <h1>My Settings</h1>
       {settingsForm()}
     </React.Fragment>

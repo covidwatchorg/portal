@@ -6,6 +6,7 @@ import { withStore } from '../store'
 import { Redirect } from 'react-router-dom'
 import * as ROUTES from '../constants/routes'
 import { observer } from 'mobx-react'
+import PageTitle from '../components/PageTitle'
 
 const AccountBrandingBase = observer((props) => {
   const [isSuccess, setIsSuccess] = useState(false)
@@ -33,6 +34,7 @@ const AccountBrandingBase = observer((props) => {
 
   return props.store.user.isSignedIn && props.store.user.isAdmin ? (
     <div className="module-container">
+      <PageTitle title="Account Branding" />
       <h1 className="branding-header">Account Branding</h1>
       <div className="branding-container">
         <div className="branding-section">

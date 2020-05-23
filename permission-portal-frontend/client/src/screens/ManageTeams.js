@@ -10,6 +10,7 @@ import Toast from '../components/Toast'
 import RoleSelector from '../components/RoleSelector'
 import { withStore } from '../store'
 import { observer } from 'mobx-react'
+import PageTitle from '../components/PageTitle'
 
 const ManageTeamsBase = observer((props) => {
   const [toastShouldOpen, setToastShouldOpen] = useState(false)
@@ -52,6 +53,7 @@ const ManageTeamsBase = observer((props) => {
   // TODO: conditional rendering
   return props.store.user.isSignedIn && props.store.user.isAdmin ? (
     <div className="module-container">
+      <PageTitle title="Manage Members" />
       <h1>Manage Members</h1>
       <div className="add-member-button" onClick={() => setShowModal(true)}>
         <img src={addMember} alt="" />

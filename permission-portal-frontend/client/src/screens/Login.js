@@ -8,6 +8,7 @@ import powered_by_cw from '../../assets/powered-by-cw.svg'
 import { withStore } from '../store'
 import { observer } from 'mobx-react'
 import ForgotPasswordModal from '../screens/ForgotPasswordModal'
+import PageTitle from '../components/PageTitle'
 
 const INITIAL_STATE = {
   email: '',
@@ -62,6 +63,7 @@ const SignInFormBase = observer(
 
     loginForm = () => (
       <Fragment>
+        <PageTitle />
         <div className="topNav">
           <img src={ucsf_health} id="ucsfLogo" alt="UCSF Health" />
           <img src={powered_by_cw} id="poweredByCWLogo" alt="Powered by Covid Watch" />
