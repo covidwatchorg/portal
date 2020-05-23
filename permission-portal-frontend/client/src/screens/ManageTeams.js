@@ -74,7 +74,7 @@ const ManageTeamsBase = observer((props) => {
               <tr key={index}>
                 <td>{data.lastName + ', ' + data.firstName}</td>
                 <td style={{ padding: 0 }}>
-                  <RoleSelector ariaLabeledBy="role-header" isAdmin={data.isAdmin} />
+                  <RoleSelector ariaLabelledBy="role-header" isAdmin={data.isAdmin} />
                 </td>
                 <td style={{ padding: 0 }}>
                   <div className="custom-select">
