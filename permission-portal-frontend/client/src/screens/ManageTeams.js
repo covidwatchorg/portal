@@ -10,43 +10,65 @@ import Toast from '../components/Toast'
 import RoleSelector from '../components/RoleSelector'
 import { withStore } from '../store'
 import { observer } from 'mobx-react'
+import PendingOperationButton from '../components/PendingOperationButton'
+
+const PAGE_SIZE = 5;
 
 const ManageTeamsBase = observer((props) => {
   const [toastShouldOpen, setToastShouldOpen] = useState(false)
+  const [toastMessage, setToastMessage] = useState(false)
   const [isSuccess, setIsSuccess] = useState(false)
 
   const [currentPage, setCurrentPage] = useState(0)
   const pages =
     props.store.organization && props.store.organization.members
-      ? [...Array(Math.ceil(props.store.organization.members.length / 15)).keys()]
+      ? [...Array(Math.ceil(props.store.organization.members.length / PAGE_SIZE)).keys()]
       : []
   const [showModal, setShowModal] = useState(false)
 
   const getPageData = () => {
-    const pageStart = 15 * currentPage
-    return props.store.organization.members.slice(pageStart, pageStart + 15)
+    const pageStart = PAGE_SIZE * currentPage
+    return props.store.organization.members.slice(pageStart, pageStart + PAGE_SIZE)
   }
 
   useEffect(() => {
     console.log('Store', props.store)
   }, [])
 
-  const onCancel = () => {
+  const onAddMemberCancel = () => {
     setShowModal(false)
-    console.log(pages)
   }
 
-  const onSuccess = () => {
+  const onAddMemberSuccess = () => {
+    setToastMessage('Member Email Invitation sent')
     setIsSuccess(true)
     setToastShouldOpen(true)
     setShowModal(false)
   }
 
-  const onFailure = (e) => {
+  const onAddMemberFailure = (e) => {
     console.error(e)
+    setToastMessage('Member Email Invitation failed to send')
     setIsSuccess(false)
     setToastShouldOpen(true)
     setShowModal(false)
+  }
+
+  const saveMemebers = () => {
+    try {
+
+      console.log(props.store.organization.members)
+      //await props.store.organization.members.update({  })
+      console.log('Member data saved successfully')
+      setToastMessage('Member data saved successfully')
+      setIsSuccess(true)
+      setToastShouldOpen(true)
+    } catch (err) {
+      console.log(`Member data failed to save: ${err}`)
+      setToastMessage('Failed to save member data')
+      setIsSuccess(false)
+      setToastShouldOpen(true)
+    }
   }
 
   // TODO: conditional rendering
@@ -57,7 +79,7 @@ const ManageTeamsBase = observer((props) => {
         <img src={addMember} />
         <span className="add-button-text">Add Member</span>
       </div>
-      <AddMemberModal hidden={!showModal} onClose={onCancel} onSuccess={onSuccess} onFailure={onFailure} />
+      <AddMemberModal hidden={!showModal} onClose={onAddMemberCancel} onSuccess={onAddMemberSuccess} onFailure={onAddMemberFailure} />
       <table>
         <thead>
           <tr>
@@ -98,7 +120,9 @@ const ManageTeamsBase = observer((props) => {
         </tbody>
       </table>
       <div className="table-bottom-container">
-        <div className="save-button">Save Changes</div>
+        <PendingOperationButton className="save-button" operation={saveMemebers}>
+          Save Changes
+        </PendingOperationButton>
         <div className="pages-container">
           <div className="arrow" onClick={currentPage === 0 ? () => {} : () => setCurrentPage(currentPage - 1)}>
             <img src={arrowLeft} />
@@ -124,7 +148,7 @@ const ManageTeamsBase = observer((props) => {
         open={toastShouldOpen}
         onClose={() => setToastShouldOpen(false)}
         isSuccess={isSuccess}
-        message={isSuccess ? 'Member Email Invitation set' : 'Member Email Invitation failed to send'}
+        message={toastMessage}
       />
     </div>
   ) : props.store.user.isSignedIn ? (

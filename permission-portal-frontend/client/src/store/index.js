@@ -73,7 +73,6 @@ const Organization = types
     verificationNotSharedText: types.string,
     diagnosisText: types.string,
     exposureText: types.string,
-    membersPage: types.number, // TODO: controls pagination
     members: types.array(User),
   })
   .actions((self) => {
@@ -171,7 +170,6 @@ const defaultOrganization = {
   verificationNotSharedText: '',
   diagnosisText: '',
   exposureText: '',
-  membersPage: 1,
   members: [],
 }
 
