@@ -88,11 +88,7 @@ const SignInFormBase = observer(
 
     render() {
       return this.props.store.user.isSignedIn ? (
-        this.props.store.user.isAdmin ? (
-          <Redirect to={ROUTES.MANAGE_MEMBERS} />
-        ) : (
-          <Redirect to={ROUTES.CODE_VALIDATIONS} />
-        )
+        <Redirect to={ROUTES.CODE_VALIDATIONS} />
       ) : (
         <Fragment>
           {this.loginForm()}
