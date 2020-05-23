@@ -102,6 +102,18 @@ const SettingsBase = (props) => {
     }
   }
 
+  const saveSettings = async (e) => {
+    e.preventDefault()
+    try {
+      const success = await props.store.updateUser()
+      setPwdResetSuccess(success)
+      setShowBanner(true)
+    } catch (err) {
+      setPwdResetSuccess(false)
+      setShowBanner(true)
+    }
+  }
+
   const changeImageModal = (
     <div className={changeImage.root}>
       <input type="file" accepts="image/jpeg, image/png" />
@@ -183,7 +195,7 @@ const SettingsBase = (props) => {
                 className={input.root}
                 defaultValue={props.store.user.email}
               ></input>
-              <button type="submit" className={primaryButton.root}>
+              <button onClick={saveSettings} className={primaryButton.root}>
                 Save Changes
               </button>
             </Grid>
@@ -256,9 +268,7 @@ const SettingsBase = (props) => {
         open={showBanner}
         onClose={() => setShowBanner(false)}
         isSuccess={pwdResetSuccess}
-        message={
-          pwdResetSuccess ? 'Password reset email has been sent' : 'Failed to send password email. Please try again'
-        }
+        message={pwdResetSuccess ? 'Successful' : 'Failed. Please try again'}
       />
     </Fragment>
   )

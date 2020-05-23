@@ -209,6 +209,20 @@ const createStore = (WrappedComponent) => {
           throw err
         }
       },
+      updateUser: async () => {
+        try {
+          delete this.state.user.isAdmin
+          delete this.state.user.isSuperAdmin
+          delete this.state.user.organizationID
+          const email = this.state.user.email
+          delete this.state.user.email
+          const result = await this.db.collection('users').doc(email)
+          result.update(this.state.user)
+          return true
+        } catch (err) {
+          console.error('Error updating users', err)
+        }
+      },
     }
 
     render() {
