@@ -9,7 +9,7 @@ import * as firebaseConfigDev from '../config/firebase.config.dev'
 import * as firebaseConfigTest from '../config/firebase.config.test'
 import * as firebaseConfigProd from '../config/firebase.config.prod'
 import * as firebaseConfigStaging from '../config/firebase.config.staging'
-import { types, cast, flow, isArrayType, isMapType } from 'mobx-state-tree'
+import { types, cast, flow } from 'mobx-state-tree'
 
 var firebaseConfigMap = {
   development: firebaseConfigDev,
@@ -53,8 +53,7 @@ const User = types
     }
     const update = flow(function* (updates) {
       try {
-        const sanitized = updates //sanitize(updates)
-        yield db.collection('users').doc(self.email).set(sanitized, { merge: true })
+        yield db.collection('users').doc(self.email).set(updates, { merge: true })
       } catch (err) {
         console.error('Error updating users', err)
       }
