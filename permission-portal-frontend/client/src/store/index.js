@@ -14,12 +14,14 @@ import { types, cast, flow } from 'mobx-state-tree'
 var firebaseConfigMap = {
   development: firebaseConfigDev,
   test: firebaseConfigTest,
-  prod: firebaseConfigProd,
+  production: firebaseConfigProd,
   local: firebaseConfigLocal,
   staging: firebaseConfigStaging,
 }
 
-const config = firebaseConfigMap[process.env ? process.env.NODE_ENV : 'dev']
+const config = firebaseConfigMap[process.env ? process.env.NODE_ENV : 'development']
+
+console.log(`process.env.NODE_ENV = ${process.env.NODE_ENV}`)
 
 app.initializeApp(config)
 const auth = app.auth()
