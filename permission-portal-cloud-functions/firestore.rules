@@ -1,0 +1,51 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+		// Disallow all reads and writes by default
+    match /{document=**} {
+      allow read, write: if false;
+    }
+    
+   	function isSignedIn() {
+    	return request.auth != null;
+    }
+
+    function isAdmin() {
+      return request.auth.token.isAdmin == true;
+
+      //  in case you need to test directly in firebase console, the above rule would not work since auth token would not have the claim
+      // use the below line instead
+      // return get(/databases/$(database)/documents/users/$(request.auth.uid)).data.isAdmin;
+    }	    
+
+    function isInOrganization(organizationID) {
+      return request.auth.token.organizationID == organizationID;
+      //  in case you need to test directly in firebase console, the above rule would not work since auth token would not have the claim
+      // use the below line instead
+      // return get(/databases/$(database)/documents/users/$(request.auth.uid)).data.organizationID == organizationID;
+
+    }
+    
+    function isSelf(){
+      return isSignedIn() && (request.auth.token.email == resource.id)
+    } 
+
+    function isNotEscalatingPrevileges() {
+      return ( resource.data.isAdmin == request.resource.data.isAdmin && resource.data.isSuperAdmin == request.resource.data.isSuperAdmin )
+    }
+    function isModifyingOrg() {
+      return ( resource.data.organizationID != request.resource.data.organizationID )
+    }
+
+    match /users/{email} {
+      allow write: if isSignedIn() && isAdmin() && isInOrganization(resource.data.organizationID) && !isModifyingOrg();
+      allow read : if isSelf() || (isAdmin() && isInOrganization(resource.data.organizationID));
+      allow update : if isSelf() && isNotEscalatingPrevileges() && !isModifyingOrg();
+    }
+
+    match /organizations/{organizationID} {
+      allow read: if isSignedIn() && isInOrganization(organizationID);
+      allow write: if isSignedIn() && isAdmin() && isInOrganization(organizationID);
+    }
+  }
+}
