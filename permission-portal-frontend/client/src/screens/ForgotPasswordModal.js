@@ -38,8 +38,8 @@ class ForgotPasswordModal extends React.Component {
         <div className="recover-password-form">
           <Modal hidden={this.props.hidden} onClose={this.onClose} containerClass="recover-password-modal-container">
             <h2>Recover Password</h2>
-            <label htmlFor="email-or-username">Email or User Name</label>
             <form onSubmit={this.onSubmit} onChange={this.handleChange}>
+              <label htmlFor="email-or-username">Email or User Name</label>
               <input type="text" id="email-or-username" required />
               <button type="submit" className="save-button recovery-button">
                 {' '}
