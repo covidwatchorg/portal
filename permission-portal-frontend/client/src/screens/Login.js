@@ -31,7 +31,7 @@ class SignInFormBase extends React.Component {
     try {
       await store.signIn(email, password)
       if (store.user) {
-        this.props.history.push(store.user.isAdmin ? ROUTES.MANAGE_MEMBERS : ROUTES.CODE_VALIDATIONS)
+        this.props.history.push(store.user.isAdmin ? ROUTES.CODE_VALIDATIONS : ROUTES.MANAGE_MEMBERS)
       }
     } catch (err) {
       console.log(err)
