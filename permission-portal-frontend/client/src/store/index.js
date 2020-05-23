@@ -1,21 +1,19 @@
-import { types, flow , onSnapshot, getSnapshot, getParent } from 'mobx-state-tree'
+import { types, flow, getParent } from 'mobx-state-tree'
 import { firebase } from '../components/Firebase'
-
 
 const User = types
   .model({
-    uuid: types.string,
     email: types.maybeNull(types.string),
     isAdmin: types.boolean,
     isSuperAdmin: types.boolean,
     disabled: types.boolean,
-    prefix: types.string,
+    prefix: types.maybeNull(types.string),
     firstName: types.string,
     lastName: types.string,
-    organizationID: types.string
+    organizationID: types.string,
   })
   .actions((self) => {
-    const sendPasswordResetEmail = flow(function * () {
+    const sendPasswordResetEmail = flow(function* () {
       try {
         yield firebase.sendPasswordResetEmail(self.email)
         return true
@@ -26,9 +24,9 @@ const User = types
     })
 
     return {
-      sendPasswordResetEmail
+      sendPasswordResetEmail,
     }
-  });
+  })
 
 const Organization = types
   .model({
@@ -50,29 +48,34 @@ const Organization = types
     verificationNotSharedText: types.maybeNull(types.string),
     diagnosisText: types.string,
     exposureText: types.string,
-    members: types.maybeNull(types.array(User))
+    members: types.maybeNull(types.array(User)),
   })
-  .actions(self => {
+  .actions((self) => {
     const store = getParent(self)
     const setOrganizationalBranding = flow(function* (diagnosisText, exposureText) {
-      yield firebase.updateOrgTexts(store.user.organizationID, {
-        diagnosisText: diagnosisText,
-        exposureText: exposureText
-      })
-      self.diagnosisText = diagnosisText
-      self.exposureText = exposureText
-      saveState(store)
+      try {
+        yield firebase.updateOrgTexts(store.user.organizationID, {
+          diagnosisText: diagnosisText,
+          exposureText: exposureText,
+        })
+        self.diagnosisText = diagnosisText
+        self.exposureText = exposureText
+        saveState(store)
+      } catch (err) {
+        console.warn(err)
+        throw err
+      }
     })
 
     return {
-      setOrganizationalBranding
+      setOrganizationalBranding,
     }
   })
 
 const Store = types
   .model({
     user: types.maybeNull(User),
-    organization: types.maybeNull(Organization)
+    organization: types.maybeNull(Organization),
   })
   .actions((self) => {
     const initialize = flow(function* () {
@@ -82,20 +85,22 @@ const Store = types
         if (oldState) {
           console.log('Email', oldState.user.email)
           const userDoc = yield firebase.getUserDocument(oldState.user.email)
-          self.user = {email: oldState.user.email, ...userDoc}
+          self.user = { email: oldState.user.email, ...userDoc }
           let orgDoc = yield firebase.getOrganizationDocument(oldState.user.organizationID)
           self.organization = orgDoc
-    
+
           if (oldState.user.isAdmin) {
             const members = yield firebase.getMembersOfOrg(oldState.user.organizationID)
             self.organization.members = members
           }
+        } else {
+          console.log('No cached user info')
         }
       } catch (err) {
-        console.warn('unexpected error ', err);
+        console.warn('unexpected error ', err)
       }
     })
-    
+
     const signIn = flow(function* (email, password) {
       try {
         yield firebase.doSignInWithEmailAndPassword(email, password)
@@ -104,7 +109,7 @@ const Store = types
         yield firebase.auth.currentUser.getIdTokenResult(true)
         const userDoc = yield firebase.getUserDocument(email)
 
-        self.user = {email: email, ...userDoc}
+        self.user = { email: email, ...userDoc }
 
         const orgDoc = yield firebase.getOrganizationDocument(self.user.organizationID)
 
@@ -117,43 +122,36 @@ const Store = types
 
         saveState(self)
       } catch (e) {
-        console.log(e)
+        console.error(e)
       }
     })
-    
+
     const signOut = flow(function* () {
       try {
         yield firebase.doSignOut()
 
         console.log('Successfully logged out')
-        localStorage.removeItem('state');
-        localStorage.removeItem('authUser');
+        localStorage.removeItem('state')
+        localStorage.removeItem('authUser')
         self.user.isAdmin = false
       } catch (e) {
         console.log(e)
       }
     })
 
-    const setOrganizationalBranding = flow(function* (diagnosisMessage, exposureMessage) {
-      console.log('Setting organization branding');
-      console.log(diagnosisMessage);
-      console.log(exposureMessage);
-
-      return self.organization.setOrganizationalBranding(diagnosisMessage, exposureMessage);
-    });
-
-    const sendMemberInvitationEmail = flow(function* (state) {
-      // TODO state validation
-      // throw "TODO implement sendMemberInvitationEmail";
-      return true
+    const sendMemberInvitationEmail = flow(function* (newUser) {
+      try {
+        yield firebase.doCreateUser(newUser)
+      } catch (e) {
+        throw e
+      }
     })
 
     return {
       initialize,
       signIn,
       signOut,
-      setOrganizationalBranding,
-      sendMemberInvitationEmail
+      sendMemberInvitationEmail,
     }
   })
 
@@ -168,7 +166,7 @@ const saveState = (state) => {
 
 const loadState = () => {
   try {
-    const serializedState = localStorage.getItem('state');
+    const serializedState = localStorage.getItem('state')
     if (serializedState === null) {
       return null
     }
@@ -180,7 +178,7 @@ const loadState = () => {
 
 var store = Store.create({
   user: null,
-  organization: null
-});
+  organization: null,
+})
 
-export default store;
+export default store
