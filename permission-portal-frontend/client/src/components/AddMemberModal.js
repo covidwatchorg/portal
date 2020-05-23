@@ -110,20 +110,20 @@ const AddMemberModalBase = observer((props) => {
     <Modal hidden={props.hidden} onClose={props.onClose} containerClass="add-member-modal-container">
       <h1>Add Member</h1>
       <div className="add-member-form">
-        <label>
+        <label htmlFor="firstName">
           First Name<span>*</span>
         </label>
-        <input type="text" name="firstName" value={state.firstName} onChange={handleChange} />
+        <input type="text" name="firstName" id="firstName" required value={state.firstName} onChange={handleChange} />
         {state.firstNameValidationFailed && <div className="validationResult">{state.firstNameValidationMessage}</div>}
-        <label>
+        <label htmlFor="lastName">
           Last Name<span>*</span>
         </label>
-        <input type="text" name="lastName" value={state.lastName} onChange={handleChange} />
+        <input type="text" name="lastName" id="lastName" required value={state.lastName} onChange={handleChange} />
         {state.lastNameValidationFailed && <div className="validationResult">{state.lastNameValidationMessage}</div>}
-        <label>
+        <label htmlFor="email">
           Email<span>*</span>
         </label>
-        <input type="text" name="email" value={state.email} onChange={handleChange} />
+        <input type="text" name="email" id="email" required value={state.email} onChange={handleChange} />
         {state.emailValidationFailed && <div className="validationResult">{state.emailValidationMessage}</div>}
         <label>
           Role<span>*</span>
