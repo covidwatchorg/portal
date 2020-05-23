@@ -4,6 +4,7 @@ import RoleSelector from '../components/RoleSelector'
 import Modal from '../components/Modal'
 import * as ROLES from '../constants/roles'
 import { withStore } from '../store'
+import { observer } from 'mobx-react'
 
 const ValidationResult = (succeeded, failureReason) => {
   return {
@@ -37,7 +38,7 @@ const ValidationRules = [
   },
 ]
 
-const AddMemberModalBase = (props) => {
+const AddMemberModalBase = observer((props) => {
   const [state, setState] = useState({
     firstName: '',
     firstNameValidationFailed: false,
@@ -106,7 +107,7 @@ const AddMemberModalBase = (props) => {
 
   // TODO needs to fail but not close on validation failure and high light invalid fields (can do that before touching the store)
   return (
-    <Modal hidden={props.hidden} onClose={props.onClose}>
+    <Modal hidden={props.hidden} onClose={props.onClose} containerClass="add-member-modal-container">
       <h1>Add Member</h1>
       <div className="add-member-form">
         <label>
@@ -137,7 +138,7 @@ const AddMemberModalBase = (props) => {
       </div>
     </Modal>
   )
-}
+})
 
 const AddMemberModal = withStore(AddMemberModalBase)
 

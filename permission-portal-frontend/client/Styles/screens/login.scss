@@ -7,10 +7,10 @@
   align-items: stretch;
   margin: 32px 32px 0 32px;
   #ucsfLogo {
-    height: 4.21vh;
+    height: 35px;
   }
   #poweredByCWLogo {
-    height: 3.73vh;
+    height: 32px;
   }
 }
 
@@ -46,6 +46,7 @@
   right: 74.29%;
   bottom: 0%;
   height: 33vh;
+  max-height: 287px;
 }
 
 .doctor2 {
@@ -54,6 +55,7 @@
   right: 56.32%;
   bottom: 0%;
   height: 33vh;
+  max-height: 287px;
 }
 
 .loginContainer {
@@ -100,7 +102,10 @@
     color: #2C58B1;
     margin-top: 30px;
     text-decoration: none;
-    
+  }
+  a:hover {
+    cursor: pointer;
+    text-decoration: underline;
   }
 }
 

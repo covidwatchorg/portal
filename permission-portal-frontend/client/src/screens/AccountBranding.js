@@ -5,8 +5,9 @@ import '../../Styles/screens/branding.scss'
 import { withStore } from '../store'
 import { Redirect } from 'react-router-dom'
 import * as ROUTES from '../constants/routes'
+import { observer } from 'mobx-react'
 
-const AccountBrandingBase = (props) => {
+const AccountBrandingBase = observer((props) => {
   const [isSuccess, setIsSuccess] = useState(false)
   const [toastShouldOpen, setToastShouldOpen] = useState(false)
 
@@ -19,7 +20,7 @@ const AccountBrandingBase = (props) => {
 
   const saveData = async () => {
     try {
-      await props.store.updateOrganization({ diagnosisText: diagnosisText, exposureText: exposureText })
+      await props.store.organization.update({ diagnosisText: diagnosisText, exposureText: exposureText })
       console.log('Branding data saved successfully')
       setIsSuccess(true)
       setToastShouldOpen(true)
@@ -85,7 +86,7 @@ const AccountBrandingBase = (props) => {
   ) : (
     <Redirect to={ROUTES.LANDING} />
   )
-}
+})
 
 const AccountBranding = withStore(AccountBrandingBase)
 
