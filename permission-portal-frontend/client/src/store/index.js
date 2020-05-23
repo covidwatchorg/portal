@@ -1,21 +1,134 @@
-import { types, flow, getParent } from 'mobx-state-tree'
-import { firebase } from '../components/Firebase'
+import React from 'react'
+import app from 'firebase/app'
+import 'firebase/auth'
+import 'firebase/firestore'
+import 'firebase/database'
+import 'firebase/functions'
+import * as firebaseConfigLocal from '../config/firebase.config.local'
+import * as firebaseConfigDev from '../config/firebase.config.dev'
+import * as firebaseConfigTest from '../config/firebase.config.test'
+import * as firebaseConfigProd from '../config/firebase.config.prod'
+import * as firebaseConfigStaging from '../config/firebase.config.staging'
+import { types, cast, flow } from 'mobx-state-tree'
+
+var firebaseConfigMap = {
+  development: firebaseConfigDev,
+  test: firebaseConfigTest,
+  prod: firebaseConfigProd,
+  local: firebaseConfigLocal,
+  staging: firebaseConfigStaging,
+}
+
+const config = firebaseConfigMap[process.env ? process.env.NODE_ENV : 'dev']
+
+app.initializeApp(config)
+const auth = app.auth()
+const db = app.firestore()
+const createUserCallable = app.functions().httpsCallable('createUser')
+
+const RootStoreContext = React.createContext()
 
 const User = types
   .model({
-    email: types.maybeNull(types.string),
+    isSignedIn: types.maybe(types.boolean),
+    email: types.string,
     isAdmin: types.boolean,
     isSuperAdmin: types.boolean,
     disabled: types.boolean,
-    prefix: types.maybeNull(types.string),
+    prefix: types.maybe(types.string),
     firstName: types.string,
     lastName: types.string,
     organizationID: types.string,
   })
   .actions((self) => {
-    const sendPasswordResetEmail = flow(function* () {
+    const __update = (updates) => {
+      Object.keys(updates).forEach((key) => {
+        if (self.hasOwnProperty(key)) self[key] = updates[key]
+      })
+      console.log('Updated User:')
+      console.log(self)
+    }
+
+    return { __update }
+  })
+
+const Organization = types
+  .model({
+    id: types.string,
+    name: types.string,
+    welcomeText: types.string,
+    enableExposureText: types.string,
+    recommendExposureText: types.string,
+    notifyingOthersText: types.string,
+    exposureInfoText: types.string,
+    exposureAboutText: types.string,
+    exposureDetailsText: types.string,
+    exposureDetailsLearnText: types.string,
+    verificationStartText: types.string,
+    verificationIdentifierText: types.string,
+    verificationIdentifierAboutText: types.string,
+    verificationAdministrationDateText: types.string,
+    verificationReviewText: types.string,
+    verificationSharedText: types.string,
+    verificationNotSharedText: types.string,
+    diagnosisText: types.string,
+    exposureText: types.string,
+    membersPage: types.number, // TODO: controls pagination
+    members: types.array(User),
+  })
+  .actions((self) => {
+    const __update = (updates) => {
+      Object.keys(updates).forEach((key) => {
+        if (self.hasOwnProperty(key)) self[key] = updates[key]
+      })
+      console.log('Updated Organization:')
+      console.log(self)
+    }
+
+    const update = flow(function* (updates) {
       try {
-        yield firebase.sendPasswordResetEmail(self.email)
+        yield db.collection('organizations').doc(self.id).update(updates)
+      } catch (err) {
+        console.error('Error updating organization texts', err)
+      }
+    })
+
+    const __setMembers = (members) => {
+      self.members = cast(members)
+      console.log('Set members:')
+      console.log(self.members)
+    }
+
+    return { __update, __setMembers, update }
+  })
+
+const Store = types
+  .model({
+    user: User,
+    organization: Organization,
+  })
+  .actions(() => {
+    const signInWithEmailAndPassword = flow(function* (email, password) {
+      yield auth.signInWithEmailAndPassword(email, password)
+    })
+
+    const signOut = flow(function* () {
+      yield auth.signOut()
+    })
+
+    const createUser = flow(function* (newUser) {
+      try {
+        const result = yield createUserCallable(newUser)
+        console.log(`Created new user: ${JSON.stringify(result.data)}`)
+        return result.data
+      } catch (err) {
+        throw err
+      }
+    })
+
+    const sendPasswordResetEmail = flow(function* (email) {
+      try {
+        yield auth.sendPasswordResetEmail(email)
         return true
       } catch (err) {
         console.warn(err)
@@ -23,162 +136,173 @@ const User = types
       }
     })
 
-    return {
-      sendPasswordResetEmail,
-    }
+    return { signInWithEmailAndPassword, signOut, createUser, sendPasswordResetEmail }
   })
 
-const Organization = types
-  .model({
-    name: types.string,
-    welcomeText: types.maybeNull(types.string),
-    enableExposureText: types.maybeNull(types.string),
-    recommendExposureText: types.maybeNull(types.string),
-    notifyingOthersText: types.maybeNull(types.string),
-    exposureInfoText: types.maybeNull(types.string),
-    exposureAboutText: types.maybeNull(types.string),
-    exposureDetailsText: types.maybeNull(types.string),
-    exposureDetailsLearnText: types.maybeNull(types.string),
-    verificationStartText: types.maybeNull(types.string),
-    verificationIdentifierText: types.maybeNull(types.string),
-    verificationIdentifierAboutText: types.maybeNull(types.string),
-    verificationAdministrationDateText: types.maybeNull(types.string),
-    verificationReviewText: types.maybeNull(types.string),
-    verificationSharedText: types.maybeNull(types.string),
-    verificationNotSharedText: types.maybeNull(types.string),
-    diagnosisText: types.string,
-    exposureText: types.string,
-    members: types.maybeNull(types.array(User)),
-  })
-  .actions((self) => {
-    const store = getParent(self)
-    const setOrganizationalBranding = flow(function* (diagnosisText, exposureText) {
-      try {
-        yield firebase.updateOrgTexts(store.user.organizationID, {
-          diagnosisText: diagnosisText,
-          exposureText: exposureText,
-        })
-        self.diagnosisText = diagnosisText
-        self.exposureText = exposureText
-        saveState(store)
-      } catch (err) {
-        console.warn(err)
-        throw err
-      }
-    })
-
-    return {
-      setOrganizationalBranding,
-    }
-  })
-
-const Store = types
-  .model({
-    user: types.maybeNull(User),
-    organization: types.maybeNull(Organization),
-  })
-  .actions((self) => {
-    const initialize = flow(function* () {
-      try {
-        const oldState = loadState()
-        console.log(oldState)
-        if (oldState) {
-          console.log('Email', oldState.user.email)
-          const userDoc = yield firebase.getUserDocument(oldState.user.email)
-          self.user = { email: oldState.user.email, ...userDoc }
-          let orgDoc = yield firebase.getOrganizationDocument(oldState.user.organizationID)
-          self.organization = orgDoc
-
-          if (oldState.user.isAdmin) {
-            const members = yield firebase.getMembersOfOrg(oldState.user.organizationID)
-            self.organization.members = members
-          }
-        } else {
-          console.log('No cached user info')
-        }
-      } catch (err) {
-        console.warn('unexpected error ', err)
-      }
-    })
-
-    const signIn = flow(function* (email, password) {
-      try {
-        yield firebase.doSignInWithEmailAndPassword(email, password)
-        console.log('Successfully logged in')
-
-        yield firebase.auth.currentUser.getIdTokenResult(true)
-        const userDoc = yield firebase.getUserDocument(email)
-
-        self.user = { email: email, ...userDoc }
-
-        const orgDoc = yield firebase.getOrganizationDocument(self.user.organizationID)
-
-        self.organization = orgDoc
-
-        if (self.user.isAdmin) {
-          const members = yield firebase.getMembersOfOrg(self.user.organizationID)
-          self.organization.members = members
-        }
-
-        saveState(self)
-      } catch (e) {
-        console.error(e)
-      }
-    })
-
-    const signOut = flow(function* () {
-      try {
-        yield firebase.doSignOut()
-
-        console.log('Successfully logged out')
-        localStorage.removeItem('state')
-        localStorage.removeItem('authUser')
-        self.user.isAdmin = false
-      } catch (e) {
-        console.log(e)
-      }
-    })
-
-    const sendMemberInvitationEmail = flow(function* (newUser) {
-      try {
-        yield firebase.doCreateUser(newUser)
-      } catch (e) {
-        throw e
-      }
-    })
-
-    return {
-      initialize,
-      signIn,
-      signOut,
-      sendMemberInvitationEmail,
-    }
-  })
-
-const saveState = (state) => {
-  try {
-    const serializedState = JSON.stringify(state)
-    localStorage.setItem('state', serializedState)
-  } catch (err) {
-    console.warn(err)
-  }
+const defaultUser = {
+  isSignedIn: false,
+  email: '',
+  isAdmin: false,
+  isSuperAdmin: false,
+  disabled: false,
+  prefix: '',
+  firstName: '',
+  lastName: '',
+  organizationID: '',
 }
 
-const loadState = () => {
-  try {
-    const serializedState = localStorage.getItem('state')
-    if (serializedState === null) {
-      return null
-    }
-    return JSON.parse(serializedState)
-  } catch (err) {
-    return null
-  }
+const defaultOrganization = {
+  id: '',
+  name: '',
+  welcomeText: '',
+  enableExposureText: '',
+  recommendExposureText: '',
+  notifyingOthersText: '',
+  exposureInfoText: '',
+  exposureAboutText: '',
+  exposureDetailsText: '',
+  exposureDetailsLearnText: '',
+  verificationStartText: '',
+  verificationIdentifierText: '',
+  verificationIdentifierAboutText: '',
+  verificationAdministrationDateText: '',
+  verificationReviewText: '',
+  verificationSharedText: '',
+  verificationNotSharedText: '',
+  diagnosisText: '',
+  exposureText: '',
+  membersPage: 1,
+  members: [],
 }
 
-var store = Store.create({
-  user: null,
-  organization: null,
+const rootStore = Store.create({
+  user: defaultUser,
+  organization: defaultOrganization,
 })
 
-export default store
+const createStore = (WrappedComponent) => {
+  return class extends React.Component {
+    constructor(props) {
+      super(props)
+      this.userDocumentListener = null
+      this.organizationDocumentListener = null
+      this.organizationMembersListener = null
+      this.authStateListener = auth.onAuthStateChanged(async (user) => {
+        if (user) {
+          console.log('User signed in')
+          // signed in, get user's document from the db
+          const userDocumentSnapshot = await db.collection('users').doc(user.email).get()
+          // update the store with data from this document and set isSignedIn to true
+          rootStore.user.__update({ ...userDocumentSnapshot.data(), email: userDocumentSnapshot.id, isSignedIn: true })
+          // set up a listener to respond to current user's document changes
+          if (this.userDocumentListener === null) {
+            this.userDocumentListener = db
+              .collection('users')
+              .doc(user.email)
+              .onSnapshot((updatedUserDocumentSnapshot) => {
+                console.log('Remote user document changed')
+                rootStore.user.__update({
+                  ...updatedUserDocumentSnapshot.data(),
+                  email: updatedUserDocumentSnapshot.id,
+                  isSignedIn: true,
+                })
+              })
+          }
+
+          const organizationID = rootStore.user.organizationID
+
+          //  get the user's organization's document from the db
+          const organizationDocumentSnapshot = await db.collection('organizations').doc(organizationID).get()
+          // update state object with organization document data
+          rootStore.organization.__update({
+            ...organizationDocumentSnapshot.data(),
+            id: organizationDocumentSnapshot.id,
+          })
+
+          // set up a listener to respond to current user's organization's document changes
+          if (this.organizationDocumentListener === null) {
+            this.organizationDocumentListener = db
+              .collection('organizations')
+              .doc(organizationID)
+              .onSnapshot((updatedOrganizationDocumentSnapshot) => {
+                console.log('Remote organization document changed')
+                rootStore.organization.__update({
+                  ...updatedOrganizationDocumentSnapshot.data(),
+                  id: updatedOrganizationDocumentSnapshot.id,
+                })
+              })
+          }
+
+          if (rootStore.user.isAdmin) {
+            // If admin, get the user's organization's members from the db
+            // TODO will want pagination
+            const usersSnapshot = await db.collection('users').where('organizationID', '==', organizationID).get()
+            rootStore.organization.__setMembers(
+              usersSnapshot.docs.map((userDoc) => {
+                return { ...userDoc.data(), email: userDoc.id }
+              })
+            )
+            // Set up  a listener to respond to changes in current user's organization's members
+            if (this.organizationMembersListener === null) {
+              this.organizationMembersListener = db
+                .collection('users')
+                .where('organizationID', '==', organizationID)
+                .onSnapshot((updatedUsersSnapshot) => {
+                  rootStore.organization.__setMembers(
+                    updatedUsersSnapshot.docs.map((userDoc) => {
+                      return { ...userDoc.data(), email: userDoc.id }
+                    })
+                  )
+                })
+            }
+          }
+        } else {
+          console.log('User signed out')
+          // signed out
+          // reset to default state
+          rootStore.user.__update(defaultUser)
+          rootStore.organization.__update(defaultOrganization)
+
+          // detach listeners
+          if (this.userDocumentListener !== null) {
+            this.userDocumentListener()
+            this.userDocumentListener = null
+          }
+          if (this.organizationDocumentListener !== null) {
+            this.organizationDocumentListener()
+            this.organizationDocumentListener = null
+          }
+          if (this.organizationMembersListener !== null) {
+            this.organizationMembersListener()
+            this.organizationMembersListener = null
+          }
+        }
+      })
+    }
+
+    displayName = 'storeProvider'
+
+    render() {
+      return (
+        <RootStoreContext.Provider value={rootStore}>
+          <WrappedComponent {...this.props} />
+        </RootStoreContext.Provider>
+      )
+    }
+  }
+}
+
+const withStore = (WrappedComponent) => {
+  return class extends React.Component {
+    displayName = 'storeConsumer'
+    render() {
+      return (
+        <RootStoreContext.Consumer>
+          {(store) => <WrappedComponent store={store} {...this.props} />}
+        </RootStoreContext.Consumer>
+      )
+    }
+  }
+}
+
+export { createStore, withStore }

@@ -2,37 +2,17 @@ import React, { useState } from 'react'
 import PendingOperationButton from '../components/PendingOperationButton'
 import Toast from '../components/Toast'
 import '../../Styles/screens/branding.scss'
-import { withAuthorization } from '../components/Session'
-import * as ROLES from '../constants/roles'
-import { compose } from 'recompose'
-import store from '../store'
-import { useObserver } from 'mobx-react'
-import 'mobx-react/batchingForReactDom'
+import { withStore } from '../store'
+import { Redirect } from 'react-router-dom'
+import * as ROUTES from '../constants/routes'
+import { observer } from 'mobx-react'
 
-const AccountBrandingBase = () => {
+const AccountBrandingBase = observer((props) => {
   const [isSuccess, setIsSuccess] = useState(false)
   const [toastShouldOpen, setToastShouldOpen] = useState(false)
 
-  const getDiagnosisText = () => {
-    if (diagnosisText !== 'Loading text...') {
-      return diagnosisText
-    }
-    return store.organization ? store.organization.diagnosisText : 'Loading text...'
-  }
-
-  const getExposureText = () => {
-    if (exposureText !== 'Loading text...') {
-      return exposureText
-    }
-    return store.organization ? store.organization.exposureText : 'Loading text...'
-  }
-
-  const [diagnosisText, setDiagnosisText] = useState(
-    store.organization ? store.organization.diagnosisText : 'Loading text...'
-  )
-  const [exposureText, setExposureText] = useState(
-    store.organization ? store.organization.exposureText : 'Loading text...'
-  )
+  const [diagnosisText, setDiagnosisText] = useState(props.store.organization.diagnosisText)
+  const [exposureText, setExposureText] = useState(props.store.organization.exposureText)
 
   const onContactUsClicked = () => {
     console.log('TODO contact us')
@@ -40,7 +20,7 @@ const AccountBrandingBase = () => {
 
   const saveData = async () => {
     try {
-      await store.organization.setOrganizationalBranding(diagnosisText, exposureText)
+      await props.store.organization.update({ diagnosisText: diagnosisText, exposureText: exposureText })
       console.log('Branding data saved successfully')
       setIsSuccess(true)
       setToastShouldOpen(true)
@@ -51,7 +31,7 @@ const AccountBrandingBase = () => {
     }
   }
 
-  return useObserver(() => (
+  return props.store.user.isSignedIn && props.store.user.isAdmin ? (
     <div className="module-container">
       <h1 className="branding-header">Account Branding</h1>
       <div className="branding-container">
@@ -63,7 +43,7 @@ const AccountBrandingBase = () => {
           <textarea
             className="section-input"
             type="text"
-            value={getDiagnosisText()}
+            defaultValue={props.store.organization.diagnosisText}
             onChange={(e) => setDiagnosisText(e.target.value)}
           />
         </div>
@@ -75,7 +55,7 @@ const AccountBrandingBase = () => {
           <textarea
             className="section-input"
             type="text"
-            value={getExposureText()}
+            defaultValue={props.store.organization.exposureText}
             onChange={(e) => setExposureText(e.target.value)}
           />
         </div>
@@ -101,14 +81,13 @@ const AccountBrandingBase = () => {
         message={isSuccess ? 'Branding saved successfully' : 'Failed to save branding'}
       />
     </div>
-  ))
-}
+  ) : props.store.user.isSignedIn ? (
+    <Redirect to={ROUTES.CODE_VALIDATIONS} />
+  ) : (
+    <Redirect to={ROUTES.LANDING} />
+  )
+})
 
-const condition = (authUser) => {
-  var result = authUser && authUser.roles[ROLES.ADMIN]
-  return result
-}
-
-const AccountBranding = compose(withAuthorization(condition))(AccountBrandingBase)
+const AccountBranding = withStore(AccountBrandingBase)
 
 export default AccountBranding
