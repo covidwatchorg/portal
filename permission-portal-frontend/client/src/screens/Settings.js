@@ -186,7 +186,7 @@ const SettingsBase = observer((props) => {
               <div
                 style={{
                   marginTop: '10px',
-                  height: '200px',
+                  height: '195px',
                   width: '195px',
                   backgroundColor: '#E0E0E0',
                   border: '2px dashed #828282',
@@ -195,7 +195,7 @@ const SettingsBase = observer((props) => {
               >
                 <img
                   src={state.imageBlob ? state.imageBlob : 'client/assets/photo-add.png'}
-                  style={{ height: '50px', width: '50px', display: 'block', margin: 'auto', marginTop: '75px' }}
+                  style={{ width: '195px', height: '195px', objectFit: 'cover', display: 'block', margin: 'auto' }}
                 ></img>
               </div>
               <div style={{ marginTop: '15px', fontSize: '12px', color: '#585858' }}>
