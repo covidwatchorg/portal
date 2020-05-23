@@ -62,8 +62,8 @@ const ManageTeamsBase = observer((props) => {
         <thead>
           <tr>
             <th style={{ borderTopLeftRadius: 5 }}>Name</th>
-            <th>Role</th>
-            <th>Status</th>
+            <th id="role-header">Role</th>
+            <th id="status-header">Status</th>
             <th style={{ borderTopRightRadius: 5 }}>Settings</th>
           </tr>
         </thead>
@@ -74,13 +74,14 @@ const ManageTeamsBase = observer((props) => {
               <tr key={index}>
                 <td>{data.lastName + ', ' + data.firstName}</td>
                 <td style={{ padding: 0 }}>
-                  <RoleSelector isAdmin={data.isAdmin} />
+                  <RoleSelector ariaLabeledBy="role-header" isAdmin={data.isAdmin} />
                 </td>
                 <td style={{ padding: 0 }}>
                   <div className="custom-select">
                     <select
                       className={!data.disabled ? 'active' : 'inactive'}
                       defaultValue={!data.disabled ? 'active' : 'deactivated'}
+                      aria-labelledby="status-header"
                     >
                       <option value="active">Active</option>
                       <option value="deactivated">Deactivated</option>
