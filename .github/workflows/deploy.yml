@@ -26,6 +26,7 @@ jobs:
         run: |
           npm ci
           npm run init
+          npm run git-info
           npm run build:staging
         if: github.ref == 'refs/heads/dev'
 
