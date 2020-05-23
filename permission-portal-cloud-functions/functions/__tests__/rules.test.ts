@@ -121,6 +121,56 @@ describe('Test proper read/write permissions for regular users (non-admins)', ()
     });
   });
 
+  test('Authenticated user cannot update his org',  () => {
+    return clientAuth.signInWithEmailAndPassword('user@soylentgreen.com', 'user@soylentgreen.com').then( async () => {
+      try {
+        await clientDb
+          .collection('users')
+          .doc('user@soylentgreen.com')
+          .update({
+            organizationID: '123'          
+          });
+          fail('user should not be able to update org');
+        }catch(err) {
+          //console.log(err.code);
+          expect(err.code).toEqual('permission-denied');
+        }
+    });
+  });
+
+  test('Authenticated admin user cannot update his org',  () => {
+    return clientAuth.signInWithEmailAndPassword('admin@soylentgreen.com', 'admin@soylentgreen.com').then( async () => {
+      try {
+        await clientDb
+          .collection('users')
+          .doc('admin@soylentgreen.com')
+          .update({
+            organizationID: '123'          
+          });
+          fail('user should not be able to update org');
+        }catch(err) {
+          //console.log(err.code);
+          expect(err.code).toEqual('permission-denied');
+        }
+    });
+  });
+
+  test('Authenticated admin user cannot update other users org',  () => {
+    return clientAuth.signInWithEmailAndPassword('admin@soylentgreen.com', 'admin@soylentgreen.com').then( async () => {
+      try {
+        await clientDb
+          .collection('users')
+          .doc('user@soylentgreen.com')
+          .update({
+            organizationID: '123'          
+          });
+          fail('user should not be able to update org');
+        }catch(err) {
+          //console.log(err.code);
+          expect(err.code).toEqual('permission-denied');
+        }
+    });
+  });
 
   test('Authenticated user able to make regular non/role updates',  () => {
     return clientAuth.signInWithEmailAndPassword('user@soylentgreen.com', 'user@soylentgreen.com').then( async () => {
