@@ -101,7 +101,7 @@ const ManageTeamsBase = observer((props) => {
         <div className="save-button">Save Changes</div>
         <div className="pages-container">
           <div className="arrow" onClick={currentPage === 0 ? () => {} : () => setCurrentPage(currentPage - 1)}>
-            <img src={arrowLeft} />
+            <img src={arrowLeft} alt="Previous" />
           </div>
           {pages.map((page) => (
             <a
@@ -116,7 +116,7 @@ const ManageTeamsBase = observer((props) => {
             className="arrow"
             onClick={currentPage === pages[pages.length - 1] ? () => {} : () => setCurrentPage(currentPage + 1)}
           >
-            <img src={arrowRight} />
+            <img src={arrowRight} alt="Next" />
           </div>
         </div>
       </div>

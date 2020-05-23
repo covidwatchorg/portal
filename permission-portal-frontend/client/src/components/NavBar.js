@@ -61,7 +61,7 @@ const NavBarBase = observer((props) => {
         <div className="title">{props.store.user.isAdmin ? ROLES.ADMIN_LABEL : ROLES.NON_ADMIN_LABEL}</div>
       </div>
       <div className="avatar_group avatar_image">
-        <img src={profile} />
+        <img src={profile} alt="" />
       </div>
       <div className="avatar_group separator" />
       <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu" onClick={handleMenu}>

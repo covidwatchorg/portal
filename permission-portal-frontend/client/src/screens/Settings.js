@@ -135,7 +135,7 @@ const SettingsBase = observer((props) => {
                   textAlign: 'center',
                 }}
               >
-                <img
+                <img alt="Your profile photo would go here."
                   src="client/assets/photo-add.png"
                   style={{ height: '50px', width: '50px', display: 'block', margin: 'auto', marginTop: '75px' }}
                 ></img>
