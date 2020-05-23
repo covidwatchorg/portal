@@ -53,7 +53,7 @@ const App = () => {
           </Route>
           <Redirect to="/404" />
         </Switch>
-        <Footer branded={true} />
+        <Footer />
       </ThemeProvider>
     </BrowserRouter>
   )
