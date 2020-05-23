@@ -1,7 +1,6 @@
-import React, { useState } from 'react'
+import React from 'react'
 import Modal from '../components/Modal'
-import PendingOperationButton from '../components/PendingOperationButton'
-import { firebase } from '../components/Firebase'
+import { withStore } from '../store'
 
 class ForgotPasswordModal extends React.Component {
   constructor(props) {
@@ -20,14 +19,8 @@ class ForgotPasswordModal extends React.Component {
       return
     }
 
-    try {
-      await firebase.sendPasswordResetEmail(this.state.email)
-
-      // Show confirmation screen
-      this.setState({ isSuccess: true, emailPrompt: false, email: '', validEmail: true })
-    } catch (err) {
-      this.setState({ isSuccess: false, emailPrompt: false, email: '', validEmail: true })
-    }
+    const isSuccess = await this.props.store.sendPasswordResetEmail(this.state.email)
+    this.setState({ isSuccess: isSuccess, emailPrompt: false, email: '', validEmail: true })
   }
 
   handleChange(event) {
@@ -63,13 +56,11 @@ class ForgotPasswordModal extends React.Component {
           <Modal hidden={this.props.hidden} onClose={this.onClose} containerClass="recover-password-modal-container">
             <h2>Recover Password</h2>
             <p>
-              {
-                this.state.isSuccess ?
-              ' A password recovery link has been sent to the email address associated with your account. Please click the' +
-              ' link in the email to reset your password. ' :
-              ' Failed to send password recovery link. Please verify that the entered email address is associated with your' +
-              ' account and try again. '
-              }
+              {this.state.isSuccess
+                ? ' A password recovery link has been sent to the email address associated with your account. Please click the' +
+                  ' link in the email to reset your password. '
+                : ' Failed to send password recovery link. Please verify that the entered email address is associated with your' +
+                  ' account and try again. '}
             </p>
           </Modal>
         </div>
@@ -78,4 +69,4 @@ class ForgotPasswordModal extends React.Component {
   }
 }
 
-export default ForgotPasswordModal
+export default withStore(ForgotPasswordModal)

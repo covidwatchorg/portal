@@ -1,9 +1,10 @@
 import React, { useState } from 'react'
 import PendingOperationButton from '../components/PendingOperationButton'
-import store from '../store'
 import RoleSelector from '../components/RoleSelector'
 import Modal from '../components/Modal'
 import * as ROLES from '../constants/roles'
+import { withStore } from '../store'
+import { observer } from 'mobx-react'
 
 const ValidationResult = (succeeded, failureReason) => {
   return {
@@ -37,7 +38,7 @@ const ValidationRules = [
   },
 ]
 
-const AddMemberModal = (props) => {
+const AddMemberModalBase = observer((props) => {
   const [state, setState] = useState({
     firstName: '',
     firstNameValidationFailed: false,
@@ -53,7 +54,7 @@ const AddMemberModal = (props) => {
     roleValidationMessage: '',
   })
 
-  const submitMemberInvitation = () => {
+  const tryCreateUser = () => {
     let newState = {}
     let validationSucceeded = true
     const values = [state.firstName, state.lastName, state.email, state.role]
@@ -82,8 +83,8 @@ const AddMemberModal = (props) => {
       return
     }
 
-    return store
-      .sendMemberInvitationEmail({
+    return props.store
+      .createUser({
         email: state.email,
         firstName: state.firstName,
         lastName: state.lastName,
@@ -130,13 +131,15 @@ const AddMemberModal = (props) => {
         <RoleSelector isAdmin={false} onChange={handleChange} />
         {state.roleValidationFailed && <div className="validationResult">{state.roleValidationMessage}</div>}
         <div className="save-button-container">
-          <PendingOperationButton className="save-button" operation={submitMemberInvitation}>
+          <PendingOperationButton className="save-button" operation={tryCreateUser}>
             Submit
           </PendingOperationButton>
         </div>
       </div>
     </Modal>
   )
-}
+})
+
+const AddMemberModal = withStore(AddMemberModalBase)
 
 export default AddMemberModal

@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect } from 'react'
+import React, { Fragment } from 'react'
 import { Redirect, BrowserRouter, Switch, Route } from 'react-router-dom'
 import Login from './src/screens/Login'
 import CodeValidations from './src/screens/CodeValidations'
@@ -9,22 +9,11 @@ import Footer from './src/components/Footer'
 import NavBar from './src/components/NavBar'
 import NotFound from './src/screens/404'
 import * as ROUTES from './src/constants/routes'
-import { withAuthentication } from './src/components/Session'
 import { ThemeProvider } from '@material-ui/styles'
 import theme from './ui/Theme'
-import store from './src/store'
+import { createStore } from './src/store'
 
-const Routes = () => {
-  useEffect(() => {
-    if (!store.user) {
-      storeInit()
-    }
-  }, [])
-
-  const storeInit = async () => {
-    await store.initialize()
-  }
-
+const App = () => {
   return (
     <BrowserRouter>
       <ThemeProvider theme={theme}>
@@ -62,14 +51,10 @@ const Routes = () => {
           </Route>
           <Redirect to="/404" />
         </Switch>
-
-        <Switch>
-          <Route exact path="/" component={Footer} />
-          <Route exact component={() => <Footer branded={true} />} />
-        </Switch>
+        <Footer branded={true} />
       </ThemeProvider>
     </BrowserRouter>
   )
 }
 
-export default withAuthentication(Routes)
+export default createStore(App)
