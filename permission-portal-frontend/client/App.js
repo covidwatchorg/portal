@@ -1,6 +1,7 @@
 import React, { Fragment } from 'react'
 import { Redirect, BrowserRouter, Switch, Route } from 'react-router-dom'
 import Login from './src/screens/Login'
+import BuildInfo from './src/screens/BuildInfo'
 import CodeValidations from './src/screens/CodeValidations'
 import Settings from './src/screens/Settings'
 import AccountBranding from './src/screens/AccountBranding'
@@ -18,6 +19,7 @@ const App = () => {
     <BrowserRouter>
       <ThemeProvider theme={theme}>
         <Switch>
+          <Route path={ROUTES.BUILD_INFO} exact component={BuildInfo} />
           <Route path={ROUTES.LANDING} exact component={Login} />
           <Route path={ROUTES.NOT_FOUND}>
             <Fragment>
@@ -51,7 +53,7 @@ const App = () => {
           </Route>
           <Redirect to="/404" />
         </Switch>
-        <Footer branded={true} />
+        <Footer />
       </ThemeProvider>
     </BrowserRouter>
   )
