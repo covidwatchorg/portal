@@ -9,7 +9,7 @@ on:
 
 jobs:
   deploy-frontend:
-    Name: Build and deploy frontend
+    Name: Build and Deploy Frontend App
     runs-on: ubuntu-latest
 
     steps:
