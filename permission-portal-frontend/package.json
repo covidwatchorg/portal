@@ -46,7 +46,7 @@
     "cpy-cli": "^3.1.1",
     "express": "^4.17.1",
     "file-system": "^2.2.2",
-    "firebase": "^7.14.3",
+    "firebase": "^7.14.5",
     "mobx": "^5.15.4",
     "mobx-react": "^6.2.2",
     "mobx-state-tree": "^3.16.0",
