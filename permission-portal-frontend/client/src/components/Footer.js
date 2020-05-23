@@ -8,15 +8,19 @@ const Footer = () => {
   return (
     <div id="footer">
       <div
-        className='footerContainer'
-        style={(location.pathname !== '/') ? {
-          minHeight: '100%',
-          position: 'relative',
-          background: 'url(' + cwImg + ')',
-          backgroundRepeat: 'no-repeat',
-          backgroundPositionX: '115px',
-          backgroundPositionY: '36px'
-        }: {}}
+        className="footerContainer"
+        style={
+          location.pathname !== '/'
+            ? {
+                minHeight: '100%',
+                position: 'relative',
+                background: 'url(' + cwImg + ')',
+                backgroundRepeat: 'no-repeat',
+                backgroundPositionX: '115px',
+                backgroundPositionY: '36px',
+              }
+            : {}
+        }
       >
         <p id="copyright">© 2020 Covid Watch. All rights reserved.</p>
         <a href="url">Privacy Policy</a>
