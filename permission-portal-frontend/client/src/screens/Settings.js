@@ -170,7 +170,7 @@ const SettingsBase = observer((props) => {
           Discard
         </button>
         <button onClick={saveImage} className={primaryButton.root} style={{ width: '70px', borderStyle: 'none' }}>
-          Save
+          Upload
         </button>
       </div>
     </div>
