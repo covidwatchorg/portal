@@ -3,18 +3,20 @@ import Button from '@material-ui/core/Button'
 import Toast from '../components/Toast'
 import info_icon from '../../assets/info-icon.svg'
 import '../../Styles/screens/code_validations.scss'
-import { withAuthorization } from '../components/Session'
-import { compose } from 'recompose'
+import * as ROUTES from '../constants/routes'
+import { withStore } from '../store'
+import { Redirect } from 'react-router-dom'
+import { observer } from 'mobx-react'
 
 // snackbars docs can be found here:
 // https://material-ui.com/components/snackbars/
 
-const CodeValidationsBase = () => {
+const CodeValidationsBase = observer((props) => {
   const [isOpen, setIsOpen] = useState(false)
   const [code, setCode] = useState('')
   const [date, setDate] = useState('')
 
-  return (
+  return props.store.user.isSignedIn ? (
     <div className="module-container">
       {/* this is a Snackbar template to use for the success/failure notifications */}
 
@@ -68,13 +70,11 @@ const CodeValidationsBase = () => {
       </div>
       <Toast open={isOpen} onClose={() => setIsOpen(false)} isSuccess={true} message="Code verification confirmed" />
     </div>
+  ) : (
+    <Redirect to={ROUTES.LANDING} />
   )
-}
-const condition = (authUser) => {
-  var result = authUser
-  return result
-}
+})
 
-const CodeValidations = compose(withAuthorization(condition))(CodeValidationsBase)
+const CodeValidations = withStore(CodeValidationsBase)
 
 export default CodeValidations
