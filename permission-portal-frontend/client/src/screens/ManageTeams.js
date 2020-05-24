@@ -8,6 +8,7 @@ import '../../Styles/screens/manage_teams.scss'
 import AddMemberModal from '../components/AddMemberModal'
 import Toast from '../components/Toast'
 import RoleSelector from '../components/RoleSelector'
+import * as ROLES from '../constants/roles'
 import { withStore } from '../store'
 import { observer } from 'mobx-react'
 import PendingOperationButton from '../components/PendingOperationButton'
@@ -15,20 +16,39 @@ import PendingOperationButton from '../components/PendingOperationButton'
 const PAGE_SIZE = 5;
 
 const ManageTeamsBase = observer((props) => {
+  const userEmail = props.store.user.email;
+
   const [toastShouldOpen, setToastShouldOpen] = useState(false)
   const [toastMessage, setToastMessage] = useState(false)
   const [isSuccess, setIsSuccess] = useState(false)
 
+  const viewDataFromMemberData = (members) => {
+    return members.map((m)=>{
+      return {
+        email: m.email,
+        isAdmin: m.isAdmin,
+        disabled: m.disabled,
+        firstName: m.firstName,
+        lastName: m.lastName
+      }
+    })
+  }
+
+  const [memberData, setMemberData] = useState(viewDataFromMemberData(props.store.organization.members));
+
   const [currentPage, setCurrentPage] = useState(0)
-  const pages =
-    props.store.organization && props.store.organization.members
-      ? [...Array(Math.ceil(props.store.organization.members.length / PAGE_SIZE)).keys()]
+  const pages = memberData
+      ? [...Array(Math.ceil(memberData.length / PAGE_SIZE)).keys()]
       : []
   const [showModal, setShowModal] = useState(false)
 
   const getPageData = () => {
     const pageStart = PAGE_SIZE * currentPage
-    return props.store.organization.members.slice(pageStart, pageStart + PAGE_SIZE)
+    return memberData.slice(pageStart, pageStart + PAGE_SIZE)
+  }
+
+  const inCurrentPage = (index) => {
+    return index >= PAGE_SIZE * currentPage && index < PAGE_SIZE * (currentPage + 1)
   }
 
   useEffect(() => {
@@ -54,11 +74,10 @@ const ManageTeamsBase = observer((props) => {
     setShowModal(false)
   }
 
-  const saveMemebers = () => {
+  const saveMemebers = async () => {
     try {
+      await props.store.updateUsers(memberData);
 
-      console.log(props.store.organization.members)
-      //await props.store.organization.members.update({  })
       console.log('Member data saved successfully')
       setToastMessage('Member data saved successfully')
       setIsSuccess(true)
@@ -71,7 +90,14 @@ const ManageTeamsBase = observer((props) => {
     }
   }
 
-  // TODO: conditional rendering
+  const deleteAccount = () => {
+    console.log("TODO delete account");
+  }
+
+  const resetPassword = () => {
+    console.log("TODO reset password");
+  }
+
   return props.store.user.isSignedIn && props.store.user.isAdmin ? (
     <div className="module-container">
       <h1>Manage Members</h1>
@@ -90,19 +116,23 @@ const ManageTeamsBase = observer((props) => {
           </tr>
         </thead>
         <tbody>
-          {props.store.organization &&
-            props.store.organization.members &&
-            getPageData().map((data, index) => (
-              <tr key={index}>
+          {memberData &&
+            memberData.map((data, index) => (
+              <tr className={inCurrentPage(index) ? '' : 'hidden'} key={index}>
                 <td>{data.lastName + ', ' + data.firstName}</td>
                 <td style={{ padding: 0 }}>
-                  <RoleSelector isAdmin={data.isAdmin} />
+                  <RoleSelector isAdmin={data.isAdmin} onChange={(e)=>{data.isAdmin = e.target.value == ROLES.ADMIN_LABEL}} />
                 </td>
                 <td style={{ padding: 0 }}>
                   <div className="custom-select">
                     <select
+                      disabled={data.email == userEmail}
                       className={!data.disabled ? 'active' : 'inactive'}
                       defaultValue={!data.disabled ? 'active' : 'deactivated'}
+                      onChange={(e)=>{
+                        data.disabled = e.target.value == "deactivated"
+                        e.target.className = !data.disabled ? 'active' : 'inactive'
+                      }}
                     >
                       <option value="active">Active</option>
                       <option value="deactivated">Deactivated</option>
@@ -111,8 +141,8 @@ const ManageTeamsBase = observer((props) => {
                 </td>
                 <td>
                   <div className="settings-container">
-                    <a onClick={() => {}}>Delete Account</a>
-                    <a onClick={() => {}}>Reset Password</a>
+                    <a onClick={deleteAccount}>Delete Account</a>
+                    <a onClick={resetPassword}>Reset Password</a>
                   </div>
                 </td>
               </tr>

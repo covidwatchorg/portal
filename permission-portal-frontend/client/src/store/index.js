@@ -99,6 +99,7 @@ const Organization = types
         yield db.collection('organizations').doc(self.id).update(updates)
       } catch (err) {
         console.error('Error updating organization texts', err)
+        throw err
       }
     })
 
@@ -116,7 +117,7 @@ const Store = types
     user: User,
     organization: Organization,
   })
-  .actions(() => {
+  .actions((self) => {
     const signInWithEmailAndPassword = flow(function* (email, password) {
       yield auth.signInWithEmailAndPassword(email, password)
     })
@@ -142,11 +143,27 @@ const Store = types
         return true
       } catch (err) {
         console.warn(err)
-        return false
+        throw err
       }
     })
 
-    return { signInWithEmailAndPassword, signOut, createUser, sendPasswordResetEmail }
+    const updateUsers = flow(function* (userData) {
+      var batch = db.batch();
+
+      try {
+        // Execute atomically
+        for (let singleUserData of userData) {
+          batch.update(db.collection('users').doc(singleUserData.email), singleUserData)
+        }
+
+        return batch.commit();
+      } catch (err) {
+        console.warn(err)
+        throw err
+      }
+    })
+
+    return { signInWithEmailAndPassword, signOut, createUser, sendPasswordResetEmail, updateUsers }
   })
 
 const defaultUser = {
@@ -244,7 +261,6 @@ const createStore = (WrappedComponent) => {
 
           if (rootStore.user.isAdmin) {
             // If admin, get the user's organization's members from the db
-            // TODO will want pagination
             const usersSnapshot = await db.collection('users').where('organizationID', '==', organizationID).get()
             rootStore.organization.__setMembers(
               usersSnapshot.docs.map((userDoc) => {
