@@ -13,7 +13,7 @@ import { withStore } from '../store'
 import { observer } from 'mobx-react'
 import PendingOperationButton from '../components/PendingOperationButton'
 
-const PAGE_SIZE = 5;
+const PAGE_SIZE = 15;
 
 const ManageTeamsBase = observer((props) => {
   const userEmail = props.store.user.email;

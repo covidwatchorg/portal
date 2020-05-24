@@ -148,14 +148,14 @@ const Store = types
     })
 
     const updateUsers = flow(function* (userData) {
-      var batch = db.batch();
-
       try {
-        // Execute atomically
+        var batch = db.batch();
+
         for (let singleUserData of userData) {
           batch.update(db.collection('users').doc(singleUserData.email), singleUserData)
         }
 
+        // Execute atomically
         return batch.commit();
       } catch (err) {
         console.warn(err)
