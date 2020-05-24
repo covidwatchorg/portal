@@ -16,10 +16,10 @@
 }
 
 .module-container {
+  min-height: 86vh;
   margin: 0 32px;
   display: flex;
   flex-direction: column;
-  justify-content: center;
   align-items: stretch;
 
   h1 {

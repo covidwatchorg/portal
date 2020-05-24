@@ -1,18 +1,15 @@
-import React, { useState } from 'react';
-import { Redirect } from 'react-router-dom';
-import { makeStyles } from '@material-ui/core/styles';
-import IconButton from '@material-ui/core/IconButton';
-import MenuIcon from '@material-ui/icons/Menu';
-import MenuItem from '@material-ui/core/MenuItem';
-import Menu from '@material-ui/core/Menu';
-import { compose } from 'recompose';
-import { withRouter } from 'react-router-dom';
-import AuthAwareMenuItem from '../components/AuthAwareComponents/AuthAwareMenuItem';
-import store from '../store'
+import React, { useState } from 'react'
+import { Redirect } from 'react-router-dom'
+import { makeStyles } from '@material-ui/core/styles'
+import IconButton from '@material-ui/core/IconButton'
+import MenuIcon from '@material-ui/icons/Menu'
+import MenuItem from '@material-ui/core/MenuItem'
+import Menu from '@material-ui/core/Menu'
 import ucsf_health from '../../assets/ucsf-health.svg'
 import profile from '../../assets/placeholder/profile.png'
-import { withAuthentication } from './Session';
-import * as ROLES from '../constants/roles';
+import * as ROLES from '../constants/roles'
+import { withStore } from '../store'
+import { observer } from 'mobx-react'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -24,80 +21,54 @@ const useStyles = makeStyles((theme) => ({
   title: {
     flexGrow: 1,
   },
-}));
+}))
 
 const linkStyles = {
-  textDecoration: "none",
-  fontFamily: "Montserrat",
-  color: "#2c58b1",
-  fontSize: 20
-};
+  textDecoration: 'none',
+  fontFamily: 'Montserrat',
+  color: '#2c58b1',
+  fontSize: 20,
+}
 
-const NavBarBase = () => {
-  const classes = useStyles();
+const NavBarBase = observer((props) => {
+  const classes = useStyles()
 
-  const [redirect, setRedirect] = useState(-1);
-  const [anchorEl, setAnchorEl] = useState(null);
-  const open = Boolean(anchorEl);
+  const [redirect, setRedirect] = useState(-1)
+  const [anchorEl, setAnchorEl] = useState(null)
+  const open = Boolean(anchorEl)
 
   const handleMenu = (event) => {
-    setAnchorEl(event.currentTarget);
-  };
+    setAnchorEl(event.currentTarget)
+  }
 
   const handleClose = () => {
-    setAnchorEl(null);
-  };
+    setAnchorEl(null)
+  }
 
-  const onClickMenuItem = num => {
-    setAnchorEl(null);
+  const onClickMenuItem = (num) => {
+    setAnchorEl(null)
     if (num === 4) {
-      store.signOut();
+      props.store.signOut()
     }
-    setRedirect(num);
-  };
-
-  const getUserName = () => {
-    if(store.user) {
-      return store.user.firstName + ' ' + store.user.lastName
-    }else {
-      return null;
-    }
-  };
-
-  const getUserTitle = () => {
-    if(store.user) {
-      return store.user.isAdmin ? ROLES.ADMIN_LABEL : ROLES.NON_ADMIN_LABEL
-    }else {
-      return null;
-    }
-  };
+    setRedirect(num)
+  }
 
   return (
-    <div className='navbarContainer'>
-      <img src={ucsf_health} id='ucsfLogo' />
+    <div className="navbarContainer">
+      <img src={ucsf_health} id="ucsfLogo" />
       <div className="avatar_group avatar_text">
-        <div className="name">
-          {getUserName()}
-        </div>
-        <div className="title">
-          {getUserTitle()}
-        </div>
+        <div className="name">{props.store.user.firstName + ' ' + props.store.user.lastName}</div>
+        <div className="title">{props.store.user.isAdmin ? ROLES.ADMIN_LABEL : ROLES.NON_ADMIN_LABEL}</div>
       </div>
       <div className="avatar_group avatar_image">
-        <img src={profile}/>
+        <img src={profile} />
       </div>
-      <div className="avatar_group separator"/>
-      <IconButton
-        edge='start'
-        className={classes.menuButton}
-        color='inherit'
-        aria-label='menu'
-        onClick={handleMenu}
-      >
+      <div className="avatar_group separator" />
+      <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu" onClick={handleMenu}>
         <MenuIcon />
       </IconButton>
       <Menu
-        id='menu-appbar'
+        id="menu-appbar"
         anchorEl={anchorEl}
         anchorOrigin={{
           vertical: 'top',
@@ -114,16 +85,16 @@ const NavBarBase = () => {
         <MenuItem style={linkStyles} onClick={() => onClickMenuItem(0)}>
           Positive Test Validations
         </MenuItem>
-        {
-          <AuthAwareMenuItem style={linkStyles} roleguard="ADMIN"  onClick={() => onClickMenuItem(1)}>
+        {props.store.user.isAdmin && (
+          <MenuItem style={linkStyles} onClick={() => onClickMenuItem(1)}>
             Manage Members
-          </AuthAwareMenuItem>
-        }
-        {
-          <AuthAwareMenuItem style={linkStyles} roleguard="ADMIN" onClick={() => onClickMenuItem(2)}>
+          </MenuItem>
+        )}
+        {props.store.user.isAdmin && (
+          <MenuItem style={linkStyles} onClick={() => onClickMenuItem(2)}>
             Account Branding
-          </AuthAwareMenuItem>
-        }
+          </MenuItem>
+        )}
         <MenuItem style={linkStyles} onClick={() => onClickMenuItem(3)}>
           My Settings
         </MenuItem>
@@ -131,20 +102,21 @@ const NavBarBase = () => {
           Logout
         </MenuItem>
       </Menu>
-      {
-        (redirect === 0) ? <Redirect to='/code_validations' /> :
-        (redirect === 1) ? <Redirect to='/manage_members' /> :
-        (redirect === 2) ? <Redirect to='/branding' /> :
-        (redirect === 3) ? <Redirect to='/settings' /> :
-        (redirect === 4) && <Redirect to='/'/>
-      }
+      {redirect === 0 ? (
+        <Redirect to="/code_validations" />
+      ) : redirect === 1 ? (
+        <Redirect to="/manage_members" />
+      ) : redirect === 2 ? (
+        <Redirect to="/branding" />
+      ) : redirect === 3 ? (
+        <Redirect to="/settings" />
+      ) : (
+        redirect === 4 && <Redirect to="/" />
+      )}
     </div>
-  );
-};
+  )
+})
 
-const NavBar = compose(
-  withRouter,
-  withAuthentication
-)(NavBarBase);
+const NavBar = withStore(NavBarBase)
 
-export default NavBar;
+export default NavBar
