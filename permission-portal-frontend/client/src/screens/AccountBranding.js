@@ -6,6 +6,7 @@ import { withStore } from '../store'
 import { Redirect } from 'react-router-dom'
 import * as ROUTES from '../constants/routes'
 import { observer } from 'mobx-react'
+import Logging from '../util/logging'
 
 const AccountBrandingBase = observer((props) => {
   const [isSuccess, setIsSuccess] = useState(false)
@@ -15,17 +16,17 @@ const AccountBrandingBase = observer((props) => {
   const [exposureText, setExposureText] = useState(props.store.organization.exposureText)
 
   const onContactUsClicked = () => {
-    console.log('TODO contact us')
+    Logging.log('TODO contact us')
   }
 
   const saveData = async () => {
     try {
       await props.store.organization.update({ diagnosisText: diagnosisText, exposureText: exposureText })
-      console.log('Branding data saved successfully')
+      Logging.log('Branding data saved successfully')
       setIsSuccess(true)
       setToastShouldOpen(true)
     } catch (err) {
-      console.log(`Branding data failed to save: ${err}`)
+      Logging.log(`Branding data failed to save: ${err}`)
       setIsSuccess(false)
       setToastShouldOpen(true)
     }

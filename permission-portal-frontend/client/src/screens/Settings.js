@@ -8,6 +8,7 @@ import { Redirect } from 'react-router-dom'
 import { withStore } from '../store'
 import * as ROUTES from '../constants/routes'
 import { observer } from 'mobx-react'
+import Logging from '../util/logging'
 
 const useStyles = makeStyles({
   root: {
@@ -107,7 +108,7 @@ const SettingsBase = observer((props) => {
       await props.store.sendPasswordResetEmail(props.store.user.email)
       setToastInfo({ open: true, success: true, msg: 'Password Reset Successful' })
     } catch (err) {
-      console.warn(err)
+      Logging.warn(err)
       setToastInfo({ open: true, success: false, msg: 'Password Reset Failed. Please try again' })
     }
   }
@@ -121,12 +122,12 @@ const SettingsBase = observer((props) => {
     e.preventDefault()
     setOpen(false)
     if (imgUploader.current.files.length == 0) {
-      console.log('no image uploaded')
+      Logging.log('no image uploaded')
       return
     }
     try {
       let size = imgUploader.current.files[0].size
-      console.log('size' + size)
+      Logging.log('size' + size)
 
       if (size > MAXFILESIZE) {
         setToastInfo({
@@ -141,12 +142,12 @@ const SettingsBase = observer((props) => {
       reader.onload = (e) => {
         const _state = { ...state }
         _state.imageBlob = e.target.result
-        console.log('base64:' + _state.imageBlob)
+        Logging.log('base64:' + _state.imageBlob)
         setState({ ..._state })
       }
       reader.readAsDataURL(imgUploader.current.files[0])
     } catch (err) {
-      console.log(err)
+      Logging.log(err)
     }
   }
 
@@ -154,10 +155,10 @@ const SettingsBase = observer((props) => {
     e.preventDefault()
     try {
       await props.store.user.update({ ...state })
-      console.log('user data saved successfully')
+      Logging.log('user data saved successfully')
       setToastInfo({ open: true, success: true, msg: 'Settings Saved Successfully' })
     } catch (err) {
-      console.log(err)
+      Logging.log(err)
       setToastInfo({ open: true, success: false, msg: 'Failed' })
     }
   }

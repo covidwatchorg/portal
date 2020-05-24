@@ -8,6 +8,7 @@ import powered_by_cw from '../../assets/powered-by-cw.svg'
 import { withStore } from '../store'
 import { observer } from 'mobx-react'
 import ForgotPasswordModal from '../screens/ForgotPasswordModal'
+import Logging from '../util/logging'
 
 const INITIAL_STATE = {
   email: '',
@@ -31,7 +32,7 @@ const SignInFormBase = observer(
       try {
         await this.props.store.signInWithEmailAndPassword(email, password)
       } catch (err) {
-        console.warn(err)
+        Logging.warn(err)
       }
     }
 

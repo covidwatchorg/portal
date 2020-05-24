@@ -10,6 +10,7 @@ import * as firebaseConfigTest from '../config/firebase.config.test'
 import * as firebaseConfigProd from '../config/firebase.config.prod'
 import * as firebaseConfigStaging from '../config/firebase.config.staging'
 import { types, cast, flow } from 'mobx-state-tree'
+import Logging from '../util/logging'
 
 var firebaseConfigMap = {
   development: firebaseConfigDev,
@@ -21,7 +22,7 @@ var firebaseConfigMap = {
 
 const config = firebaseConfigMap[process.env ? process.env.NODE_ENV : 'development']
 
-console.log(`process.env.NODE_ENV = ${process.env.NODE_ENV}`)
+Logging.log(`process.env.NODE_ENV = ${process.env.NODE_ENV}`)
 
 app.initializeApp(config)
 const auth = app.auth()
@@ -48,14 +49,14 @@ const User = types
       Object.keys(updates).forEach((key) => {
         if (self.hasOwnProperty(key)) self[key] = updates[key] // eslint-disable-line no-prototype-builtins
       })
-      console.log('Updated User:')
-      console.log(self)
+      Logging.log('Updated User:')
+      Logging.log(self)
     }
     const update = flow(function* (updates) {
       try {
         yield db.collection('users').doc(self.email).update(updates)
       } catch (err) {
-        console.error('Error updating users', err)
+        Logging.error('Error updating users', err)
       }
     })
 
@@ -91,22 +92,22 @@ const Organization = types
       Object.keys(updates).forEach((key) => {
         if (self.hasOwnProperty(key)) self[key] = updates[key] // eslint-disable-line no-prototype-builtins
       })
-      console.log('Updated Organization:')
-      console.log(self)
+      Logging.log('Updated Organization:')
+      Logging.log(self)
     }
 
     const update = flow(function* (updates) {
       try {
         yield db.collection('organizations').doc(self.id).update(updates)
       } catch (err) {
-        console.error('Error updating organization texts', err)
+        Logging.error('Error updating organization texts', err)
       }
     })
 
     const __setMembers = (members) => {
       self.members = cast(members)
-      console.log('Set members:')
-      console.log(self.members)
+      Logging.log('Set members:')
+      Logging.log(self.members)
     }
 
     return { __update, __setMembers, update }
@@ -129,10 +130,10 @@ const Store = types
     const createUser = flow(function* (newUser) {
       try {
         const result = yield createUserCallable(newUser)
-        console.log(`Created new user: ${JSON.stringify(result.data)}`)
+        Logging.log(`Created new user: ${JSON.stringify(result.data)}`)
         return result.data
       } catch (err) {
-        console.log(err)
+        Logging.log(err)
         throw err
       }
     })
@@ -142,7 +143,7 @@ const Store = types
         yield auth.sendPasswordResetEmail(email)
         return true
       } catch (err) {
-        console.warn(err)
+        Logging.warn(err)
         return false
       }
     })
@@ -200,7 +201,7 @@ const createStore = (WrappedComponent) => {
       this.organizationMembersListener = null
       this.authStateListener = auth.onAuthStateChanged(async (user) => {
         if (user) {
-          console.log('User signed in')
+          Logging.log('User signed in')
           // signed in, get user's document from the db
           const userDocumentSnapshot = await db.collection('users').doc(user.email).get()
           // update the store with data from this document and set isSignedIn to true
@@ -211,7 +212,7 @@ const createStore = (WrappedComponent) => {
               .collection('users')
               .doc(user.email)
               .onSnapshot((updatedUserDocumentSnapshot) => {
-                console.log('Remote user document changed')
+                Logging.log('Remote user document changed')
                 rootStore.user.__update({
                   ...updatedUserDocumentSnapshot.data(),
                   email: updatedUserDocumentSnapshot.id,
@@ -236,7 +237,7 @@ const createStore = (WrappedComponent) => {
               .collection('organizations')
               .doc(organizationID)
               .onSnapshot((updatedOrganizationDocumentSnapshot) => {
-                console.log('Remote organization document changed')
+                Logging.log('Remote organization document changed')
                 rootStore.organization.__update({
                   ...updatedOrganizationDocumentSnapshot.data(),
                   id: updatedOrganizationDocumentSnapshot.id,
@@ -268,7 +269,7 @@ const createStore = (WrappedComponent) => {
             }
           }
         } else {
-          console.log('User signed out')
+          Logging.log('User signed out')
           // signed out
           // reset to default state
           rootStore.user.__update(defaultUser)

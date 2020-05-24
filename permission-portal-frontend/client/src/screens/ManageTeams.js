@@ -10,6 +10,7 @@ import Toast from '../components/Toast'
 import RoleSelector from '../components/RoleSelector'
 import { withStore } from '../store'
 import { observer } from 'mobx-react'
+import Logging from '../util/logging'
 
 const ManageTeamsBase = observer((props) => {
   const [toastShouldOpen, setToastShouldOpen] = useState(false)
@@ -28,12 +29,12 @@ const ManageTeamsBase = observer((props) => {
   }
 
   useEffect(() => {
-    console.log('Store', props.store)
+    Logging.log('Store', props.store)
   }, [])
 
   const onCancel = () => {
     setShowModal(false)
-    console.log(pages)
+    Logging.log(pages)
   }
 
   const onSuccess = () => {
@@ -43,7 +44,7 @@ const ManageTeamsBase = observer((props) => {
   }
 
   const onFailure = (e) => {
-    console.error(e)
+    Logging.error(e)
     setIsSuccess(false)
     setToastShouldOpen(true)
     setShowModal(false)
