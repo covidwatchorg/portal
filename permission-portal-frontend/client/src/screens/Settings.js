@@ -195,7 +195,7 @@ const SettingsBase = observer((props) => {
                 }}
               >
                 <img
-                  alt={state.imageBlob ? "Profile photo" : "Your profile photo would go here."}
+                  alt={state.imageBlob ? 'Profile photo' : 'Your profile photo would go here.'}
                   src={state.imageBlob ? state.imageBlob : 'client/assets/photo-add.png'}
                   style={{ width: '195px', height: '195px', objectFit: 'cover', display: 'block', margin: 'auto' }}
                 ></img>
