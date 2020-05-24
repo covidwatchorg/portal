@@ -9,7 +9,6 @@ const PendingOperationButton = (props) => {
   })
 
   const className = props.className || ''
-  const timeoutInSeconds = props.timeoutInSeconds || 3;
   const operation = props.operation || (() => {})
 
   const startOperation = () => {
