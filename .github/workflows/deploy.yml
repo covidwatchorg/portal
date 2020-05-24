@@ -9,7 +9,7 @@ on:
 
 jobs:
   deploy-frontend:
-    Name: Build and Deploy Frontend App
+    name: Build and Deploy Frontend App
     runs-on: ubuntu-latest
 
     steps:
@@ -74,7 +74,7 @@ jobs:
         with:
           args: deploy --project=test
         env:
-          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN_TEST }}
+          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
           PROJECT_PATH: permission-portal-cloud-functions/
 
       - name: Run Tests
@@ -82,7 +82,7 @@ jobs:
         run: npm run test_ci
         env:
           FIREBASE_PRIVATE_KEY: ${{ secrets.FIREBASE_PRIVATE_KEY }}
-          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN_TEST }}
+          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
 
       - name: Build and Deploy to Firebase Staging Infra
         if: github.ref == 'refs/heads/dev'
@@ -90,7 +90,7 @@ jobs:
         with:
           args: deploy --project=staging
         env:
-          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN_STAGING }}
+          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
           PROJECT_PATH: permission-portal-cloud-functions/
           NODE_ENV: staging
 
@@ -100,6 +100,6 @@ jobs:
         with:
           args: deploy --project=prod
         env:
-          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN_PROD }}
+          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
           PROJECT_PATH: permission-portal-cloud-functions/
           NODE_ENV: prod
