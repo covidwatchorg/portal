@@ -355,7 +355,7 @@ test('User can be toggled between enabled and disabled', () => {
     })
     .then(() => {
       // Delay to allow userOnUpdate time to run
-      return delay(DELAY).then(() => {
+      return delay(DELAY * 2).then(() => {
         return adminAuth.getUserByEmail('disabled@soylentgreen.com').then((userRecordDisabled) => {
           expect(userRecordDisabled.disabled).toBe(false);
           return adminDb
@@ -376,5 +376,80 @@ test('User can be toggled between enabled and disabled', () => {
     })
     .catch((err) => {
       throw err;
+    });
+});
+
+test('User can be toggled between enabled and disabled', () => {
+  return adminDb
+    .collection('users')
+    .doc('disabled@soylentgreen.com')
+    .update({
+      disabled: false,
+    })
+    .then(() => {
+      // Delay to allow userOnUpdate time to run
+      return delay(DELAY * 2).then(() => {
+        return adminAuth.getUserByEmail('disabled@soylentgreen.com').then((userRecordDisabled) => {
+          expect(userRecordDisabled.disabled).toBe(false);
+          return adminDb
+            .collection('users')
+            .doc('disabled@soylentgreen.com')
+            .update({
+              disabled: true,
+            })
+            .then(() => {
+              return delay(DELAY).then(() => {
+                return adminAuth.getUserByEmail('disabled@soylentgreen.com').then((userRecordEnabled) => {
+                  expect(userRecordEnabled.disabled).toBe(true);
+                });
+              });
+            });
+        });
+      });
+    })
+    .catch((err) => {
+      throw err;
+    });
+});
+
+test('User can be toggled between isAdmin and not isAdmin', () => {
+  return adminDb
+    .collection('users')
+    .doc('user@soylentgreen.com')
+    .update({
+      isAdmin: true,
+    })
+    .then(() => {
+      // Delay to allow userOnUpdate time to run
+      return delay(DELAY * 2).then(() => {
+        return clientAuth.signInWithEmailAndPassword('user@soylentgreen.com', 'user@soylentgreen.com').then(() => {
+          if (clientAuth.currentUser === null) {
+            throw new Error('clientAuth.currentUser returned null');
+          }
+          return clientAuth.currentUser
+            .getIdTokenResult(true)
+            .then((idTokenResult) => {
+              // Check that isAdmin claim has been updated properly
+              expect(idTokenResult.claims.isAdmin).toEqual(true);
+            })
+            .then(() => {
+              return adminDb
+                .collection('users')
+                .doc('user@soylentgreen.com')
+                .update({
+                  isAdmin: false,
+                })
+                .then(() => {
+                  // Delay to allow userOnUpdate time to run
+                  return delay(DELAY * 2).then(() => {
+                    return clientAuth.currentUser!.getIdTokenResult(true).then((idTokenResult) => {
+                      // Check that isAdmin claim has been updated properly
+                      expect(idTokenResult.claims.isAdmin).toEqual(false);
+                    });
+                  });
+                });
+            });
+        });
+      });
     });
 });

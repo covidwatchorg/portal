@@ -86,6 +86,52 @@ function deleteUser(uid: string) {
     });
 }
 
+// Sets disabled flag and jwt claims for the Firebase Auth user record, based on its corresponding entry in the
+// users table
+function syncAuthUserWithCovidWatchUser(email: string) {
+  db.collection('users')
+    .doc(email)
+    .get()
+    .then((doc) => {
+      const covidWatchUser = doc.data();
+      if (covidWatchUser === undefined) throw new Error(`Could not find user in users table with email: ${email}`);
+      auth
+        .getUserByEmail(email)
+        .then((authUser) => {
+          auth
+            .setCustomUserClaims(authUser.uid, {
+              isSuperAdmin: covidWatchUser.isSuperAdmin,
+              isAdmin: covidWatchUser.isAdmin,
+              organizationID: covidWatchUser.organizationID,
+            })
+            .then(() => {
+              console.log('user ' + email + ' isSuperAdmin claim set to ' + covidWatchUser.isSuperAdmin);
+              console.log('user ' + email + ' isAdmin claim set to ' + covidWatchUser.isAdmin);
+              console.log('user ' + email + ' organizationID claim set to ' + covidWatchUser.organizationID);
+              auth
+                .updateUser(authUser.uid, {
+                  disabled: covidWatchUser.disabled,
+                })
+                .then(() => {
+                  console.log(`User ${email}'s disabled flag in Auth updated to ${covidWatchUser.disabled}`);
+                })
+                .catch((err) => {
+                  console.error(err);
+                });
+            })
+            .catch((err) => {
+              console.error(err);
+            });
+        })
+        .catch((err) => {
+          console.error(err);
+        });
+    })
+    .catch((err) => {
+      console.error(err);
+    });
+}
+
 // Throw error if user is not authenticated
 function authGuard(context: functions.https.CallableContext): Promise<void> {
   return new Promise((resolve, reject) => {
@@ -249,36 +295,7 @@ export const onCreate = functions.auth.user().onCreate((firebaseAuthUser) => {
             .then((doesExist) => {
               if (doesExist) {
                 // User has been properly pre-registered in `users` collection, set custom claims in their token
-                auth
-                  .setCustomUserClaims(firebaseAuthUser.uid, {
-                    isSuperAdmin: covidWatchUserData.isSuperAdmin,
-                    isAdmin: covidWatchUserData.isAdmin,
-                    organizationID: covidWatchUserData.organizationID,
-                  })
-                  .then(() => {
-                    console.log(
-                      'user ' + covidWatchUser.id + 'isSuperAdmin claim set to ' + covidWatchUserData.isSuperAdmin
-                    );
-                    console.log('user ' + covidWatchUser.id + 'isAdmin claim set to ' + covidWatchUserData.isAdmin);
-                    console.log(
-                      'user ' + covidWatchUser.id + 'organizationID claim set to ' + covidWatchUserData.organizationID
-                    );
-                    auth
-                      .updateUser(firebaseAuthUser.uid, {
-                        disabled: covidWatchUserData.disabled,
-                      })
-                      .then(() => {
-                        console.log(
-                          `User ${covidWatchUserData.id}'s disabled flag in Auth updated to ${covidWatchUserData}`
-                        );
-                      })
-                      .catch((err) => {
-                        console.error(err);
-                      });
-                  })
-                  .catch((err) => {
-                    console.error(err);
-                  });
+                syncAuthUserWithCovidWatchUser(covidWatchUser.id);
               } else {
                 console.error(
                   `Attempted to create user with organizationID set to ${covidWatchUserData.organizationID}, but that id doesn't exist.`
@@ -345,33 +362,20 @@ export const userOnUpdate = functions.firestore.document('users/{email}').onUpda
   const previousValue = change.before.data();
   const newValue = change.after.data();
   const email = context.params.email;
+  console.log(
+    `Updating user with email ${email}.\n\nprevious value: ${JSON.stringify(
+      previousValue
+    )}, new value: ${JSON.stringify(newValue)}`
+  );
 
   // Force unwrap ok because document is guaranteed to exist (by definition its being updated)
-  if (previousValue!.disabled !== newValue!.disabled) {
-    console.log(
-      `User.disabled update detected for user ${email}. Value changed from ${previousValue!.disabled} to ${
-        newValue!.disabled
-      }`
-    );
-    return auth
-      .getUserByEmail(email)
-      .then((userRecord) => {
-        auth
-          .updateUser(userRecord.uid, {
-            disabled: newValue!.disabled ? newValue!.disabled : false,
-          })
-          .then(() => {
-            console.log(
-              `User ${email}'s disabled flag in Auth updated to ${newValue!.disabled ? newValue!.disabled : false}`
-            );
-          })
-          .catch((err) => {
-            console.error(err);
-          });
-      })
-      .catch((err) => {
-        console.error(err);
-      });
+  if (
+    previousValue!.disabled !== newValue!.disabled ||
+    previousValue!.isSuperAdmin !== newValue!.isSuperAdmin ||
+    previousValue!.isAdmin !== newValue!.isAdmin ||
+    previousValue!.organizationID !== newValue!.organizationID
+  ) {
+    syncAuthUserWithCovidWatchUser(email);
   }
   return new Promise((resolve) => resolve());
 });
