@@ -117,7 +117,7 @@ const Store = types
     user: User,
     organization: Organization,
   })
-  .actions((self) => {
+  .actions(() => {
     const signInWithEmailAndPassword = flow(function* (email, password) {
       yield auth.signInWithEmailAndPassword(email, password)
     })
@@ -149,14 +149,14 @@ const Store = types
 
     const updateUsers = flow(function* (userData) {
       try {
-        var batch = db.batch();
+        var batch = db.batch()
 
         for (let singleUserData of userData) {
           batch.update(db.collection('users').doc(singleUserData.email), singleUserData)
         }
 
         // Execute atomically
-        return batch.commit();
+        yield batch.commit()
       } catch (err) {
         console.warn(err)
         throw err
