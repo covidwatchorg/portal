@@ -11,7 +11,6 @@ import RoleSelector from '../components/RoleSelector'
 import * as ROLES from '../constants/roles'
 import { withStore } from '../store'
 import { observer } from 'mobx-react'
-import PendingOperationButton from '../components/PendingOperationButton'
 
 const PAGE_SIZE = 15
 
@@ -22,22 +21,10 @@ const ManageTeamsBase = observer((props) => {
   const [toastMessage, setToastMessage] = useState(false)
   const [isSuccess, setIsSuccess] = useState(false)
 
-  const viewDataFromMemberData = (members) => {
-    return members.map((m) => {
-      return {
-        email: m.email,
-        isAdmin: m.isAdmin,
-        disabled: m.disabled,
-        firstName: m.firstName,
-        lastName: m.lastName,
-      }
-    })
-  }
-
-  const [memberData] = useState(viewDataFromMemberData(props.store.organization.members))
-
   const [currentPage, setCurrentPage] = useState(0)
-  const pages = memberData ? [...Array(Math.ceil(memberData.length / PAGE_SIZE)).keys()] : []
+  const pages = props.store.organization.members
+    ? [...Array(Math.ceil(props.store.organization.members.length / PAGE_SIZE)).keys()]
+    : []
   const [showModal, setShowModal] = useState(false)
 
   const inCurrentPage = (index) => {
@@ -65,22 +52,6 @@ const ManageTeamsBase = observer((props) => {
     setIsSuccess(false)
     setToastShouldOpen(true)
     setShowModal(false)
-  }
-
-  const saveMemebers = async () => {
-    try {
-      await props.store.updateUsers(memberData)
-
-      console.log('Member data saved successfully')
-      setToastMessage('Member data saved successfully')
-      setIsSuccess(true)
-      setToastShouldOpen(true)
-    } catch (err) {
-      console.log(`Member data failed to save: ${err}`)
-      setToastMessage('Failed to save member data')
-      setIsSuccess(false)
-      setToastShouldOpen(true)
-    }
   }
 
   const deleteAccount = () => {
@@ -114,15 +85,15 @@ const ManageTeamsBase = observer((props) => {
           </tr>
         </thead>
         <tbody>
-          {memberData &&
-            memberData.map((data, index) => (
+          {props.store.organization.members &&
+            props.store.organization.members.map((data, index) => (
               <tr className={inCurrentPage(index) ? '' : 'hidden'} key={index}>
                 <td>{data.lastName + ', ' + data.firstName}</td>
                 <td style={{ padding: 0 }}>
                   <RoleSelector
-                    isAdmin={data.isAdmin}
+                    memberIndex={index}
                     onChange={(e) => {
-                      data.isAdmin = e.target.value == ROLES.ADMIN_LABEL
+                      props.store.updateUserByEmail(data.email, { isAdmin: e.target.value == ROLES.ADMIN_LABEL })
                     }}
                   />
                 </td>
@@ -131,8 +102,9 @@ const ManageTeamsBase = observer((props) => {
                     <select
                       disabled={data.email == userEmail}
                       className={!data.disabled ? 'active' : 'inactive'}
-                      defaultValue={!data.disabled ? 'active' : 'deactivated'}
+                      value={!data.disabled ? 'active' : 'deactivated'}
                       onChange={(e) => {
+                        props.store.updateUserByEmail(data.email, { disabled: e.target.value == 'deactivated' })
                         data.disabled = e.target.value == 'deactivated'
                         e.target.className = !data.disabled ? 'active' : 'inactive'
                       }}
@@ -153,9 +125,6 @@ const ManageTeamsBase = observer((props) => {
         </tbody>
       </table>
       <div className="table-bottom-container">
-        <PendingOperationButton className="save-button" operation={saveMemebers}>
-          Save Changes
-        </PendingOperationButton>
         <div className="pages-container">
           <div className="arrow" onClick={currentPage === 0 ? () => {} : () => setCurrentPage(currentPage - 1)}>
             <img src={arrowLeft} />

@@ -106,7 +106,7 @@ const Organization = types
     const __setMembers = (members) => {
       self.members = cast(members)
       console.log('Set members:')
-      console.log(self.members)
+      console.log(self.members[0])
     }
 
     return { __update, __setMembers, update }
@@ -147,23 +147,16 @@ const Store = types
       }
     })
 
-    const updateUsers = flow(function* (userData) {
+    const updateUserByEmail = flow(function* (email, updates) {
       try {
-        var batch = db.batch()
-
-        for (let singleUserData of userData) {
-          batch.update(db.collection('users').doc(singleUserData.email), singleUserData)
-        }
-
-        // Execute atomically
-        yield batch.commit()
+        yield db.collection('users').doc(email).update(updates)
       } catch (err) {
-        console.warn(err)
+        console.error(`Error updating user: ${email}`, err)
         throw err
       }
     })
 
-    return { signInWithEmailAndPassword, signOut, createUser, sendPasswordResetEmail, updateUsers }
+    return { signInWithEmailAndPassword, signOut, createUser, sendPasswordResetEmail, updateUserByEmail }
   })
 
 const defaultUser = {
