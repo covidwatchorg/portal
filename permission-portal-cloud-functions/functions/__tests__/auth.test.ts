@@ -355,7 +355,7 @@ test('User can be toggled between enabled and disabled', () => {
     })
     .then(() => {
       // Delay to allow userOnUpdate time to run
-      return delay(DELAY * 2).then(() => {
+      return delay(DELAY * 3).then(() => {
         return adminAuth.getUserByEmail('disabled@soylentgreen.com').then((userRecordDisabled) => {
           expect(userRecordDisabled.disabled).toBe(false);
           return adminDb
@@ -365,7 +365,7 @@ test('User can be toggled between enabled and disabled', () => {
               disabled: true,
             })
             .then(() => {
-              return delay(DELAY).then(() => {
+              return delay(DELAY * 3).then(() => {
                 return adminAuth.getUserByEmail('disabled@soylentgreen.com').then((userRecordEnabled) => {
                   expect(userRecordEnabled.disabled).toBe(true);
                 });
