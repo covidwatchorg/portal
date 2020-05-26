@@ -110,25 +110,49 @@ const AddMemberModalBase = observer((props) => {
     <Modal hidden={props.hidden} onClose={props.onClose} containerClass="add-member-modal-container">
       <h1>Add Member</h1>
       <div className="add-member-form">
-        <label>
+        <label htmlFor="firstName">
           First Name<span>*</span>
         </label>
-        <input type="text" name="firstName" value={state.firstName} onChange={handleChange} />
+        <input
+          type="text"
+          name="firstName"
+          id="firstName"
+          required
+          aria-required="true"
+          value={state.firstName}
+          onChange={handleChange}
+        />
         {state.firstNameValidationFailed && <div className="validationResult">{state.firstNameValidationMessage}</div>}
-        <label>
+        <label htmlFor="lastName">
           Last Name<span>*</span>
         </label>
-        <input type="text" name="lastName" value={state.lastName} onChange={handleChange} />
+        <input
+          type="text"
+          name="lastName"
+          id="lastName"
+          required
+          aria-required="true"
+          value={state.lastName}
+          onChange={handleChange}
+        />
         {state.lastNameValidationFailed && <div className="validationResult">{state.lastNameValidationMessage}</div>}
-        <label>
+        <label htmlFor="email">
           Email<span>*</span>
         </label>
-        <input type="text" name="email" value={state.email} onChange={handleChange} />
+        <input
+          type="text"
+          name="email"
+          id="email"
+          required
+          aria-required="true"
+          value={state.email}
+          onChange={handleChange}
+        />
         {state.emailValidationFailed && <div className="validationResult">{state.emailValidationMessage}</div>}
-        <label>
+        <label htmlFor="role">
           Role<span>*</span>
         </label>
-        <RoleSelector isAdmin={false} onChange={handleChange} />
+        <RoleSelector isAdmin={false} id="role" required={true} onChange={handleChange} />
         {state.roleValidationFailed && <div className="validationResult">{state.roleValidationMessage}</div>}
         <div className="save-button-container">
           <PendingOperationButton className="save-button" operation={tryCreateUser}>

@@ -38,7 +38,7 @@ const User = types
     isSuperAdmin: types.boolean,
     disabled: types.boolean,
     prefix: types.maybe(types.string),
-    imageBlob: types.maybe(types.string),
+    imageBlob: types.maybeNull(types.string),
     firstName: types.string,
     lastName: types.string,
     organizationID: types.string,
@@ -58,8 +58,16 @@ const User = types
         console.error('Error updating users', err)
       }
     })
+    const updateImage = flow(function* (blob) {
+      try {
+        // .set() with { merge: true } so that if the document dne, it's created, otherwise its updated
+        yield db.collection('userImages').doc(self.email).set({ blob: blob }, { merge: true })
+      } catch (err) {
+        console.error('Error updating image', err)
+      }
+    })
 
-    return { __update, update }
+    return { __update, update, updateImage }
   })
 
 const Organization = types
@@ -83,7 +91,6 @@ const Organization = types
     verificationNotSharedText: types.string,
     diagnosisText: types.string,
     exposureText: types.string,
-    membersPage: types.number, // TODO: controls pagination
     members: types.array(User),
   })
   .actions((self) => {
@@ -100,13 +107,14 @@ const Organization = types
         yield db.collection('organizations').doc(self.id).update(updates)
       } catch (err) {
         console.error('Error updating organization texts', err)
+        throw err
       }
     })
 
     const __setMembers = (members) => {
       self.members = cast(members)
       console.log('Set members:')
-      console.log(self.members)
+      console.log(self.members[0])
     }
 
     return { __update, __setMembers, update }
@@ -143,11 +151,20 @@ const Store = types
         return true
       } catch (err) {
         console.warn(err)
-        return false
+        throw err
       }
     })
 
-    return { signInWithEmailAndPassword, signOut, createUser, sendPasswordResetEmail }
+    const updateUserByEmail = flow(function* (email, updates) {
+      try {
+        yield db.collection('users').doc(email).update(updates)
+      } catch (err) {
+        console.error(`Error updating user: ${email}`, err)
+        throw err
+      }
+    })
+
+    return { signInWithEmailAndPassword, signOut, createUser, sendPasswordResetEmail, updateUserByEmail }
   })
 
 const defaultUser = {
@@ -160,6 +177,7 @@ const defaultUser = {
   firstName: '',
   lastName: '',
   organizationID: '',
+  imageBlob: null,
 }
 
 const defaultOrganization = {
@@ -182,7 +200,6 @@ const defaultOrganization = {
   verificationNotSharedText: '',
   diagnosisText: '',
   exposureText: '',
-  membersPage: 1,
   members: [],
 }
 
@@ -196,6 +213,7 @@ const createStore = (WrappedComponent) => {
     constructor(props) {
       super(props)
       this.userDocumentListener = null
+      this.userImageListener = null
       this.organizationDocumentListener = null
       this.organizationMembersListener = null
       this.authStateListener = auth.onAuthStateChanged(async (user) => {
@@ -219,6 +237,24 @@ const createStore = (WrappedComponent) => {
                 })
               })
           }
+
+          const userImageDocumentSnapshot = await db.collection('userImages').doc(user.email).get()
+          if (userImageDocumentSnapshot.exists) {
+            console.warn(userImageDocumentSnapshot)
+            rootStore.user.__update({
+              imageBlob: userImageDocumentSnapshot.data().blob,
+            })
+          }
+          this.userImageListener = db
+            .collection('userImages')
+            .doc(user.email)
+            .onSnapshot((updatedUserImageDocumentSnapshot) => {
+              if (updatedUserImageDocumentSnapshot.exists) {
+                rootStore.user.__update({
+                  imageBlob: updatedUserImageDocumentSnapshot.data().blob,
+                })
+              }
+            })
 
           const organizationID = rootStore.user.organizationID
 
@@ -246,7 +282,6 @@ const createStore = (WrappedComponent) => {
 
           if (rootStore.user.isAdmin) {
             // If admin, get the user's organization's members from the db
-            // TODO will want pagination
             const usersSnapshot = await db.collection('users').where('organizationID', '==', organizationID).get()
             rootStore.organization.__setMembers(
               usersSnapshot.docs.map((userDoc) => {
