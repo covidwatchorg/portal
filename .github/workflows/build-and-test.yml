@@ -29,8 +29,8 @@ jobs:
           npm run git-info
           npm run build
 
-  test-firebase:
-    name: Build Firebase, Deploy to Test Infrastructure, and Run Tests
+  build-firebase:
+    name: Build Firebase
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -39,14 +39,46 @@ jobs:
         run: npm install
       - name: Initialize config files
         working-directory: permission-portal-cloud-functions/functions
-        run: npm run init        
-      - name: Build and Deploy to Firebase
+        run: npm run init       
+      - name: Lint and Build
+        working-directory: permission-portal-cloud-functions/functions
+        run: |
+          npm run lint
+          npm run build
+      - name: Upload artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: permission-portal-cloud-functions
+          path: permission-portal-cloud-functions 
+
+  deploy-firebase:
+    name: Deploy Firebase
+    needs: build-firebase
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/download-artifact@v2
+        with:
+          name: permission-portal-cloud-functions
+          path: permission-portal-cloud-functions
+      - name: Deploy to Firebase Test Infra
         uses: w9jds/firebase-action@master
         with:
           args: deploy --project=test
         env:
           FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
           PROJECT_PATH: permission-portal-cloud-functions/
+
+  firebase-tests:
+    name: Run Firebase Tests
+    needs: deploy-firebase
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/download-artifact@v2
+        with:
+          name: permission-portal-cloud-functions
+          path: permission-portal-cloud-functions
       - name: Run Tests
         working-directory: permission-portal-cloud-functions/functions
         run: npm run test_ci
