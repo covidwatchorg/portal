@@ -25,6 +25,10 @@ const RoleSelector = observer((props) => {
     <div className="custom-select">
       <select
         onChange={props.onChange}
+        id={props.id || null}
+        aria-labelledby={props.ariaLabelledBy || null}
+        required={props.required || false}
+        aria-required={props.required || false}
         defaultValue={props.isAdmin === true ? ROLES.ADMIN_LABEL : ROLES.NON_ADMIN_LABEL}
       >
         <option value={ROLES.ADMIN_LABEL}>{ROLES.ADMIN_LABEL}</option>

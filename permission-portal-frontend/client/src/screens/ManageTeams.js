@@ -11,6 +11,7 @@ import RoleSelector from '../components/RoleSelector'
 import * as ROLES from '../constants/roles'
 import { withStore } from '../store'
 import { observer } from 'mobx-react'
+import PageTitle from '../components/PageTitle'
 
 const PAGE_SIZE = 15
 
@@ -64,9 +65,10 @@ const ManageTeamsBase = observer((props) => {
 
   return props.store.user.isSignedIn && props.store.user.isAdmin ? (
     <div className="module-container">
+      <PageTitle title="Manage Members" />
       <h1>Manage Members</h1>
       <div className="add-member-button" onClick={() => setShowModal(true)}>
-        <img src={addMember} />
+        <img src={addMember} alt="" />
         <span className="add-button-text">Add Member</span>
       </div>
       <AddMemberModal
@@ -79,8 +81,8 @@ const ManageTeamsBase = observer((props) => {
         <thead>
           <tr>
             <th style={{ borderTopLeftRadius: 5 }}>Name</th>
-            <th>Role</th>
-            <th>Status</th>
+            <th id="role-header">Role</th>
+            <th id="status-header">Status</th>
             <th style={{ borderTopRightRadius: 5 }}>Settings</th>
           </tr>
         </thead>
@@ -95,6 +97,7 @@ const ManageTeamsBase = observer((props) => {
                     onChange={(e) => {
                       props.store.updateUserByEmail(data.email, { isAdmin: e.target.value == ROLES.ADMIN_LABEL })
                     }}
+                    ariaLabelledBy="role-header"
                   />
                 </td>
                 <td style={{ padding: 0 }}>
@@ -108,6 +111,7 @@ const ManageTeamsBase = observer((props) => {
                         data.disabled = e.target.value == 'deactivated'
                         e.target.className = !data.disabled ? 'active' : 'inactive'
                       }}
+                      aria-labelledby="status-header"
                     >
                       <option value="active">Active</option>
                       <option value="deactivated">Deactivated</option>
@@ -127,7 +131,7 @@ const ManageTeamsBase = observer((props) => {
       <div className="table-bottom-container">
         <div className="pages-container">
           <div className="arrow" onClick={currentPage === 0 ? () => {} : () => setCurrentPage(currentPage - 1)}>
-            <img src={arrowLeft} />
+            <img src={arrowLeft} alt="Previous" />
           </div>
           {pages.map((page) => (
             <a
@@ -142,7 +146,7 @@ const ManageTeamsBase = observer((props) => {
             className="arrow"
             onClick={currentPage === pages[pages.length - 1] ? () => {} : () => setCurrentPage(currentPage + 1)}
           >
-            <img src={arrowRight} />
+            <img src={arrowRight} alt="Next" />
           </div>
         </div>
       </div>

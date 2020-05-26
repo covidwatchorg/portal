@@ -7,6 +7,7 @@ import * as ROUTES from '../constants/routes'
 import { withStore } from '../store'
 import { Redirect } from 'react-router-dom'
 import { observer } from 'mobx-react'
+import PageTitle from '../components/PageTitle'
 
 // snackbars docs can be found here:
 // https://material-ui.com/components/snackbars/
@@ -20,6 +21,7 @@ const CodeValidationsBase = observer((props) => {
     <div className="module-container">
       {/* this is a Snackbar template to use for the success/failure notifications */}
 
+      <PageTitle title="Positive Test Validations" />
       <h1>Positive Test Validations</h1>
       <div id="actions-box" className="gray-background">
         <div className="action-section">

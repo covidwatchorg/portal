@@ -55,13 +55,17 @@ const NavBarBase = observer((props) => {
 
   return (
     <div className="navbarContainer">
-      <img src={ucsf_health} id="ucsfLogo" />
+      <img src={ucsf_health} id="orgLogo" alt={props.store.organization.name || 'UCSF Health'} />
       <div className="avatar_group avatar_text">
         <div className="name">{props.store.user.firstName + ' ' + props.store.user.lastName}</div>
         <div className="title">{props.store.user.isAdmin ? ROLES.ADMIN_LABEL : ROLES.NON_ADMIN_LABEL}</div>
       </div>
       <div className="avatar_group avatar_image">
-        <img src={profile} />
+        <img
+          src={props.store.user.imageBlob ? props.store.user.imageBlob : profile}
+          style={{ objectFit: 'cover', display: 'block', margin: 'auto' }}
+          alt=""
+        ></img>
       </div>
       <div className="avatar_group separator" />
       <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu" onClick={handleMenu}>
