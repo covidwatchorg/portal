@@ -55,36 +55,40 @@ jobs:
           chmod +x ./scripts/deploy.sh
           ./scripts/deploy.sh
 
+  build-firebase:
+    name: Build Firebase
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Install
+        working-directory: permission-portal-cloud-functions/functions
+        run: npm install
+      - name: Initialize config files
+        working-directory: permission-portal-cloud-functions/functions
+        run: npm run init       
+      - name: Lint and Build
+        working-directory: permission-portal-cloud-functions/functions
+        run: |
+          npm run lint
+          npm run build
+      - name: Upload artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: permission-portal-cloud-functions
+          path: permission-portal-cloud-functions 
+
   deploy-firebase:
-    name: Build, Test, and Deploy Firebase
+    name: Deploy Firebase
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
 
-      - name: Install
-        working-directory: permission-portal-cloud-functions/functions
-        run: npm install
-
-      - name: Initialize config files
-        working-directory: permission-portal-cloud-functions/functions
-        run: npm run init        
-
-      - name: Build and Deploy to Firebase Test Infra
-        uses: w9jds/firebase-action@master
+      - uses: actions/download-artifact@v2
         with:
-          args: deploy --project=test
-        env:
-          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
-          PROJECT_PATH: permission-portal-cloud-functions/
+          name: permission-portal-cloud-functions
+          path: permission-portal-cloud-functions 
 
-      - name: Run Tests
-        working-directory: permission-portal-cloud-functions/functions
-        run: npm run test_ci
-        env:
-          FIREBASE_PRIVATE_KEY: ${{ secrets.FIREBASE_PRIVATE_KEY }}
-          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
-
-      - name: Build and Deploy to Firebase Staging Infra
+      - name: Deploy to Firebase Staging Infra
         if: github.ref == 'refs/heads/dev'
         uses: w9jds/firebase-action@master
         with:
@@ -94,7 +98,7 @@ jobs:
           PROJECT_PATH: permission-portal-cloud-functions/
           NODE_ENV: staging
 
-      - name: Build and Deploy to Firebase Prod Infra
+      - name: Deploy to Firebase Prod Infra
         if: github.ref == 'refs/heads/master'
         uses: w9jds/firebase-action@master
         with:
