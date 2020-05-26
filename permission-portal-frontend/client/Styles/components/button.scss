@@ -1,0 +1,24 @@
+.button {
+  margin-top: 32px;
+  border-radius: 7px;
+  font-family: Montserrat;
+  font-style: normal;
+  font-weight: bold;
+  font-size: 14px;
+  line-height: 17px;
+  text-align: center;
+  padding: 10px;
+
+  background: #2C58B1;
+  color: #FFFFFF;
+
+  &.disabled {
+    background: #FFFFFF;
+    color: #BDBDBD;
+  }
+}
+
+.progress-container {
+    display: flex;
+    justify-content: center;
+}
