@@ -8,6 +8,7 @@ import powered_by_cw from '../../assets/powered-by-cw.svg'
 import { withStore } from '../store'
 import { observer } from 'mobx-react'
 import ForgotPasswordModal from '../screens/ForgotPasswordModal'
+import PageTitle from '../components/PageTitle'
 
 const INITIAL_STATE = {
   email: '',
@@ -51,10 +52,10 @@ const SignInFormBase = observer(
       <Fragment>
         <div className="doctorContainer">
           <div className="doctor1">
-            <img src={doctor1} />
+            <img src={doctor1} alt="" />
           </div>
           <div className="doctor2">
-            <img src={doctor2} />
+            <img src={doctor2} alt="" />
           </div>
         </div>
       </Fragment>
@@ -62,9 +63,10 @@ const SignInFormBase = observer(
 
     loginForm = () => (
       <Fragment>
+        <PageTitle title="Welcome" />
         <div className="topNav">
-          <img src={ucsf_health} id="ucsfLogo" />
-          <img src={powered_by_cw} id="poweredByCWLogo" />
+          <img src={ucsf_health} id="orgLogo" alt={this.props.store.organization.name || 'UCSF Health'} />
+          <img src={powered_by_cw} id="poweredByCWLogo" alt="Powered by Covid Watch" />
         </div>
         <div className="mainContainer">
           <div className="welcome">
