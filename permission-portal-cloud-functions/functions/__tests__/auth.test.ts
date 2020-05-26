@@ -355,39 +355,6 @@ test('User can be toggled between enabled and disabled', () => {
     })
     .then(() => {
       // Delay to allow userOnUpdate time to run
-      return delay(DELAY * 4).then(() => {
-        return adminAuth.getUserByEmail('disabled@soylentgreen.com').then((userRecordDisabled) => {
-          expect(userRecordDisabled.disabled).toBe(false);
-          return adminDb
-            .collection('users')
-            .doc('disabled@soylentgreen.com')
-            .update({
-              disabled: true,
-            })
-            .then(() => {
-              return delay(DELAY * 4).then(() => {
-                return adminAuth.getUserByEmail('disabled@soylentgreen.com').then((userRecordEnabled) => {
-                  expect(userRecordEnabled.disabled).toBe(true);
-                });
-              });
-            });
-        });
-      });
-    })
-    .catch((err) => {
-      throw err;
-    });
-});
-
-test('User can be toggled between enabled and disabled', () => {
-  return adminDb
-    .collection('users')
-    .doc('disabled@soylentgreen.com')
-    .update({
-      disabled: false,
-    })
-    .then(() => {
-      // Delay to allow userOnUpdate time to run
       return delay(DELAY * 2).then(() => {
         return adminAuth.getUserByEmail('disabled@soylentgreen.com').then((userRecordDisabled) => {
           expect(userRecordDisabled.disabled).toBe(false);
@@ -398,7 +365,7 @@ test('User can be toggled between enabled and disabled', () => {
               disabled: true,
             })
             .then(() => {
-              return delay(DELAY).then(() => {
+              return delay(DELAY * 2).then(() => {
                 return adminAuth.getUserByEmail('disabled@soylentgreen.com').then((userRecordEnabled) => {
                   expect(userRecordEnabled.disabled).toBe(true);
                 });
