@@ -38,7 +38,7 @@ const User = types
     isSuperAdmin: types.boolean,
     disabled: types.boolean,
     prefix: types.maybe(types.string),
-    imageBlob: types.maybe(types.string),
+    imageBlob: types.maybeNull(types.string),
     firstName: types.string,
     lastName: types.string,
     organizationID: types.string,
@@ -58,8 +58,16 @@ const User = types
         console.error('Error updating users', err)
       }
     })
+    const updateImage = flow(function* (blob) {
+      try {
+        // .set() with { merge: true } so that if the document dne, it's created, otherwise its updated
+        yield db.collection('userImages').doc(self.email).set({ blob: blob }, { merge: true })
+      } catch (err) {
+        console.error('Error updating image', err)
+      }
+    })
 
-    return { __update, update }
+    return { __update, update, updateImage }
   })
 
 const Organization = types
@@ -160,6 +168,7 @@ const defaultUser = {
   firstName: '',
   lastName: '',
   organizationID: '',
+  imageBlob: null,
 }
 
 const defaultOrganization = {
@@ -196,6 +205,7 @@ const createStore = (WrappedComponent) => {
     constructor(props) {
       super(props)
       this.userDocumentListener = null
+      this.userImageListener = null
       this.organizationDocumentListener = null
       this.organizationMembersListener = null
       this.authStateListener = auth.onAuthStateChanged(async (user) => {
@@ -219,6 +229,24 @@ const createStore = (WrappedComponent) => {
                 })
               })
           }
+
+          const userImageDocumentSnapshot = await db.collection('userImages').doc(user.email).get()
+          if (userImageDocumentSnapshot.exists) {
+            console.warn(userImageDocumentSnapshot)
+            rootStore.user.__update({
+              imageBlob: userImageDocumentSnapshot.data().blob,
+            })
+          }
+          this.userImageListener = db
+            .collection('userImages')
+            .doc(user.email)
+            .onSnapshot((updatedUserImageDocumentSnapshot) => {
+              if (updatedUserImageDocumentSnapshot.exists) {
+                rootStore.user.__update({
+                  imageBlob: updatedUserImageDocumentSnapshot.data().blob,
+                })
+              }
+            })
 
           const organizationID = rootStore.user.organizationID
 
