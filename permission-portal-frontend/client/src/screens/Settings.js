@@ -138,27 +138,14 @@ const SettingsBase = observer((props) => {
         return
       }
       let reader = new FileReader()
+      // set up onload trigger to run when data is read
       reader.onload = (e) => {
-        const _state = { ...state }
-        _state.imageBlob = e.target.result
-        console.log('base64:' + _state.imageBlob)
-        setState({ ..._state })
+        props.store.user.updateImage(e.target.result)
       }
+      // read data
       reader.readAsDataURL(imgUploader.current.files[0])
     } catch (err) {
       console.log(err)
-    }
-  }
-
-  const saveSettings = async (e) => {
-    e.preventDefault()
-    try {
-      await props.store.user.update({ ...state })
-      console.log('user data saved successfully')
-      setToastInfo({ open: true, success: true, msg: 'Settings Saved Successfully' })
-    } catch (err) {
-      console.log(err)
-      setToastInfo({ open: true, success: false, msg: 'Failed' })
     }
   }
 
@@ -170,7 +157,7 @@ const SettingsBase = observer((props) => {
           Discard
         </button>
         <button onClick={saveImage} className={primaryButton.root} style={{ width: '70px', borderStyle: 'none' }}>
-          Save
+          Upload
         </button>
       </div>
     </div>
@@ -194,7 +181,7 @@ const SettingsBase = observer((props) => {
                 }}
               >
                 <img
-                  src={state.imageBlob ? state.imageBlob : 'client/assets/photo-add.png'}
+                  src={props.store.user.imageBlob ? props.store.user.imageBlob : 'client/assets/photo-add.png'}
                   style={{ width: '195px', height: '195px', objectFit: 'cover', display: 'block', margin: 'auto' }}
                 ></img>
               </div>
@@ -246,9 +233,6 @@ const SettingsBase = observer((props) => {
                 className={input.root}
                 defaultValue={props.store.user.email}
               ></input>
-              <button onClick={saveSettings} className={primaryButton.root}>
-                Save Changes
-              </button>
             </Grid>
           </Grid>
 
