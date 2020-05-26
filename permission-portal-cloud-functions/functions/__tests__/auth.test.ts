@@ -1,6 +1,6 @@
 import { adminDb, clientAuth, adminAuth, createUser, delay, DELAY, soylentGreenID } from './config';
 
-jest.setTimeout(60000);
+jest.setTimeout(120000);
 
 // Track so user can be deleted after each test
 let testUid: string;
