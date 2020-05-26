@@ -71,6 +71,9 @@ jobs:
         run: |
           npm run lint
           npm run build
+      - name: Remove node_modules for upload
+        working-directory: permission-portal-cloud-functions/functions
+        run: rm -r node_modules
       - name: Upload artifact
         uses: actions/upload-artifact@v2
         with:
@@ -80,6 +83,7 @@ jobs:
   deploy-firebase:
     name: Deploy Firebase
     runs-on: ubuntu-latest
+    needs: build-firebase
     steps:
       - uses: actions/checkout@v2
 
@@ -87,6 +91,10 @@ jobs:
         with:
           name: cloud-functions-artifact
           path: permission-portal-cloud-functions/functions
+
+      - name: Install 
+        working-directory: permission-portal-cloud-functions/functions
+        run: npm install
 
       - name: Deploy to Firebase Staging Infra
         if: github.ref == 'refs/heads/dev'

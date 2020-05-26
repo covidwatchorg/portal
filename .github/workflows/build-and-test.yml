@@ -45,6 +45,9 @@ jobs:
         run: |
           npm run lint
           npm run build
+      - name: Remove node_modules for upload
+        working-directory: permission-portal-cloud-functions/functions
+        run: rm -r node_modules
       - name: Upload artifact
         uses: actions/upload-artifact@v2
         with:
@@ -61,6 +64,9 @@ jobs:
         with:
           name: cloud-functions-artifact
           path: permission-portal-cloud-functions/functions
+      - name: Install 
+        working-directory: permission-portal-cloud-functions/functions
+        run: npm install
       - name: Deploy to Firebase Test Infra
         uses: w9jds/firebase-action@master
         with:
@@ -79,6 +85,9 @@ jobs:
         with:
           name: cloud-functions-artifact
           path: permission-portal-cloud-functions/functions
+      - name: Install 
+        working-directory: permission-portal-cloud-functions/functions
+        run: npm install
       - name: Run Tests
         working-directory: permission-portal-cloud-functions/functions
         run: npm run test_ci
