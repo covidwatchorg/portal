@@ -31,7 +31,7 @@ const SignInFormBase = observer(
       try {
         await this.props.store.signInWithEmailAndPassword(email, password)
       } catch (err) {
-        console.warn(err)
+        console.error(err)
       }
     }
 

@@ -88,12 +88,6 @@ const SettingsBase = observer((props) => {
     success: false,
     msg: '',
   })
-  const [state, setState] = useState({
-    prefix: props.store.user.prefix,
-    firstName: props.store.user.firstName,
-    lastName: props.store.user.lastName,
-    imageBlob: props.store.user.imageBlob,
-  })
 
   const handleOpen = () => {
     setOpen(true)
@@ -107,14 +101,18 @@ const SettingsBase = observer((props) => {
       await props.store.sendPasswordResetEmail(props.store.user.email)
       setToastInfo({ open: true, success: true, msg: 'Password Reset Successful' })
     } catch (err) {
-      console.warn(err)
+      console.error(err)
       setToastInfo({ open: true, success: false, msg: 'Password Reset Failed. Please try again' })
     }
   }
   const onChange = async (event) => {
-    const _state = { ...state }
-    _state[event.target.name] = event.target.value
-    setState({ ..._state })
+    if (event.target.name == 'prefix') {
+      props.store.user.update({ prefix: event.target.value })
+    } else if (event.target.name == 'firstName') {
+      props.store.user.update({ firstName: event.target.value })
+    } else if (event.target.name == 'lastName') {
+      props.store.user.update({ lastName: event.target.value })
+    }
   }
 
   const saveImage = async (e) => {
@@ -207,11 +205,9 @@ const SettingsBase = observer((props) => {
                 name="prefix"
                 className={input.root}
                 onChange={onChange}
-                defaultValue={props.store.user.prefix}
+                value={props.store.user.prefix}
               ></input>
-              <label htmlFor="firstName">
-                First Name <span style={{ color: 'red' }}>*</span>
-              </label>
+              <label htmlFor="firstName">First Name</label>
               <input
                 type="text"
                 id="firstName"
@@ -219,37 +215,35 @@ const SettingsBase = observer((props) => {
                 required
                 className={input.root}
                 onChange={onChange}
-                defaultValue={props.store.user.firstName}
+                value={props.store.user.firstName}
               ></input>
-              <label htmlFor="email">
-                Email Address <span style={{ color: 'red' }}>*</span>
-              </label>
+              <label htmlFor="email">Email Address</label>
               <input
                 type="text"
                 id="email"
                 name="email"
                 required
-                readOnly
+                disabled={true}
                 className={input.root}
-                defaultValue={props.store.user.email}
+                style={{ backgroundColor: '#f0f0f0' }}
+                value={props.store.user.email}
               ></input>
             </Grid>
           </Grid>
 
           <Grid item xs={4}>
             <Grid container spacing={2} direction="column">
-              <label htmlFor="role">
-                Role <span style={{ color: 'red' }}>*</span>
-              </label>
+              <label htmlFor="role">Role</label>
               {props.store.user && (
                 <select
                   type="text"
                   id="role"
                   name="role"
-                  disabled={!props.store.user.isAdmin}
+                  disabled={true}
                   required
                   className={input.root}
-                  style={!props.store.user.isAdmin ? { backgroundColor: '#E0E0E0' } : {}}
+                  style={{ backgroundColor: '#f0f0f0' }}
+                  value={props.store.user.isAdmin ? ROLES.ADMIN_LABEL : ROLES.NON_ADMIN_LABEL}
                 >
                   <option value={ROLES.ADMIN_LABEL} defaultValue={props.store.user.isAdmin}>
                     {ROLES.ADMIN_LABEL}
@@ -259,9 +253,7 @@ const SettingsBase = observer((props) => {
                   </option>
                 </select>
               )}
-              <label htmlFor="lastName">
-                Last Name <span style={{ color: 'red' }}>*</span>
-              </label>
+              <label htmlFor="lastName">Last Name</label>
               <input
                 type="text"
                 id="lastName"
@@ -271,24 +263,11 @@ const SettingsBase = observer((props) => {
                 className={input.root}
                 defaultValue={props.store.user.lastName}
               ></input>
-              <label htmlFor="password">
-                Password <span style={{ color: 'red' }}>*</span>
-              </label>
-              <input
-                required
-                className={input.root}
-                id="password"
-                name="password"
-                type="password"
-                defaultValue="example"
-                style={{ backgroundColor: '#E0E0E0' }}
-              />
+
               <a
                 href=""
                 style={{
                   fontSize: '12px',
-                  textAlign: 'right',
-                  marginRight: '50px',
                   color: '#2C58B1',
                   fontStyle: 'underline',
                 }}

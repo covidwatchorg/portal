@@ -150,7 +150,7 @@ const Store = types
         yield auth.sendPasswordResetEmail(email)
         return true
       } catch (err) {
-        console.warn(err)
+        console.error(err)
         throw err
       }
     })
@@ -240,7 +240,6 @@ const createStore = (WrappedComponent) => {
 
           const userImageDocumentSnapshot = await db.collection('userImages').doc(user.email).get()
           if (userImageDocumentSnapshot.exists) {
-            console.warn(userImageDocumentSnapshot)
             rootStore.user.__update({
               imageBlob: userImageDocumentSnapshot.data().blob,
             })
