@@ -2,10 +2,12 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 import doctor from '../../assets/404-doctor.svg'
 import '../../Styles/screens/404.scss'
+import PageTitle from '../components/PageTitle'
 
 const NotFound = () => {
   return (
     <div id="not-found">
+      <PageTitle title="404 Not Found" />
       <div id="doctor-img">
         <img src={doctor} alt="doctor" />
       </div>

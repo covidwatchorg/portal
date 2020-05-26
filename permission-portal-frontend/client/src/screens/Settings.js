@@ -8,6 +8,7 @@ import { Redirect } from 'react-router-dom'
 import { withStore } from '../store'
 import * as ROUTES from '../constants/routes'
 import { observer } from 'mobx-react'
+import PageTitle from '../components/PageTitle'
 
 const useStyles = makeStyles({
   root: {
@@ -179,6 +180,7 @@ const SettingsBase = observer((props) => {
                 }}
               >
                 <img
+                  alt={props.store.user.imageBlob ? 'Profile photo' : 'Your profile photo would go here.'}
                   src={props.store.user.imageBlob ? props.store.user.imageBlob : 'client/assets/photo-add.png'}
                   style={{ width: '195px', height: '195px', objectFit: 'cover', display: 'block', margin: 'auto' }}
                 ></img>
@@ -213,6 +215,7 @@ const SettingsBase = observer((props) => {
                 id="firstName"
                 name="firstName"
                 required
+                aria-required="true"
                 className={input.root}
                 onChange={onChange}
                 value={props.store.user.firstName}
@@ -224,6 +227,7 @@ const SettingsBase = observer((props) => {
                 name="email"
                 required
                 disabled={true}
+                aria-required="true"
                 className={input.root}
                 style={{ backgroundColor: '#f0f0f0' }}
                 value={props.store.user.email}
@@ -241,6 +245,7 @@ const SettingsBase = observer((props) => {
                   name="role"
                   disabled={true}
                   required
+                  aria-required="true"
                   className={input.root}
                   style={{ backgroundColor: '#f0f0f0' }}
                   value={props.store.user.isAdmin ? ROLES.ADMIN_LABEL : ROLES.NON_ADMIN_LABEL}
@@ -259,11 +264,11 @@ const SettingsBase = observer((props) => {
                 id="lastName"
                 name="lastName"
                 required
+                aria-required="true"
                 onChange={onChange}
                 className={input.root}
                 defaultValue={props.store.user.lastName}
               ></input>
-
               <a
                 href=""
                 style={{
@@ -290,6 +295,7 @@ const SettingsBase = observer((props) => {
 
   return props.store.user.isSignedIn ? (
     <React.Fragment>
+      <PageTitle title="My Settings" />
       <h1>My Settings</h1>
       {settingsForm()}
     </React.Fragment>
