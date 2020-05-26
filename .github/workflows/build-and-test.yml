@@ -48,8 +48,8 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-artifact@v2
         with:
-          name: permission-portal-cloud-functions
-          path: permission-portal-cloud-functions 
+          name: cloud-functions-artifact
+          path: permission-portal-cloud-functions/functions
 
   deploy-firebase:
     name: Deploy Firebase
@@ -59,8 +59,8 @@ jobs:
       - uses: actions/checkout@v2
       - uses: actions/download-artifact@v2
         with:
-          name: permission-portal-cloud-functions
-          path: permission-portal-cloud-functions
+          name: cloud-functions-artifact
+          path: permission-portal-cloud-functions/functions
       - name: Deploy to Firebase Test Infra
         uses: w9jds/firebase-action@master
         with:
@@ -77,8 +77,8 @@ jobs:
       - uses: actions/checkout@v2
       - uses: actions/download-artifact@v2
         with:
-          name: permission-portal-cloud-functions
-          path: permission-portal-cloud-functions
+          name: cloud-functions-artifact
+          path: permission-portal-cloud-functions/functions
       - name: Run Tests
         working-directory: permission-portal-cloud-functions/functions
         run: npm run test_ci
