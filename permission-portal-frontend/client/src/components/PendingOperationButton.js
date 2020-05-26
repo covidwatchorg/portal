@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import CircularProgress from "@material-ui/core/CircularProgress";
+import React from 'react'
+import CircularProgress from '@material-ui/core/CircularProgress'
 
 // Encapsulates a button driven operation which takes time and may succeed or fail
 const PendingOperationButton = (props) => {
