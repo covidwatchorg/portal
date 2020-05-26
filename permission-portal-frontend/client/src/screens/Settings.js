@@ -149,20 +149,6 @@ const SettingsBase = observer((props) => {
     }
   }
 
-  const saveSettings = async (e) => {
-    e.preventDefault()
-    console.log('Deprecated, TODO: delete this functionality')
-    return
-    // try {
-    //   await props.store.user.update({ ...state })
-    //   console.log('user data saved successfully')
-    //   setToastInfo({ open: true, success: true, msg: 'Settings Saved Successfully' })
-    // } catch (err) {
-    //   console.log(err)
-    //   setToastInfo({ open: true, success: false, msg: 'Failed' })
-    // }
-  }
-
   const changeImageModal = (
     <div className={changeImage.root}>
       <input type="file" ref={imgUploader} accepts="image/jpeg, image/png" />
@@ -247,9 +233,6 @@ const SettingsBase = observer((props) => {
                 className={input.root}
                 defaultValue={props.store.user.email}
               ></input>
-              <button onClick={saveSettings} className={primaryButton.root}>
-                Save Changes
-              </button>
             </Grid>
           </Grid>
 
