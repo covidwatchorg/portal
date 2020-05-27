@@ -9,7 +9,7 @@ import * as firebaseConfigDev from '../config/firebase.config.dev'
 import * as firebaseConfigTest from '../config/firebase.config.test'
 import * as firebaseConfigProd from '../config/firebase.config.prod'
 import * as firebaseConfigStaging from '../config/firebase.config.staging'
-import { types, cast, flow } from 'mobx-state-tree'
+import { types, cast, flow, onSnapshot } from 'mobx-state-tree'
 
 var firebaseConfigMap = {
   development: firebaseConfigDev,
@@ -203,9 +203,25 @@ const defaultOrganization = {
   members: [],
 }
 
-const rootStore = Store.create({
+const defaultStore = {
   user: defaultUser,
   organization: defaultOrganization,
+}
+
+let initialStore = defaultStore
+
+// Based on https://egghead.io/lessons/react-store-store-in-local-storage
+if (localStorage.getItem('store')) {
+  initialStore = JSON.parse(localStorage.getItem('store'))
+}
+
+const rootStore = Store.create({
+  ...initialStore,
+})
+
+// Based on https://egghead.io/lessons/react-store-store-in-local-storage
+onSnapshot(rootStore, (snapshot) => {
+  localStorage.setItem('store', JSON.stringify(snapshot))
 })
 
 const createStore = (WrappedComponent) => {
