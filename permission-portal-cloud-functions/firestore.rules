@@ -49,7 +49,7 @@ service cloud.firestore {
     }
 
     match /userImages/{email} {
-	    allow read, write: if isSignedIn() && isSelfOrAdminInOrg(email, resource.data.organizationID);
+	    allow read, write: if isSignedIn() && isSelf();
     }
   }
 }
