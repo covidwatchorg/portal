@@ -210,6 +210,7 @@ const defaultStore = {
 
 let initialStore = defaultStore
 
+// Based on https://egghead.io/lessons/react-store-store-in-local-storage
 if (localStorage.getItem('store')) {
   initialStore = JSON.parse(localStorage.getItem('store'))
 }
@@ -218,6 +219,7 @@ const rootStore = Store.create({
   ...initialStore,
 })
 
+// Based on https://egghead.io/lessons/react-store-store-in-local-storage
 onSnapshot(rootStore, (snapshot) => {
   localStorage.setItem('store', JSON.stringify(snapshot))
 })
