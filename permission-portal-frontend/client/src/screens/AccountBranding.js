@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useRef, useEffect } from 'react'
 import PendingOperationButton from '../components/PendingOperationButton'
 import Toast from '../components/Toast'
 import '../../Styles/screens/branding.scss'
@@ -14,6 +14,18 @@ const AccountBrandingBase = observer((props) => {
 
   const [diagnosisText, setDiagnosisText] = useState(props.store.organization.diagnosisText)
   const [exposureText, setExposureText] = useState(props.store.organization.exposureText)
+
+  const [diagnosisTextIsEditing, setDiagnosisTextIsEditing] = useState(false)
+  const [exposureTextIsEditing, setExposureTextIsEditing] = useState(false)
+
+  const diagnosisTextRef = useRef()
+
+  useEffect(() => {
+    if (diagnosisTextIsEditing) {
+      diagnosisTextRef.current.focus()
+      diagnosisTextRef.current.select()
+    }
+  })
 
   const onContactUsClicked = () => {
     console.log('TODO contact us')
@@ -47,7 +59,28 @@ const AccountBrandingBase = observer((props) => {
             type="text"
             defaultValue={props.store.organization.diagnosisText}
             onChange={(e) => setDiagnosisText(e.target.value)}
+            disabled={!diagnosisTextIsEditing}
+            ref={diagnosisTextRef}
           />
+          {!diagnosisTextIsEditing ? (
+            <div
+              onClick={(e) => {
+                e.preventDefault()
+                setDiagnosisTextIsEditing(true)
+              }}
+            >
+              Edit
+            </div>
+          ) : (
+            <div>
+              <div style={{ display: 'inline-block' }} onClick={() => setDiagnosisTextIsEditing(false)}>
+                Save
+              </div>
+              <div style={{ display: 'inline-block' }} onClick={() => setDiagnosisTextIsEditing(false)}>
+                Cancel
+              </div>
+            </div>
+          )}
         </div>
         <div className="branding-section">
           <h2 className="section-heading">Possible Exposure</h2>
@@ -59,6 +92,7 @@ const AccountBrandingBase = observer((props) => {
             type="text"
             defaultValue={props.store.organization.exposureText}
             onChange={(e) => setExposureText(e.target.value)}
+            disabled={!exposureTextIsEditing}
           />
         </div>
         <div className="branding-section">
