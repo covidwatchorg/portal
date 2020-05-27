@@ -45,6 +45,8 @@
 
 .section-input {
   resize: none;
+  border: 1.5px solid #bdbdbd;
+  border-radius: 7px;
 }
 
 textarea {
@@ -67,9 +69,9 @@ textarea {
 }
 
 .save-button {
-  width:350px;
-  height:50px;
-  background: #2C58B1;
+  width: 350px;
+  height: 50px;
+  background: #2c58b1;
   border-radius: 7px;
   font-family: Montserrat;
   font-style: normal;
@@ -78,7 +80,7 @@ textarea {
   line-height: 50px;
   align-items: center;
   text-align: center;
-  color: #FFFFFF;
+  color: #ffffff;
 }
 
 .save-button:hover {
@@ -90,9 +92,9 @@ textarea {
   height: 35px;
 
   /* Gradient White */
-  background: #FFFFFF;
+  background: #ffffff;
   /* Gray 4 */
-  border: 2px solid #BDBDBD;
+  border: 2px solid #bdbdbd;
   border-radius: 7px;
   font-family: Montserrat;
   font-style: normal;
@@ -101,9 +103,57 @@ textarea {
   line-height: 35px;
   text-align: center;
   /* Bluejay */
-  color: #2C58B1;
+  color: #2c58b1;
 }
 
 #contact-button:hover {
+  cursor: pointer;
+}
+
+.save-or-edit-button {
+  width: 60px;
+  height: 25px;
+
+  /* Gradient White */
+  background: #ffffff;
+  /* Gray 4 */
+  border: 1.5px solid #bdbdbd;
+  border-radius: 7px;
+  font-family: Montserrat;
+  font-style: normal;
+  font-weight: 650;
+  font-size: 12px;
+  line-height: 25px;
+  text-align: center;
+  /* Bluejay */
+  color: #2c58b1;
+}
+
+.save-or-edit-button:hover {
+  cursor: pointer;
+}
+
+.cancel-button {
+  width: 60px;
+  height: 25px;
+
+  /* Gradient White */
+  background: #ffffff;
+  /* Gray 4 */
+  border: 1.5px solid #bdbdbd;
+  border-radius: 7px;
+  font-family: Montserrat;
+  font-style: normal;
+  font-weight: 650;
+  font-size: 12px;
+  line-height: 25px;
+  text-align: center;
+  /* Bluejay */
+  color: #727272;
+
+  margin-left: 10px;
+}
+
+.cancel-button:hover {
   cursor: pointer;
 }

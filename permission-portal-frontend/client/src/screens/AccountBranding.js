@@ -1,5 +1,4 @@
 import React, { useState, useRef, useEffect } from 'react'
-import PendingOperationButton from '../components/PendingOperationButton'
 import Toast from '../components/Toast'
 import '../../Styles/screens/branding.scss'
 import { withStore } from '../store'
@@ -105,6 +104,7 @@ const AccountBrandingBase = observer((props) => {
           />
           {!diagnosisTextIsEditing ? (
             <div
+              className="save-or-edit-button"
               onClick={() => {
                 if (noTextBoxesBeingEdited()) {
                   setDiagnosisTextIsEditing(true)
@@ -117,10 +117,10 @@ const AccountBrandingBase = observer((props) => {
             </div>
           ) : (
             <div>
-              <div style={{ display: 'inline-block' }} onClick={saveData}>
+              <div className="save-or-edit-button" style={{ display: 'inline-block' }} onClick={saveData}>
                 Save
               </div>
-              <div style={{ display: 'inline-block' }} onClick={resetAllTextBoxes}>
+              <div className="cancel-button" style={{ display: 'inline-block' }} onClick={resetAllTextBoxes}>
                 Cancel
               </div>
             </div>
@@ -144,6 +144,7 @@ const AccountBrandingBase = observer((props) => {
           />
           {!exposureTextIsEditing ? (
             <div
+              className="save-or-edit-button"
               onClick={() => {
                 if (noTextBoxesBeingEdited()) {
                   setExposureTextIsEditing(true)
@@ -156,10 +157,10 @@ const AccountBrandingBase = observer((props) => {
             </div>
           ) : (
             <div>
-              <div style={{ display: 'inline-block' }} onClick={saveData}>
+              <div className="save-or-edit-button" style={{ display: 'inline-block' }} onClick={saveData}>
                 Save
               </div>
-              <div style={{ display: 'inline-block' }} onClick={resetAllTextBoxes}>
+              <div className="cancel-button" style={{ display: 'inline-block' }} onClick={resetAllTextBoxes}>
                 Cancel
               </div>
             </div>
