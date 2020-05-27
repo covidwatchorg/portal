@@ -19,13 +19,49 @@ const AccountBrandingBase = observer((props) => {
   const [exposureTextIsEditing, setExposureTextIsEditing] = useState(false)
 
   const diagnosisTextRef = useRef()
+  const exposureTextRef = useRef()
 
+  // Called any time the v-dom is updated
+  // This is functioning as a callback that gets triggered after we set any state variable
   useEffect(() => {
     if (diagnosisTextIsEditing) {
       diagnosisTextRef.current.focus()
-      diagnosisTextRef.current.select()
+    } else if (exposureTextIsEditing) {
+      exposureTextRef.current.focus()
     }
   })
+
+  const resetAllTextBoxes = () => {
+    setDiagnosisTextIsEditing(false)
+    setExposureTextIsEditing(false)
+    setDiagnosisText(props.store.organization.diagnosisText)
+    setExposureText(props.store.organization.exposureText)
+  }
+
+  const noTextBoxesBeingEdited = () => {
+    return !(diagnosisTextIsEditing || exposureTextIsEditing)
+  }
+
+  const focusFlash = (inputRef) => {
+    inputRef.current.blur()
+    setTimeout(() => {
+      inputRef.current.focus()
+      setTimeout(() => {
+        inputRef.current.blur()
+        setTimeout(() => {
+          inputRef.current.focus()
+        }, 80)
+      }, 80)
+    }, 80)
+  }
+
+  const focusFlashBoxBeingEdited = () => {
+    if (diagnosisTextIsEditing) {
+      focusFlash(diagnosisTextRef)
+    } else if (exposureTextIsEditing) {
+      focusFlash(exposureTextRef)
+    }
+  }
 
   const onContactUsClicked = () => {
     console.log('TODO contact us')
@@ -42,6 +78,8 @@ const AccountBrandingBase = observer((props) => {
       setIsSuccess(false)
       setToastShouldOpen(true)
     }
+    setDiagnosisTextIsEditing(false)
+    setExposureTextIsEditing(false)
   }
 
   return props.store.user.isSignedIn && props.store.user.isAdmin ? (
@@ -57,26 +95,32 @@ const AccountBrandingBase = observer((props) => {
           <textarea
             className="section-input"
             type="text"
-            defaultValue={props.store.organization.diagnosisText}
+            value={diagnosisText}
             onChange={(e) => setDiagnosisText(e.target.value)}
             disabled={!diagnosisTextIsEditing}
             ref={diagnosisTextRef}
+            onFocus={() => {
+              diagnosisTextRef.current.select()
+            }}
           />
           {!diagnosisTextIsEditing ? (
             <div
-              onClick={(e) => {
-                e.preventDefault()
-                setDiagnosisTextIsEditing(true)
+              onClick={() => {
+                if (noTextBoxesBeingEdited()) {
+                  setDiagnosisTextIsEditing(true)
+                } else {
+                  focusFlashBoxBeingEdited()
+                }
               }}
             >
               Edit
             </div>
           ) : (
             <div>
-              <div style={{ display: 'inline-block' }} onClick={() => setDiagnosisTextIsEditing(false)}>
+              <div style={{ display: 'inline-block' }} onClick={saveData}>
                 Save
               </div>
-              <div style={{ display: 'inline-block' }} onClick={() => setDiagnosisTextIsEditing(false)}>
+              <div style={{ display: 'inline-block' }} onClick={resetAllTextBoxes}>
                 Cancel
               </div>
             </div>
@@ -90,10 +134,36 @@ const AccountBrandingBase = observer((props) => {
           <textarea
             className="section-input"
             type="text"
-            defaultValue={props.store.organization.exposureText}
+            value={exposureText}
             onChange={(e) => setExposureText(e.target.value)}
             disabled={!exposureTextIsEditing}
+            ref={exposureTextRef}
+            onFocus={() => {
+              exposureTextRef.current.select()
+            }}
           />
+          {!exposureTextIsEditing ? (
+            <div
+              onClick={() => {
+                if (noTextBoxesBeingEdited()) {
+                  setExposureTextIsEditing(true)
+                } else {
+                  focusFlashBoxBeingEdited()
+                }
+              }}
+            >
+              Edit
+            </div>
+          ) : (
+            <div>
+              <div style={{ display: 'inline-block' }} onClick={saveData}>
+                Save
+              </div>
+              <div style={{ display: 'inline-block' }} onClick={resetAllTextBoxes}>
+                Cancel
+              </div>
+            </div>
+          )}
         </div>
         <div className="branding-section">
           <h2 className="section-heading">Other Branding and Customization</h2>
@@ -104,11 +174,6 @@ const AccountBrandingBase = observer((props) => {
             Contact Us
           </div>
         </div>
-      </div>
-      <div className="save-button-container">
-        <PendingOperationButton className="save-button" operation={saveData}>
-          Save Changes
-        </PendingOperationButton>
       </div>
       <Toast
         open={toastShouldOpen}
