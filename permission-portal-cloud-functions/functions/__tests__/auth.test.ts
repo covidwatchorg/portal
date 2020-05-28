@@ -388,7 +388,7 @@ test('User can be toggled between isAdmin and not isAdmin', () => {
     })
     .then(() => {
       // Delay to allow userOnUpdate time to run
-      return delay(DELAY * 2).then(() => {
+      return delay(DELAY * 3).then(() => {
         return clientAuth.signInWithEmailAndPassword('user@soylentgreen.com', 'user@soylentgreen.com').then(() => {
           if (clientAuth.currentUser === null) {
             throw new Error('clientAuth.currentUser returned null');
@@ -408,7 +408,7 @@ test('User can be toggled between isAdmin and not isAdmin', () => {
                 })
                 .then(() => {
                   // Delay to allow userOnUpdate time to run
-                  return delay(DELAY * 2).then(() => {
+                  return delay(DELAY * 3).then(() => {
                     return clientAuth.currentUser!.getIdTokenResult(true).then((idTokenResult) => {
                       // Check that isAdmin claim has been updated properly
                       expect(idTokenResult.claims.isAdmin).toEqual(false);
