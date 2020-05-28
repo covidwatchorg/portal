@@ -7,7 +7,7 @@ import ucsf_health from '../../assets/ucsf-health.svg'
 import powered_by_cw from '../../assets/powered-by-cw.svg'
 import { withStore } from '../store'
 import { observer } from 'mobx-react'
-import ForgotPasswordModal from '../screens/ForgotPasswordModal'
+import ForgotPasswordModal from '../components/ForgotPasswordModal'
 import PageTitle from '../components/PageTitle'
 
 const INITIAL_STATE = {
