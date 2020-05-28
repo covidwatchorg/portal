@@ -59,8 +59,17 @@ const ManageTeamsBase = observer((props) => {
     console.log('TODO delete account')
   }
 
-  const resetPassword = () => {
-    console.log('TODO reset password')
+  const resetPassword = async (e, email) => {
+    e.preventDefault()
+    try {
+      await props.store.sendPasswordResetEmail(email)
+      setToastMessage(`Password Reset Email Sent to ${email}`)
+      setToastShouldOpen(true)
+    } catch (err) {
+      console.error(err)
+      setToastMessage('Password Reset Failed. Please try again')
+      setToastShouldOpen(true)
+    }
   }
 
   return props.store.user.isSignedIn && props.store.user.isAdmin ? (
@@ -121,7 +130,7 @@ const ManageTeamsBase = observer((props) => {
                 <td>
                   <div className="settings-container">
                     <a onClick={deleteAccount}>Delete Account</a>
-                    <a onClick={resetPassword}>Reset Password</a>
+                    <a onClick={(e) => resetPassword(e, data.email)}>Reset Password</a>
                   </div>
                 </td>
               </tr>
