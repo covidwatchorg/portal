@@ -1,15 +1,7 @@
-.modal-background {
-  z-index: 1;
-  background-color: rgb(0,0,0); /* Fallback color */
-  background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
-  width: 100%;
-  height: 100%;
-  position: absolute;
-  left: 0;
-  top: 0;
-}
-
 .add-member-modal-container{
+  width: 450px;
+  padding: 20px;
+
   h1 {
     margin-left: 48px;
     margin-bottom: 10px;
@@ -20,15 +12,6 @@
     font-size: 18px;
   }
 
-  border-radius: 2%;
-  width: 450px;
-  position: absolute;
-  top: calc(50% - 357px);
-  left: calc(50% - 225px);
-  background-color: white;
-  z-index: 1;
-  padding: 20px;
-  border: 2px solid #BDBDBD;
   .add-member-form {
     display: flex;
     flex-direction: column;
