@@ -36,7 +36,6 @@ const createStore = (WrappedComponent) => {
 
           const userImageDocumentSnapshot = await db.collection('userImages').doc(user.email).get()
           if (userImageDocumentSnapshot.exists) {
-            console.warn(userImageDocumentSnapshot)
             rootStore.user.__update({
               imageBlob: userImageDocumentSnapshot.data().blob,
             })

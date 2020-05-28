@@ -121,7 +121,7 @@ const Store = types
         yield auth.sendPasswordResetEmail(email)
         return true
       } catch (err) {
-        console.warn(err)
+        console.error(err)
         throw err
       }
     })
