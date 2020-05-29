@@ -13,7 +13,7 @@ const Modal = (props) => {
 
   return (
     <div className={'modal-background' + (props.hidden === true ? ' hidden' : '')} onClick={onOutsideClick}>
-      <div ref={innerNode} className={props.containerClass}>
+      <div ref={innerNode} className={`modal-container ${props.containerClass ? props.containerClass : ''}`}>
         <span className="close-btn" onClick={props.onClose}>
           <img src={close} alt="Close" />
         </span>
