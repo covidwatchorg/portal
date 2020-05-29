@@ -51,38 +51,44 @@ function doesOrganizationExist(organizationID: string): Promise<boolean> {
 
 // Deletes user from users table, if an entry exists
 function usersCollectionDeleteUser(email: string) {
-  db.collection('users')
+  return db
+    .collection('users')
     .doc(email)
     .get()
     .then((user) => {
       if (user.exists) {
-        user.ref.delete().catch((err) => {
+        return user.ref.delete().catch((err) => {
           console.error(err);
+          throw err;
         });
       }
+      throw new Error('Error deleting user from users collection.');
     })
     .catch((err) => {
       console.error(err);
+      throw err;
     });
 }
 
 // Deletes user from firebase auth and from users table, if an entry exists
 function deleteUserByUid(uid: string) {
-  auth
+  return auth
     .getUser(uid)
     .then((userRecord) => {
       const email = userRecord.email;
-      auth
+      return auth
         .deleteUser(uid)
         .then(() => {
-          usersCollectionDeleteUser(email ? email : '');
+          return usersCollectionDeleteUser(email ? email : '');
         })
         .catch((err) => {
           console.error(err);
+          throw err;
         });
     })
     .catch((err) => {
       console.error(err);
+      throw err;
     });
 }
 
@@ -293,7 +299,20 @@ export const deleteUser = functions.https.onCall((data, context) => {
   return new Promise((resolve, reject) => {
     isUserInCallersOrganizationGuard(data.email, context)
       .then(() => {
-        resolve('ok');
+        auth
+          .getUserByEmail(data.email)
+          .then((userRecord) => {
+            deleteUserByUid(userRecord.uid)
+              .then(() => {
+                resolve(`Successfully deleted user ${data.email}`);
+              })
+              .catch((err) => {
+                reject(err);
+              });
+          })
+          .catch((err) => {
+            reject(err);
+          });
       })
       .catch((err) => {
         reject(err);
@@ -326,7 +345,9 @@ export const onCreate = functions.auth.user().onCreate((firebaseAuthUser) => {
               covidWatchUserData
             )}`
           );
-          deleteUserByUid(firebaseAuthUser.uid);
+          deleteUserByUid(firebaseAuthUser.uid).catch((err) => {
+            console.error(err);
+          });
         } else {
           doesOrganizationExist(covidWatchUserData.organizationID)
             .then((doesExist) => {
@@ -337,21 +358,29 @@ export const onCreate = functions.auth.user().onCreate((firebaseAuthUser) => {
                 console.error(
                   `Attempted to create user with organizationID set to ${covidWatchUserData.organizationID}, but that id doesn't exist.`
                 );
-                deleteUserByUid(firebaseAuthUser.uid);
+                deleteUserByUid(firebaseAuthUser.uid).catch((err) => {
+                  console.error(err);
+                });
               }
             })
             .catch((err) => {
               console.error(err);
-              deleteUserByUid(firebaseAuthUser.uid);
+              deleteUserByUid(firebaseAuthUser.uid).catch((err1) => {
+                console.error(err1);
+              });
             });
         }
       } else {
         // User has not been properly pre-registered in `users` collection, delete this user from Firebase Auth
-        deleteUserByUid(firebaseAuthUser.uid);
+        deleteUserByUid(firebaseAuthUser.uid).catch((err) => {
+          console.error(err);
+        });
       }
     })
     .catch((err) => {
-      deleteUserByUid(firebaseAuthUser.uid);
+      deleteUserByUid(firebaseAuthUser.uid).catch((err1) => {
+        console.error(err1);
+      });
       console.error(err);
       throw err;
     });

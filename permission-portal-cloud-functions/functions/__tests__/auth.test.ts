@@ -470,3 +470,25 @@ test('deleteUser cannot be called on user in another organization', () => {
       throw Error("This shouldn't happen!");
     });
 });
+
+test('Admin user can deleteUser from his own organization', () => {
+  return clientAuth.signInWithEmailAndPassword('admin@soylentgreen.com', 'admin@soylentgreen.com').then(() => {
+    return createUser({
+      email: testUserEmail,
+      password: testUserEmail,
+      firstName: 'test',
+      lastName: 'user',
+      isAdmin: false,
+    }).then(() => {
+      return delay(DELAY).then(() => {
+        return deleteUser({ email: testUserEmail })
+          .then((result) => {
+            expect(result.data).toBe(`Successfully deleted user ${testUserEmail}`);
+          })
+          .catch((err) => {
+            throw err;
+          });
+      });
+    });
+  });
+});
