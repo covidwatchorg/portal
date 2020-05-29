@@ -1,5 +1,5 @@
 import { types, cast, flow, onSnapshot } from 'mobx-state-tree'
-import { auth, db, createUserCallable } from './firebase'
+import { auth, db, createUserCallable, SESSION } from './firebase'
 
 const User = types
   .model({
@@ -98,6 +98,7 @@ const Store = types
   })
   .actions(() => {
     const signInWithEmailAndPassword = flow(function* (email, password) {
+      yield auth.setPersistence(SESSION)
       yield auth.signInWithEmailAndPassword(email, password)
     })
 

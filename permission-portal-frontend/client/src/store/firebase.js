@@ -23,7 +23,8 @@ console.log(`process.env.NODE_ENV = ${process.env.NODE_ENV}`)
 
 app.initializeApp(config)
 const auth = app.auth()
+const SESSION = app.auth.Auth.Persistence.SESSION
 const db = app.firestore()
 const createUserCallable = app.functions().httpsCallable('createUser')
 
-export { auth, db, createUserCallable }
+export { auth, db, createUserCallable, SESSION }
