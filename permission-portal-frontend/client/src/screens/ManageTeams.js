@@ -64,10 +64,12 @@ const ManageTeamsBase = observer((props) => {
     try {
       await props.store.sendPasswordResetEmail(email)
       setToastMessage(`Password Reset Email Sent to ${email}`)
+      setIsSuccess(true)
       setToastShouldOpen(true)
     } catch (err) {
       console.error(err)
       setToastMessage('Password Reset Failed. Please try again')
+      setIsSuccess(false)
       setToastShouldOpen(true)
     }
   }
