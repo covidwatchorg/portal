@@ -79,9 +79,13 @@ const createStore = (WrappedComponent) => {
             // If admin, get the user's organization's members from the db
             const usersSnapshot = await db.collection('users').where('organizationID', '==', organizationID).get()
             rootStore.organization.__setMembers(
-              usersSnapshot.docs.map((userDoc) => {
-                return { ...userDoc.data(), email: userDoc.id }
-              })
+              // See https://stackoverflow.com/a/24806827
+              usersSnapshot.docs.reduce((result, userDoc) => {
+                if (userDoc.id !== rootStore.user.email) {
+                  result.push({ ...userDoc.data(), email: userDoc.id })
+                }
+                return result
+              }, [])
             )
             // Set up  a listener to respond to changes in current user's organization's members
             if (this.organizationMembersListener === null) {
@@ -90,9 +94,13 @@ const createStore = (WrappedComponent) => {
                 .where('organizationID', '==', organizationID)
                 .onSnapshot((updatedUsersSnapshot) => {
                   rootStore.organization.__setMembers(
-                    updatedUsersSnapshot.docs.map((userDoc) => {
-                      return { ...userDoc.data(), email: userDoc.id }
-                    })
+                    // See https://stackoverflow.com/a/24806827
+                    updatedUsersSnapshot.docs.reduce((result, userDoc) => {
+                      if (userDoc.id !== rootStore.user.email) {
+                        result.push({ ...userDoc.data(), email: userDoc.id })
+                      }
+                      return result
+                    }, [])
                   )
                 })
             }
