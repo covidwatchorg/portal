@@ -1,4 +1,4 @@
-import { adminDb, clientAuth, adminAuth, createUser, delay, DELAY, soylentGreenID } from './config';
+import { adminDb, clientAuth, adminAuth, createUser, deleteUser, delay, DELAY, soylentGreenID } from './config';
 
 jest.setTimeout(120000);
 
@@ -418,5 +418,55 @@ test('User can be toggled between isAdmin and not isAdmin', () => {
             });
         });
       });
+    });
+});
+
+test('deleteUser cannot be called without being authenticated', () => {
+  return deleteUser({})
+    .then((result) => {
+      throw new Error("This shouldn't happen!");
+    })
+    .catch((err) => {
+      expect(err.code).toEqual('unauthenticated');
+      expect(err.message).toEqual('The function must be called while authenticated.');
+    });
+});
+
+test('deleteUser cannot be called by non-admin', () => {
+  return clientAuth
+    .signInWithEmailAndPassword('user@soylentgreen.com', 'user@soylentgreen.com')
+    .then(() => {
+      return deleteUser({})
+        .then((result) => {
+          throw new Error("This shouldn't happen!");
+        })
+        .catch((err) => {
+          expect(err.code).toEqual('permission-denied');
+          expect(err.message).toEqual('The function must be called by an admin.');
+        });
+    })
+    .catch((err) => {
+      console.log(err);
+      throw Error("This shouldn't happen!");
+    });
+});
+
+test('deleteUser cannot be called on user in another organization', () => {
+  return clientAuth
+    .signInWithEmailAndPassword('admin@soylentgreen.com', 'admin@soylentgreen.com')
+    .then(() => {
+      return deleteUser({ email: 'admin@initech.com' })
+        .then((result) => {
+          console.error(result);
+          throw new Error("This shouldn't happen!");
+        })
+        .catch((err) => {
+          expect(err.code).toEqual('permission-denied');
+          expect(err.message).toEqual('Operation cannot be performed on user in another organization.');
+        });
+    })
+    .catch((err) => {
+      console.log(err);
+      throw Error("This shouldn't happen!");
     });
 });
