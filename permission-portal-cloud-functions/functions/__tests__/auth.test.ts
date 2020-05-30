@@ -21,17 +21,27 @@ afterEach(() => {
     adminAuth
       .deleteUser(testUid)
       .then(() => {
-        return adminDb
-          .collection('users')
-          .doc(testUserEmail)
-          .delete()
-          .catch((err) => {
-            console.log(err);
-          });
+        return (
+          adminDb
+            .collection('users')
+            .doc(testUserEmail)
+            .delete()
+            .then(() => {
+              clientAuth.signOut().catch((err) => {
+                console.error(err);
+              });
+            })
+            // tslint:disable-next-line: no-empty
+            .catch((err) => {
+              /* suppress expected error */
+            })
+        );
       })
       // tslint:disable-next-line: no-empty
       .catch((err) => {
-        /* suppress expected error */
+        clientAuth.signOut().catch((err1) => {
+          console.error(err1);
+        });
       })
   );
 });
