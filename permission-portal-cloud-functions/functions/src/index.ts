@@ -51,38 +51,44 @@ function doesOrganizationExist(organizationID: string): Promise<boolean> {
 
 // Deletes user from users table, if an entry exists
 function usersCollectionDeleteUser(email: string) {
-  db.collection('users')
+  return db
+    .collection('users')
     .doc(email)
     .get()
     .then((user) => {
       if (user.exists) {
-        user.ref.delete().catch((err) => {
+        return user.ref.delete().catch((err) => {
           console.error(err);
+          throw err;
         });
       }
+      throw new Error('Error deleting user from users collection.');
     })
     .catch((err) => {
       console.error(err);
+      throw err;
     });
 }
 
 // Deletes user from firebase auth and from users table, if an entry exists
-function deleteUser(uid: string) {
-  auth
+function deleteUserByUid(uid: string) {
+  return auth
     .getUser(uid)
     .then((userRecord) => {
       const email = userRecord.email;
-      auth
+      return auth
         .deleteUser(uid)
         .then(() => {
-          usersCollectionDeleteUser(email ? email : '');
+          return usersCollectionDeleteUser(email ? email : '');
         })
         .catch((err) => {
           console.error(err);
+          throw err;
         });
     })
     .catch((err) => {
       console.error(err);
+      throw err;
     });
 }
 
@@ -143,13 +149,32 @@ function authGuard(context: functions.https.CallableContext): Promise<void> {
   });
 }
 
-// Throw error if user is not an admin
+// Throw error if user is not authenticed or not an admin
 function isAdminGuard(context: functions.https.CallableContext): Promise<void> {
   return authGuard(context).then(() => {
     // Force unwrapping warranted, because existence of context.auth is checked by authGuard
     if (context.auth!.token.isAdmin !== true) {
       throw new functions.https.HttpsError('permission-denied', 'The function must be called by an admin.');
     }
+  });
+}
+
+// Throw error if user is not authenticed or not an admin or the user indexed by email is not in the same organization as the caller
+function isUserInCallersOrganizationGuard(email: string, context: functions.https.CallableContext): Promise<void> {
+  return isAdminGuard(context).then(() => {
+    return auth
+      .getUserByEmail(email)
+      .then((userRecord) => {
+        if (userRecord.customClaims!.organizationID !== context.auth?.token.organizationID) {
+          throw new functions.https.HttpsError(
+            'permission-denied',
+            'Operation cannot be performed on user in another organization.'
+          );
+        }
+      })
+      .catch((err) => {
+        throw err;
+      });
   });
 }
 
@@ -267,6 +292,37 @@ export const createUser = functions.https.onCall((newUser, context) => {
   });
 });
 
+// Callable for admins to delete users in their organization.
+// Recall that firestore rules are made irrelevant by our use of the admin client, so we need to check ourselves
+// that the caller is an admin for the to-be-deleted user's organization (using isUserInCallersOrganizationGuard())
+export const deleteUser = functions.https.onCall((data, context) => {
+  return new Promise((resolve, reject) => {
+    isUserInCallersOrganizationGuard(data.email, context)
+      .then(() => {
+        auth
+          .getUserByEmail(data.email)
+          .then((userRecord) => {
+            deleteUserByUid(userRecord.uid)
+              .then(() => {
+                resolve(`Successfully deleted user ${data.email}`);
+              })
+              .catch((err) => {
+                reject(err);
+              });
+          })
+          .catch((err) => {
+            reject(err);
+          });
+      })
+      .catch((err) => {
+        reject(err);
+      });
+  }).catch((err) => {
+    console.error(err);
+    throw err;
+  });
+});
+
 // Called every time a new user is created in Firebase Auth
 // Because its not possible to turn off user creation in Firebase Auth, this cloud function has been
 // designed to delete any new user that hasn't been pre-authorized in our `users` collection.
@@ -289,7 +345,9 @@ export const onCreate = functions.auth.user().onCreate((firebaseAuthUser) => {
               covidWatchUserData
             )}`
           );
-          deleteUser(firebaseAuthUser.uid);
+          deleteUserByUid(firebaseAuthUser.uid).catch((err) => {
+            console.error(err);
+          });
         } else {
           doesOrganizationExist(covidWatchUserData.organizationID)
             .then((doesExist) => {
@@ -300,21 +358,29 @@ export const onCreate = functions.auth.user().onCreate((firebaseAuthUser) => {
                 console.error(
                   `Attempted to create user with organizationID set to ${covidWatchUserData.organizationID}, but that id doesn't exist.`
                 );
-                deleteUser(firebaseAuthUser.uid);
+                deleteUserByUid(firebaseAuthUser.uid).catch((err) => {
+                  console.error(err);
+                });
               }
             })
             .catch((err) => {
               console.error(err);
-              deleteUser(firebaseAuthUser.uid);
+              deleteUserByUid(firebaseAuthUser.uid).catch((err1) => {
+                console.error(err1);
+              });
             });
         }
       } else {
         // User has not been properly pre-registered in `users` collection, delete this user from Firebase Auth
-        deleteUser(firebaseAuthUser.uid);
+        deleteUserByUid(firebaseAuthUser.uid).catch((err) => {
+          console.error(err);
+        });
       }
     })
     .catch((err) => {
-      deleteUser(firebaseAuthUser.uid);
+      deleteUserByUid(firebaseAuthUser.uid).catch((err1) => {
+        console.error(err1);
+      });
       console.error(err);
       throw err;
     });
