@@ -18,7 +18,7 @@ const INITIAL_STATE = {
   redirect: false,
   showPassModal: false,
   showToast: false,
-  toastMessage: 'Please enter a valid email and password',
+  toastMessage: 'Error logging in, email or password may be invalid',
 }
 
 const SignInFormBase = observer(
