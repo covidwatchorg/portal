@@ -9,6 +9,7 @@ import { withStore } from '../store'
 import { observer } from 'mobx-react'
 import ForgotPasswordModal from '../components/ForgotPasswordModal'
 import PageTitle from '../components/PageTitle'
+import Toast from '../components/Toast'
 
 const INITIAL_STATE = {
   email: '',
@@ -16,6 +17,8 @@ const INITIAL_STATE = {
   error: null,
   redirect: false,
   showPassModal: false,
+  showToast: false,
+  toastMessage: 'Error logging in, email or password may be invalid',
 }
 
 const SignInFormBase = observer(
@@ -32,7 +35,7 @@ const SignInFormBase = observer(
       try {
         await this.props.store.signInWithEmailAndPassword(email, password)
       } catch (err) {
-        console.error(err)
+        this.setState({ showToast: true })
       }
     }
 
@@ -85,6 +88,12 @@ const SignInFormBase = observer(
           </div>
           <ForgotPasswordModal hidden={!this.state.showPassModal} onClose={this.hideModal} />
         </div>
+        <Toast
+          open={this.state.showToast}
+          onClose={() => this.setState({ showToast: false })}
+          isSuccess={false}
+          message={this.state.toastMessage}
+        />
       </Fragment>
     )
 
