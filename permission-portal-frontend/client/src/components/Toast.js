@@ -23,7 +23,6 @@ class Toast extends React.Component {
     this.setState({
       open: true,
     })
-    console.log('Opened!')
   }
 
   render() {
@@ -36,7 +35,6 @@ class Toast extends React.Component {
           this.setState({
             open: false,
           })
-          this.props.onClose()
         }}
         autoHideDuration={3000}
       >

@@ -13,7 +13,6 @@ import PageTitle from '../components/PageTitle'
 // https://material-ui.com/components/snackbars/
 
 const CodeValidationsBase = observer((props) => {
-  const [isOpen, setIsOpen] = useState(false)
   const [code, setCode] = useState('')
   const [date, setDate] = useState('')
 
@@ -72,13 +71,7 @@ const CodeValidationsBase = observer((props) => {
           </Button>
         </div>
       </div>
-      <Toast
-        ref={confirmedToast}
-        open={isOpen}
-        onClose={() => setIsOpen(false)}
-        isSuccess={true}
-        message="Code verification confirmed"
-      />
+      <Toast ref={confirmedToast} isSuccess={true} message="Code verification confirmed" />
     </div>
   ) : (
     <Redirect to={ROUTES.LANDING} />
