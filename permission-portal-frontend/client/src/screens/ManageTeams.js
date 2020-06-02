@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import * as ROUTES from '../constants/routes'
 import { Redirect } from 'react-router-dom'
 import addMember from '../../assets/add-member.svg'
@@ -18,9 +18,10 @@ const PAGE_SIZE = 15
 const ManageTeamsBase = observer((props) => {
   const userEmail = props.store.user.email
 
-  const [toastShouldOpen, setToastShouldOpen] = useState(false)
   const [toastMessage, setToastMessage] = useState(false)
   const [isSuccess, setIsSuccess] = useState(false)
+
+  const confirmationToast = useRef()
 
   const [currentPage, setCurrentPage] = useState(0)
   const pages = props.store.organization.members
@@ -43,7 +44,7 @@ const ManageTeamsBase = observer((props) => {
   const onAddMemberSuccess = () => {
     setToastMessage('Member Email Invitation sent')
     setIsSuccess(true)
-    setToastShouldOpen(true)
+    confirmationToast.current.show()
     setShowModal(false)
   }
 
@@ -51,7 +52,7 @@ const ManageTeamsBase = observer((props) => {
     console.error(e)
     setToastMessage('Member Email Invitation failed to send')
     setIsSuccess(false)
-    setToastShouldOpen(true)
+    confirmationToast.current.show()
     setShowModal(false)
   }
 
@@ -65,12 +66,12 @@ const ManageTeamsBase = observer((props) => {
       await props.store.sendPasswordResetEmail(email)
       setToastMessage(`Password Reset Email Sent to ${email}`)
       setIsSuccess(true)
-      setToastShouldOpen(true)
+      confirmationToast.current.show()
     } catch (err) {
       console.error(err)
       setToastMessage('Password Reset Failed. Please try again')
       setIsSuccess(false)
-      setToastShouldOpen(true)
+      confirmationToast.current.show()
     }
   }
 
@@ -161,12 +162,7 @@ const ManageTeamsBase = observer((props) => {
           </div>
         </div>
       </div>
-      <Toast
-        open={toastShouldOpen}
-        onClose={() => setToastShouldOpen(false)}
-        isSuccess={isSuccess}
-        message={toastMessage}
-      />
+      <Toast ref={confirmationToast} isSuccess={isSuccess} message={toastMessage} />
     </div>
   ) : props.store.user.isSignedIn ? (
     <Redirect to={ROUTES.CODE_VALIDATIONS} />
