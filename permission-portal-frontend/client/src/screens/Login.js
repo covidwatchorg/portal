@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react'
+import React, { Fragment, createRef } from 'react'
 import { Redirect } from 'react-router-dom'
 import * as ROUTES from '../constants/routes'
 import doctor1 from '../../assets/doctor1.svg'
@@ -17,7 +17,6 @@ const INITIAL_STATE = {
   error: null,
   redirect: false,
   showPassModal: false,
-  showToast: false,
   toastMessage: 'Error logging in, email or password may be invalid',
 }
 
@@ -27,6 +26,7 @@ const SignInFormBase = observer(
       super(props)
       this.state = { ...INITIAL_STATE }
       this.onChange = this.onChange.bind(this)
+      this.errorToast = createRef()
     }
 
     clickSubmit = async (event) => {
@@ -35,7 +35,7 @@ const SignInFormBase = observer(
       try {
         await this.props.store.signInWithEmailAndPassword(email, password)
       } catch (err) {
-        this.setState({ showToast: true })
+        this.errorToast.current.show()
       }
     }
 
@@ -88,12 +88,7 @@ const SignInFormBase = observer(
           </div>
           <ForgotPasswordModal hidden={!this.state.showPassModal} onClose={this.hideModal} />
         </div>
-        <Toast
-          open={this.state.showToast}
-          onClose={() => this.setState({ showToast: false })}
-          isSuccess={false}
-          message={this.state.toastMessage}
-        />
+        <Toast ref={this.errorToast} isSuccess={false} message={this.state.toastMessage} />
       </Fragment>
     )
 
