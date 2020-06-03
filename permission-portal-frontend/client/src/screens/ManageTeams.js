@@ -6,6 +6,7 @@ import arrowLeft from '../../assets/arrow-left.svg'
 import arrowRight from '../../assets/arrow-right.svg'
 import '../../Styles/screens/manage_teams.scss'
 import AddMemberModal from '../components/AddMemberModal'
+import DeleteUserModal from '../components/DeleteUserModal'
 import Toast from '../components/Toast'
 import RoleSelector from '../components/RoleSelector'
 import * as ROLES from '../constants/roles'
@@ -27,25 +28,28 @@ const ManageTeamsBase = observer((props) => {
   const pages = props.store.organization.members
     ? [...Array(Math.ceil(props.store.organization.members.length / PAGE_SIZE)).keys()]
     : []
-  const [showModal, setShowModal] = useState(false)
+  const [showAddMemberModal, setShowAddMemberModal] = useState(false)
+  const [showDeleteUserModal, setShowDeleteUserModal] = useState(false)
 
   const inCurrentPage = (index) => {
     return index >= PAGE_SIZE * currentPage && index < PAGE_SIZE * (currentPage + 1)
   }
+
+  const [emailOfUserToBeDeleted, setEmailOfUserToBeDeleted] = useState('')
 
   useEffect(() => {
     console.log('Store', props.store)
   }, [])
 
   const onAddMemberCancel = () => {
-    setShowModal(false)
+    setShowAddMemberModal(false)
   }
 
   const onAddMemberSuccess = () => {
     setToastMessage('Member Email Invitation sent')
     setIsSuccess(true)
+    setShowAddMemberModal(false)
     confirmationToast.current.show()
-    setShowModal(false)
   }
 
   const onAddMemberFailure = (e) => {
@@ -53,11 +57,33 @@ const ManageTeamsBase = observer((props) => {
     setToastMessage('Member Email Invitation failed to send')
     setIsSuccess(false)
     confirmationToast.current.show()
-    setShowModal(false)
+    setShowAddMemberModal(false)
   }
 
-  const deleteAccount = () => {
-    console.log('TODO delete account')
+  const onDeleteUserSuccess = () => {
+    setToastMessage('User successfully deleted')
+    setIsSuccess(true)
+    confirmationToast.current.show()
+    setShowAddMemberModal(false)
+  }
+
+  const onDeleteUserFailure = (e) => {
+    console.error(e)
+    setToastMessage('Failed to delete user: unknown error')
+    setIsSuccess(false)
+    confirmationToast.current.show()
+    setShowAddMemberModal(false)
+  }
+
+  const openDeleteUserModal = (e, email) => {
+    e.preventDefault()
+    setEmailOfUserToBeDeleted(email)
+    setShowDeleteUserModal(true)
+  }
+
+  const closeDeleteUserModal = () => {
+    setEmailOfUserToBeDeleted('')
+    setShowDeleteUserModal(false)
   }
 
   const resetPassword = async (e, email) => {
@@ -79,15 +105,22 @@ const ManageTeamsBase = observer((props) => {
     <div className="module-container">
       <PageTitle title="Manage Members" />
       <h1>Manage Members</h1>
-      <div className="add-member-button" onClick={() => setShowModal(true)}>
+      <div className="add-member-button" onClick={() => setShowAddMemberModal(true)}>
         <img src={addMember} alt="" />
         <span className="add-button-text">Add Member</span>
       </div>
       <AddMemberModal
-        hidden={!showModal}
+        hidden={!showAddMemberModal}
         onClose={onAddMemberCancel}
         onSuccess={onAddMemberSuccess}
         onFailure={onAddMemberFailure}
+      />
+      <DeleteUserModal
+        email={emailOfUserToBeDeleted}
+        hidden={!showDeleteUserModal}
+        onClose={closeDeleteUserModal}
+        onSuccess={onDeleteUserSuccess}
+        onFailure={onDeleteUserFailure}
       />
       <table>
         <thead>
@@ -132,7 +165,7 @@ const ManageTeamsBase = observer((props) => {
                 </td>
                 <td>
                   <div className="settings-container">
-                    <a onClick={deleteAccount}>Delete Account</a>
+                    <a onClick={(e) => openDeleteUserModal(e, data.email)}>Delete Account</a>
                     <a onClick={(e) => resetPassword(e, data.email)}>Reset Password</a>
                   </div>
                 </td>

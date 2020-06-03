@@ -1,4 +1,4 @@
-.recover-password-modal-container{
+.delete-user-modal-container{
     width: 450px;
     height: 338px;
     padding-top: 20px;
@@ -20,9 +20,9 @@
     .close-btn:hover {
         cursor: pointer;
     }
-    
-    label {
+    .confirmation-text {
         margin-left: 47px;
+        margin-right: 47px;
         font-family: 'Montserrat', sans-serif;
         color: #585858;
         font-size: 16px;
