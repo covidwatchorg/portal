@@ -79,7 +79,6 @@ const ManageTeamsBase = observer((props) => {
     e.preventDefault()
     setEmailOfUserToBeDeleted(email)
     setShowDeleteUserModal(true)
-    console.log('TODO delete account')
   }
 
   const closeDeleteUserModal = () => {
