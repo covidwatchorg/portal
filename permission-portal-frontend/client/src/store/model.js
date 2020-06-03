@@ -1,5 +1,5 @@
 import { types, cast, flow, onSnapshot } from 'mobx-state-tree'
-import { auth, db, createUserCallable, SESSION } from './firebase'
+import { auth, db, createUserCallable, deleteUserCallable, SESSION } from './firebase'
 
 const User = types
   .model({
@@ -117,6 +117,17 @@ const Store = types
       }
     })
 
+    const deleteUser = flow(function* (email) {
+      try {
+        const result = yield deleteUserCallable({ email: email })
+        console.log(result)
+        return true
+      } catch (err) {
+        console.error(err)
+        throw err
+      }
+    })
+
     const sendPasswordResetEmail = flow(function* (email) {
       try {
         yield auth.sendPasswordResetEmail(email)
@@ -136,7 +147,7 @@ const Store = types
       }
     })
 
-    return { signInWithEmailAndPassword, signOut, createUser, sendPasswordResetEmail, updateUserByEmail }
+    return { signInWithEmailAndPassword, signOut, createUser, deleteUser, sendPasswordResetEmail, updateUserByEmail }
   })
 
 const defaultUser = {
