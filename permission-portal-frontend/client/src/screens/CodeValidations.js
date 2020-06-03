@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, createRef } from 'react'
 import Button from '@material-ui/core/Button'
 import Toast from '../components/Toast'
 import info_icon from '../../assets/info-icon.svg'
@@ -13,9 +13,10 @@ import PageTitle from '../components/PageTitle'
 // https://material-ui.com/components/snackbars/
 
 const CodeValidationsBase = observer((props) => {
-  const [isOpen, setIsOpen] = useState(false)
   const [code, setCode] = useState('')
   const [date, setDate] = useState('')
+
+  let confirmedToast = createRef()
 
   return props.store.user.isSignedIn ? (
     <div className="module-container">
@@ -63,14 +64,14 @@ const CodeValidationsBase = observer((props) => {
 
           <Button
             id={`verify-code-btn${date === '' || code === '' ? '-disabled' : ''}`}
-            onClick={() => setIsOpen(true)}
+            onClick={() => confirmedToast.current.show()}
             disabled={date === '' || code === ''}
           >
             Verify Code
           </Button>
         </div>
       </div>
-      <Toast open={isOpen} onClose={() => setIsOpen(false)} isSuccess={true} message="Code verification confirmed" />
+      <Toast ref={confirmedToast} isSuccess={true} message="Code verification confirmed" />
     </div>
   ) : (
     <Redirect to={ROUTES.LANDING} />

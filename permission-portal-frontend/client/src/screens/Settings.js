@@ -85,10 +85,10 @@ const SettingsBase = observer((props) => {
   const changeImage = changeImageModalStyles()
   const [open, setOpen] = useState(false)
   const [toastInfo, setToastInfo] = useState({
-    open: false,
     success: false,
     msg: '',
   })
+  const toastRef = useRef()
 
   const handleOpen = () => {
     setOpen(true)
@@ -100,10 +100,12 @@ const SettingsBase = observer((props) => {
     e.preventDefault()
     try {
       await props.store.sendPasswordResetEmail(props.store.user.email)
-      setToastInfo({ open: true, success: true, msg: `Password Reset Email Sent to ${props.store.user.email}` })
+      setToastInfo({ success: true, msg: `Password Reset Email Sent to ${props.store.user.email}` })
+      toastRef.current.show()
     } catch (err) {
       console.error(err)
-      setToastInfo({ open: true, success: false, msg: 'Password Reset Failed. Please try again' })
+      setToastInfo({ success: false, msg: 'Password Reset Failed. Please try again' })
+      toastRef.current.show()
     }
   }
   const onChange = async (event) => {
@@ -129,10 +131,10 @@ const SettingsBase = observer((props) => {
 
       if (size > MAXFILESIZE) {
         setToastInfo({
-          open: true,
           success: false,
           msg: 'Exceeded Max Image file size. Image has to be less than 10MB',
         })
+        toastRef.current.show()
         imgUploader.current.value = null
         return
       }
@@ -284,12 +286,7 @@ const SettingsBase = observer((props) => {
           </Grid>
         </Grid>
       </form>
-      <Toast
-        open={toastInfo.open}
-        onClose={() => (toastInfo.open = false)}
-        isSuccess={toastInfo.success}
-        message={toastInfo.msg}
-      />
+      <Toast ref={toastRef} isSuccess={toastInfo.success} message={toastInfo.msg} />
     </Fragment>
   )
 

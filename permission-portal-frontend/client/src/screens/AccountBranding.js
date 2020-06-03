@@ -9,7 +9,6 @@ import PageTitle from '../components/PageTitle'
 
 const AccountBrandingBase = observer((props) => {
   const [isSuccess, setIsSuccess] = useState(false)
-  const [toastShouldOpen, setToastShouldOpen] = useState(false)
 
   const [diagnosisText, setDiagnosisText] = useState(props.store.organization.diagnosisText)
   const [exposureText, setExposureText] = useState(props.store.organization.exposureText)
@@ -19,6 +18,8 @@ const AccountBrandingBase = observer((props) => {
 
   const diagnosisTextRef = useRef()
   const exposureTextRef = useRef()
+
+  const statusToast = useRef()
 
   // Called any time the v-dom is updated
   // This is functioning as a callback that gets triggered after we set any state variable
@@ -71,11 +72,11 @@ const AccountBrandingBase = observer((props) => {
       await props.store.organization.update({ diagnosisText: diagnosisText, exposureText: exposureText })
       console.log('Branding data saved successfully')
       setIsSuccess(true)
-      setToastShouldOpen(true)
+      statusToast.current.show()
     } catch (err) {
       console.log(`Branding data failed to save: ${err}`)
       setIsSuccess(false)
-      setToastShouldOpen(true)
+      statusToast.current.show()
     }
     setDiagnosisTextIsEditing(false)
     setExposureTextIsEditing(false)
@@ -177,8 +178,7 @@ const AccountBrandingBase = observer((props) => {
         </div>
       </div>
       <Toast
-        open={toastShouldOpen}
-        onClose={() => setToastShouldOpen(false)}
+        ref={statusToast}
         isSuccess={isSuccess}
         message={isSuccess ? 'Branding saved successfully' : 'Failed to save branding'}
       />
