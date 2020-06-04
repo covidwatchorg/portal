@@ -1,7 +1,13 @@
-var admin = require('firebase-admin');
-var client = require('firebase-tools');
+const admin = require('firebase-admin');
+const client = require('firebase-tools');
+const { uniqueNamesGenerator, names } = require('unique-names-generator');
 
-if (process.env.NODE_ENV !== 'dev' && process.env.NODE_ENV !== 'test' && process.env.NODE_ENV !== 'staging') {
+if (
+  process.env.NODE_ENV !== 'local' &&
+  process.env.NODE_ENV !== 'dev' &&
+  process.env.NODE_ENV !== 'test' &&
+  process.env.NODE_ENV !== 'staging'
+) {
   throw new Error('Environment variable NODE_ENV must be set to one of `dev` or `test` or `staging`');
 }
 
@@ -14,20 +20,22 @@ admin.initializeApp({
 
 const db = admin.firestore();
 const auth = admin.auth();
+var soylentGreenID = '';
+var initechID = '';
 
-function addSampleData() {
+async function addMinimalSampleData() {
   const soylentGreenRef = db.collection('organizations').doc();
   const initechRef = db.collection('organizations').doc();
-  const soylentGreenID = soylentGreenRef.id;
-  const initechID = initechRef.id;
+  soylentGreenID = soylentGreenRef.id;
+  initechID = initechRef.id;
 
-  return soylentGreenRef
-    .set({
+  try {
+    await soylentGreenRef.set({
       name: 'Soylent Green',
-    })
-    .then(() => {
-      console.log(`Successfully created organization Soylent Green with document ID ${soylentGreenID}`);
-      return db
+    });
+    console.log(`Successfully created organization Soylent Green with document ID ${soylentGreenID}`);
+    try {
+      await db
         .collection('users')
         .doc('admin@soylentgreen.com')
         .set({
@@ -35,161 +43,140 @@ function addSampleData() {
           isAdmin: true,
           organizationID: soylentGreenID,
           disabled: false,
-        })
-        .then(() => {
-          return auth
-            .createUser({
-              email: 'admin@soylentgreen.com',
-              password: 'admin@soylentgreen.com',
-            })
-            .then(() => {
-              console.log(
-                `Successfully created Soylent Green admin user with username/password admin@soylentgreen.com`
-              );
-              return db
-                .collection('users')
-                .doc('user@soylentgreen.com')
-                .set({
-                  isSuperAdmin: false,
-                  isAdmin: false,
-                  organizationID: soylentGreenID,
-                  disabled: false,
-                })
-                .then(() => {
-                  return auth
-                    .createUser({
-                      email: 'user@soylentgreen.com',
-                      password: 'user@soylentgreen.com',
-                    })
-                    .then(() => {
-                      console.log(
-                        `Successfully created Soylent Green regular user with username/password user@soylentgreen.com`
-                      );
-                      return initechRef
-                        .set({
-                          name: 'Initech',
-                        })
-                        .then(() => {
-                          console.log(`Successfully created organization Initech with document ID ${initechID}`);
-                          return db
-                            .collection('users')
-                            .doc('admin@initech.com')
-                            .set({
-                              isSuperAdmin: false,
-                              isAdmin: true,
-                              organizationID: initechID,
-                              disabled: false,
-                            })
-                            .then(() => {
-                              return auth
-                                .createUser({
-                                  email: 'admin@initech.com',
-                                  password: 'admin@initech.com',
-                                })
-                                .then(() => {
-                                  console.log(
-                                    `Successfully created Initech admin user with username/password admin@initech.com`
-                                  );
-                                  return db
-                                    .collection('users')
-                                    .doc('user@initech.com')
-                                    .set({
-                                      isSuperAdmin: false,
-                                      isAdmin: false,
-                                      organizationID: initechID,
-                                      disabled: false,
-                                    })
-                                    .then(() => {
-                                      return auth
-                                        .createUser({
-                                          email: 'user@initech.com',
-                                          password: 'user@initech.com',
-                                        })
-                                        .then(() => {
-                                          console.log(
-                                            `Successfully created Initech regular user with username/password user@initech.com`
-                                          );
-                                          return db
-                                            .collection('users')
-                                            .doc('disabled@soylentgreen.com')
-                                            .set({
-                                              isSuperAdmin: false,
-                                              isAdmin: false,
-                                              organizationID: soylentGreenID,
-                                              disabled: true,
-                                            })
-                                            .then(() => {
-                                              return db.collection('users').doc('disabled@initech.com').set({
-                                                isSuperAdmin: false,
-                                                isAdmin: false,
-                                                organizationID: initechID,
-                                                disabled: true,
-                                              });
-                                            })
-                                            .then(() => {
-                                              return auth
-                                                .createUser({
-                                                  email: 'disabled@soylentgreen.com',
-                                                  password: 'disabled@soylentgreen.com',
-                                                })
-                                                .then(() => {
-                                                  console.log(
-                                                    `Successfully created Soylent Green disabled user with username/password disabled@soylentgreen.com`
-                                                  );
-                                                })
-                                                .then(() => {
-                                                  return auth
-                                                    .createUser({
-                                                      email: 'disabled@initech.com',
-                                                      password: 'disabled@initech.com',
-                                                    })
-                                                    .then(() => {
-                                                      console.log(
-                                                        `Successfully created Initech disabled user with username/password disabled@initech.com`
-                                                      );
-                                                    });
-                                                });
-                                            });
-                                        })
-                                        .catch((err) => {
-                                          throw err;
-                                        });
-                                    })
-                                    .catch((err) => {
-                                      throw err;
-                                    });
-                                })
-                                .catch((err) => {
-                                  throw err;
-                                });
-                            })
-                            .catch((err) => {
-                              throw err;
-                            });
-                        })
-                        .catch((err) => {
-                          throw err;
-                        });
-                    })
-                    .catch((err) => {
-                      throw err;
-                    });
-                })
-                .catch((err) => {
-                  throw err;
-                });
-            })
-            .catch((err) => {
-              throw err;
-            });
-        })
-        .catch((err) => {
-          throw err;
+          firstName: uniqueNamesGenerator({ dictionaries: [names], length: 1 }),
+          lastName: uniqueNamesGenerator({ dictionaries: [names], length: 1 }),
         });
-    })
-    .catch((err) => {
-      throw err;
-    });
+      try {
+        await auth.createUser({
+          email: 'admin@soylentgreen.com',
+          password: 'admin@soylentgreen.com',
+        });
+        console.log(`Successfully created Soylent Green admin user with username/password admin@soylentgreen.com`);
+        try {
+          await db
+            .collection('users')
+            .doc('user@soylentgreen.com')
+            .set({
+              isSuperAdmin: false,
+              isAdmin: false,
+              organizationID: soylentGreenID,
+              disabled: false,
+              firstName: uniqueNamesGenerator({ dictionaries: [names], length: 1 }),
+              lastName: uniqueNamesGenerator({ dictionaries: [names], length: 1 }),
+            });
+          try {
+            await auth.createUser({
+              email: 'user@soylentgreen.com',
+              password: 'user@soylentgreen.com',
+            });
+            console.log(`Successfully created Soylent Green regular user with username/password user@soylentgreen.com`);
+            try {
+              await initechRef.set({
+                name: 'Initech',
+              });
+              console.log(`Successfully created organization Initech with document ID ${initechID}`);
+              try {
+                await db
+                  .collection('users')
+                  .doc('admin@initech.com')
+                  .set({
+                    isSuperAdmin: false,
+                    isAdmin: true,
+                    organizationID: initechID,
+                    disabled: false,
+                    firstName: uniqueNamesGenerator({ dictionaries: [names], length: 1 }),
+                    lastName: uniqueNamesGenerator({ dictionaries: [names], length: 1 }),
+                  });
+                try {
+                  await auth.createUser({
+                    email: 'admin@initech.com',
+                    password: 'admin@initech.com',
+                  });
+                  console.log(`Successfully created Initech admin user with username/password admin@initech.com`);
+                  try {
+                    await db
+                      .collection('users')
+                      .doc('user@initech.com')
+                      .set({
+                        isSuperAdmin: false,
+                        isAdmin: false,
+                        organizationID: initechID,
+                        disabled: false,
+                        firstName: uniqueNamesGenerator({ dictionaries: [names], length: 1 }),
+                        lastName: uniqueNamesGenerator({ dictionaries: [names], length: 1 }),
+                      });
+                    try {
+                      await auth.createUser({
+                        email: 'user@initech.com',
+                        password: 'user@initech.com',
+                      });
+                      console.log(`Successfully created Initech regular user with username/password user@initech.com`);
+                      await db
+                        .collection('users')
+                        .doc('disabled@soylentgreen.com')
+                        .set({
+                          isSuperAdmin: false,
+                          isAdmin: false,
+                          organizationID: soylentGreenID,
+                          disabled: true,
+                          firstName: uniqueNamesGenerator({ dictionaries: [names], length: 1 }),
+                          lastName: uniqueNamesGenerator({ dictionaries: [names], length: 1 }),
+                        });
+                      await db
+                        .collection('users')
+                        .doc('disabled@initech.com')
+                        .set({
+                          isSuperAdmin: false,
+                          isAdmin: false,
+                          organizationID: initechID,
+                          disabled: true,
+                          firstName: uniqueNamesGenerator({ dictionaries: [names], length: 1 }),
+                          lastName: uniqueNamesGenerator({ dictionaries: [names], length: 1 }),
+                        });
+                      await auth.createUser({
+                        email: 'disabled@soylentgreen.com',
+                        password: 'disabled@soylentgreen.com',
+                      });
+                      console.log(
+                        `Successfully created Soylent Green disabled user with username/password disabled@soylentgreen.com`
+                      );
+                      await auth.createUser({
+                        email: 'disabled@initech.com',
+                        password: 'disabled@initech.com',
+                      });
+                      console.log(
+                        `Successfully created Initech disabled user with username/password disabled@initech.com`
+                      );
+                    } catch (err) {
+                      throw err;
+                    }
+                  } catch (err_1) {
+                    throw err_1;
+                  }
+                } catch (err_2) {
+                  throw err_2;
+                }
+              } catch (err_3) {
+                throw err_3;
+              }
+            } catch (err_4) {
+              throw err_4;
+            }
+          } catch (err_5) {
+            throw err_5;
+          }
+        } catch (err_6) {
+          throw err_6;
+        }
+      } catch (err_7) {
+        throw err_7;
+      }
+    } catch (err_8) {
+      throw err_8;
+    }
+  } catch (err_9) {
+    throw err_9;
+  }
 }
 
 async function deleteUser(uid) {
@@ -233,14 +220,19 @@ function hardReset() {
         })
         .then(() => {
           console.log('Successfully deleted users collection');
-          return deleteAllUsers();
+          return client.firestore
+            .delete('/userImages', { project: process.env.NODE_ENV, recursive: true, yes: true })
+            .then(() => {
+              console.log('Successfully deleted userImages collection');
+              return deleteAllUsers();
+            });
         });
     });
 }
 
 try {
   hardReset().then(() => {
-    addSampleData().then(() => {
+    addMinimalSampleData().then(() => {
       console.log('Successfully added all sample data');
       process.exit();
     });
