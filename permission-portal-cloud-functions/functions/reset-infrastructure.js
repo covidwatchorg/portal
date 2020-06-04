@@ -230,13 +230,64 @@ function hardReset() {
     });
 }
 
-try {
-  hardReset().then(() => {
-    addMinimalSampleData().then(() => {
-      console.log('Successfully added all sample data');
-      process.exit();
-    });
-  });
-} catch (error) {
-  console.log(error);
+async function createRandomSoylentgreenUser() {
+  const firstName = uniqueNamesGenerator({ dictionaries: [names], length: 1 });
+  const lastName = uniqueNamesGenerator({ dictionaries: [names], length: 1 });
+  try {
+    console.log(`creating new user in users table ${firstName}${lastName}@soylentgreen.com`);
+    await db
+      .collection('users')
+      .doc(`${firstName}${lastName}@soylentgreen.com`)
+      .set({
+        isSuperAdmin: false,
+        isAdmin: Math.random() >= 0.5,
+        organizationID: soylentGreenID,
+        disabled: false,
+        firstName: firstName,
+        lastName: lastName,
+      });
+    console.log('users user created');
+    try {
+      console.log(`creating new auth user with email/password ${firstName}${lastName}@soylentgreen.com`);
+      await auth.createUser({
+        email: `${firstName}${lastName}@soylentgreen.com`,
+        password: `${firstName}${lastName}@soylentgreen.com`,
+      });
+      console.log('auth user created');
+    } catch (error) {
+      // createUser seems to commonly fail and so we need to catch and delete the entry in the user collection
+      db.collection('users').doc(`${firstName}${lastName}@soylentgreen.com`).delete();
+      throw error;
+    }
+    console.log(
+      `Successfully created Soylent Green user with username/password ${firstName}${lastName}@soylentgreen.com`
+    );
+  } catch (err) {
+    throw err;
+  }
 }
+
+async function main() {
+  try {
+    // await hardReset();
+    // await addMinimalSampleData();
+    for (let i = 0; i < 1; i++) {
+      try {
+        await createRandomSoylentgreenUser();
+      } catch (error) {
+        console.log('Encountered an error while attempting to createRandomSoylentgreenUser:');
+        console.log(error);
+        console.log('continuing');
+        i--;
+        continue;
+      }
+    }
+    console.log('Successfully added all sample data');
+    process.exit();
+  } catch (error) {
+    console.error(error);
+    process.exit(1);
+  }
+}
+
+main();
