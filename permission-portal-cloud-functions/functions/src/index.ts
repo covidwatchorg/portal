@@ -61,8 +61,9 @@ function usersCollectionDeleteUser(email: string) {
           console.error(err);
           throw err;
         });
+      } else {
+        throw new Error('Error deleting user from users collection.');
       }
-      throw new Error('Error deleting user from users collection.');
     })
     .catch((err) => {
       console.error(err);
@@ -256,7 +257,7 @@ export const createUser = functions.https.onCall((newUser, context) => {
           lastName: newUser.lastName,
         };
         db.collection('users')
-          .doc(newUser.email)
+          .doc(newUser.email.toLowerCase())
           .set(newUserPrivileges) /* Create new user in our Firestore record */
           .then(() => {
             // If request contains a password field, set that password. If not, generate a random password.
@@ -375,6 +376,9 @@ export const onCreate = functions.auth.user().onCreate((firebaseAuthUser) => {
         deleteUserByUid(firebaseAuthUser.uid).catch((err) => {
           console.error(err);
         });
+        throw new Error(
+          `Attempted to create Firebase Auth user ${firebaseAuthUser.email} but couldn't find corresponding entry in our users collection`
+        );
       }
     })
     .catch((err) => {
