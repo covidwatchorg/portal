@@ -153,8 +153,6 @@ const ManageTeamsBase = observer((props) => {
                       value={!data.disabled ? 'active' : 'deactivated'}
                       onChange={(e) => {
                         props.store.updateUserByEmail(data.email, { disabled: e.target.value == 'deactivated' })
-                        data.disabled = e.target.value == 'deactivated'
-                        e.target.className = !data.disabled ? 'active' : 'inactive'
                       }}
                       aria-labelledby="status-header"
                     >
