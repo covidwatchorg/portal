@@ -38,7 +38,8 @@
     "node-env-run": "^3.0.2",
     "ts-jest": "^24.0.0",
     "tslint": "^5.12.0",
-    "typescript": "^3.8.3"
+    "typescript": "^3.8.3",
+    "unique-names-generator": "^4.2.0"
   },
   "private": true
 }
