@@ -61,8 +61,9 @@ function usersCollectionDeleteUser(email: string) {
           console.error(err);
           throw err;
         });
+      } else {
+        throw new Error('Error deleting user from users collection.');
       }
-      throw new Error('Error deleting user from users collection.');
     })
     .catch((err) => {
       console.error(err);
@@ -256,7 +257,7 @@ export const createUser = functions.https.onCall((newUser, context) => {
           lastName: newUser.lastName,
         };
         db.collection('users')
-          .doc(newUser.email)
+          .doc(newUser.email.toLowerCase())
           .set(newUserPrivileges) /* Create new user in our Firestore record */
           .then(() => {
             // If request contains a password field, set that password. If not, generate a random password.
@@ -375,6 +376,9 @@ export const onCreate = functions.auth.user().onCreate((firebaseAuthUser) => {
         deleteUserByUid(firebaseAuthUser.uid).catch((err) => {
           console.error(err);
         });
+        throw new Error(
+          `Attempted to create Firebase Auth user ${firebaseAuthUser.email} but couldn't find corresponding entry in our users collection`
+        );
       }
     })
     .catch((err) => {
@@ -384,42 +388,6 @@ export const onCreate = functions.auth.user().onCreate((firebaseAuthUser) => {
       console.error(err);
       throw err;
     });
-});
-
-// Cloud function for validating upload tokens. Naturally this can only be called by an authenticated user.
-// This validate calls the report server's /validate endpoint with both the upload token and the user's organization ID.
-// The organizationID is taken from the user's authentication token's claims, to ensure that users can only
-// ever validate upload tokens corresponding to their own organizations. There should be a system in place
-// to ensure that only the server running this function can talk to the report server's /validate.
-export const validate = functions.https.onCall((body, context) => {
-  return new Promise((resolve, reject) => {
-    authGuard(context)
-      .then(() => {
-        const uploadToken = body.uploadToken;
-        // validate request body
-        if (typeof uploadToken !== 'string') {
-          reject(new functions.https.HttpsError('invalid-argument', 'request body must have uploadToken <string>'));
-        }
-        fetch(functions.config().token_server.validate_url, {
-          method: 'POST',
-          body: JSON.stringify({
-            upload_token: uploadToken,
-            organization_id: context.auth!.token.organizationID,
-          }),
-        })
-          .then((res) => {
-            // TODO: set differing responses based on whether token was just validated, or is already valid
-            resolve({ message: 'upload_token validated' });
-          })
-          .catch((err) => {
-            // TODO: set response based on /validate's error specification
-            reject(err);
-          });
-      })
-      .catch((err) => {
-        reject(err);
-      });
-  });
 });
 
 // Triggered whenever a user's document in the users/ collection is updated
