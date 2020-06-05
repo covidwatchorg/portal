@@ -237,7 +237,7 @@ async function createRandomSoylentgreenUser() {
     console.log(`creating new user in users table ${firstName}${lastName}@soylentgreen.com`);
     await db
       .collection('users')
-      .doc(`${firstName}${lastName}@soylentgreen.com`)
+      .doc(`${firstName}${lastName}@soylentgreen.com`.toLowerCase())
       .set({
         isSuperAdmin: false,
         isAdmin: Math.random() >= 0.5,
@@ -269,9 +269,9 @@ async function createRandomSoylentgreenUser() {
 
 async function main() {
   try {
-    // await hardReset();
-    // await addMinimalSampleData();
-    for (let i = 0; i < 1; i++) {
+    await hardReset();
+    await addMinimalSampleData();
+    for (let i = 0; i < 10; i++) {
       try {
         await createRandomSoylentgreenUser();
       } catch (error) {
