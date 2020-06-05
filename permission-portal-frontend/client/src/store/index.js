@@ -43,8 +43,8 @@ const createStore = (WrappedComponent) => {
                         this.organizationMembersListener = db
                           .collection('users')
                           .where('organizationID', '==', rootStore.organization.id)
-                          // .orderBy('lastName')
-                          // .orderBy('firstName')
+                          .orderBy('lastName')
+                          .orderBy('firstName')
                           .onSnapshot((updatedUsersSnapshot) => {
                             rootStore.organization.__setMembers(
                               // See https://stackoverflow.com/a/24806827
