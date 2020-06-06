@@ -8,6 +8,7 @@ import { Redirect } from 'react-router-dom'
 import { withStore } from '../store'
 import * as ROUTES from '../constants/routes'
 import { observer } from 'mobx-react'
+import PageTitle from '../components/PageTitle'
 import Logging from '../util/logging'
 
 const useStyles = makeStyles({
@@ -85,16 +86,10 @@ const SettingsBase = observer((props) => {
   const changeImage = changeImageModalStyles()
   const [open, setOpen] = useState(false)
   const [toastInfo, setToastInfo] = useState({
-    open: false,
     success: false,
     msg: '',
   })
-  const [state, setState] = useState({
-    prefix: props.store.user.prefix,
-    firstName: props.store.user.firstName,
-    lastName: props.store.user.lastName,
-    imageBlob: props.store.user.imageBlob,
-  })
+  const toastRef = useRef()
 
   const handleOpen = () => {
     setOpen(true)
@@ -106,16 +101,22 @@ const SettingsBase = observer((props) => {
     e.preventDefault()
     try {
       await props.store.sendPasswordResetEmail(props.store.user.email)
-      setToastInfo({ open: true, success: true, msg: 'Password Reset Successful' })
+      setToastInfo({ success: true, msg: `Password Reset Email Sent to ${props.store.user.email}` })
+      toastRef.current.show()
     } catch (err) {
-      Logging.warn(err)
-      setToastInfo({ open: true, success: false, msg: 'Password Reset Failed. Please try again' })
+      Logging.error(err)
+      setToastInfo({ success: false, msg: 'Password Reset Failed. Please try again' })
+      toastRef.current.show()
     }
   }
   const onChange = async (event) => {
-    const _state = { ...state }
-    _state[event.target.name] = event.target.value
-    setState({ ..._state })
+    if (event.target.name == 'prefix') {
+      props.store.user.update({ prefix: event.target.value })
+    } else if (event.target.name == 'firstName') {
+      props.store.user.update({ firstName: event.target.value })
+    } else if (event.target.name == 'lastName') {
+      props.store.user.update({ lastName: event.target.value })
+    }
   }
 
   const saveImage = async (e) => {
@@ -131,35 +132,22 @@ const SettingsBase = observer((props) => {
 
       if (size > MAXFILESIZE) {
         setToastInfo({
-          open: true,
           success: false,
           msg: 'Exceeded Max Image file size. Image has to be less than 10MB',
         })
+        toastRef.current.show()
         imgUploader.current.value = null
         return
       }
       let reader = new FileReader()
+      // set up onload trigger to run when data is read
       reader.onload = (e) => {
-        const _state = { ...state }
-        _state.imageBlob = e.target.result
-        Logging.log('base64:' + _state.imageBlob)
-        setState({ ..._state })
+        props.store.user.updateImage(e.target.result)
       }
+      // read data
       reader.readAsDataURL(imgUploader.current.files[0])
     } catch (err) {
       Logging.log(err)
-    }
-  }
-
-  const saveSettings = async (e) => {
-    e.preventDefault()
-    try {
-      await props.store.user.update({ ...state })
-      Logging.log('user data saved successfully')
-      setToastInfo({ open: true, success: true, msg: 'Settings Saved Successfully' })
-    } catch (err) {
-      Logging.log(err)
-      setToastInfo({ open: true, success: false, msg: 'Failed' })
     }
   }
 
@@ -171,7 +159,7 @@ const SettingsBase = observer((props) => {
           Discard
         </button>
         <button onClick={saveImage} className={primaryButton.root} style={{ width: '70px', borderStyle: 'none' }}>
-          Save
+          Upload
         </button>
       </div>
     </div>
@@ -195,7 +183,8 @@ const SettingsBase = observer((props) => {
                 }}
               >
                 <img
-                  src={state.imageBlob ? state.imageBlob : 'client/assets/photo-add.png'}
+                  alt={props.store.user.imageBlob ? 'Profile photo' : 'Your profile photo would go here.'}
+                  src={props.store.user.imageBlob ? props.store.user.imageBlob : 'client/assets/photo-add.png'}
                   style={{ width: '195px', height: '195px', objectFit: 'cover', display: 'block', margin: 'auto' }}
                 ></img>
               </div>
@@ -221,52 +210,48 @@ const SettingsBase = observer((props) => {
                 name="prefix"
                 className={input.root}
                 onChange={onChange}
-                defaultValue={props.store.user.prefix}
+                value={props.store.user.prefix}
               ></input>
-              <label htmlFor="firstName">
-                First Name <span style={{ color: 'red' }}>*</span>
-              </label>
+              <label htmlFor="firstName">First Name</label>
               <input
                 type="text"
                 id="firstName"
                 name="firstName"
                 required
+                aria-required="true"
                 className={input.root}
                 onChange={onChange}
-                defaultValue={props.store.user.firstName}
+                value={props.store.user.firstName}
               ></input>
-              <label htmlFor="email">
-                Email Address <span style={{ color: 'red' }}>*</span>
-              </label>
+              <label htmlFor="email">Email Address</label>
               <input
                 type="text"
                 id="email"
                 name="email"
                 required
-                readOnly
+                disabled={true}
+                aria-required="true"
                 className={input.root}
-                defaultValue={props.store.user.email}
+                style={{ backgroundColor: '#f0f0f0' }}
+                value={props.store.user.email}
               ></input>
-              <button onClick={saveSettings} className={primaryButton.root}>
-                Save Changes
-              </button>
             </Grid>
           </Grid>
 
           <Grid item xs={4}>
             <Grid container spacing={2} direction="column">
-              <label htmlFor="role">
-                Role <span style={{ color: 'red' }}>*</span>
-              </label>
+              <label htmlFor="role">Role</label>
               {props.store.user && (
                 <select
                   type="text"
                   id="role"
                   name="role"
-                  disabled={!props.store.user.isAdmin}
+                  disabled={true}
                   required
+                  aria-required="true"
                   className={input.root}
-                  style={!props.store.user.isAdmin ? { backgroundColor: '#E0E0E0' } : {}}
+                  style={{ backgroundColor: '#f0f0f0' }}
+                  value={props.store.user.isAdmin ? ROLES.ADMIN_LABEL : ROLES.NON_ADMIN_LABEL}
                 >
                   <option value={ROLES.ADMIN_LABEL} defaultValue={props.store.user.isAdmin}>
                     {ROLES.ADMIN_LABEL}
@@ -276,36 +261,21 @@ const SettingsBase = observer((props) => {
                   </option>
                 </select>
               )}
-              <label htmlFor="lastName">
-                Last Name <span style={{ color: 'red' }}>*</span>
-              </label>
+              <label htmlFor="lastName">Last Name</label>
               <input
                 type="text"
                 id="lastName"
                 name="lastName"
                 required
+                aria-required="true"
                 onChange={onChange}
                 className={input.root}
                 defaultValue={props.store.user.lastName}
               ></input>
-              <label htmlFor="password">
-                Password <span style={{ color: 'red' }}>*</span>
-              </label>
-              <input
-                required
-                className={input.root}
-                id="password"
-                name="password"
-                type="password"
-                defaultValue="example"
-                style={{ backgroundColor: '#E0E0E0' }}
-              />
               <a
                 href=""
                 style={{
                   fontSize: '12px',
-                  textAlign: 'right',
-                  marginRight: '50px',
                   color: '#2C58B1',
                   fontStyle: 'underline',
                 }}
@@ -317,17 +287,13 @@ const SettingsBase = observer((props) => {
           </Grid>
         </Grid>
       </form>
-      <Toast
-        open={toastInfo.open}
-        onClose={() => (toastInfo.open = false)}
-        isSuccess={toastInfo.success}
-        message={toastInfo.msg}
-      />
+      <Toast ref={toastRef} isSuccess={toastInfo.success} message={toastInfo.msg} />
     </Fragment>
   )
 
   return props.store.user.isSignedIn ? (
     <React.Fragment>
+      <PageTitle title="My Settings" />
       <h1>My Settings</h1>
       {settingsForm()}
     </React.Fragment>

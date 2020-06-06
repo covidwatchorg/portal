@@ -1,0 +1,23 @@
+{
+  "indexes": [
+    {
+      "collectionGroup": "users",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "organizationID",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "lastName",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "firstName",
+          "order": "ASCENDING"
+        }
+      ]
+    }
+  ],
+  "fieldOverrides": []
+}

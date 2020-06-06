@@ -47,5 +47,9 @@ service cloud.firestore {
       allow read: if isSignedIn() && isInOrganization(organizationID);
       allow write: if isSignedIn() && isAdmin() && isInOrganization(organizationID);
     }
+
+    match /userImages/{email} {
+	    allow read, write: if isSignedIn() && isSelf();
+    }
   }
 }

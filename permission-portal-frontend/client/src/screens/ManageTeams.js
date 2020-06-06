@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import * as ROUTES from '../constants/routes'
 import { Redirect } from 'react-router-dom'
 import addMember from '../../assets/add-member.svg'
@@ -6,82 +6,156 @@ import arrowLeft from '../../assets/arrow-left.svg'
 import arrowRight from '../../assets/arrow-right.svg'
 import '../../Styles/screens/manage_teams.scss'
 import AddMemberModal from '../components/AddMemberModal'
+import DeleteUserModal from '../components/DeleteUserModal'
 import Toast from '../components/Toast'
 import RoleSelector from '../components/RoleSelector'
+import * as ROLES from '../constants/roles'
 import { withStore } from '../store'
 import { observer } from 'mobx-react'
+import PageTitle from '../components/PageTitle'
 import Logging from '../util/logging'
 
+const PAGE_SIZE = 15
+
 const ManageTeamsBase = observer((props) => {
-  const [toastShouldOpen, setToastShouldOpen] = useState(false)
+  const userEmail = props.store.user.email
+
+  const [toastMessage, setToastMessage] = useState(false)
   const [isSuccess, setIsSuccess] = useState(false)
 
-  const [currentPage, setCurrentPage] = useState(0)
-  const pages =
-    props.store.organization && props.store.organization.members
-      ? [...Array(Math.ceil(props.store.organization.members.length / 15)).keys()]
-      : []
-  const [showModal, setShowModal] = useState(false)
+  const confirmationToast = useRef()
 
-  const getPageData = () => {
-    const pageStart = 15 * currentPage
-    return props.store.organization.members.slice(pageStart, pageStart + 15)
+  const [currentPage, setCurrentPage] = useState(0)
+  const pages = props.store.organization.members
+    ? [...Array(Math.ceil(props.store.organization.members.length / PAGE_SIZE)).keys()]
+    : []
+  const [showAddMemberModal, setShowAddMemberModal] = useState(false)
+  const [showDeleteUserModal, setShowDeleteUserModal] = useState(false)
+
+  const inCurrentPage = (index) => {
+    return index >= PAGE_SIZE * currentPage && index < PAGE_SIZE * (currentPage + 1)
   }
+
+  const [emailOfUserToBeDeleted, setEmailOfUserToBeDeleted] = useState('')
 
   useEffect(() => {
     Logging.log('Store', props.store)
   }, [])
 
-  const onCancel = () => {
-    setShowModal(false)
-    Logging.log(pages)
+  const onAddMemberCancel = () => {
+    setShowAddMemberModal(false)
   }
 
-  const onSuccess = () => {
+  const onAddMemberSuccess = () => {
+    setToastMessage('Member Email Invitation sent')
     setIsSuccess(true)
-    setToastShouldOpen(true)
-    setShowModal(false)
+    setShowAddMemberModal(false)
+    confirmationToast.current.show()
   }
 
-  const onFailure = (e) => {
+  const onAddMemberFailure = (e) => {
     Logging.error(e)
+    setToastMessage('Member Email Invitation failed to send')
     setIsSuccess(false)
-    setToastShouldOpen(true)
-    setShowModal(false)
+    confirmationToast.current.show()
+    setShowAddMemberModal(false)
   }
 
-  // TODO: conditional rendering
+  const onDeleteUserSuccess = () => {
+    setToastMessage('User successfully deleted')
+    setIsSuccess(true)
+    confirmationToast.current.show()
+    setShowAddMemberModal(false)
+  }
+
+  const onDeleteUserFailure = (e) => {
+    Logging.error(e)
+    setToastMessage('Failed to delete user: unknown error')
+    setIsSuccess(false)
+    confirmationToast.current.show()
+    setShowAddMemberModal(false)
+  }
+
+  const openDeleteUserModal = (e, email) => {
+    e.preventDefault()
+    setEmailOfUserToBeDeleted(email)
+    setShowDeleteUserModal(true)
+  }
+
+  const closeDeleteUserModal = () => {
+    setEmailOfUserToBeDeleted('')
+    setShowDeleteUserModal(false)
+  }
+
+  const resetPassword = async (e, email) => {
+    e.preventDefault()
+    try {
+      await props.store.sendPasswordResetEmail(email)
+      setToastMessage(`Password Reset Email Sent to ${email}`)
+      setIsSuccess(true)
+      confirmationToast.current.show()
+    } catch (err) {
+      Logging.error(err)
+      setToastMessage('Password Reset Failed. Please try again')
+      setIsSuccess(false)
+      confirmationToast.current.show()
+    }
+  }
+
   return props.store.user.isSignedIn && props.store.user.isAdmin ? (
     <div className="module-container">
+      <PageTitle title="Manage Members" />
       <h1>Manage Members</h1>
-      <div className="add-member-button" onClick={() => setShowModal(true)}>
-        <img src={addMember} />
+      <div className="add-member-button" onClick={() => setShowAddMemberModal(true)}>
+        <img src={addMember} alt="" />
         <span className="add-button-text">Add Member</span>
       </div>
-      <AddMemberModal hidden={!showModal} onClose={onCancel} onSuccess={onSuccess} onFailure={onFailure} />
+      <AddMemberModal
+        hidden={!showAddMemberModal}
+        onClose={onAddMemberCancel}
+        onSuccess={onAddMemberSuccess}
+        onFailure={onAddMemberFailure}
+      />
+      <DeleteUserModal
+        email={emailOfUserToBeDeleted}
+        hidden={!showDeleteUserModal}
+        onClose={closeDeleteUserModal}
+        onSuccess={onDeleteUserSuccess}
+        onFailure={onDeleteUserFailure}
+      />
       <table>
         <thead>
           <tr>
             <th style={{ borderTopLeftRadius: 5 }}>Name</th>
-            <th>Role</th>
-            <th>Status</th>
+            <th id="role-header">Role</th>
+            <th id="status-header">Status</th>
             <th style={{ borderTopRightRadius: 5 }}>Settings</th>
           </tr>
         </thead>
         <tbody>
-          {props.store.organization &&
-            props.store.organization.members &&
-            getPageData().map((data, index) => (
-              <tr key={index}>
+          {props.store.organization.members &&
+            props.store.organization.members.map((data, index) => (
+              <tr className={inCurrentPage(index) ? '' : 'hidden'} key={index}>
                 <td>{data.lastName + ', ' + data.firstName}</td>
                 <td style={{ padding: 0 }}>
-                  <RoleSelector isAdmin={data.isAdmin} />
+                  <RoleSelector
+                    memberIndex={index}
+                    onChange={(e) => {
+                      props.store.updateUserByEmail(data.email, { isAdmin: e.target.value == ROLES.ADMIN_LABEL })
+                    }}
+                    ariaLabelledBy="role-header"
+                  />
                 </td>
                 <td style={{ padding: 0 }}>
                   <div className="custom-select">
                     <select
+                      disabled={data.email == userEmail}
                       className={!data.disabled ? 'active' : 'inactive'}
-                      defaultValue={!data.disabled ? 'active' : 'deactivated'}
+                      value={!data.disabled ? 'active' : 'deactivated'}
+                      onChange={(e) => {
+                        props.store.updateUserByEmail(data.email, { disabled: e.target.value == 'deactivated' })
+                      }}
+                      aria-labelledby="status-header"
                     >
                       <option value="active">Active</option>
                       <option value="deactivated">Deactivated</option>
@@ -90,8 +164,8 @@ const ManageTeamsBase = observer((props) => {
                 </td>
                 <td>
                   <div className="settings-container">
-                    <a onClick={() => {}}>Delete Account</a>
-                    <a onClick={() => {}}>Reset Password</a>
+                    <a onClick={(e) => openDeleteUserModal(e, data.email)}>Delete Account</a>
+                    <a onClick={(e) => resetPassword(e, data.email)}>Reset Password</a>
                   </div>
                 </td>
               </tr>
@@ -99,10 +173,9 @@ const ManageTeamsBase = observer((props) => {
         </tbody>
       </table>
       <div className="table-bottom-container">
-        <div className="save-button">Save Changes</div>
         <div className="pages-container">
           <div className="arrow" onClick={currentPage === 0 ? () => {} : () => setCurrentPage(currentPage - 1)}>
-            <img src={arrowLeft} />
+            <img src={arrowLeft} alt="Previous" />
           </div>
           {pages.map((page) => (
             <a
@@ -117,16 +190,11 @@ const ManageTeamsBase = observer((props) => {
             className="arrow"
             onClick={currentPage === pages[pages.length - 1] ? () => {} : () => setCurrentPage(currentPage + 1)}
           >
-            <img src={arrowRight} />
+            <img src={arrowRight} alt="Next" />
           </div>
         </div>
       </div>
-      <Toast
-        open={toastShouldOpen}
-        onClose={() => setToastShouldOpen(false)}
-        isSuccess={isSuccess}
-        message={isSuccess ? 'Member Email Invitation set' : 'Member Email Invitation failed to send'}
-      />
+      <Toast ref={confirmationToast} isSuccess={isSuccess} message={toastMessage} />
     </div>
   ) : props.store.user.isSignedIn ? (
     <Redirect to={ROUTES.CODE_VALIDATIONS} />

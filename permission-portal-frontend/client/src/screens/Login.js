@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react'
+import React, { Fragment, createRef } from 'react'
 import { Redirect } from 'react-router-dom'
 import * as ROUTES from '../constants/routes'
 import doctor1 from '../../assets/doctor1.svg'
@@ -7,8 +7,9 @@ import ucsf_health from '../../assets/ucsf-health.svg'
 import powered_by_cw from '../../assets/powered-by-cw.svg'
 import { withStore } from '../store'
 import { observer } from 'mobx-react'
-import ForgotPasswordModal from '../screens/ForgotPasswordModal'
-import Logging from '../util/logging'
+import ForgotPasswordModal from '../components/ForgotPasswordModal'
+import PageTitle from '../components/PageTitle'
+import Toast from '../components/Toast'
 
 const INITIAL_STATE = {
   email: '',
@@ -16,6 +17,7 @@ const INITIAL_STATE = {
   error: null,
   redirect: false,
   showPassModal: false,
+  toastMessage: 'Error logging in, email or password may be invalid',
 }
 
 const SignInFormBase = observer(
@@ -24,6 +26,7 @@ const SignInFormBase = observer(
       super(props)
       this.state = { ...INITIAL_STATE }
       this.onChange = this.onChange.bind(this)
+      this.errorToast = createRef()
     }
 
     clickSubmit = async (event) => {
@@ -32,7 +35,7 @@ const SignInFormBase = observer(
       try {
         await this.props.store.signInWithEmailAndPassword(email, password)
       } catch (err) {
-        Logging.warn(err)
+        this.errorToast.current.show()
       }
     }
 
@@ -52,10 +55,10 @@ const SignInFormBase = observer(
       <Fragment>
         <div className="doctorContainer">
           <div className="doctor1">
-            <img src={doctor1} />
+            <img src={doctor1} alt="" />
           </div>
           <div className="doctor2">
-            <img src={doctor2} />
+            <img src={doctor2} alt="" />
           </div>
         </div>
       </Fragment>
@@ -63,9 +66,10 @@ const SignInFormBase = observer(
 
     loginForm = () => (
       <Fragment>
+        <PageTitle title="Welcome" />
         <div className="topNav">
-          <img src={ucsf_health} id="ucsfLogo" />
-          <img src={powered_by_cw} id="poweredByCWLogo" />
+          <img src={ucsf_health} id="orgLogo" alt={this.props.store.organization.name || 'UCSF Health'} />
+          <img src={powered_by_cw} id="poweredByCWLogo" alt="Powered by Covid Watch" />
         </div>
         <div className="mainContainer">
           <div className="welcome">
@@ -84,6 +88,7 @@ const SignInFormBase = observer(
           </div>
           <ForgotPasswordModal hidden={!this.state.showPassModal} onClose={this.hideModal} />
         </div>
+        <Toast ref={this.errorToast} isSuccess={false} message={this.state.toastMessage} />
       </Fragment>
     )
 

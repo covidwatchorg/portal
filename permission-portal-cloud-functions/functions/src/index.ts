@@ -51,31 +51,84 @@ function doesOrganizationExist(organizationID: string): Promise<boolean> {
 
 // Deletes user from users table, if an entry exists
 function usersCollectionDeleteUser(email: string) {
-  db.collection('users')
+  return db
+    .collection('users')
     .doc(email)
     .get()
     .then((user) => {
       if (user.exists) {
-        user.ref.delete().catch((err) => {
+        return user.ref.delete().catch((err) => {
           console.error(err);
+          throw err;
         });
+      } else {
+        throw new Error('Error deleting user from users collection.');
       }
     })
     .catch((err) => {
       console.error(err);
+      throw err;
     });
 }
 
 // Deletes user from firebase auth and from users table, if an entry exists
-function deleteUser(uid: string) {
-  auth
+function deleteUserByUid(uid: string) {
+  return auth
     .getUser(uid)
     .then((userRecord) => {
       const email = userRecord.email;
-      auth
+      return auth
         .deleteUser(uid)
         .then(() => {
-          usersCollectionDeleteUser(email ? email : '');
+          return usersCollectionDeleteUser(email ? email : '');
+        })
+        .catch((err) => {
+          console.error(err);
+          throw err;
+        });
+    })
+    .catch((err) => {
+      console.error(err);
+      throw err;
+    });
+}
+
+// Sets disabled flag and jwt claims for the Firebase Auth user record, based on its corresponding entry in the
+// users table
+function syncAuthUserWithCovidWatchUser(email: string) {
+  db.collection('users')
+    .doc(email)
+    .get()
+    .then((doc) => {
+      const covidWatchUser = doc.data();
+      if (covidWatchUser === undefined) throw new Error(`Could not find user in users table with email: ${email}`);
+      auth
+        .getUserByEmail(email)
+        .then((authUser) => {
+          auth
+            .setCustomUserClaims(authUser.uid, {
+              isSuperAdmin: covidWatchUser.isSuperAdmin,
+              isAdmin: covidWatchUser.isAdmin,
+              organizationID: covidWatchUser.organizationID,
+            })
+            .then(() => {
+              console.log('user ' + email + ' isSuperAdmin claim set to ' + covidWatchUser.isSuperAdmin);
+              console.log('user ' + email + ' isAdmin claim set to ' + covidWatchUser.isAdmin);
+              console.log('user ' + email + ' organizationID claim set to ' + covidWatchUser.organizationID);
+              auth
+                .updateUser(authUser.uid, {
+                  disabled: covidWatchUser.disabled,
+                })
+                .then(() => {
+                  console.log(`User ${email}'s disabled flag in Auth updated to ${covidWatchUser.disabled}`);
+                })
+                .catch((err) => {
+                  console.error(err);
+                });
+            })
+            .catch((err) => {
+              console.error(err);
+            });
         })
         .catch((err) => {
           console.error(err);
@@ -97,13 +150,32 @@ function authGuard(context: functions.https.CallableContext): Promise<void> {
   });
 }
 
-// Throw error if user is not an admin
+// Throw error if user is not authenticed or not an admin
 function isAdminGuard(context: functions.https.CallableContext): Promise<void> {
   return authGuard(context).then(() => {
     // Force unwrapping warranted, because existence of context.auth is checked by authGuard
     if (context.auth!.token.isAdmin !== true) {
       throw new functions.https.HttpsError('permission-denied', 'The function must be called by an admin.');
     }
+  });
+}
+
+// Throw error if user is not authenticed or not an admin or the user indexed by email is not in the same organization as the caller
+function isUserInCallersOrganizationGuard(email: string, context: functions.https.CallableContext): Promise<void> {
+  return isAdminGuard(context).then(() => {
+    return auth
+      .getUserByEmail(email)
+      .then((userRecord) => {
+        if (userRecord.customClaims!.organizationID !== context.auth?.token.organizationID) {
+          throw new functions.https.HttpsError(
+            'permission-denied',
+            'Operation cannot be performed on user in another organization.'
+          );
+        }
+      })
+      .catch((err) => {
+        throw err;
+      });
   });
 }
 
@@ -185,7 +257,7 @@ export const createUser = functions.https.onCall((newUser, context) => {
           lastName: newUser.lastName,
         };
         db.collection('users')
-          .doc(newUser.email)
+          .doc(newUser.email.toLowerCase())
           .set(newUserPrivileges) /* Create new user in our Firestore record */
           .then(() => {
             // If request contains a password field, set that password. If not, generate a random password.
@@ -206,6 +278,37 @@ export const createUser = functions.https.onCall((newUser, context) => {
                 } else {
                   reject(new functions.https.HttpsError('internal', err.errorInfo.message));
                 }
+              });
+          })
+          .catch((err) => {
+            reject(err);
+          });
+      })
+      .catch((err) => {
+        reject(err);
+      });
+  }).catch((err) => {
+    console.error(err);
+    throw err;
+  });
+});
+
+// Callable for admins to delete users in their organization.
+// Recall that firestore rules are made irrelevant by our use of the admin client, so we need to check ourselves
+// that the caller is an admin for the to-be-deleted user's organization (using isUserInCallersOrganizationGuard())
+export const deleteUser = functions.https.onCall((data, context) => {
+  return new Promise((resolve, reject) => {
+    isUserInCallersOrganizationGuard(data.email, context)
+      .then(() => {
+        auth
+          .getUserByEmail(data.email)
+          .then((userRecord) => {
+            deleteUserByUid(userRecord.uid)
+              .then(() => {
+                resolve(`Successfully deleted user ${data.email}`);
+              })
+              .catch((err) => {
+                reject(err);
               });
           })
           .catch((err) => {
@@ -243,100 +346,48 @@ export const onCreate = functions.auth.user().onCreate((firebaseAuthUser) => {
               covidWatchUserData
             )}`
           );
-          deleteUser(firebaseAuthUser.uid);
+          deleteUserByUid(firebaseAuthUser.uid).catch((err) => {
+            console.error(err);
+          });
         } else {
           doesOrganizationExist(covidWatchUserData.organizationID)
             .then((doesExist) => {
               if (doesExist) {
                 // User has been properly pre-registered in `users` collection, set custom claims in their token
-                auth
-                  .setCustomUserClaims(firebaseAuthUser.uid, {
-                    isSuperAdmin: covidWatchUserData.isSuperAdmin,
-                    isAdmin: covidWatchUserData.isAdmin,
-                    organizationID: covidWatchUserData.organizationID,
-                  })
-                  .then(() => {
-                    console.log(
-                      'user ' + covidWatchUser.id + 'isSuperAdmin claim set to ' + covidWatchUserData.isSuperAdmin
-                    );
-                    console.log('user ' + covidWatchUser.id + 'isAdmin claim set to ' + covidWatchUserData.isAdmin);
-                    console.log(
-                      'user ' + covidWatchUser.id + 'organizationID claim set to ' + covidWatchUserData.organizationID
-                    );
-                    auth
-                      .updateUser(firebaseAuthUser.uid, {
-                        disabled: covidWatchUserData.disabled,
-                      })
-                      .then(() => {
-                        console.log(
-                          `User ${covidWatchUserData.id}'s disabled flag in Auth updated to ${covidWatchUserData}`
-                        );
-                      })
-                      .catch((err) => {
-                        console.error(err);
-                      });
-                  })
-                  .catch((err) => {
-                    console.error(err);
-                  });
+                syncAuthUserWithCovidWatchUser(covidWatchUser.id);
               } else {
                 console.error(
                   `Attempted to create user with organizationID set to ${covidWatchUserData.organizationID}, but that id doesn't exist.`
                 );
-                deleteUser(firebaseAuthUser.uid);
+                deleteUserByUid(firebaseAuthUser.uid).catch((err) => {
+                  console.error(err);
+                });
               }
             })
             .catch((err) => {
               console.error(err);
-              deleteUser(firebaseAuthUser.uid);
+              deleteUserByUid(firebaseAuthUser.uid).catch((err1) => {
+                console.error(err1);
+              });
             });
         }
       } else {
         // User has not been properly pre-registered in `users` collection, delete this user from Firebase Auth
-        deleteUser(firebaseAuthUser.uid);
+        deleteUserByUid(firebaseAuthUser.uid).catch((err) => {
+          console.error(err);
+        });
+        throw new Error(
+          `Attempted to create Firebase Auth user ${firebaseAuthUser.email} but couldn't find corresponding entry in our users collection`
+        );
       }
     })
     .catch((err) => {
-      deleteUser(firebaseAuthUser.uid);
+      deleteUserByUid(firebaseAuthUser.uid).catch((err1) => {
+        console.error(err1);
+      });
       console.error(err);
       throw err;
     });
-});
-
-// Cloud function for validating upload tokens. Naturally this can only be called by an authenticated user.
-// This validate calls the report server's /validate endpoint with both the upload token and the user's organization ID.
-// The organizationID is taken from the user's authentication token's claims, to ensure that users can only
-// ever validate upload tokens corresponding to their own organizations. There should be a system in place
-// to ensure that only the server running this function can talk to the report server's /validate.
-export const validate = functions.https.onCall((body, context) => {
-  return new Promise((resolve, reject) => {
-    authGuard(context)
-      .then(() => {
-        const uploadToken = body.uploadToken;
-        // validate request body
-        if (typeof uploadToken !== 'string') {
-          reject(new functions.https.HttpsError('invalid-argument', 'request body must have uploadToken <string>'));
-        }
-        fetch(functions.config().token_server.validate_url, {
-          method: 'POST',
-          body: JSON.stringify({
-            upload_token: uploadToken,
-            organization_id: context.auth!.token.organizationID,
-          }),
-        })
-          .then((res) => {
-            // TODO: set differing responses based on whether token was just validated, or is already valid
-            resolve({ message: 'upload_token validated' });
-          })
-          .catch((err) => {
-            // TODO: set response based on /validate's error specification
-            reject(err);
-          });
-      })
-      .catch((err) => {
-        reject(err);
-      });
-  });
 });
 
 // Triggered whenever a user's document in the users/ collection is updated
@@ -345,33 +396,20 @@ export const userOnUpdate = functions.firestore.document('users/{email}').onUpda
   const previousValue = change.before.data();
   const newValue = change.after.data();
   const email = context.params.email;
+  console.log(
+    `Updating user with email ${email}.\n\nprevious value: ${JSON.stringify(
+      previousValue
+    )}, new value: ${JSON.stringify(newValue)}`
+  );
 
   // Force unwrap ok because document is guaranteed to exist (by definition its being updated)
-  if (previousValue!.disabled !== newValue!.disabled) {
-    console.log(
-      `User.disabled update detected for user ${email}. Value changed from ${previousValue!.disabled} to ${
-        newValue!.disabled
-      }`
-    );
-    return auth
-      .getUserByEmail(email)
-      .then((userRecord) => {
-        auth
-          .updateUser(userRecord.uid, {
-            disabled: newValue!.disabled ? newValue!.disabled : false,
-          })
-          .then(() => {
-            console.log(
-              `User ${email}'s disabled flag in Auth updated to ${newValue!.disabled ? newValue!.disabled : false}`
-            );
-          })
-          .catch((err) => {
-            console.error(err);
-          });
-      })
-      .catch((err) => {
-        console.error(err);
-      });
+  if (
+    previousValue!.disabled !== newValue!.disabled ||
+    previousValue!.isSuperAdmin !== newValue!.isSuperAdmin ||
+    previousValue!.isAdmin !== newValue!.isAdmin ||
+    previousValue!.organizationID !== newValue!.organizationID
+  ) {
+    syncAuthUserWithCovidWatchUser(email);
   }
   return new Promise((resolve) => resolve());
 });

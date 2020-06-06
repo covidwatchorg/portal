@@ -1,6 +1,6 @@
-import { adminDb, clientAuth, adminAuth, createUser, delay, DELAY, soylentGreenID } from './config';
+import { adminDb, clientAuth, adminAuth, createUser, deleteUser, delay, DELAY, soylentGreenID } from './config';
 
-jest.setTimeout(60000);
+jest.setTimeout(120000);
 
 // Track so user can be deleted after each test
 let testUid: string;
@@ -21,17 +21,27 @@ afterEach(() => {
     adminAuth
       .deleteUser(testUid)
       .then(() => {
-        return adminDb
-          .collection('users')
-          .doc(testUserEmail)
-          .delete()
-          .catch((err) => {
-            console.log(err);
-          });
+        return (
+          adminDb
+            .collection('users')
+            .doc(testUserEmail)
+            .delete()
+            .then(() => {
+              clientAuth.signOut().catch((err) => {
+                console.error(err);
+              });
+            })
+            // tslint:disable-next-line: no-empty
+            .catch((err) => {
+              /* suppress expected error */
+            })
+        );
       })
       // tslint:disable-next-line: no-empty
       .catch((err) => {
-        /* suppress expected error */
+        clientAuth.signOut().catch((err1) => {
+          console.error(err1);
+        });
       })
   );
 });
@@ -126,6 +136,59 @@ test('createUser works for admins', () => {
                     expect(idTokenResult.claims.isAdmin).toEqual(false);
                     expect(idTokenResult.claims.organizationID).toEqual(soylentGreenID);
                   });
+                });
+              })
+              .catch((err) => {
+                throw err;
+              });
+          });
+        })
+        .catch((err) => {
+          throw err;
+        });
+    })
+    .catch((err) => {
+      throw err;
+    });
+});
+
+test('createUser works for emails with uppercase letters', () => {
+  return clientAuth
+    .signInWithEmailAndPassword('admin@soylentgreen.com', 'admin@soylentgreen.com')
+    .then(() => {
+      return createUser({
+        email: 'UPPERCASE@email.com',
+        password: 'password',
+        firstName: 'test',
+        lastName: 'user',
+        isAdmin: false,
+      })
+        .then((result) => result.data)
+        .then((userRecord) => {
+          testUid = userRecord.uid;
+          // Check that the endpoint responded with the proper user
+          expect(userRecord.email).toEqual('uppercase@email.com');
+          // delay for 6 sec to allow functions.auth.user().onCreate to trigger and propagate
+          return delay(DELAY).then(() => {
+            return clientAuth
+              .signInWithEmailAndPassword('UPPERCASE@email.com', 'password')
+              .then(() => {
+                // Check that we can sign in with this user
+                const currentUser = clientAuth.currentUser;
+                if (currentUser === null) {
+                  throw new Error('clientAuth.currentUser returned null');
+                }
+                expect(currentUser.email).toEqual('uppercase@email.com');
+                return delay(DELAY).then(() => {
+                  return adminDb
+                    .collection('users')
+                    .doc('uppercase@email.com')
+                    .get()
+                    .then((userDoc) => {
+                      expect(userDoc.exists).toBe(true);
+                      // delete uppercase user to keep test idempotent
+                      return adminDb.collection('users').doc('uppercase@email.com').delete();
+                    });
                 });
               })
               .catch((err) => {
@@ -355,7 +418,7 @@ test('User can be toggled between enabled and disabled', () => {
     })
     .then(() => {
       // Delay to allow userOnUpdate time to run
-      return delay(DELAY).then(() => {
+      return delay(DELAY * 5).then(() => {
         return adminAuth.getUserByEmail('disabled@soylentgreen.com').then((userRecordDisabled) => {
           expect(userRecordDisabled.disabled).toBe(false);
           return adminDb
@@ -365,7 +428,7 @@ test('User can be toggled between enabled and disabled', () => {
               disabled: true,
             })
             .then(() => {
-              return delay(DELAY).then(() => {
+              return delay(DELAY * 5).then(() => {
                 return adminAuth.getUserByEmail('disabled@soylentgreen.com').then((userRecordEnabled) => {
                   expect(userRecordEnabled.disabled).toBe(true);
                 });
@@ -377,4 +440,118 @@ test('User can be toggled between enabled and disabled', () => {
     .catch((err) => {
       throw err;
     });
+});
+
+test('User can be toggled between isAdmin and not isAdmin', () => {
+  return adminDb
+    .collection('users')
+    .doc('user@soylentgreen.com')
+    .update({
+      isAdmin: true,
+    })
+    .then(() => {
+      // Delay to allow userOnUpdate time to run
+      return delay(DELAY * 3).then(() => {
+        return clientAuth.signInWithEmailAndPassword('user@soylentgreen.com', 'user@soylentgreen.com').then(() => {
+          if (clientAuth.currentUser === null) {
+            throw new Error('clientAuth.currentUser returned null');
+          }
+          return clientAuth.currentUser
+            .getIdTokenResult(true)
+            .then((idTokenResult) => {
+              // Check that isAdmin claim has been updated properly
+              expect(idTokenResult.claims.isAdmin).toEqual(true);
+            })
+            .then(() => {
+              return adminDb
+                .collection('users')
+                .doc('user@soylentgreen.com')
+                .update({
+                  isAdmin: false,
+                })
+                .then(() => {
+                  // Delay to allow userOnUpdate time to run
+                  return delay(DELAY * 3).then(() => {
+                    return clientAuth.currentUser!.getIdTokenResult(true).then((idTokenResult) => {
+                      // Check that isAdmin claim has been updated properly
+                      expect(idTokenResult.claims.isAdmin).toEqual(false);
+                    });
+                  });
+                });
+            });
+        });
+      });
+    });
+});
+
+test('deleteUser cannot be called without being authenticated', () => {
+  return deleteUser({})
+    .then((result) => {
+      throw new Error("This shouldn't happen!");
+    })
+    .catch((err) => {
+      expect(err.code).toEqual('unauthenticated');
+      expect(err.message).toEqual('The function must be called while authenticated.');
+    });
+});
+
+test('deleteUser cannot be called by non-admin', () => {
+  return clientAuth
+    .signInWithEmailAndPassword('user@soylentgreen.com', 'user@soylentgreen.com')
+    .then(() => {
+      return deleteUser({})
+        .then((result) => {
+          throw new Error("This shouldn't happen!");
+        })
+        .catch((err) => {
+          expect(err.code).toEqual('permission-denied');
+          expect(err.message).toEqual('The function must be called by an admin.');
+        });
+    })
+    .catch((err) => {
+      console.log(err);
+      throw Error("This shouldn't happen!");
+    });
+});
+
+test('deleteUser cannot be called on user in another organization', () => {
+  return clientAuth
+    .signInWithEmailAndPassword('admin@soylentgreen.com', 'admin@soylentgreen.com')
+    .then(() => {
+      return deleteUser({ email: 'admin@initech.com' })
+        .then((result) => {
+          console.error(result);
+          throw new Error("This shouldn't happen!");
+        })
+        .catch((err) => {
+          expect(err.code).toEqual('permission-denied');
+          expect(err.message).toEqual('Operation cannot be performed on user in another organization.');
+        });
+    })
+    .catch((err) => {
+      console.log(err);
+      throw Error("This shouldn't happen!");
+    });
+});
+
+test('Admin user can deleteUser from his own organization', () => {
+  return clientAuth.signInWithEmailAndPassword('admin@soylentgreen.com', 'admin@soylentgreen.com').then(() => {
+    return createUser({
+      email: testUserEmail,
+      password: testUserEmail,
+      firstName: 'test',
+      lastName: 'user',
+      isAdmin: false,
+    }).then(() => {
+      return delay(DELAY).then(() => {
+        return deleteUser({ email: testUserEmail })
+          .then((result) => {
+            expect(result.data).toBe(`Successfully deleted user ${testUserEmail}`);
+          })
+          .catch((err) => {
+            throw err;
+          });
+      });
+    });
+  });
 });

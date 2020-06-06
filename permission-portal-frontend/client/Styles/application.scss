@@ -6,20 +6,19 @@
 @import 'components/navbar';
 @import 'components/toast';
 @import 'components/button';
+@import 'components/modal';
 
 .hidden {
   display: none;
 }
 
+body {
+  margin: 0px;
 
-  
-  body {
-    margin: 0px;
-
-    // Default text style
-    font-family: Montserrat;
-    font-style: normal;
-    color: #333333;
+  // Default text style
+  font-family: Montserrat;
+  font-style: normal;
+  color: #333333;
 }
 
 h1 {

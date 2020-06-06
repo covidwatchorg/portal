@@ -1,15 +1,14 @@
-# Builds node app and deploys to AWS S3
-# Builds and tests firebase and deploys to staging / prod
+# Ensure apps build and tests pass
 
-name: Deploy
+name: Build
 
 on:
-  push:
-    branches: [dev, master]
+  pull_request:
+    branches: [master, dev]
 
 jobs:
-  deploy-frontend:
-    name: Build and Deploy Frontend App
+  build-frontend:
+    name: Build Frontend App
     runs-on: ubuntu-latest
 
     steps:
@@ -20,19 +19,7 @@ jobs:
         with:
           node-version: "12.x"
 
-      - name: Build node app for staging
-        if: github.ref == 'refs/heads/dev'
-        working-directory: permission-portal-frontend
-        env:
-          CI: true
-        run: |
-          npm ci
-          npm run init
-          npm run git-info
-          npm run build:staging
-
-      - name: Build node app for prod
-        if: github.ref == 'refs/heads/master'
+      - name: Build node app
         working-directory: permission-portal-frontend
         env:
           CI: true
@@ -41,19 +28,6 @@ jobs:
           npm run init
           npm run git-info
           npm run build
-
-      - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v1
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: us-east-2
-
-      - name: Deploy to S3
-        working-directory: permission-portal-frontend
-        run: |
-          chmod +x ./scripts/deploy.sh
-          ./scripts/deploy.sh
 
   build-firebase:
     name: Build Firebase
@@ -82,36 +56,41 @@ jobs:
 
   deploy-firebase:
     name: Deploy Firebase
-    runs-on: ubuntu-latest
     needs: build-firebase
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-
       - uses: actions/download-artifact@v2
         with:
           name: cloud-functions-artifact
           path: permission-portal-cloud-functions/functions
-
       - name: Install 
         working-directory: permission-portal-cloud-functions/functions
         run: npm install
-
-      - name: Deploy to Firebase Staging Infra
-        if: github.ref == 'refs/heads/dev'
+      - name: Deploy to Firebase Test Infra
         uses: w9jds/firebase-action@master
         with:
-          args: deploy --project=staging
+          args: deploy --project=test
         env:
           FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
           PROJECT_PATH: permission-portal-cloud-functions/
-          NODE_ENV: staging
 
-      - name: Deploy to Firebase Prod Infra
-        if: github.ref == 'refs/heads/master'
-        uses: w9jds/firebase-action@master
+  firebase-tests:
+    name: Run Firebase Tests
+    needs: deploy-firebase
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/download-artifact@v2
         with:
-          args: deploy --project=prod
+          name: cloud-functions-artifact
+          path: permission-portal-cloud-functions/functions
+      - name: Install 
+        working-directory: permission-portal-cloud-functions/functions
+        run: npm install
+      - name: Run Tests
+        working-directory: permission-portal-cloud-functions/functions
+        run: npm run test_ci
         env:
+          FIREBASE_PRIVATE_KEY: ${{ secrets.FIREBASE_PRIVATE_KEY }}
           FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
-          PROJECT_PATH: permission-portal-cloud-functions/
-          NODE_ENV: prod
