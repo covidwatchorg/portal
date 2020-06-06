@@ -285,7 +285,7 @@ async function main() {
       }
     }
 
-    for (let i = 0; i < 10; i++) {
+    for (let i = 0; i < 5000; i++) {
       try {
         await createRandomUser('initech');
       } catch (error) {
