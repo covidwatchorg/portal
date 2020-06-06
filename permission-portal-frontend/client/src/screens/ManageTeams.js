@@ -10,11 +10,9 @@ import DeleteUserModal from '../components/DeleteUserModal'
 import Toast from '../components/Toast'
 import RoleSelector from '../components/RoleSelector'
 import * as ROLES from '../constants/roles'
-import { withStore } from '../store'
+import { withStore, PAGE_SIZE } from '../store'
 import { observer } from 'mobx-react'
 import PageTitle from '../components/PageTitle'
-
-const PAGE_SIZE = 15
 
 const ManageTeamsBase = observer((props) => {
   const userEmail = props.store.user.email
@@ -24,16 +22,11 @@ const ManageTeamsBase = observer((props) => {
 
   const confirmationToast = useRef()
 
-  const [currentPage, setCurrentPage] = useState(0)
   const pages = props.store.organization.members
     ? [...Array(Math.ceil(props.store.organization.members.length / PAGE_SIZE)).keys()]
     : []
   const [showAddMemberModal, setShowAddMemberModal] = useState(false)
   const [showDeleteUserModal, setShowDeleteUserModal] = useState(false)
-
-  const inCurrentPage = (index) => {
-    return index >= PAGE_SIZE * currentPage && index < PAGE_SIZE * (currentPage + 1)
-  }
 
   const [emailOfUserToBeDeleted, setEmailOfUserToBeDeleted] = useState('')
 
@@ -133,8 +126,8 @@ const ManageTeamsBase = observer((props) => {
         </thead>
         <tbody>
           {props.store.organization.members &&
-            props.store.organization.members.map((data, index) => (
-              <tr className={inCurrentPage(index) ? '' : 'hidden'} key={index}>
+            props.store.organization.currentPageOfUsers.map((data, index) => (
+              <tr key={index}>
                 <td>{data.lastName + ', ' + data.firstName}</td>
                 <td style={{ padding: 0 }}>
                   <RoleSelector
@@ -173,21 +166,41 @@ const ManageTeamsBase = observer((props) => {
       </table>
       <div className="table-bottom-container">
         <div className="pages-container">
-          <div className="arrow" onClick={currentPage === 0 ? () => {} : () => setCurrentPage(currentPage - 1)}>
+          <div
+            className="arrow"
+            onClick={(e) => {
+              e.preventDefault()
+              if (props.store.organization.currentPage - 1 >= 1) {
+                props.store.organization.setCurrentPage(props.store.organization.currentPage - 1)
+              }
+            }}
+          >
             <img src={arrowLeft} alt="Previous" />
           </div>
           {pages.map((page) => (
             <a
-              key={page}
-              className={`${page === currentPage ? 'current-' : ''}page`}
-              onClick={page === currentPage ? () => {} : () => setCurrentPage(page)}
+              key={page + 1}
+              className={`${page + 1 === props.store.organization.currentPage ? 'current-' : ''}page`}
+              onClick={
+                page + 1 === props.store.organization.currentPage
+                  ? () => {}
+                  : () => props.store.organization.setCurrentPage(page + 1)
+              }
             >
               {page + 1}
             </a>
           ))}
           <div
             className="arrow"
-            onClick={currentPage === pages[pages.length - 1] ? () => {} : () => setCurrentPage(currentPage + 1)}
+            onClick={(e) => {
+              e.preventDefault()
+              if (
+                props.store.organization.currentPage + 1 <=
+                Math.ceil(props.store.organization.members.length / PAGE_SIZE)
+              ) {
+                props.store.organization.setCurrentPage(props.store.organization.currentPage + 1)
+              }
+            }}
           >
             <img src={arrowRight} alt="Next" />
           </div>

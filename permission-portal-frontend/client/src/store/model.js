@@ -1,5 +1,8 @@
 import { types, cast, flow, onSnapshot } from 'mobx-state-tree'
 import { auth, db, createUserCallable, deleteUserCallable, SESSION } from './firebase'
+import 'mobx-react-lite/batchingForReactDom'
+
+const PAGE_SIZE = 15
 
 const User = types
   .model({
@@ -63,6 +66,7 @@ const Organization = types
     diagnosisText: types.string,
     exposureText: types.string,
     members: types.array(User),
+    currentPage: types.number,
   })
   .actions((self) => {
     const __update = (updates) => {
@@ -88,8 +92,17 @@ const Organization = types
       console.log(self.members[0])
     }
 
-    return { __update, __setMembers, update }
+    const setCurrentPage = (pageNumber) => {
+      self.currentPage = pageNumber
+    }
+
+    return { __update, __setMembers, update, setCurrentPage }
   })
+  .views((self) => ({
+    get currentPageOfUsers() {
+      return self.members.slice((self.currentPage - 1) * PAGE_SIZE, (self.currentPage - 1) * PAGE_SIZE + PAGE_SIZE)
+    },
+  }))
 
 const Store = types
   .model({
@@ -184,6 +197,7 @@ const defaultOrganization = {
   diagnosisText: '',
   exposureText: '',
   members: [],
+  currentPage: 1,
 }
 
 const defaultStore = {
@@ -207,4 +221,4 @@ onSnapshot(rootStore, (snapshot) => {
   localStorage.setItem('store', JSON.stringify(snapshot))
 })
 
-export { rootStore, defaultUser, defaultOrganization }
+export { rootStore, defaultUser, defaultOrganization, PAGE_SIZE }

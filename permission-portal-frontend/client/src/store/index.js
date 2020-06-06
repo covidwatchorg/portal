@@ -1,5 +1,5 @@
 import React from 'react'
-import { rootStore, defaultUser, defaultOrganization } from './model'
+import { rootStore, defaultUser, defaultOrganization, PAGE_SIZE } from './model'
 import { auth, db } from './firebase'
 
 const RootStoreContext = React.createContext()
@@ -38,6 +38,7 @@ const createStore = (WrappedComponent) => {
                       rootStore.organization.__update({
                         ...updatedOrganizationDocumentSnapshot.data(),
                         id: updatedOrganizationDocumentSnapshot.id,
+                        currentPage: rootStore.organization.currentPage,
                       })
                       if (rootStore.user.isAdmin && this.organizationMembersListener === null) {
                         this.organizationMembersListener = db
@@ -127,4 +128,4 @@ const withStore = (WrappedComponent) => {
   }
 }
 
-export { createStore, withStore }
+export { createStore, withStore, PAGE_SIZE }
