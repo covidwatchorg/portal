@@ -6,12 +6,12 @@ import { withStore } from '../store'
 const RoleSelector = observer((props) => {
   // If passed memberIndex, return a component whose value corresponds to the member with that index
   // in store.organization.currentPageOfMembers
-  return props.store.organization.currentPageOfMembers[props.memberIndex] ? (
+  return props.store.data.organization.currentPageOfMembers[props.memberIndex] ? (
     <div className="custom-select">
       <select
         onChange={props.onChange}
         value={
-          props.store.organization.currentPageOfMembers[props.memberIndex].isAdmin === true
+          props.store.data.organization.currentPageOfMembers[props.memberIndex].isAdmin === true
             ? ROLES.ADMIN_LABEL
             : ROLES.NON_ADMIN_LABEL
         }

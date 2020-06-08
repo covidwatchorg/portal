@@ -15,7 +15,7 @@ import { observer } from 'mobx-react'
 import PageTitle from '../components/PageTitle'
 
 const ManageTeamsBase = observer((props) => {
-  const userEmail = props.store.user.email
+  const userEmail = props.store.data.user.email
 
   const [toastMessage, setToastMessage] = useState(false)
   const [isSuccess, setIsSuccess] = useState(false)
@@ -28,7 +28,7 @@ const ManageTeamsBase = observer((props) => {
   const [emailOfUserToBeDeleted, setEmailOfUserToBeDeleted] = useState('')
 
   useEffect(() => {
-    console.log('Store', props.store)
+    console.log('Store', props.store.data)
   }, [])
 
   const onAddMemberCancel = () => {
@@ -79,7 +79,7 @@ const ManageTeamsBase = observer((props) => {
   const resetPassword = async (e, email) => {
     e.preventDefault()
     try {
-      await props.store.sendPasswordResetEmail(email)
+      await props.store.data.sendPasswordResetEmail(email)
       setToastMessage(`Password Reset Email Sent to ${email}`)
       setIsSuccess(true)
       confirmationToast.current.show()
@@ -91,7 +91,7 @@ const ManageTeamsBase = observer((props) => {
     }
   }
 
-  return props.store.user.isSignedIn && props.store.user.isAdmin ? (
+  return props.store.data.user.isSignedIn && props.store.data.user.isAdmin ? (
     <div className="module-container">
       <PageTitle title="Manage Members" />
       <h1>Manage Members</h1>
@@ -122,15 +122,15 @@ const ManageTeamsBase = observer((props) => {
           </tr>
         </thead>
         <tbody>
-          {props.store.organization.currentPageOfMembers &&
-            props.store.organization.currentPageOfMembers.map((data, index) => (
+          {props.store.data.organization.currentPageOfMembers &&
+            props.store.data.organization.currentPageOfMembers.map((data, index) => (
               <tr key={index}>
                 <td>{data.lastName + ', ' + data.firstName}</td>
                 <td style={{ padding: 0 }}>
                   <RoleSelector
                     memberIndex={index}
                     onChange={(e) => {
-                      props.store.updateUserByEmail(data.email, { isAdmin: e.target.value == ROLES.ADMIN_LABEL })
+                      props.store.data.updateUserByEmail(data.email, { isAdmin: e.target.value == ROLES.ADMIN_LABEL })
                     }}
                     ariaLabelledBy="role-header"
                   />
@@ -142,7 +142,7 @@ const ManageTeamsBase = observer((props) => {
                       className={!data.disabled ? 'active' : 'inactive'}
                       value={!data.disabled ? 'active' : 'deactivated'}
                       onChange={(e) => {
-                        props.store.updateUserByEmail(data.email, { disabled: e.target.value == 'deactivated' })
+                        props.store.data.updateUserByEmail(data.email, { disabled: e.target.value == 'deactivated' })
                       }}
                       aria-labelledby="status-header"
                     >
@@ -185,7 +185,7 @@ const ManageTeamsBase = observer((props) => {
       </div>
       <Toast ref={confirmationToast} isSuccess={isSuccess} message={toastMessage} />
     </div>
-  ) : props.store.user.isSignedIn ? (
+  ) : props.store.data.user.isSignedIn ? (
     <Redirect to={ROUTES.CODE_VALIDATIONS} />
   ) : (
     <Redirect to={ROUTES.LANDING} />

@@ -99,8 +99,8 @@ const SettingsBase = observer((props) => {
   const resetPassword = async (e) => {
     e.preventDefault()
     try {
-      await props.store.sendPasswordResetEmail(props.store.user.email)
-      setToastInfo({ success: true, msg: `Password Reset Email Sent to ${props.store.user.email}` })
+      await props.store.data.sendPasswordResetEmail(props.store.data.user.email)
+      setToastInfo({ success: true, msg: `Password Reset Email Sent to ${props.store.data.user.email}` })
       toastRef.current.show()
     } catch (err) {
       console.error(err)
@@ -110,11 +110,11 @@ const SettingsBase = observer((props) => {
   }
   const onChange = async (event) => {
     if (event.target.name == 'prefix') {
-      props.store.user.update({ prefix: event.target.value })
+      props.store.data.user.update({ prefix: event.target.value })
     } else if (event.target.name == 'firstName') {
-      props.store.user.update({ firstName: event.target.value })
+      props.store.data.user.update({ firstName: event.target.value })
     } else if (event.target.name == 'lastName') {
-      props.store.user.update({ lastName: event.target.value })
+      props.store.data.user.update({ lastName: event.target.value })
     }
   }
 
@@ -141,7 +141,7 @@ const SettingsBase = observer((props) => {
       let reader = new FileReader()
       // set up onload trigger to run when data is read
       reader.onload = (e) => {
-        props.store.user.updateImage(e.target.result)
+        props.store.data.user.updateImage(e.target.result)
       }
       // read data
       reader.readAsDataURL(imgUploader.current.files[0])
@@ -182,8 +182,8 @@ const SettingsBase = observer((props) => {
                 }}
               >
                 <img
-                  alt={props.store.user.imageBlob ? 'Profile photo' : 'Your profile photo would go here.'}
-                  src={props.store.user.imageBlob ? props.store.user.imageBlob : 'client/assets/photo-add.png'}
+                  alt={props.store.data.user.imageBlob ? 'Profile photo' : 'Your profile photo would go here.'}
+                  src={props.store.data.user.imageBlob ? props.store.data.user.imageBlob : 'client/assets/photo-add.png'}
                   style={{ width: '195px', height: '195px', objectFit: 'cover', display: 'block', margin: 'auto' }}
                 ></img>
               </div>
@@ -209,7 +209,7 @@ const SettingsBase = observer((props) => {
                 name="prefix"
                 className={input.root}
                 onChange={onChange}
-                value={props.store.user.prefix}
+                value={props.store.data.user.prefix}
               ></input>
               <label htmlFor="firstName">First Name</label>
               <input
@@ -220,7 +220,7 @@ const SettingsBase = observer((props) => {
                 aria-required="true"
                 className={input.root}
                 onChange={onChange}
-                value={props.store.user.firstName}
+                value={props.store.data.user.firstName}
               ></input>
               <label htmlFor="email">Email Address</label>
               <input
@@ -232,7 +232,7 @@ const SettingsBase = observer((props) => {
                 aria-required="true"
                 className={input.root}
                 style={{ backgroundColor: '#f0f0f0' }}
-                value={props.store.user.email}
+                value={props.store.data.user.email}
               ></input>
             </Grid>
           </Grid>
@@ -240,7 +240,7 @@ const SettingsBase = observer((props) => {
           <Grid item xs={4}>
             <Grid container spacing={2} direction="column">
               <label htmlFor="role">Role</label>
-              {props.store.user && (
+              {props.store.data.user && (
                 <select
                   type="text"
                   id="role"
@@ -250,12 +250,12 @@ const SettingsBase = observer((props) => {
                   aria-required="true"
                   className={input.root}
                   style={{ backgroundColor: '#f0f0f0' }}
-                  value={props.store.user.isAdmin ? ROLES.ADMIN_LABEL : ROLES.NON_ADMIN_LABEL}
+                  value={props.store.data.user.isAdmin ? ROLES.ADMIN_LABEL : ROLES.NON_ADMIN_LABEL}
                 >
-                  <option value={ROLES.ADMIN_LABEL} defaultValue={props.store.user.isAdmin}>
+                  <option value={ROLES.ADMIN_LABEL} defaultValue={props.store.data.user.isAdmin}>
                     {ROLES.ADMIN_LABEL}
                   </option>
-                  <option value={ROLES.NON_ADMIN_LABEL} defaultValue={!props.store.user.isAdmin}>
+                  <option value={ROLES.NON_ADMIN_LABEL} defaultValue={!props.store.data.user.isAdmin}>
                     {ROLES.NON_ADMIN_LABEL}
                   </option>
                 </select>
@@ -269,7 +269,7 @@ const SettingsBase = observer((props) => {
                 aria-required="true"
                 onChange={onChange}
                 className={input.root}
-                defaultValue={props.store.user.lastName}
+                defaultValue={props.store.data.user.lastName}
               ></input>
               <a
                 href=""
@@ -290,7 +290,7 @@ const SettingsBase = observer((props) => {
     </Fragment>
   )
 
-  return props.store.user.isSignedIn ? (
+  return props.store.data.user.isSignedIn ? (
     <React.Fragment>
       <PageTitle title="My Settings" />
       <h1>My Settings</h1>

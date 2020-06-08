@@ -33,7 +33,7 @@ const SignInFormBase = observer(
       event.preventDefault()
       const { email, password } = this.state
       try {
-        await this.props.store.signInWithEmailAndPassword(email, password)
+        await this.props.store.data.signInWithEmailAndPassword(email, password)
       } catch (err) {
         this.errorToast.current.show()
       }

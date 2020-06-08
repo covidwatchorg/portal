@@ -48,21 +48,21 @@ const NavBarBase = observer((props) => {
   const onClickMenuItem = (num) => {
     setAnchorEl(null)
     if (num === 4) {
-      props.store.signOut()
+      props.store.data.signOut()
     }
     setRedirect(num)
   }
 
   return (
     <div className="navbarContainer">
-      <img src={ucsf_health} id="orgLogo" alt={props.store.organization.name || 'UCSF Health'} />
+      <img src={ucsf_health} id="orgLogo" alt={props.store.data.organization.name || 'UCSF Health'} />
       <div className="avatar_group avatar_text">
-        <div className="name">{props.store.user.firstName + ' ' + props.store.user.lastName}</div>
-        <div className="title">{props.store.user.isAdmin ? ROLES.ADMIN_LABEL : ROLES.NON_ADMIN_LABEL}</div>
+        <div className="name">{props.store.data.user.firstName + ' ' + props.store.data.user.lastName}</div>
+        <div className="title">{props.store.data.user.isAdmin ? ROLES.ADMIN_LABEL : ROLES.NON_ADMIN_LABEL}</div>
       </div>
       <div className="avatar_group avatar_image">
         <img
-          src={props.store.user.imageBlob ? props.store.user.imageBlob : profile}
+          src={props.store.data.user.imageBlob ? props.store.data.user.imageBlob : profile}
           style={{ objectFit: 'cover', display: 'block', margin: 'auto' }}
           alt=""
         ></img>
@@ -89,12 +89,12 @@ const NavBarBase = observer((props) => {
         <MenuItem style={linkStyles} onClick={() => onClickMenuItem(0)}>
           Positive Test Validations
         </MenuItem>
-        {props.store.user.isAdmin && (
+        {props.store.data.user.isAdmin && (
           <MenuItem style={linkStyles} onClick={() => onClickMenuItem(1)}>
             Manage Members
           </MenuItem>
         )}
-        {props.store.user.isAdmin && (
+        {props.store.data.user.isAdmin && (
           <MenuItem style={linkStyles} onClick={() => onClickMenuItem(2)}>
             Account Branding
           </MenuItem>

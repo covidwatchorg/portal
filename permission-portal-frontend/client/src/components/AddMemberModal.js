@@ -83,7 +83,7 @@ const AddMemberModalBase = observer((props) => {
       return
     }
 
-    return props.store
+    return props.store.data
       .createUser({
         email: state.email,
         firstName: state.firstName,
