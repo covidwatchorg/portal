@@ -1,13 +1,32 @@
 #not-found {
     display: flex;
+    justify-content: space-evenly;
+    background-image: url('../../assets/fade-background-404.svg');
+    // TO DO: make a linear gradient background instead
 
     #doctor-img {
-        margin-left: 20px;
-        width: 10%;
+        display: flex;
+        width: 20%;
+        align-items: flex-end;
+
+        img {
+            height: 70%;
+            width: 100%;
+        }
+    }
+
+    #female-doctor-img {
+        display: flex;
+        width: 24%;
+        align-items: flex-end;
+
+         img {
+            height: 70%;
+            width: 100%;
+        }
     }
 
     #message {
-        width: 77%;
         display: flex;
         flex-direction: column;
         align-items: center;
