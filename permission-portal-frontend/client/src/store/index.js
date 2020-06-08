@@ -47,7 +47,7 @@ const createStore = (WrappedComponent) => {
                           .orderBy('lastName')
                           .orderBy('firstName')
                           .onSnapshot((updatedUsersSnapshot) => {
-                            rootStore.organization.__setMembers(
+                            rootStore.organization.__setCurrentPageOfMembers(
                               // See https://stackoverflow.com/a/24806827
                               updatedUsersSnapshot.docs.reduce((result, userDoc) => {
                                 if (userDoc.id !== rootStore.user.email) {

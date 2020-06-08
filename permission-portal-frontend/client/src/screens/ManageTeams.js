@@ -10,7 +10,7 @@ import DeleteUserModal from '../components/DeleteUserModal'
 import Toast from '../components/Toast'
 import RoleSelector from '../components/RoleSelector'
 import * as ROLES from '../constants/roles'
-import { withStore, PAGE_SIZE } from '../store'
+import { withStore } from '../store'
 import { observer } from 'mobx-react'
 import PageTitle from '../components/PageTitle'
 
@@ -22,9 +22,6 @@ const ManageTeamsBase = observer((props) => {
 
   const confirmationToast = useRef()
 
-  const pages = props.store.organization.members
-    ? [...Array(Math.ceil(props.store.organization.members.length / PAGE_SIZE)).keys()]
-    : []
   const [showAddMemberModal, setShowAddMemberModal] = useState(false)
   const [showDeleteUserModal, setShowDeleteUserModal] = useState(false)
 
@@ -125,8 +122,8 @@ const ManageTeamsBase = observer((props) => {
           </tr>
         </thead>
         <tbody>
-          {props.store.organization.members &&
-            props.store.organization.currentPageOfUsers.map((data, index) => (
+          {props.store.organization.currentPageOfMembers &&
+            props.store.organization.currentPageOfMembers.map((data, index) => (
               <tr key={index}>
                 <td>{data.lastName + ', ' + data.firstName}</td>
                 <td style={{ padding: 0 }}>
@@ -170,36 +167,16 @@ const ManageTeamsBase = observer((props) => {
             className="arrow"
             onClick={(e) => {
               e.preventDefault()
-              if (props.store.organization.currentPage - 1 >= 1) {
-                props.store.organization.setCurrentPage(props.store.organization.currentPage - 1)
-              }
+              console.log('TODO')
             }}
           >
             <img src={arrowLeft} alt="Previous" />
           </div>
-          {pages.map((page) => (
-            <a
-              key={page + 1}
-              className={`${page + 1 === props.store.organization.currentPage ? 'current-' : ''}page`}
-              onClick={
-                page + 1 === props.store.organization.currentPage
-                  ? () => {}
-                  : () => props.store.organization.setCurrentPage(page + 1)
-              }
-            >
-              {page + 1}
-            </a>
-          ))}
           <div
             className="arrow"
             onClick={(e) => {
               e.preventDefault()
-              if (
-                props.store.organization.currentPage + 1 <=
-                Math.ceil(props.store.organization.members.length / PAGE_SIZE)
-              ) {
-                props.store.organization.setCurrentPage(props.store.organization.currentPage + 1)
-              }
+              console.log('TODO')
             }}
           >
             <img src={arrowRight} alt="Next" />

@@ -65,8 +65,7 @@ const Organization = types
     verificationNotSharedText: types.string,
     diagnosisText: types.string,
     exposureText: types.string,
-    members: types.array(User),
-    currentPage: types.number,
+    currentPageOfMembers: types.array(User),
   })
   .actions((self) => {
     const __update = (updates) => {
@@ -86,23 +85,12 @@ const Organization = types
       }
     })
 
-    const __setMembers = (members) => {
-      self.members = cast(members)
-      console.log('Set members:')
-      console.log(self.members[0])
+    const __setCurrentPageOfMembers = (pageOfMembers) => {
+      self.currentPageOfMembers = cast(pageOfMembers)
     }
 
-    const setCurrentPage = (pageNumber) => {
-      self.currentPage = pageNumber
-    }
-
-    return { __update, __setMembers, update, setCurrentPage }
+    return { __update, __setCurrentPageOfMembers, update }
   })
-  .views((self) => ({
-    get currentPageOfUsers() {
-      return self.members.slice((self.currentPage - 1) * PAGE_SIZE, (self.currentPage - 1) * PAGE_SIZE + PAGE_SIZE)
-    },
-  }))
 
 const Store = types
   .model({
@@ -196,8 +184,7 @@ const defaultOrganization = {
   verificationNotSharedText: '',
   diagnosisText: '',
   exposureText: '',
-  members: [],
-  currentPage: 1,
+  currentPageOfMembers: [],
 }
 
 const defaultStore = {
