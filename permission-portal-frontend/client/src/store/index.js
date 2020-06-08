@@ -12,6 +12,7 @@ const createStore = (WrappedComponent) => {
       this.userImageListener = null
       this.organizationDocumentListener = null
       this.organizationMembersListener = null
+      this.data = rootStore
       this.authStateListener = auth.onAuthStateChanged(async (user) => {
         if (user) {
           console.log('User signed in')
@@ -22,35 +23,35 @@ const createStore = (WrappedComponent) => {
               .doc(user.email)
               .onSnapshot((updatedUserDocumentSnapshot) => {
                 // update the store with data from this document and set isSignedIn to true
-                rootStore.user.__update({
+                this.data.user.__update({
                   ...updatedUserDocumentSnapshot.data(),
                   email: updatedUserDocumentSnapshot.id,
                   isSignedIn: true,
                 })
                 // If DNE, set up organization listener within this callback,
-                // since it relies on rootStore.user.organizationID being set
+                // since it relies on this.data.user.organizationID being set
                 if (this.organizationDocumentListener === null) {
                   this.organizationDocumentListener = db
                     .collection('organizations')
-                    .doc(rootStore.user.organizationID)
+                    .doc(this.data.user.organizationID)
                     .onSnapshot((updatedOrganizationDocumentSnapshot) => {
                       console.log('Remote organization document changed')
-                      rootStore.organization.__update({
+                      this.data.organization.__update({
                         ...updatedOrganizationDocumentSnapshot.data(),
                         id: updatedOrganizationDocumentSnapshot.id,
-                        currentPage: rootStore.organization.currentPage,
+                        currentPage: this.data.organization.currentPage,
                       })
-                      if (rootStore.user.isAdmin && this.organizationMembersListener === null) {
+                      if (this.data.user.isAdmin && this.organizationMembersListener === null) {
                         this.organizationMembersListener = db
                           .collection('users')
-                          .where('organizationID', '==', rootStore.organization.id)
+                          .where('organizationID', '==', this.data.organization.id)
                           .orderBy('lastName')
                           .orderBy('firstName')
                           .onSnapshot((updatedUsersSnapshot) => {
-                            rootStore.organization.__setCurrentPageOfMembers(
+                            this.data.organization.__setCurrentPageOfMembers(
                               // See https://stackoverflow.com/a/24806827
                               updatedUsersSnapshot.docs.reduce((result, userDoc) => {
-                                if (userDoc.id !== rootStore.user.email) {
+                                if (userDoc.id !== this.data.user.email) {
                                   result.push({ ...userDoc.data(), email: userDoc.id })
                                 }
                                 return result
@@ -69,7 +70,7 @@ const createStore = (WrappedComponent) => {
               .doc(user.email)
               .onSnapshot((updatedUserImageDocumentSnapshot) => {
                 if (updatedUserImageDocumentSnapshot.exists) {
-                  rootStore.user.__update({
+                  this.data.user.__update({
                     imageBlob: updatedUserImageDocumentSnapshot.data().blob,
                   })
                 }
@@ -79,8 +80,8 @@ const createStore = (WrappedComponent) => {
           console.log('User signed out')
           // signed out
           // reset to default state
-          rootStore.user.__update(defaultUser)
-          rootStore.organization.__update(defaultOrganization)
+          this.data.user.__update(defaultUser)
+          this.data.organization.__update(defaultOrganization)
 
           // detach listeners
           if (this.userDocumentListener !== null) {
@@ -107,7 +108,7 @@ const createStore = (WrappedComponent) => {
 
     render() {
       return (
-        <RootStoreContext.Provider value={rootStore}>
+        <RootStoreContext.Provider value={this}>
           <WrappedComponent {...this.props} />
         </RootStoreContext.Provider>
       )
