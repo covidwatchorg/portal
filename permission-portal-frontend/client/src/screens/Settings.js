@@ -287,12 +287,12 @@ const SettingsBase = observer((props) => {
                 href=""
                 style={{
                   fontSize: '12px',
-                  fontWeight: 'normal',
+                  fontWeight: '500',
                   color: '#2C58B1',
-                  fontStyle: 'underline',
+                  textDecoration: 'none',
                   textAlign: 'end',
-                  marginTop: -30,
-                  marginRight: '25%',
+                  marginTop: -25,
+                  marginRight: '21%',
                 }}
                 onClick={(e) => resetPassword(e)}
               >
