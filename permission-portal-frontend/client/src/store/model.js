@@ -1,7 +1,7 @@
 import { types, cast, flow, onSnapshot } from 'mobx-state-tree'
 import 'mobx-react-lite/batchingForReactDom'
 import Logging from '../util/logging'
-import { auth, db, createUserCallable, deleteUserCallable } from './firebase'
+import { auth, db, deleteUserCallable } from './firebase'
 
 const User = types
   .model({
@@ -73,17 +73,6 @@ const Store = types
     organization: Organization,
   })
   .actions(() => {
-    const createUser = flow(function* (newUser) {
-      try {
-        const result = yield createUserCallable(newUser)
-        Logging.log(`Created new user: ${JSON.stringify(result.data)}`)
-        return result.data
-      } catch (err) {
-        Logging.log(err)
-        throw err
-      }
-    })
-
     const deleteUser = flow(function* (email) {
       try {
         const result = yield deleteUserCallable({ email: email })
@@ -114,7 +103,7 @@ const Store = types
       }
     })
 
-    return { createUser, deleteUser, sendPasswordResetEmail, updateUserByEmail }
+    return { deleteUser, sendPasswordResetEmail, updateUserByEmail }
   })
 
 const defaultUser = {
