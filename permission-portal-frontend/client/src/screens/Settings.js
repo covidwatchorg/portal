@@ -9,6 +9,7 @@ import { withStore } from '../store'
 import * as ROUTES from '../constants/routes'
 import { observer } from 'mobx-react'
 import PageTitle from '../components/PageTitle'
+import photo_add from '../../assets/photo-add.svg'
 
 const useStyles = makeStyles({
   root: {
@@ -26,15 +27,15 @@ const inputStyles = makeStyles({
   root: {
     fontFamily: 'Montserrat',
     boxShadow: 'inset 0px 2px 10px rgba(0, 0, 0, 0.2)',
-    borderRadius: 7,
+    borderRadius: 5,
     border: '2px solid #BDBDBD',
     paddingLeft: 10,
     width: '75%',
-    height: 30,
+    height: 40,
     lineHeight: 30,
     fontSize: 18,
-    marginTop: 10,
-    marginBottom: 30,
+    marginTop: 25,
+    marginBottom: 40,
   },
 })
 
@@ -54,11 +55,17 @@ const secondaryButtonStyles = makeStyles({
   root: {
     color: '#2C58B1',
     width: '195px',
-    height: 40,
+    height: 35,
     fontSize: '18px',
+    fontWeight: 'bold',
     padding: '5px',
     border: '2px solid #BDBDBD',
     borderRadius: '7px',
+    backgroundColor: '#ffffff',
+    marginTop: 25,
+    '&:hover': {
+      cursor: 'pointer',
+    },
   },
 })
 
@@ -168,14 +175,14 @@ const SettingsBase = observer((props) => {
     <Fragment>
       <form className="module-container">
         <Grid container className={classes.root} spacing={2} direction="row" justify="center">
-          <Grid item xs={4}>
+          <Grid item xs={4} xl={2}>
             <Grid container spacing={2} direction="column">
               Profile Photo
               <div
                 style={{
-                  marginTop: '10px',
-                  height: '195px',
-                  width: '195px',
+                  marginTop: '25px',
+                  height: '217px',
+                  width: '212px',
                   backgroundColor: '#E0E0E0',
                   border: '2px dashed #828282',
                   textAlign: 'center',
@@ -183,14 +190,14 @@ const SettingsBase = observer((props) => {
               >
                 <img
                   alt={props.store.user.imageBlob ? 'Profile photo' : 'Your profile photo would go here.'}
-                  src={props.store.user.imageBlob ? props.store.user.imageBlob : 'client/assets/photo-add.png'}
-                  style={{ width: '195px', height: '195px', objectFit: 'cover', display: 'block', margin: 'auto' }}
+                  src={props.store.user.imageBlob ? props.store.user.imageBlob : photo_add}
+                  style={{ width: '212px', height: '217px', objectFit: 'none', display: 'block', margin: 'auto' }}
                 ></img>
               </div>
-              <div style={{ marginTop: '15px', fontSize: '12px', color: '#585858' }}>
+              <div style={{ marginTop: '15px', fontSize: '12px', fontWeight: 'normal', color: '#585858' }}>
                 Accepted file types: jpg or png
               </div>
-              <div style={{ marginBottom: '15px', fontSize: '12px', color: '#585858' }}>Maximum file size: 10 MB</div>
+              <div style={{ fontSize: '12px', fontWeight: 'normal', color: '#585858' }}>Maximum file size: 10 MB</div>
               <button onClick={handleOpen} type="button" className={secondaryButton.root}>
                 Change Image
               </button>
@@ -200,7 +207,7 @@ const SettingsBase = observer((props) => {
             </Grid>
           </Grid>
 
-          <Grid item xs={4}>
+          <Grid item xs={4} xl={5}>
             <Grid container spacing={2} direction="column">
               <label htmlFor="prefix">Prefix</label>
               <input
@@ -237,7 +244,7 @@ const SettingsBase = observer((props) => {
             </Grid>
           </Grid>
 
-          <Grid item xs={4}>
+          <Grid item xs={4} xl={5}>
             <Grid container spacing={2} direction="column">
               <label htmlFor="role">Role</label>
               {props.store.user && (
