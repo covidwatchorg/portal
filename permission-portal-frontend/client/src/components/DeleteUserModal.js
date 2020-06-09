@@ -19,7 +19,7 @@ const DeleteUserModal = (props) => {
       setErrorMessage('Emails do not match')
     } else {
       try {
-        await props.store.data.deleteUser(props.email)
+        await props.store.deleteUser(props.email)
         onClose()
         props.onSuccess()
       } catch (err) {

@@ -2,7 +2,7 @@ import React from 'react'
 import { rootStore, defaultUser, defaultOrganization } from './model'
 import Logging from '../util/logging'
 // import { auth, db, createUserCallable, deleteUserCallable, SESSION } from './firebase'
-import { auth, db, createUserCallable, SESSION } from './firebase'
+import { auth, db, createUserCallable, deleteUserCallable, SESSION } from './firebase'
 
 const PAGE_SIZE = 15
 
@@ -191,6 +191,17 @@ const createStore = (WrappedComponent) => {
         return result.data
       } catch (err) {
         Logging.log(err)
+        throw err
+      }
+    }
+
+    async deleteUser(email) {
+      try {
+        const result = await deleteUserCallable({ email: email })
+        Logging.log(result)
+        return true
+      } catch (err) {
+        Logging.error(err)
         throw err
       }
     }
