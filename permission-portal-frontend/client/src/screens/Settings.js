@@ -10,6 +10,7 @@ import * as ROUTES from '../constants/routes'
 import { observer } from 'mobx-react'
 import PageTitle from '../components/PageTitle'
 import photo_add from '../../assets/photo-add.svg'
+import Logging from '../util/logging'
 
 const useStyles = makeStyles({
   root: {
@@ -20,6 +21,7 @@ const useStyles = makeStyles({
     color: '#585858',
     marginTop: 20,
     padding: 40,
+    paddingLeft: 75,
   },
 })
 
@@ -110,7 +112,7 @@ const SettingsBase = observer((props) => {
       setToastInfo({ success: true, msg: `Password Reset Email Sent to ${props.store.user.email}` })
       toastRef.current.show()
     } catch (err) {
-      console.error(err)
+      Logging.error(err)
       setToastInfo({ success: false, msg: 'Password Reset Failed. Please try again' })
       toastRef.current.show()
     }
@@ -129,12 +131,12 @@ const SettingsBase = observer((props) => {
     e.preventDefault()
     setOpen(false)
     if (imgUploader.current.files.length == 0) {
-      console.log('no image uploaded')
+      Logging.log('no image uploaded')
       return
     }
     try {
       let size = imgUploader.current.files[0].size
-      console.log('size' + size)
+      Logging.log('size' + size)
 
       if (size > MAXFILESIZE) {
         setToastInfo({
@@ -153,7 +155,7 @@ const SettingsBase = observer((props) => {
       // read data
       reader.readAsDataURL(imgUploader.current.files[0])
     } catch (err) {
-      console.log(err)
+      Logging.log(err)
     }
   }
 
@@ -300,7 +302,10 @@ const SettingsBase = observer((props) => {
   return props.store.user.isSignedIn ? (
     <React.Fragment>
       <PageTitle title="My Settings" />
-      <h1>My Settings</h1>
+      <div className="header">
+        <h1>My Settings</h1>
+        <p>Changes are automatically saved</p>
+      </div>
       {settingsForm()}
     </React.Fragment>
   ) : (
