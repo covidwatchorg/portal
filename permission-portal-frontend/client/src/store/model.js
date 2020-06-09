@@ -1,7 +1,7 @@
 import { types, cast, flow, onSnapshot } from 'mobx-state-tree'
 import 'mobx-react-lite/batchingForReactDom'
 import Logging from '../util/logging'
-import { auth, db } from './firebase'
+import { db } from './firebase'
 
 const User = types
   .model({
@@ -73,16 +73,6 @@ const Store = types
     organization: Organization,
   })
   .actions(() => {
-    const sendPasswordResetEmail = flow(function* (email) {
-      try {
-        yield auth.sendPasswordResetEmail(email)
-        return true
-      } catch (err) {
-        Logging.error(err)
-        throw err
-      }
-    })
-
     const updateUserByEmail = flow(function* (email, updates) {
       try {
         yield db.collection('users').doc(email).update(updates)
@@ -92,7 +82,7 @@ const Store = types
       }
     })
 
-    return { sendPasswordResetEmail, updateUserByEmail }
+    return { updateUserByEmail }
   })
 
 const defaultUser = {

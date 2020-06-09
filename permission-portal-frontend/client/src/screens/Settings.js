@@ -108,7 +108,7 @@ const SettingsBase = observer((props) => {
   const resetPassword = async (e) => {
     e.preventDefault()
     try {
-      await props.store.data.sendPasswordResetEmail(props.store.data.user.email)
+      await props.store.sendPasswordResetEmail(props.store.data.user.email)
       setToastInfo({ success: true, msg: `Password Reset Email Sent to ${props.store.data.user.email}` })
       toastRef.current.show()
     } catch (err) {

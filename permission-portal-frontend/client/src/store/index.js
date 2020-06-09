@@ -206,6 +206,16 @@ const createStore = (WrappedComponent) => {
       }
     }
 
+    async sendPasswordResetEmail(email) {
+      try {
+        await auth.sendPasswordResetEmail(email)
+        return true
+      } catch (err) {
+        Logging.error(err)
+        throw err
+      }
+    }
+
     displayName = 'storeProvider'
 
     render() {

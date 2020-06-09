@@ -80,7 +80,7 @@ const ManageTeamsBase = observer((props) => {
   const resetPassword = async (e, email) => {
     e.preventDefault()
     try {
-      await props.store.data.sendPasswordResetEmail(email)
+      await props.store.sendPasswordResetEmail(email)
       setToastMessage(`Password Reset Email Sent to ${email}`)
       setIsSuccess(true)
       confirmationToast.current.show()
