@@ -13,6 +13,7 @@ import * as ROLES from '../constants/roles'
 import { withStore } from '../store'
 import { observer } from 'mobx-react'
 import PageTitle from '../components/PageTitle'
+import Logging from '../util/logging'
 
 const ManageTeamsBase = observer((props) => {
   const userEmail = props.store.data.user.email
@@ -28,7 +29,7 @@ const ManageTeamsBase = observer((props) => {
   const [emailOfUserToBeDeleted, setEmailOfUserToBeDeleted] = useState('')
 
   useEffect(() => {
-    console.log('Store', props.store.data)
+    Logging.log('Store', props.store)
   }, [])
 
   const onAddMemberCancel = () => {
@@ -43,7 +44,7 @@ const ManageTeamsBase = observer((props) => {
   }
 
   const onAddMemberFailure = (e) => {
-    console.error(e)
+    Logging.error(e)
     setToastMessage('Member Email Invitation failed to send')
     setIsSuccess(false)
     confirmationToast.current.show()
@@ -58,7 +59,7 @@ const ManageTeamsBase = observer((props) => {
   }
 
   const onDeleteUserFailure = (e) => {
-    console.error(e)
+    Logging.error(e)
     setToastMessage('Failed to delete user: unknown error')
     setIsSuccess(false)
     confirmationToast.current.show()
@@ -84,7 +85,7 @@ const ManageTeamsBase = observer((props) => {
       setIsSuccess(true)
       confirmationToast.current.show()
     } catch (err) {
-      console.error(err)
+      Logging.error(err)
       setToastMessage('Password Reset Failed. Please try again')
       setIsSuccess(false)
       confirmationToast.current.show()

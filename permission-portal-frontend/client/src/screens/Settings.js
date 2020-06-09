@@ -9,6 +9,8 @@ import { withStore } from '../store'
 import * as ROUTES from '../constants/routes'
 import { observer } from 'mobx-react'
 import PageTitle from '../components/PageTitle'
+import photo_add from '../../assets/photo-add.svg'
+import Logging from '../util/logging'
 
 const useStyles = makeStyles({
   root: {
@@ -19,6 +21,7 @@ const useStyles = makeStyles({
     color: '#585858',
     marginTop: 20,
     padding: 40,
+    paddingLeft: 75,
   },
 })
 
@@ -26,15 +29,15 @@ const inputStyles = makeStyles({
   root: {
     fontFamily: 'Montserrat',
     boxShadow: 'inset 0px 2px 10px rgba(0, 0, 0, 0.2)',
-    borderRadius: 7,
+    borderRadius: 5,
     border: '2px solid #BDBDBD',
     paddingLeft: 10,
     width: '75%',
-    height: 30,
+    height: 40,
     lineHeight: 30,
     fontSize: 18,
-    marginTop: 10,
-    marginBottom: 30,
+    marginTop: 25,
+    marginBottom: 40,
   },
 })
 
@@ -54,11 +57,17 @@ const secondaryButtonStyles = makeStyles({
   root: {
     color: '#2C58B1',
     width: '195px',
-    height: 40,
+    height: 35,
     fontSize: '18px',
+    fontWeight: 'bold',
     padding: '5px',
     border: '2px solid #BDBDBD',
     borderRadius: '7px',
+    backgroundColor: '#ffffff',
+    marginTop: 25,
+    '&:hover': {
+      cursor: 'pointer',
+    },
   },
 })
 
@@ -103,7 +112,7 @@ const SettingsBase = observer((props) => {
       setToastInfo({ success: true, msg: `Password Reset Email Sent to ${props.store.data.user.email}` })
       toastRef.current.show()
     } catch (err) {
-      console.error(err)
+      Logging.error(err)
       setToastInfo({ success: false, msg: 'Password Reset Failed. Please try again' })
       toastRef.current.show()
     }
@@ -122,12 +131,12 @@ const SettingsBase = observer((props) => {
     e.preventDefault()
     setOpen(false)
     if (imgUploader.current.files.length == 0) {
-      console.log('no image uploaded')
+      Logging.log('no image uploaded')
       return
     }
     try {
       let size = imgUploader.current.files[0].size
-      console.log('size' + size)
+      Logging.log('size' + size)
 
       if (size > MAXFILESIZE) {
         setToastInfo({
@@ -146,7 +155,7 @@ const SettingsBase = observer((props) => {
       // read data
       reader.readAsDataURL(imgUploader.current.files[0])
     } catch (err) {
-      console.log(err)
+      Logging.log(err)
     }
   }
 
@@ -168,31 +177,29 @@ const SettingsBase = observer((props) => {
     <Fragment>
       <form className="module-container">
         <Grid container className={classes.root} spacing={2} direction="row" justify="center">
-          <Grid item xs={4}>
+          <Grid item xs={4} xl={2}>
             <Grid container spacing={2} direction="column">
               Profile Photo
               <div
                 style={{
-                  marginTop: '10px',
-                  height: '195px',
-                  width: '195px',
+                  marginTop: '25px',
+                  height: '217px',
+                  width: '212px',
                   backgroundColor: '#E0E0E0',
                   border: '2px dashed #828282',
                   textAlign: 'center',
                 }}
               >
                 <img
-                  alt={props.store.data.user.imageBlob ? 'Profile photo' : 'Your profile photo would go here.'}
-                  src={
-                    props.store.data.user.imageBlob ? props.store.data.user.imageBlob : 'client/assets/photo-add.png'
-                  }
-                  style={{ width: '195px', height: '195px', objectFit: 'cover', display: 'block', margin: 'auto' }}
+                  alt={props.store.user.imageBlob ? 'Profile photo' : 'Your profile photo would go here.'}
+                  src={props.store.user.imageBlob ? props.store.user.imageBlob : photo_add}
+                  style={{ width: '212px', height: '217px', objectFit: 'none', display: 'block', margin: 'auto' }}
                 ></img>
               </div>
-              <div style={{ marginTop: '15px', fontSize: '12px', color: '#585858' }}>
+              <div style={{ marginTop: '15px', fontSize: '12px', fontWeight: 'normal', color: '#585858' }}>
                 Accepted file types: jpg or png
               </div>
-              <div style={{ marginBottom: '15px', fontSize: '12px', color: '#585858' }}>Maximum file size: 10 MB</div>
+              <div style={{ fontSize: '12px', fontWeight: 'normal', color: '#585858' }}>Maximum file size: 10 MB</div>
               <button onClick={handleOpen} type="button" className={secondaryButton.root}>
                 Change Image
               </button>
@@ -202,7 +209,7 @@ const SettingsBase = observer((props) => {
             </Grid>
           </Grid>
 
-          <Grid item xs={4}>
+          <Grid item xs={4} xl={5}>
             <Grid container spacing={2} direction="column">
               <label htmlFor="prefix">Prefix</label>
               <input
@@ -239,7 +246,7 @@ const SettingsBase = observer((props) => {
             </Grid>
           </Grid>
 
-          <Grid item xs={4}>
+          <Grid item xs={4} xl={5}>
             <Grid container spacing={2} direction="column">
               <label htmlFor="role">Role</label>
               {props.store.data.user && (
@@ -273,12 +280,28 @@ const SettingsBase = observer((props) => {
                 className={input.root}
                 defaultValue={props.store.data.user.lastName}
               ></input>
+              <label htmlFor="password">Password</label>
+              <input
+                type="text"
+                id="password"
+                name="password"
+                style={{ backgroundColor: '#f0f0f0', fontSize: '30px' }}
+                disabled={true}
+                required
+                aria-required="true"
+                className={input.root}
+                defaultValue=" • • • • • • • •"
+              ></input>
               <a
                 href=""
                 style={{
                   fontSize: '12px',
+                  fontWeight: '500',
                   color: '#2C58B1',
-                  fontStyle: 'underline',
+                  textDecoration: 'none',
+                  textAlign: 'end',
+                  marginTop: -25,
+                  marginRight: '21%',
                 }}
                 onClick={(e) => resetPassword(e)}
               >
@@ -295,7 +318,10 @@ const SettingsBase = observer((props) => {
   return props.store.data.user.isSignedIn ? (
     <React.Fragment>
       <PageTitle title="My Settings" />
-      <h1>My Settings</h1>
+      <div className="header">
+        <h1>My Settings</h1>
+        <p>Changes are automatically saved</p>
+      </div>
       {settingsForm()}
     </React.Fragment>
   ) : (

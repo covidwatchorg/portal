@@ -8,6 +8,7 @@ import * as firebaseConfigDev from '../config/firebase.config.dev'
 import * as firebaseConfigTest from '../config/firebase.config.test'
 import * as firebaseConfigProd from '../config/firebase.config.prod'
 import * as firebaseConfigStaging from '../config/firebase.config.staging'
+import Logging from '../util/logging'
 
 var firebaseConfigMap = {
   development: firebaseConfigDev,
@@ -19,7 +20,7 @@ var firebaseConfigMap = {
 
 const config = firebaseConfigMap[process.env ? process.env.NODE_ENV : 'development']
 
-console.log(`process.env.NODE_ENV = ${process.env.NODE_ENV}`)
+Logging.log(`process.env.NODE_ENV = ${process.env.NODE_ENV}`)
 
 app.initializeApp(config)
 const auth = app.auth()

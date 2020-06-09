@@ -1,6 +1,7 @@
 import { types, cast, flow, onSnapshot } from 'mobx-state-tree'
 import { auth, db, createUserCallable, deleteUserCallable, SESSION } from './firebase'
 import 'mobx-react-lite/batchingForReactDom'
+import Logging from '../util/logging'
 
 const User = types
   .model({
@@ -20,14 +21,14 @@ const User = types
       Object.keys(updates).forEach((key) => {
         if (self.hasOwnProperty(key)) self[key] = updates[key] // eslint-disable-line no-prototype-builtins
       })
-      console.log('Updated User:')
-      console.log(self)
+      Logging.log('Updated User:')
+      Logging.log(self)
     }
     const update = flow(function* (updates) {
       try {
         yield db.collection('users').doc(self.email).update(updates)
       } catch (err) {
-        console.error('Error updating users', err)
+        Logging.error('Error updating users', err)
       }
     })
     const updateImage = flow(function* (blob) {
@@ -35,7 +36,7 @@ const User = types
         // .set() with { merge: true } so that if the document dne, it's created, otherwise its updated
         yield db.collection('userImages').doc(self.email).set({ blob: blob }, { merge: true })
       } catch (err) {
-        console.error('Error updating image', err)
+        Logging.error('Error updating image', err)
       }
     })
 
@@ -70,15 +71,15 @@ const Organization = types
       Object.keys(updates).forEach((key) => {
         if (self.hasOwnProperty(key)) self[key] = updates[key] // eslint-disable-line no-prototype-builtins
       })
-      console.log('Updated Organization:')
-      console.log(self)
+      Logging.log('Updated Organization:')
+      Logging.log(self)
     }
 
     const update = flow(function* (updates) {
       try {
         yield db.collection('organizations').doc(self.id).update(updates)
       } catch (err) {
-        console.error('Error updating organization texts', err)
+        Logging.error('Error updating organization texts', err)
         throw err
       }
     })
@@ -108,10 +109,10 @@ const Store = types
     const createUser = flow(function* (newUser) {
       try {
         const result = yield createUserCallable(newUser)
-        console.log(`Created new user: ${JSON.stringify(result.data)}`)
+        Logging.log(`Created new user: ${JSON.stringify(result.data)}`)
         return result.data
       } catch (err) {
-        console.log(err)
+        Logging.log(err)
         throw err
       }
     })
@@ -119,10 +120,10 @@ const Store = types
     const deleteUser = flow(function* (email) {
       try {
         const result = yield deleteUserCallable({ email: email })
-        console.log(result)
+        Logging.log(result)
         return true
       } catch (err) {
-        console.error(err)
+        Logging.error(err)
         throw err
       }
     })
@@ -132,7 +133,7 @@ const Store = types
         yield auth.sendPasswordResetEmail(email)
         return true
       } catch (err) {
-        console.error(err)
+        Logging.error(err)
         throw err
       }
     })
@@ -141,7 +142,7 @@ const Store = types
       try {
         yield db.collection('users').doc(email).update(updates)
       } catch (err) {
-        console.error(`Error updating user: ${email}`, err)
+        Logging.error(`Error updating user: ${email}`, err)
         throw err
       }
     })
