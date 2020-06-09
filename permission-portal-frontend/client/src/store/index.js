@@ -1,6 +1,8 @@
 import React from 'react'
-import { rootStore, defaultUser, defaultOrganization, PAGE_SIZE } from './model'
+import { rootStore, defaultUser, defaultOrganization } from './model'
 import { auth, db } from './firebase'
+
+const PAGE_SIZE = 5
 
 const RootStoreContext = React.createContext()
 
@@ -8,17 +10,19 @@ const createStore = (WrappedComponent) => {
   return class extends React.Component {
     constructor(props) {
       super(props)
-      this.userDocumentListener = null
-      this.userImageListener = null
-      this.organizationDocumentListener = null
-      this.organizationMembersListener = null
       this.data = rootStore
-      this.authStateListener = auth.onAuthStateChanged(async (user) => {
+      this.__userDocumentListener = null
+      this.__userImageListener = null
+      this.__organizationDocumentListener = null
+      this.__pageOfMembersListener = null
+      this.__lastVisibleMember = null // pagination helper
+      this.__firstVisibleMember = null // pagination helper
+      this.__authStateListener = auth.onAuthStateChanged(async (user) => {
         if (user) {
           console.log('User signed in')
           // get user's document from the db and at the same time set up a listener to respond to document changes
-          if (this.userDocumentListener === null) {
-            this.userDocumentListener = db
+          if (this.__userDocumentListener === null) {
+            this.__userDocumentListener = db
               .collection('users')
               .doc(user.email)
               .onSnapshot((updatedUserDocumentSnapshot) => {
@@ -30,8 +34,8 @@ const createStore = (WrappedComponent) => {
                 })
                 // If DNE, set up organization listener within this callback,
                 // since it relies on this.data.user.organizationID being set
-                if (this.organizationDocumentListener === null) {
-                  this.organizationDocumentListener = db
+                if (this.__organizationDocumentListener === null) {
+                  this.__organizationDocumentListener = db
                     .collection('organizations')
                     .doc(this.data.user.organizationID)
                     .onSnapshot((updatedOrganizationDocumentSnapshot) => {
@@ -41,22 +45,15 @@ const createStore = (WrappedComponent) => {
                         id: updatedOrganizationDocumentSnapshot.id,
                         currentPage: this.data.organization.currentPage,
                       })
-                      if (this.data.user.isAdmin && this.organizationMembersListener === null) {
-                        this.organizationMembersListener = db
+                      if (this.data.user.isAdmin && this.__pageOfMembersListener === null) {
+                        this.__pageOfMembersListener = db
                           .collection('users')
                           .where('organizationID', '==', this.data.organization.id)
                           .orderBy('lastName')
                           .orderBy('firstName')
-                          .onSnapshot((updatedUsersSnapshot) => {
-                            this.data.organization.__setCurrentPageOfMembers(
-                              // See https://stackoverflow.com/a/24806827
-                              updatedUsersSnapshot.docs.reduce((result, userDoc) => {
-                                if (userDoc.id !== this.data.user.email) {
-                                  result.push({ ...userDoc.data(), email: userDoc.id })
-                                }
-                                return result
-                              }, [])
-                            )
+                          .limit(PAGE_SIZE)
+                          .onSnapshot((pageOfMembersSnapshot) => {
+                            this.__updatePageOfMembersOnSnapshot(pageOfMembersSnapshot)
                           })
                       }
                     })
@@ -64,8 +61,8 @@ const createStore = (WrappedComponent) => {
               })
           }
           // Get and set up listener for user's image
-          if (this.userImageListener === null) {
-            this.userImageListener = db
+          if (this.__userImageListener === null) {
+            this.__userImageListener = db
               .collection('userImages')
               .doc(user.email)
               .onSnapshot((updatedUserImageDocumentSnapshot) => {
@@ -84,24 +81,52 @@ const createStore = (WrappedComponent) => {
           this.data.organization.__update(defaultOrganization)
 
           // detach listeners
-          if (this.userDocumentListener !== null) {
-            this.userDocumentListener()
-            this.userDocumentListener = null
+          if (this.__userDocumentListener !== null) {
+            this.__userDocumentListener()
+            this.__userDocumentListener = null
           }
-          if (this.userImageListener !== null) {
-            this.userImageListener()
-            this.userImageListener = null
+          if (this.__userImageListener !== null) {
+            this.__userImageListener()
+            this.__userImageListener = null
           }
-          if (this.organizationDocumentListener !== null) {
-            this.organizationDocumentListener()
-            this.organizationDocumentListener = null
+          if (this.__organizationDocumentListener !== null) {
+            this.__organizationDocumentListener()
+            this.__organizationDocumentListener = null
           }
-          if (this.organizationMembersListener !== null) {
-            this.organizationMembersListener()
-            this.organizationMembersListener = null
+          if (this.__pageOfMembersListener !== null) {
+            this.__pageOfMembersListener()
+            this.__pageOfMembersListener = null
           }
         }
       })
+    }
+
+    __updatePageOfMembersOnSnapshot(pageOfMembersSnapshot) {
+      // Based on https://firebase.google.com/docs/firestore/query-data/query-cursors#paginate_a_query
+      this.__firstVisibleMember = pageOfMembersSnapshot.docs[0]
+      this.__lastVisibleMember = pageOfMembersSnapshot.docs[pageOfMembersSnapshot.docs.length - 1]
+      this.data.organization.__setCurrentPageOfMembers(
+        // See https://stackoverflow.com/a/24806827
+        pageOfMembersSnapshot.docs.reduce((result, userDoc) => {
+          if (userDoc.id !== this.data.user.email) {
+            result.push({ ...userDoc.data(), email: userDoc.id })
+          }
+          return result
+        }, [])
+      )
+    }
+
+    nextPageOfMembers() {
+      this.__pageOfMembersListener = db
+        .collection('users')
+        .where('organizationID', '==', this.data.organization.id)
+        .orderBy('lastName')
+        .orderBy('firstName')
+        .startAfter(this.__lastVisibleMember)
+        .limit(PAGE_SIZE)
+        .onSnapshot((pageOfMembersSnapshot) => {
+          this.__updatePageOfMembersOnSnapshot(pageOfMembersSnapshot)
+        })
     }
 
     displayName = 'storeProvider'

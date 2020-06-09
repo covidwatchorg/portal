@@ -2,8 +2,6 @@ import { types, cast, flow, onSnapshot } from 'mobx-state-tree'
 import { auth, db, createUserCallable, deleteUserCallable, SESSION } from './firebase'
 import 'mobx-react-lite/batchingForReactDom'
 
-const PAGE_SIZE = 15
-
 const User = types
   .model({
     isSignedIn: types.maybe(types.boolean),
@@ -208,4 +206,4 @@ onSnapshot(rootStore, (snapshot) => {
   localStorage.setItem('store', JSON.stringify(snapshot))
 })
 
-export { rootStore, defaultUser, defaultOrganization, PAGE_SIZE }
+export { rootStore, defaultUser, defaultOrganization }

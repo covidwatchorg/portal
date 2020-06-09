@@ -176,7 +176,7 @@ const ManageTeamsBase = observer((props) => {
             className="arrow"
             onClick={(e) => {
               e.preventDefault()
-              console.log('TODO')
+              props.store.nextPageOfMembers()
             }}
           >
             <img src={arrowRight} alt="Next" />
