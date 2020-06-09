@@ -76,12 +76,6 @@ const ManageTeamsBase = observer((props) => {
     setShowAddMemberModal(false)
   }
 
-  const openDeleteUserModal = (e, email) => {
-    e.preventDefault()
-    setEmailOfUserToBeDeleted(email)
-    setShowDeleteUserModal(true)
-  }
-
   const closeDeleteUserModal = () => {
     setEmailOfUserToBeDeleted('')
     setShowDeleteUserModal(false)
@@ -127,6 +121,7 @@ const ManageTeamsBase = observer((props) => {
         <thead>
           <tr>
             <th style={{ borderTopLeftRadius: 5 }}>Name</th>
+            <th>Email Address</th>
             <th id="role-header">Role</th>
             <th id="status-header">Status</th>
             <th style={{ borderTopRightRadius: 5 }}>Settings</th>
@@ -137,6 +132,7 @@ const ManageTeamsBase = observer((props) => {
             props.store.organization.members.map((data, index) => (
               <tr className={inCurrentPage(index) ? '' : 'hidden'} key={index}>
                 <td>{data.lastName + ', ' + data.firstName}</td>
+                <td>{data.email}</td>
                 <td style={{ padding: 0 }}>
                   <RoleSelector
                     memberIndex={index}
@@ -164,7 +160,6 @@ const ManageTeamsBase = observer((props) => {
                 </td>
                 <td>
                   <div className="settings-container">
-                    <a onClick={(e) => openDeleteUserModal(e, data.email)}>Delete Account</a>
                     <a onClick={(e) => resetPassword(e, data.email)}>Reset Password</a>
                   </div>
                 </td>
