@@ -191,8 +191,8 @@ const SettingsBase = observer((props) => {
                 }}
               >
                 <img
-                  alt={props.store.user.imageBlob ? 'Profile photo' : 'Your profile photo would go here.'}
-                  src={props.store.user.imageBlob ? props.store.user.imageBlob : photo_add}
+                  alt={props.store.data.user.imageBlob ? 'Profile photo' : 'Your profile photo would go here.'}
+                  src={props.store.data.user.imageBlob ? props.store.data.user.imageBlob : photo_add}
                   style={{ width: '212px', height: '217px', objectFit: 'none', display: 'block', margin: 'auto' }}
                 ></img>
               </div>

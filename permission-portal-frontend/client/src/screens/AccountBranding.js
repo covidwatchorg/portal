@@ -70,7 +70,7 @@ const AccountBrandingBase = observer((props) => {
 
   const saveData = async () => {
     try {
-      await props.store.organization.update({ diagnosisText: diagnosisText, exposureText: exposureText })
+      await props.store.updateOrganization({ diagnosisText: diagnosisText, exposureText: exposureText })
       Logging.log('Branding data saved successfully')
       setIsSuccess(true)
       statusToast.current.show()

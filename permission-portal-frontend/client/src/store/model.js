@@ -60,20 +60,11 @@ const Organization = types
       Logging.log(self)
     }
 
-    const update = flow(function* (updates) {
-      try {
-        yield db.collection('organizations').doc(self.id).update(updates)
-      } catch (err) {
-        Logging.error('Error updating organization texts', err)
-        throw err
-      }
-    })
-
     const __setCurrentPageOfMembers = (pageOfMembers) => {
       self.currentPageOfMembers = cast(pageOfMembers)
     }
 
-    return { __update, __setCurrentPageOfMembers, update }
+    return { __update, __setCurrentPageOfMembers }
   })
 
 const Store = types

@@ -151,7 +151,7 @@ const createStore = (WrappedComponent) => {
 
     async updateUser(updates) {
       try {
-        await db.collection('users').doc(self.email).update(updates)
+        await db.collection('users').doc(this.data.user.email).update(updates)
       } catch (err) {
         Logging.error('Error updating users', err)
       }
@@ -160,9 +160,18 @@ const createStore = (WrappedComponent) => {
     async updateUserImage(blob) {
       try {
         // .set() with { merge: true } so that if the document dne, it's created, otherwise its updated
-        await db.collection('userImages').doc(self.email).set({ blob: blob }, { merge: true })
+        await db.collection('userImages').doc(this.data.user.email).set({ blob: blob }, { merge: true })
       } catch (err) {
         Logging.error('Error updating image', err)
+      }
+    }
+
+    async updateOrganization(updates) {
+      try {
+        await db.collection('organizations').doc(this.data.organization.id).update(updates)
+      } catch (err) {
+        Logging.error('Error updating organization texts', err)
+        throw err
       }
     }
 
