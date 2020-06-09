@@ -1,7 +1,6 @@
 import React from 'react'
 import { rootStore, defaultUser, defaultOrganization } from './model'
 import Logging from '../util/logging'
-// import { auth, db, createUserCallable, deleteUserCallable, SESSION } from './firebase'
 import { auth, db, createUserCallable, deleteUserCallable, SESSION } from './firebase'
 
 const PAGE_SIZE = 15
