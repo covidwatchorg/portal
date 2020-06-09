@@ -1,6 +1,7 @@
 import React from 'react'
 import { rootStore, defaultUser, defaultOrganization } from './model'
 import { auth, db } from './firebase'
+import Logging from '../util/logging'
 
 const RootStoreContext = React.createContext()
 
@@ -14,7 +15,7 @@ const createStore = (WrappedComponent) => {
       this.organizationMembersListener = null
       this.authStateListener = auth.onAuthStateChanged(async (user) => {
         if (user) {
-          console.log('User signed in')
+          Logging.log('User signed in')
           // get user's document from the db and at the same time set up a listener to respond to document changes
           if (this.userDocumentListener === null) {
             this.userDocumentListener = db
@@ -34,7 +35,7 @@ const createStore = (WrappedComponent) => {
                     .collection('organizations')
                     .doc(rootStore.user.organizationID)
                     .onSnapshot((updatedOrganizationDocumentSnapshot) => {
-                      console.log('Remote organization document changed')
+                      Logging.log('Remote organization document changed')
                       rootStore.organization.__update({
                         ...updatedOrganizationDocumentSnapshot.data(),
                         id: updatedOrganizationDocumentSnapshot.id,
@@ -75,7 +76,7 @@ const createStore = (WrappedComponent) => {
               })
           }
         } else {
-          console.log('User signed out')
+          Logging.log('User signed out')
           // signed out
           // reset to default state
           rootStore.user.__update(defaultUser)
