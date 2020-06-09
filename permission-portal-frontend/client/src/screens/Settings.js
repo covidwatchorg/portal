@@ -280,12 +280,28 @@ const SettingsBase = observer((props) => {
                 className={input.root}
                 defaultValue={props.store.user.lastName}
               ></input>
+              <label htmlFor="password">Password</label>
+              <input
+                type="text"
+                id="password"
+                name="password"
+                style={{ backgroundColor: '#f0f0f0', fontSize: '30px' }}
+                disabled={true}
+                required
+                aria-required="true"
+                className={input.root}
+                defaultValue=" • • • • • • • •"
+              ></input>
               <a
                 href=""
                 style={{
                   fontSize: '12px',
+                  fontWeight: '500',
                   color: '#2C58B1',
-                  fontStyle: 'underline',
+                  textDecoration: 'none',
+                  textAlign: 'end',
+                  marginTop: -25,
+                  marginRight: '21%',
                 }}
                 onClick={(e) => resetPassword(e)}
               >
