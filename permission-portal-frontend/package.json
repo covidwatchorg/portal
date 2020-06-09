@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "init": "cpy ../config/ client/src/config/ &&  cpy --no-overwrite client/src/config/firebase.config.local.template client/src/config --rename=firebase.config.local.js",
+    "init": "cpy ../config/ client/src/config/",
     "test": "echo \"Error: no test specified\" && exit 1",
     "git-info": "echo export default \"{\\\"logMessage\\\": \\\"$(git log -1 --oneline)\\\", \\\"branch\\\": \\\"$(git status -b --porcelain=v2 | grep -m 1 'branch.upstream')\\\"}\"  > client/src/config/_git_commit.js",
     "start": "webpack-dev-server --open --hot --config webpack.dev.js",
