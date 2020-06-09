@@ -1,7 +1,7 @@
 import { types, cast, flow, onSnapshot } from 'mobx-state-tree'
-import { auth, db, createUserCallable, deleteUserCallable, SESSION } from './firebase'
 import 'mobx-react-lite/batchingForReactDom'
 import Logging from '../util/logging'
+import { auth, db, createUserCallable, deleteUserCallable, SESSION } from './firebase'
 
 const User = types
   .model({
@@ -24,23 +24,8 @@ const User = types
       Logging.log('Updated User:')
       Logging.log(self)
     }
-    const update = flow(function* (updates) {
-      try {
-        yield db.collection('users').doc(self.email).update(updates)
-      } catch (err) {
-        Logging.error('Error updating users', err)
-      }
-    })
-    const updateImage = flow(function* (blob) {
-      try {
-        // .set() with { merge: true } so that if the document dne, it's created, otherwise its updated
-        yield db.collection('userImages').doc(self.email).set({ blob: blob }, { merge: true })
-      } catch (err) {
-        Logging.error('Error updating image', err)
-      }
-    })
 
-    return { __update, update, updateImage }
+    return { __update }
   })
 
 const Organization = types

@@ -1,7 +1,8 @@
 import React from 'react'
 import { rootStore, defaultUser, defaultOrganization } from './model'
-import { auth, db } from './firebase'
 import Logging from '../util/logging'
+// import { auth, db, createUserCallable, deleteUserCallable, SESSION } from './firebase'
+import { auth, db } from './firebase'
 
 const PAGE_SIZE = 15
 
@@ -146,6 +147,23 @@ const createStore = (WrappedComponent) => {
         .onSnapshot((pageOfMembersSnapshot) => {
           this.__updatePageOfMembersOnSnapshot(pageOfMembersSnapshot.docs.reverse(), newListener)
         })
+    }
+
+    async updateUser(updates) {
+      try {
+        await db.collection('users').doc(self.email).update(updates)
+      } catch (err) {
+        Logging.error('Error updating users', err)
+      }
+    }
+
+    async updateUserImage(blob) {
+      try {
+        // .set() with { merge: true } so that if the document dne, it's created, otherwise its updated
+        await db.collection('userImages').doc(self.email).set({ blob: blob }, { merge: true })
+      } catch (err) {
+        Logging.error('Error updating image', err)
+      }
     }
 
     displayName = 'storeProvider'

@@ -119,11 +119,11 @@ const SettingsBase = observer((props) => {
   }
   const onChange = async (event) => {
     if (event.target.name == 'prefix') {
-      props.store.data.user.update({ prefix: event.target.value })
+      props.store.updateUser({ prefix: event.target.value })
     } else if (event.target.name == 'firstName') {
-      props.store.data.user.update({ firstName: event.target.value })
+      props.store.updateUser({ firstName: event.target.value })
     } else if (event.target.name == 'lastName') {
-      props.store.data.user.update({ lastName: event.target.value })
+      props.store.updateUser({ lastName: event.target.value })
     }
   }
 
@@ -150,7 +150,7 @@ const SettingsBase = observer((props) => {
       let reader = new FileReader()
       // set up onload trigger to run when data is read
       reader.onload = (e) => {
-        props.store.data.user.updateImage(e.target.result)
+        props.store.updateUserImage(e.target.result)
       }
       // read data
       reader.readAsDataURL(imgUploader.current.files[0])
