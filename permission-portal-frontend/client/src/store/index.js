@@ -175,6 +175,10 @@ const createStore = (WrappedComponent) => {
       }
     }
 
+    async signOut() {
+      await auth.signOut()
+    }
+
     displayName = 'storeProvider'
 
     render() {

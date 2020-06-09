@@ -78,10 +78,6 @@ const Store = types
       yield auth.signInWithEmailAndPassword(email, password)
     })
 
-    const signOut = flow(function* () {
-      yield auth.signOut()
-    })
-
     const createUser = flow(function* (newUser) {
       try {
         const result = yield createUserCallable(newUser)
@@ -123,7 +119,7 @@ const Store = types
       }
     })
 
-    return { signInWithEmailAndPassword, signOut, createUser, deleteUser, sendPasswordResetEmail, updateUserByEmail }
+    return { signInWithEmailAndPassword, createUser, deleteUser, sendPasswordResetEmail, updateUserByEmail }
   })
 
 const defaultUser = {

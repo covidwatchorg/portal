@@ -48,7 +48,7 @@ const NavBarBase = observer((props) => {
   const onClickMenuItem = (num) => {
     setAnchorEl(null)
     if (num === 4) {
-      props.store.data.signOut()
+      props.store.signOut()
     }
     setRedirect(num)
   }
