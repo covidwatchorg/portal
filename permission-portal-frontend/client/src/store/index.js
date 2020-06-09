@@ -2,7 +2,7 @@ import React from 'react'
 import { rootStore, defaultUser, defaultOrganization } from './model'
 import { auth, db } from './firebase'
 
-const PAGE_SIZE = 5
+const PAGE_SIZE = 15
 
 const RootStoreContext = React.createContext()
 
@@ -46,14 +46,14 @@ const createStore = (WrappedComponent) => {
                         currentPage: this.data.organization.currentPage,
                       })
                       if (this.data.user.isAdmin && this.__pageOfMembersListener === null) {
-                        this.__pageOfMembersListener = db
+                        var newListener = db
                           .collection('users')
                           .where('organizationID', '==', this.data.organization.id)
                           .orderBy('lastName')
                           .orderBy('firstName')
                           .limit(PAGE_SIZE)
                           .onSnapshot((pageOfMembersSnapshot) => {
-                            this.__updatePageOfMembersOnSnapshot(pageOfMembersSnapshot)
+                            this.__updatePageOfMembersOnSnapshot(pageOfMembersSnapshot.docs, newListener)
                           })
                       }
                     })
@@ -101,23 +101,28 @@ const createStore = (WrappedComponent) => {
       })
     }
 
-    __updatePageOfMembersOnSnapshot(pageOfMembersSnapshot) {
-      // Based on https://firebase.google.com/docs/firestore/query-data/query-cursors#paginate_a_query
-      this.__firstVisibleMember = pageOfMembersSnapshot.docs[0]
-      this.__lastVisibleMember = pageOfMembersSnapshot.docs[pageOfMembersSnapshot.docs.length - 1]
-      this.data.organization.__setCurrentPageOfMembers(
-        // See https://stackoverflow.com/a/24806827
-        pageOfMembersSnapshot.docs.reduce((result, userDoc) => {
-          if (userDoc.id !== this.data.user.email) {
-            result.push({ ...userDoc.data(), email: userDoc.id })
-          }
-          return result
-        }, [])
-      )
+    __updatePageOfMembersOnSnapshot(pageOfMembersSnapshotDocs, newListener) {
+      if (pageOfMembersSnapshotDocs.length > 0) {
+        if (this.__pageOfMembersListener != newListener) {
+          this.__pageOfMembersListener = newListener
+        }
+        // Based on https://firebase.google.com/docs/firestore/query-data/query-cursors#paginate_a_query
+        this.__firstVisibleMember = pageOfMembersSnapshotDocs[0]
+        this.__lastVisibleMember = pageOfMembersSnapshotDocs[pageOfMembersSnapshotDocs.length - 1]
+        this.data.organization.__setCurrentPageOfMembers(
+          // See https://stackoverflow.com/a/24806827
+          pageOfMembersSnapshotDocs.reduce((result, userDoc) => {
+            if (userDoc.id !== this.data.user.email) {
+              result.push({ ...userDoc.data(), email: userDoc.id })
+            }
+            return result
+          }, [])
+        )
+      }
     }
 
     nextPageOfMembers() {
-      this.__pageOfMembersListener = db
+      var newListener = db
         .collection('users')
         .where('organizationID', '==', this.data.organization.id)
         .orderBy('lastName')
@@ -125,7 +130,20 @@ const createStore = (WrappedComponent) => {
         .startAfter(this.__lastVisibleMember)
         .limit(PAGE_SIZE)
         .onSnapshot((pageOfMembersSnapshot) => {
-          this.__updatePageOfMembersOnSnapshot(pageOfMembersSnapshot)
+          this.__updatePageOfMembersOnSnapshot(pageOfMembersSnapshot.docs, newListener)
+        })
+    }
+
+    previousPageOfMembers() {
+      var newListener = db
+        .collection('users')
+        .where('organizationID', '==', this.data.organization.id)
+        .orderBy('lastName', 'desc')
+        .orderBy('firstName', 'desc')
+        .startAfter(this.__firstVisibleMember)
+        .limit(PAGE_SIZE)
+        .onSnapshot((pageOfMembersSnapshot) => {
+          this.__updatePageOfMembersOnSnapshot(pageOfMembersSnapshot.docs.reverse(), newListener)
         })
     }
 
