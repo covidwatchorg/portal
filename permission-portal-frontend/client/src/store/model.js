@@ -1,7 +1,6 @@
-import { types, cast, flow, onSnapshot } from 'mobx-state-tree'
+import { types, cast, onSnapshot } from 'mobx-state-tree'
 import 'mobx-react-lite/batchingForReactDom'
 import Logging from '../util/logging'
-import { db } from './firebase'
 
 const User = types
   .model({
@@ -67,23 +66,10 @@ const Organization = types
     return { __update, __setCurrentPageOfMembers }
   })
 
-const Store = types
-  .model({
-    user: User,
-    organization: Organization,
-  })
-  .actions(() => {
-    const updateUserByEmail = flow(function* (email, updates) {
-      try {
-        yield db.collection('users').doc(email).update(updates)
-      } catch (err) {
-        Logging.error(`Error updating user: ${email}`, err)
-        throw err
-      }
-    })
-
-    return { updateUserByEmail }
-  })
+const Store = types.model({
+  user: User,
+  organization: Organization,
+})
 
 const defaultUser = {
   isSignedIn: false,

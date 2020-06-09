@@ -216,6 +216,15 @@ const createStore = (WrappedComponent) => {
       }
     }
 
+    async updateUserByEmail(email, updates) {
+      try {
+        await db.collection('users').doc(email).update(updates)
+      } catch (err) {
+        Logging.error(`Error updating user: ${email}`, err)
+        throw err
+      }
+    }
+
     displayName = 'storeProvider'
 
     render() {

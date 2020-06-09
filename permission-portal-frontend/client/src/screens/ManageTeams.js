@@ -131,7 +131,7 @@ const ManageTeamsBase = observer((props) => {
                   <RoleSelector
                     memberIndex={index}
                     onChange={(e) => {
-                      props.store.data.updateUserByEmail(data.email, { isAdmin: e.target.value == ROLES.ADMIN_LABEL })
+                      props.store.updateUserByEmail(data.email, { isAdmin: e.target.value == ROLES.ADMIN_LABEL })
                     }}
                     ariaLabelledBy="role-header"
                   />
@@ -143,7 +143,7 @@ const ManageTeamsBase = observer((props) => {
                       className={!data.disabled ? 'active' : 'inactive'}
                       value={!data.disabled ? 'active' : 'deactivated'}
                       onChange={(e) => {
-                        props.store.data.updateUserByEmail(data.email, { disabled: e.target.value == 'deactivated' })
+                        props.store.updateUserByEmail(data.email, { disabled: e.target.value == 'deactivated' })
                       }}
                       aria-labelledby="status-header"
                     >
