@@ -2,7 +2,7 @@ import React from 'react'
 import { rootStore, defaultUser, defaultOrganization } from './model'
 import Logging from '../util/logging'
 // import { auth, db, createUserCallable, deleteUserCallable, SESSION } from './firebase'
-import { auth, db } from './firebase'
+import { auth, db, SESSION } from './firebase'
 
 const PAGE_SIZE = 15
 
@@ -173,6 +173,11 @@ const createStore = (WrappedComponent) => {
         Logging.error('Error updating organization texts', err)
         throw err
       }
+    }
+
+    async signInWithEmailAndPassword(email, password) {
+      await auth.setPersistence(SESSION)
+      await auth.signInWithEmailAndPassword(email, password)
     }
 
     async signOut() {
