@@ -20,6 +20,7 @@ const useStyles = makeStyles({
     color: '#585858',
     marginTop: 20,
     padding: 40,
+    paddingLeft: 75,
   },
 })
 
@@ -294,7 +295,10 @@ const SettingsBase = observer((props) => {
   return props.store.user.isSignedIn ? (
     <React.Fragment>
       <PageTitle title="My Settings" />
-      <h1>My Settings</h1>
+      <div className="header">
+        <h1>My Settings</h1>
+        <p>Changes are automatically saved</p>
+      </div>
       {settingsForm()}
     </React.Fragment>
   ) : (
