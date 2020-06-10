@@ -11,8 +11,8 @@ import Logging from '../util/logging'
 const AccountBrandingBase = observer((props) => {
   const [isSuccess, setIsSuccess] = useState(false)
 
-  const [diagnosisText, setDiagnosisText] = useState(props.store.organization.diagnosisText)
-  const [exposureText, setExposureText] = useState(props.store.organization.exposureText)
+  const [diagnosisText, setDiagnosisText] = useState(props.store.data.organization.diagnosisText)
+  const [exposureText, setExposureText] = useState(props.store.data.organization.exposureText)
 
   const [diagnosisTextIsEditing, setDiagnosisTextIsEditing] = useState(false)
   const [exposureTextIsEditing, setExposureTextIsEditing] = useState(false)
@@ -35,8 +35,8 @@ const AccountBrandingBase = observer((props) => {
   const resetAllTextBoxes = () => {
     setDiagnosisTextIsEditing(false)
     setExposureTextIsEditing(false)
-    setDiagnosisText(props.store.organization.diagnosisText)
-    setExposureText(props.store.organization.exposureText)
+    setDiagnosisText(props.store.data.organization.diagnosisText)
+    setExposureText(props.store.data.organization.exposureText)
   }
 
   const noTextBoxesBeingEdited = () => {
@@ -70,7 +70,7 @@ const AccountBrandingBase = observer((props) => {
 
   const saveData = async () => {
     try {
-      await props.store.organization.update({ diagnosisText: diagnosisText, exposureText: exposureText })
+      await props.store.updateOrganization({ diagnosisText: diagnosisText, exposureText: exposureText })
       Logging.log('Branding data saved successfully')
       setIsSuccess(true)
       statusToast.current.show()
@@ -83,7 +83,7 @@ const AccountBrandingBase = observer((props) => {
     setExposureTextIsEditing(false)
   }
 
-  return props.store.user.isSignedIn && props.store.user.isAdmin ? (
+  return props.store.data.user.isSignedIn && props.store.data.user.isAdmin ? (
     <div className="module-container">
       <PageTitle title="Account Branding" />
       <h1 className="branding-header">Account Branding</h1>
@@ -184,7 +184,7 @@ const AccountBrandingBase = observer((props) => {
         message={isSuccess ? 'Branding saved successfully' : 'Failed to save branding'}
       />
     </div>
-  ) : props.store.user.isSignedIn ? (
+  ) : props.store.data.user.isSignedIn ? (
     <Redirect to={ROUTES.CODE_VALIDATIONS} />
   ) : (
     <Redirect to={ROUTES.LANDING} />

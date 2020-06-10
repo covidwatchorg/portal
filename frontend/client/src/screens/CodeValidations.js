@@ -18,7 +18,7 @@ const CodeValidationsBase = observer((props) => {
 
   let confirmedToast = createRef()
 
-  return props.store.user.isSignedIn ? (
+  return props.store.data.user.isSignedIn ? (
     <div className="module-container">
       {/* this is a Snackbar template to use for the success/failure notifications */}
 
