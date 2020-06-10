@@ -3,8 +3,6 @@
 const fs = require('fs');
 const child_process = require('child_process');
 const assert = require('assert');
-const env = process.env.NODE_ENV
-const configPath = `./config/functions.config.${env}.json`;
 
 // Format config correctly
 const collectConfigLines = (o, propPath, configLines) => {
@@ -18,8 +16,6 @@ const collectConfigLines = (o, propPath, configLines) => {
     }
 }
 
-// Test if objects are equal regardless of order
-// using built in deep equality check
 function jsonEqual(obj1, obj2){
     try{
         assert.deepStrictEqual(obj1, obj2)
@@ -31,6 +27,9 @@ function jsonEqual(obj1, obj2){
 }
 
 function main(){
+    const env = process.env.NODE_ENV
+    const configPath = `./config/functions.config.${env}.json`;
+
     if (!fs.existsSync(configPath)) {
         console.log("Config path not found")
         return;
@@ -41,7 +40,7 @@ function main(){
 
     // Add secrets
     config["sendgrid"] = {
-        "key": `${process.env.SENDGRID_API_KEY}`
+        "key": process.env.SENDGRID_API_KEY
     }
 
     try{
@@ -65,7 +64,7 @@ function main(){
     const configLines = [];
     collectConfigLines(config, '', configLines);
     try{
-        //child_process.execSync(`firebase -P ${env} functions:config:set ${configLines.join(' ')}`);
+        child_process.execSync(`firebase -P ${env} functions:config:set ${configLines.join(' ')}`);
     }
     catch(err){
         console.log("Error setting new functions config")
