@@ -14,6 +14,7 @@ const User = types
     firstName: types.string,
     lastName: types.string,
     organizationID: types.string,
+    isFirstTimeUser: types.maybe(types.boolean),
   })
   .actions((self) => {
     const __update = (updates) => {
