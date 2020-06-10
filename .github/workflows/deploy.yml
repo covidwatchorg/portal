@@ -100,7 +100,7 @@ jobs:
         if: github.ref == 'refs/heads/dev'
         uses: w9jds/firebase-action@master
         with:
-          args: deploy --project=staging
+          args: deploy -f --project=staging
         env:
           FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
           PROJECT_PATH: cloud-functions/
@@ -110,7 +110,7 @@ jobs:
         if: github.ref == 'refs/heads/master'
         uses: w9jds/firebase-action@master
         with:
-          args: deploy --project=prod
+          args: deploy -f --project=prod
         env:
           FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
           PROJECT_PATH: cloud-functions/
