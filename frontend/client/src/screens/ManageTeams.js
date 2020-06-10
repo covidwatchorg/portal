@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useRef } from 'react'
 import * as ROUTES from '../constants/routes'
 import { Redirect } from 'react-router-dom'
 import addMember from '../../assets/add-member.svg'
@@ -6,7 +6,6 @@ import arrowLeft from '../../assets/arrow-left.svg'
 import arrowRight from '../../assets/arrow-right.svg'
 import '../../Styles/screens/manage_teams.scss'
 import AddMemberModal from '../components/AddMemberModal'
-import DeleteUserModal from '../components/DeleteUserModal'
 import Toast from '../components/Toast'
 import RoleSelector from '../components/RoleSelector'
 import * as ROLES from '../constants/roles'
@@ -24,13 +23,6 @@ const ManageTeamsBase = observer((props) => {
   const confirmationToast = useRef()
 
   const [showAddMemberModal, setShowAddMemberModal] = useState(false)
-  const [showDeleteUserModal, setShowDeleteUserModal] = useState(false)
-
-  const [emailOfUserToBeDeleted, setEmailOfUserToBeDeleted] = useState('')
-
-  useEffect(() => {
-    Logging.log('Store', props.store)
-  }, [])
 
   const onAddMemberCancel = () => {
     setShowAddMemberModal(false)
@@ -49,26 +41,6 @@ const ManageTeamsBase = observer((props) => {
     setIsSuccess(false)
     confirmationToast.current.show()
     setShowAddMemberModal(false)
-  }
-
-  const onDeleteUserSuccess = () => {
-    setToastMessage('User successfully deleted')
-    setIsSuccess(true)
-    confirmationToast.current.show()
-    setShowAddMemberModal(false)
-  }
-
-  const onDeleteUserFailure = (e) => {
-    Logging.error(e)
-    setToastMessage('Failed to delete user: unknown error')
-    setIsSuccess(false)
-    confirmationToast.current.show()
-    setShowAddMemberModal(false)
-  }
-
-  const closeDeleteUserModal = () => {
-    setEmailOfUserToBeDeleted('')
-    setShowDeleteUserModal(false)
   }
 
   const resetPassword = async (e, email) => {
@@ -99,13 +71,6 @@ const ManageTeamsBase = observer((props) => {
         onClose={onAddMemberCancel}
         onSuccess={onAddMemberSuccess}
         onFailure={onAddMemberFailure}
-      />
-      <DeleteUserModal
-        email={emailOfUserToBeDeleted}
-        hidden={!showDeleteUserModal}
-        onClose={closeDeleteUserModal}
-        onSuccess={onDeleteUserSuccess}
-        onFailure={onDeleteUserFailure}
       />
       <table>
         <thead>

@@ -27,6 +27,5 @@ const auth = app.auth()
 const SESSION = app.auth.Auth.Persistence.SESSION
 const db = app.firestore()
 const createUserCallable = app.functions().httpsCallable('createUser')
-const deleteUserCallable = app.functions().httpsCallable('deleteUser')
 
-export { auth, db, createUserCallable, deleteUserCallable, SESSION }
+export { auth, db, createUserCallable, SESSION }
