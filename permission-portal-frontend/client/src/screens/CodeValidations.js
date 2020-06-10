@@ -8,6 +8,7 @@ import { withStore } from '../store'
 import { Redirect } from 'react-router-dom'
 import { observer } from 'mobx-react'
 import PageTitle from '../components/PageTitle'
+import ChangePasswordModal from '../components/ChangePasswordModal'
 
 // snackbars docs can be found here:
 // https://material-ui.com/components/snackbars/
@@ -70,6 +71,7 @@ const CodeValidationsBase = observer((props) => {
             Verify Code
           </Button>
         </div>
+        <ChangePasswordModal />
       </div>
       <Toast ref={confirmedToast} isSuccess={true} message="Code verification confirmed" />
     </div>
