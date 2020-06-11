@@ -10,3 +10,4 @@ typings/
 node_modules/
 permission-portal-*-firebase-admin*.json
 !reset-infrastructure.js
+!set-config.js

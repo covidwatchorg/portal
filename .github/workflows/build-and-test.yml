@@ -40,6 +40,13 @@ jobs:
       - name: Initialize config files
         working-directory: cloud-functions/functions
         run: npm run init       
+      - name: Setup functions config
+        working-directory: cloud-functions/functions
+        run: npm run config:set
+        env: 
+          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
+          SENDGRID_API_TOKEN: ${{ secrets.SENDGRID_API_TOKEN }}
+          NODE_ENV: test
       - name: Lint and Build
         working-directory: cloud-functions/functions
         run: |
@@ -70,7 +77,7 @@ jobs:
       - name: Deploy to Firebase Test Infra
         uses: w9jds/firebase-action@master
         with:
-          args: deploy --project=test
+          args: deploy -f --project=test
         env:
           FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
           PROJECT_PATH: cloud-functions/

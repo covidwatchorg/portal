@@ -66,6 +66,22 @@ jobs:
       - name: Initialize config files
         working-directory: cloud-functions/functions
         run: npm run init       
+      - name: Setup functions config
+        if: github.ref == 'refs/heads/dev'
+        working-directory: cloud-functions/functions
+        run: npm run config:set
+        env: 
+          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
+          SENDGRID_API_TOKEN: ${{ secrets.SENDGRID_API_TOKEN }}
+          NODE_ENV: staging
+      - name: Setup functions config
+        if: github.ref == 'refs/heads/master'
+        working-directory: cloud-functions/functions
+        run: npm run config:set
+        env: 
+          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
+          SENDGRID_API_TOKEN: ${{ secrets.SENDGRID_API_TOKEN }}
+          NODE_ENV: prod
       - name: Lint and Build
         working-directory: cloud-functions/functions
         run: |
@@ -100,7 +116,7 @@ jobs:
         if: github.ref == 'refs/heads/dev'
         uses: w9jds/firebase-action@master
         with:
-          args: deploy --project=staging
+          args: deploy -f --project=staging
         env:
           FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
           PROJECT_PATH: cloud-functions/
@@ -110,7 +126,7 @@ jobs:
         if: github.ref == 'refs/heads/master'
         uses: w9jds/firebase-action@master
         with:
-          args: deploy --project=prod
+          args: deploy -f --project=prod
         env:
           FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
           PROJECT_PATH: cloud-functions/
