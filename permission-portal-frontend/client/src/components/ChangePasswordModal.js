@@ -9,7 +9,7 @@ class ChangePasswordModalBase extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      visible: true,
+      visible: props.store.user.isFirstTimeUser || false,
       password: '',
       confirmPassword: '',
       passwordsMatch: false,
