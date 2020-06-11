@@ -40,6 +40,13 @@ jobs:
       - name: Initialize config files
         working-directory: permission-portal-cloud-functions/functions
         run: npm run init       
+      - name: Setup functions config
+        working-directory: permission-portal-cloud-functions/functions
+        run: npm run config:set
+        env: 
+          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
+          SENDGRID_API_TOKEN: ${{ secrets.SENDGRID_API_TOKEN }}
+          NODE_ENV: test
       - name: Lint and Build
         working-directory: permission-portal-cloud-functions/functions
         run: |
