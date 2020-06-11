@@ -18,6 +18,7 @@ class ChangePasswordModalBase extends React.Component {
     this.onChange = this.onChange.bind(this)
     this.onSubmit = this.onSubmit.bind(this)
     this.onClose = this.onClose.bind(this)
+    this.canSubmit = this.canSubmit.bind(this)
   }
 
   onChange(event) {
@@ -46,15 +47,13 @@ class ChangePasswordModalBase extends React.Component {
   }
 
   onSubmit() {
-    // 1. Change user password to state.password
     const user = auth.currentUser
-    Logging.log(user)
     if (user) {
+      // 1. Change user password to state.password
       const updatePwd = user.updatePassword(this.state.password)
       // 2. Set user.isFirstTimeUser to false
       const setFirstTimeUser = updatePwd.then(
         () => {
-          Logging.log('Password updated successfully')
           this.props.store.user.update({ isFirstTimeUser: false })
         },
         (err) => {
@@ -66,6 +65,10 @@ class ChangePasswordModalBase extends React.Component {
     } else {
       return Promise.reject('auth.currentUser is null or undefined')
     }
+  }
+
+  canSubmit() {
+    return this.state.passwordIsValid && this.state.passwordsMatch
   }
 
   render() {
@@ -103,10 +106,11 @@ class ChangePasswordModalBase extends React.Component {
             onChange={this.onChange}
           />
 
-          {this.state.passwordsMatch ? 'Passwords match.' : 'Passwords do not match.'}
-
           {/* TODO Enable if state.passwordIsValid && state.passwordsMatch */}
-          <PendingOperationButton className="save-password" operation={this.onSubmit}>
+          <PendingOperationButton
+            className={`save-password${this.canSubmit() ? '' : '-disabled'}`}
+            operation={this.onSubmit}
+          >
             Save
           </PendingOperationButton>
         </form>
