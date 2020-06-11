@@ -61,6 +61,8 @@ class ChangePasswordModalBase extends React.Component {
       )
       // 3. Close the modal
       return setFirstTimeUser.then(this.onClose)
+    } else {
+      return Promise.reject('auth.currentUser is null or undefined')
     }
   }
 
