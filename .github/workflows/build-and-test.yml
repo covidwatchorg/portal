@@ -77,7 +77,7 @@ jobs:
       - name: Deploy to Firebase Test Infra
         uses: w9jds/firebase-action@master
         with:
-          args: deploy --project=test
+          args: deploy -f --project=test
         env:
           FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
           PROJECT_PATH: cloud-functions/
