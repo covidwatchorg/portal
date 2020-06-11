@@ -1,7 +1,7 @@
 import React from 'react'
 import Modal from '../components/Modal'
 import PendingOperationButton from '../components/PendingOperationButton'
-import { auth } from 'firebase'
+import { auth } from '../store/firebase'
 import { withStore } from '../store'
 import Logging from '../util/logging'
 
@@ -16,6 +16,8 @@ class ChangePasswordModalBase extends React.Component {
       passwordIsValid: false,
     }
     this.onChange = this.onChange.bind(this)
+    this.onSubmit = this.onSubmit.bind(this)
+    this.onClose = this.onClose.bind(this)
   }
 
   onChange(event) {
