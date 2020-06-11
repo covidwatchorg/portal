@@ -1,6 +1,8 @@
 import React from 'react'
 import Modal from '../components/Modal'
 import { withStore } from '../store'
+import PendingOperationButton from '../components/PendingOperationButton'
+import validateEmail from '../util/validateEmail'
 
 class ForgotPasswordModal extends React.Component {
   constructor(props) {
@@ -11,16 +13,18 @@ class ForgotPasswordModal extends React.Component {
     this.handleChange = this.handleChange.bind(this)
   }
 
-  async onSubmit(event) {
-    event.preventDefault()
-
-    if (!this.state.email) {
+  async onSubmit() {
+    if (!validateEmail(this.state.email)) {
       this.setState({ validEmail: false })
       return
     }
 
-    const isSuccess = await this.props.store.sendPasswordResetEmail(this.state.email)
-    this.setState({ isSuccess: isSuccess, emailPrompt: false, email: '', validEmail: true })
+    try {
+      await this.props.store.sendPasswordResetEmail(this.state.email)
+      this.setState({ isSuccess: true, emailPrompt: false, email: '', validEmail: true })
+    } catch {
+      this.setState({ isSuccess: false, emailPrompt: false, email: '', validEmail: true })
+    }
   }
 
   handleChange(event) {
@@ -28,7 +32,7 @@ class ForgotPasswordModal extends React.Component {
   }
 
   onClose() {
-    this.setState({ emailPrompt: true })
+    this.setState({ emailPrompt: true, email: '', validEmail: true, isSuccess: false })
     this.props.onClose()
   }
 
@@ -40,11 +44,11 @@ class ForgotPasswordModal extends React.Component {
           <form onSubmit={this.onSubmit} onChange={this.handleChange}>
             <label htmlFor="email-or-username">Email or User Name</label>
             <input type="text" id="email-or-username" required />
-            <button type="submit" className="save-button recovery-button">
-              {' '}
-              Email Recovery Link{' '}
-            </button>
-            {!this.state.validEmail && <div className="validationResult">Please enter an email or user name.</div>}
+            <PendingOperationButton operation={this.onSubmit} className="save-button recovery-button">
+              Email Recovery Link
+            </PendingOperationButton>
+            {!this.state.validEmail && <div className="validationResult">Please enter a valid email or user name.</div>}
+            {this.state.isError && <div className="validationResult">Error sending reset email. Please try again.</div>}
           </form>
         </Modal>
       )
