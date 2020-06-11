@@ -9,6 +9,5 @@ typings/
 
 node_modules/
 permission-portal-*-firebase-admin*.json
-config/functions.*.json
 !reset-infrastructure.js
 !set-config.js
