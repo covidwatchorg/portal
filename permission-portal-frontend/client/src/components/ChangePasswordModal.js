@@ -1,9 +1,11 @@
 import React from 'react'
 import Modal from '../components/Modal'
 import PendingOperationButton from '../components/PendingOperationButton'
-// import Logging from '../util/logging'
+import { auth } from 'firebase'
+import { withStore } from '../store'
+import Logging from '../util/logging'
 
-class ChangePasswordModal extends React.Component {
+class ChangePasswordModalBase extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
@@ -42,7 +44,24 @@ class ChangePasswordModal extends React.Component {
   }
 
   onSubmit() {
-    // TODO implement
+    // 1. Change user password to state.password
+    const user = auth.currentUser
+    Logging.log(user)
+    if (user) {
+      const updatePwd = user.updatePassword(this.state.password)
+      // 2. Set user.isFirstTimeUser to false
+      const setFirstTimeUser = updatePwd.then(
+        () => {
+          Logging.log('Password updated successfully')
+          this.props.store.user.update({ isFirstTimeUser: false })
+        },
+        (err) => {
+          Logging.error(err)
+        }
+      )
+      // 3. Close the modal
+      return setFirstTimeUser.then(this.onClose)
+    }
   }
 
   render() {
@@ -91,5 +110,7 @@ class ChangePasswordModal extends React.Component {
     )
   }
 }
+
+const ChangePasswordModal = withStore(ChangePasswordModalBase)
 
 export default ChangePasswordModal
