@@ -22,7 +22,7 @@ jobs:
 
       - name: Build node app for staging
         if: github.ref == 'refs/heads/dev'
-        working-directory: permission-portal-frontend
+        working-directory: frontend
         env:
           CI: true
         run: |
@@ -33,7 +33,7 @@ jobs:
 
       - name: Build node app for prod
         if: github.ref == 'refs/heads/master'
-        working-directory: permission-portal-frontend
+        working-directory: frontend
         env:
           CI: true
         run: |
@@ -50,7 +50,7 @@ jobs:
           aws-region: us-east-2
 
       - name: Deploy to S3
-        working-directory: permission-portal-frontend
+        working-directory: frontend
         run: |
           chmod +x ./scripts/deploy.sh
           ./scripts/deploy.sh
@@ -61,24 +61,24 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Install
-        working-directory: permission-portal-cloud-functions/functions
+        working-directory: cloud-functions/functions
         run: npm install
       - name: Initialize config files
-        working-directory: permission-portal-cloud-functions/functions
+        working-directory: cloud-functions/functions
         run: npm run init       
       - name: Lint and Build
-        working-directory: permission-portal-cloud-functions/functions
+        working-directory: cloud-functions/functions
         run: |
           npm run lint
           npm run build
       - name: Remove node_modules for upload
-        working-directory: permission-portal-cloud-functions/functions
+        working-directory: cloud-functions/functions
         run: rm -r node_modules
       - name: Upload artifact
         uses: actions/upload-artifact@v2
         with:
           name: cloud-functions-artifact
-          path: permission-portal-cloud-functions/functions
+          path: cloud-functions/functions
 
   deploy-firebase:
     name: Deploy Firebase
@@ -90,10 +90,10 @@ jobs:
       - uses: actions/download-artifact@v2
         with:
           name: cloud-functions-artifact
-          path: permission-portal-cloud-functions/functions
+          path: cloud-functions/functions
 
       - name: Install 
-        working-directory: permission-portal-cloud-functions/functions
+        working-directory: cloud-functions/functions
         run: npm install
 
       - name: Deploy to Firebase Staging Infra
@@ -103,7 +103,7 @@ jobs:
           args: deploy --project=staging
         env:
           FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
-          PROJECT_PATH: permission-portal-cloud-functions/
+          PROJECT_PATH: cloud-functions/
           NODE_ENV: staging
 
       - name: Deploy to Firebase Prod Infra
@@ -113,5 +113,5 @@ jobs:
           args: deploy --project=prod
         env:
           FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
-          PROJECT_PATH: permission-portal-cloud-functions/
+          PROJECT_PATH: cloud-functions/
           NODE_ENV: prod

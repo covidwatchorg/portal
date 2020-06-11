@@ -230,37 +230,38 @@ function hardReset() {
     });
 }
 
-async function createRandomSoylentgreenUser() {
+async function createRandomUser(company) {
   const firstName = uniqueNamesGenerator({ dictionaries: [names], length: 1 });
   const lastName = uniqueNamesGenerator({ dictionaries: [names], length: 1 });
+  companyWebsite = company === 'soylentgreen' ? 'soylentgreen.com' : 'initech.com';
   try {
-    console.log(`creating new user in users table ${firstName}${lastName}@soylentgreen.com`);
+    console.log(`creating new user in users table ${firstName}${lastName}@${companyWebsite}`);
     await db
       .collection('users')
-      .doc(`${firstName}${lastName}@soylentgreen.com`.toLowerCase())
+      .doc(`${firstName}${lastName}@${companyWebsite}`.toLowerCase())
       .set({
         isSuperAdmin: false,
         isAdmin: Math.random() >= 0.5,
-        organizationID: soylentGreenID,
+        organizationID: company === 'soylentgreen' ? soylentGreenID : initechID,
         disabled: false,
         firstName: firstName,
         lastName: lastName,
       });
     console.log('users user created');
     try {
-      console.log(`creating new auth user with email/password ${firstName}${lastName}@soylentgreen.com`);
+      console.log(`creating new auth user with email/password ${firstName}${lastName}@${companyWebsite}`);
       await auth.createUser({
-        email: `${firstName}${lastName}@soylentgreen.com`,
-        password: `${firstName}${lastName}@soylentgreen.com`,
+        email: `${firstName}${lastName}@${companyWebsite}`,
+        password: `${firstName}${lastName}@${companyWebsite}`,
       });
       console.log('auth user created');
     } catch (error) {
       // createUser seems to commonly fail and so we need to catch and delete the entry in the user collection
-      db.collection('users').doc(`${firstName}${lastName}@soylentgreen.com`).delete();
+      db.collection('users').doc(`${firstName}${lastName}@${companyWebsite}`).delete();
       throw error;
     }
     console.log(
-      `Successfully created Soylent Green user with username/password ${firstName}${lastName}@soylentgreen.com`
+      `Successfully created Soylent Green user with username/password ${firstName}${lastName}@${companyWebsite}`
     );
   } catch (err) {
     throw err;
@@ -271,17 +272,31 @@ async function main() {
   try {
     await hardReset();
     await addMinimalSampleData();
+
     for (let i = 0; i < 10; i++) {
       try {
-        await createRandomSoylentgreenUser();
+        await createRandomUser('soylentgreen');
       } catch (error) {
-        console.log('Encountered an error while attempting to createRandomSoylentgreenUser:');
+        console.log('Encountered an error while attempting to create a random user');
         console.log(error);
         console.log('continuing');
         i--;
         continue;
       }
     }
+
+    for (let i = 0; i < 5000; i++) {
+      try {
+        await createRandomUser('initech');
+      } catch (error) {
+        console.log('Encountered an error while attempting to create a random user');
+        console.log(error);
+        console.log('continuing');
+        i--;
+        continue;
+      }
+    }
+
     console.log('Successfully added all sample data');
     process.exit();
   } catch (error) {
