@@ -15,26 +15,16 @@ import { observer } from 'mobx-react'
 import PageTitle from '../components/PageTitle'
 import Logging from '../util/logging'
 
-const PAGE_SIZE = 15
-
 const ManageTeamsBase = observer((props) => {
-  const userEmail = props.store.user.email
+  const userEmail = props.store.data.user.email
 
   const [toastMessage, setToastMessage] = useState(false)
   const [isSuccess, setIsSuccess] = useState(false)
 
   const confirmationToast = useRef()
 
-  const [currentPage, setCurrentPage] = useState(0)
-  const pages = props.store.organization.members
-    ? [...Array(Math.ceil(props.store.organization.members.length / PAGE_SIZE)).keys()]
-    : []
   const [showAddMemberModal, setShowAddMemberModal] = useState(false)
   const [showDeleteUserModal, setShowDeleteUserModal] = useState(false)
-
-  const inCurrentPage = (index) => {
-    return index >= PAGE_SIZE * currentPage && index < PAGE_SIZE * (currentPage + 1)
-  }
 
   const [emailOfUserToBeDeleted, setEmailOfUserToBeDeleted] = useState('')
 
@@ -76,12 +66,6 @@ const ManageTeamsBase = observer((props) => {
     setShowAddMemberModal(false)
   }
 
-  const openDeleteUserModal = (e, email) => {
-    e.preventDefault()
-    setEmailOfUserToBeDeleted(email)
-    setShowDeleteUserModal(true)
-  }
-
   const closeDeleteUserModal = () => {
     setEmailOfUserToBeDeleted('')
     setShowDeleteUserModal(false)
@@ -102,7 +86,7 @@ const ManageTeamsBase = observer((props) => {
     }
   }
 
-  return props.store.user.isSignedIn && props.store.user.isAdmin ? (
+  return props.store.data.user.isSignedIn && props.store.data.user.isAdmin ? (
     <div className="module-container">
       <PageTitle title="Manage Members" />
       <h1>Manage Members</h1>
@@ -127,16 +111,18 @@ const ManageTeamsBase = observer((props) => {
         <thead>
           <tr>
             <th style={{ borderTopLeftRadius: 5 }}>Name</th>
+            <th>Email Address</th>
             <th id="role-header">Role</th>
             <th id="status-header">Status</th>
             <th style={{ borderTopRightRadius: 5 }}>Settings</th>
           </tr>
         </thead>
         <tbody>
-          {props.store.organization.members &&
-            props.store.organization.members.map((data, index) => (
-              <tr className={inCurrentPage(index) ? '' : 'hidden'} key={index}>
+          {props.store.data.organization.currentPageOfMembers &&
+            props.store.data.organization.currentPageOfMembers.map((data, index) => (
+              <tr key={index}>
                 <td>{data.lastName + ', ' + data.firstName}</td>
+                <td>{data.email}</td>
                 <td style={{ padding: 0 }}>
                   <RoleSelector
                     memberIndex={index}
@@ -164,7 +150,6 @@ const ManageTeamsBase = observer((props) => {
                 </td>
                 <td>
                   <div className="settings-container">
-                    <a onClick={(e) => openDeleteUserModal(e, data.email)}>Delete Account</a>
                     <a onClick={(e) => resetPassword(e, data.email)}>Reset Password</a>
                   </div>
                 </td>
@@ -174,21 +159,21 @@ const ManageTeamsBase = observer((props) => {
       </table>
       <div className="table-bottom-container">
         <div className="pages-container">
-          <div className="arrow" onClick={currentPage === 0 ? () => {} : () => setCurrentPage(currentPage - 1)}>
-            <img src={arrowLeft} alt="Previous" />
-          </div>
-          {pages.map((page) => (
-            <a
-              key={page}
-              className={`${page === currentPage ? 'current-' : ''}page`}
-              onClick={page === currentPage ? () => {} : () => setCurrentPage(page)}
-            >
-              {page + 1}
-            </a>
-          ))}
           <div
             className="arrow"
-            onClick={currentPage === pages[pages.length - 1] ? () => {} : () => setCurrentPage(currentPage + 1)}
+            onClick={(e) => {
+              e.preventDefault()
+              props.store.previousPageOfMembers()
+            }}
+          >
+            <img src={arrowLeft} alt="Previous" />
+          </div>
+          <div
+            className="arrow"
+            onClick={(e) => {
+              e.preventDefault()
+              props.store.nextPageOfMembers()
+            }}
           >
             <img src={arrowRight} alt="Next" />
           </div>
@@ -196,7 +181,7 @@ const ManageTeamsBase = observer((props) => {
       </div>
       <Toast ref={confirmationToast} isSuccess={isSuccess} message={toastMessage} />
     </div>
-  ) : props.store.user.isSignedIn ? (
+  ) : props.store.data.user.isSignedIn ? (
     <Redirect to={ROUTES.CODE_VALIDATIONS} />
   ) : (
     <Redirect to={ROUTES.LANDING} />
