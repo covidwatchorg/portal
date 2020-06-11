@@ -1,6 +1,6 @@
 import React, { useRef, Fragment, useState } from 'react'
 import Grid from '@material-ui/core/Grid'
-import Modal from '@material-ui/core/Modal'
+import Modal from '../components/Modal'
 import { makeStyles } from '@material-ui/core/styles'
 import * as ROLES from '../constants/roles'
 import Toast from '../components/Toast'
@@ -11,6 +11,7 @@ import { observer } from 'mobx-react'
 import PageTitle from '../components/PageTitle'
 import photo_add from '../../assets/photo-add.svg'
 import Logging from '../util/logging'
+import PendingOperationButton from '../components/PendingOperationButton'
 
 const useStyles = makeStyles({
   root: {
@@ -41,18 +42,6 @@ const inputStyles = makeStyles({
   },
 })
 
-const primaryButtonStyles = makeStyles({
-  root: {
-    backgroundColor: '#2C58B1',
-    color: 'white',
-    width: '75%',
-    fontSize: '18px',
-    padding: '5px',
-    borderRadius: '7px',
-    height: 40,
-    marginTop: 20,
-  },
-})
 const secondaryButtonStyles = makeStyles({
   root: {
     color: '#2C58B1',
@@ -71,18 +60,6 @@ const secondaryButtonStyles = makeStyles({
   },
 })
 
-const changeImageModalStyles = makeStyles({
-  root: {
-    fontFamily: 'Montserrat',
-    margin: 'auto',
-    marginTop: '200px',
-    width: '40%',
-    height: '20%',
-    backgroundColor: 'white',
-    padding: 50,
-    borderRadius: '7px',
-  },
-})
 const MAXFILESIZE = 10 * 1024 * 1024
 const SettingsBase = observer((props) => {
   const classes = useStyles()
@@ -90,8 +67,6 @@ const SettingsBase = observer((props) => {
   const imgUploader = useRef()
 
   const secondaryButton = secondaryButtonStyles()
-  const primaryButton = primaryButtonStyles()
-  const changeImage = changeImageModalStyles()
   const [open, setOpen] = useState(false)
   const [toastInfo, setToastInfo] = useState({
     success: false,
@@ -127,8 +102,7 @@ const SettingsBase = observer((props) => {
     }
   }
 
-  const saveImage = async (e) => {
-    e.preventDefault()
+  const saveImage = async () => {
     setOpen(false)
     if (imgUploader.current.files.length == 0) {
       Logging.log('no image uploaded')
@@ -160,16 +134,12 @@ const SettingsBase = observer((props) => {
   }
 
   const changeImageModal = (
-    <div className={changeImage.root}>
+    <div className="modal-content">
+      <p> Please Select a File to Upload </p>
       <input type="file" ref={imgUploader} accepts="image/jpeg, image/png" />
-      <div style={{ alignContent: 'right', marginTop: '35px' }}>
-        <button onClick={handleClose} className={secondaryButton.root} style={{ width: '100px', border: 'none' }}>
-          Discard
-        </button>
-        <button onClick={saveImage} className={primaryButton.root} style={{ width: '70px', borderStyle: 'none' }}>
-          Upload
-        </button>
-      </div>
+      <PendingOperationButton operation={saveImage} className="save-button">
+        Upload
+      </PendingOperationButton>
     </div>
   )
 
@@ -203,7 +173,7 @@ const SettingsBase = observer((props) => {
               <button onClick={handleOpen} type="button" className={secondaryButton.root}>
                 Change Image
               </button>
-              <Modal open={open} onClose={handleClose}>
+              <Modal hidden={!open} onClose={handleClose} containerClass="changeImageModalContainer">
                 {changeImageModal}
               </Modal>
             </Grid>
