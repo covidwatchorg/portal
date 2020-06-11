@@ -1,6 +1,7 @@
 import React from 'react'
 import Modal from '../components/Modal'
 import PendingOperationButton from '../components/PendingOperationButton'
+// import Logging from '../util/logging'
 
 class ChangePasswordModal extends React.Component {
   constructor(props) {
@@ -10,25 +11,27 @@ class ChangePasswordModal extends React.Component {
       password: '',
       confirmPassword: '',
       passwordsMatch: false,
+      passwordIsValid: false,
     }
-    this.onChange.bind(this)
+    this.onChange = this.onChange.bind(this)
   }
 
   onChange(event) {
-    if (event.target.name === 'password') {
-      this.setState({
-        password: event.target.value,
-      })
-    }
-    if (event.target.name === 'confirm-password') {
-      this.setState({
-        confirmPassword: event.target.value,
-      })
-    }
-    this.setState((props, state) => {
-      return {
-        passwordsMatch: state.password === state.confirmPassword,
+    let fieldName = event.target.name
+    let fieldContent = event.target.value
+    // Serialize updates
+    this.setState((state) => {
+      let newState = {}
+      if (fieldName === 'password') {
+        newState.password = fieldContent
+        newState.passwordIsValid = newState.password !== ''
+        newState.passwordsMatch = newState.password === state.confirmPassword
       }
+      if (fieldName === 'confirm-password') {
+        newState.confirmPassword = fieldContent
+        newState.passwordsMatch = state.password === newState.confirmPassword
+      }
+      return newState
     })
   }
 
@@ -36,6 +39,10 @@ class ChangePasswordModal extends React.Component {
     this.setState({
       visible: false,
     })
+  }
+
+  onSubmit() {
+    // TODO implement
   }
 
   render() {
@@ -73,9 +80,12 @@ class ChangePasswordModal extends React.Component {
             onChange={this.onChange}
           />
 
-          {this.state.passwordsMatch}
+          {this.state.passwordsMatch ? 'Passwords match.' : 'Passwords do not match.'}
 
-          <PendingOperationButton className="save-password">Save</PendingOperationButton>
+          {/* TODO Enable if state.passwordIsValid && state.passwordsMatch */}
+          <PendingOperationButton className="save-password" operation={this.onSubmit}>
+            Save
+          </PendingOperationButton>
         </form>
       </Modal>
     )
