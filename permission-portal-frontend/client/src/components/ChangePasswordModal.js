@@ -7,8 +7,35 @@ class ChangePasswordModal extends React.Component {
     super(props)
     this.state = {
       visible: true,
+      password: '',
+      confirmPassword: '',
       passwordsMatch: false,
     }
+    this.onChange.bind(this)
+  }
+
+  onChange(event) {
+    if (event.target.name === 'password') {
+      this.setState({
+        password: event.target.value,
+      })
+    }
+    if (event.target.name === 'confirm-password') {
+      this.setState({
+        confirmPassword: event.target.value,
+      })
+    }
+    this.setState((props, state) => {
+      return {
+        passwordsMatch: state.password === state.confirmPassword,
+      }
+    })
+  }
+
+  onClose() {
+    this.setState({
+      visible: false,
+    })
   }
 
   render() {
@@ -24,11 +51,29 @@ class ChangePasswordModal extends React.Component {
           <label htmlFor="password">
             New password<span>*</span>
           </label>
-          <input type="password" required aria-required={true} id="password" name="password" />
+          <input
+            type="password"
+            required
+            aria-required={true}
+            id="password"
+            name="password"
+            value={this.state.password}
+            onChange={this.onChange}
+          />
           <label htmlFor="confirm-password">
             Confirm new password<span>*</span>
           </label>
-          <input type="password" required aria-required={true} id="confirm-password" name="confirm-password" />
+          <input
+            type="password"
+            required
+            aria-required={true}
+            id="confirm-password"
+            name="confirm-password"
+            value={this.state.confirmPassword}
+            onChange={this.onChange}
+          />
+
+          {this.state.passwordsMatch}
 
           <PendingOperationButton className="save-password">Save</PendingOperationButton>
         </form>
