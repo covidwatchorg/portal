@@ -68,7 +68,7 @@ jobs:
         run: npm run init       
       - name: Setup functions config
         if: github.ref == 'refs/heads/dev'
-        working-directory: permission-portal-cloud-functions/functions
+        working-directory: cloud-functions/functions
         run: npm run config:set
         env: 
           FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
@@ -76,7 +76,7 @@ jobs:
           NODE_ENV: staging
       - name: Setup functions config
         if: github.ref == 'refs/heads/master'
-        working-directory: permission-portal-cloud-functions/functions
+        working-directory: cloud-functions/functions
         run: npm run config:set
         env: 
           FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}

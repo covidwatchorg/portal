@@ -41,7 +41,7 @@ jobs:
         working-directory: cloud-functions/functions
         run: npm run init       
       - name: Setup functions config
-        working-directory: permission-portal-cloud-functions/functions
+        working-directory: cloud-functions/functions
         run: npm run config:set
         env: 
           FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
