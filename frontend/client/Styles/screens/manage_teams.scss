@@ -56,6 +56,7 @@
         font-size: 14px;
         line-height: 18px;
         border: 1px solid #BDBDBD;
+        text-align: left;
       }
     
       td {
@@ -86,9 +87,6 @@
             line-height: 18px;
             background-color: #FFFFFF;
             border-radius: 0;
-          }
-          select.active {
-            font-weight: bold;
           }
         }
         .settings-container {
