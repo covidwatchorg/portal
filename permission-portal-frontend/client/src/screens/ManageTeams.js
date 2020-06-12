@@ -14,6 +14,7 @@ import { withStore } from '../store'
 import { observer } from 'mobx-react'
 import PageTitle from '../components/PageTitle'
 import Logging from '../util/logging'
+import ChangePasswordModal from '../components/ChangePasswordModal'
 
 const PAGE_SIZE = 15
 
@@ -190,6 +191,7 @@ const ManageTeamsBase = observer((props) => {
         </div>
       </div>
       <Toast ref={confirmationToast} isSuccess={isSuccess} message={toastMessage} />
+      <ChangePasswordModal />
     </div>
   ) : props.store.user.isSignedIn ? (
     <Redirect to={ROUTES.CODE_VALIDATIONS} />
