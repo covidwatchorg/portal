@@ -6,7 +6,7 @@ const Modal = (props) => {
   const innerNode = useRef()
 
   const onOutsideClick = (event) => {
-    if (!innerNode.current.contains(event.target)) {
+    if (props.isDismissible && !innerNode.current.contains(event.target)) {
       props.onClose()
     }
   }
@@ -14,13 +14,19 @@ const Modal = (props) => {
   return (
     <div className={'modal-background' + (props.hidden === true ? ' hidden' : '')} onClick={onOutsideClick}>
       <div ref={innerNode} className={`modal-container ${props.containerClass ? props.containerClass : ''}`}>
-        <span className="close-btn" onClick={props.onClose}>
-          <img src={close} alt="Close" />
-        </span>
+        {props.isDismissible && (
+          <span className="close-btn" onClick={props.onClose}>
+            <img src={close} alt="Close" />
+          </span>
+        )}
         {props.children}
       </div>
     </div>
   )
+}
+
+Modal.defaultProps = {
+  isDismissible: true,
 }
 
 export default Modal
