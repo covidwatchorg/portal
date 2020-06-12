@@ -68,6 +68,7 @@ class ChangePasswordModalBase extends React.Component {
             message: err.message,
           })
           this.toast.current.show()
+          throw err
         }
       )
       // 3. Close the modal
@@ -94,8 +95,8 @@ class ChangePasswordModalBase extends React.Component {
         <Modal hidden={!this.state.visible} containerClass="change-password-modal-container">
           <h2>Welcome!</h2>
           <p>
-            To make your account secure, please create a new password to replace the temporary password you were given in
-            the email invitation.
+            To make your account secure, please create a new password to replace the temporary password you were given
+            in the email invitation.
           </p>
 
           <form className="change-password-form">
