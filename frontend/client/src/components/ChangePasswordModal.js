@@ -11,7 +11,7 @@ class ChangePasswordModalBase extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      visible: props.store.user.isFirstTimeUser || false,
+      visible: props.store.data.user.isFirstTimeUser || false,
       currentPassword: '',
       password: '',
       confirmPassword: '',
@@ -73,7 +73,7 @@ class ChangePasswordModalBase extends React.Component {
     const updatePwd = user.updatePassword(this.state.password)
     // 2. Set user.isFirstTimeUser to false
     const setFirstTimeUser = updatePwd.then(() => {
-      this.props.store.user.update({ isFirstTimeUser: false })
+      this.props.store.updateUser({ isFirstTimeUser: false })
     }, this.handleFirebaseError)
     // 3. Close the modal and pop the toast
     return setFirstTimeUser.then(() => {
