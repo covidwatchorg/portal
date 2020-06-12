@@ -123,8 +123,23 @@ const SettingsBase = observer((props) => {
       }
       let reader = new FileReader()
       // set up onload trigger to run when data is read
-      reader.onload = (e) => {
-        props.store.updateUserImage(e.target.result)
+      reader.onload = async (e) => {
+        props.store
+          .updateUserImage(e.target.result)
+          .then(() => {
+            setToastInfo({
+              success: true,
+              msg: 'Image Updated',
+            })
+            toastRef.current.show()
+          })
+          .catch(() => {
+            setToastInfo({
+              success: false,
+              msg: 'Error Updating Image, Please Try Again',
+            })
+            toastRef.current.show()
+          })
       }
       // read data
       reader.readAsDataURL(imgUploader.current.files[0])
