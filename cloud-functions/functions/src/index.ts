@@ -187,7 +187,7 @@ function sendNewUserEmail(email: string, password: string, firstName: string, la
     subject: 'Welcome to the Covid Watch Permission Portal',
     html: `
     <!DOCTYPE html>
-    <p style="font-family: Montserrat;font-size:18px;color: #585858;">Colby Morrison,</p>
+    <p style="font-family: Montserrat;font-size:18px;color: #585858;">${firstName} ${lastName},</p>
     <p style="font-family: Montserrat;font-size:18px;color: #585858;">You are receiving this email because you were added as a new member of Covid Watch by the Account Administrator.</p>
     <p style="font-family: Montserrat;font-size:18px;color: #585858;"><b>Your user name:</b> ${email}<br />  <b>Your temporary password:</b> ${password}</p>
     <p style="font-family: Montserrat;font-size:18px;color: #585858;">Please click the following link or copy and paste it into your browser to sign in to your new account:</p>
