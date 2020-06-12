@@ -5,12 +5,14 @@ import { auth } from '../store/firebase'
 import { withStore } from '../store'
 import Logging from '../util/logging'
 import Toast from '../components/Toast'
+import firebase from 'firebase'
 
 class ChangePasswordModalBase extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
       visible: props.store.user.isFirstTimeUser || false,
+      currentPassword: '',
       password: '',
       confirmPassword: '',
       passwordsMatch: false,
@@ -32,7 +34,10 @@ class ChangePasswordModalBase extends React.Component {
     // Serialize updates
     this.setState((state) => {
       let newState = {}
-      if (fieldName === 'password') {
+      if (fieldName === 'current-password') {
+        newState.currentPassword = fieldContent
+      }
+      if (fieldName === 'new-password') {
         newState.password = fieldContent
         newState.passwordIsValid = newState.password && newState.password.length >= 6
         newState.passwordsMatch = newState.password === state.confirmPassword
@@ -54,39 +59,41 @@ class ChangePasswordModalBase extends React.Component {
   onSubmit() {
     const user = auth.currentUser
     if (user) {
-      // 1. Change user password to state.password
-      const updatePwd = user.updatePassword(this.state.password)
-      // 2. Set user.isFirstTimeUser to false
-      const setFirstTimeUser = updatePwd.then(
-        () => {
-          this.props.store.user.update({ isFirstTimeUser: false })
-        },
-        (err) => {
-          Logging.error(err)
-          this.setState({
-            successful: false,
-            message: err.message,
-          })
-          this.toast.current.show()
-          throw err
-        }
-      )
-      // 3. Close the modal
-      return setFirstTimeUser.then(() => {
-        this.onClose()
+      // 0. Re-authenticate
+      const credential = firebase.auth.EmailAuthProvider.credential(user.email, this.state.currentPassword)
+      const handleFirebaseError = (err) => {
+        Logging.error(err)
         this.setState({
-          successful: true,
-          message: 'Password successfully updated.',
+          successful: false,
+          message: err.message,
         })
         this.toast.current.show()
-      })
+        throw err
+      }
+      return user.reauthenticateWithCredential(credential).then(() => {
+        // 1. Change user password to state.password
+        const updatePwd = user.updatePassword(this.state.password)
+        // 2. Set user.isFirstTimeUser to false
+        const setFirstTimeUser = updatePwd.then(() => {
+          this.props.store.user.update({ isFirstTimeUser: false })
+        }, handleFirebaseError)
+        // 3. Close the modal
+        return setFirstTimeUser.then(() => {
+          this.onClose()
+          this.setState({
+            successful: true,
+            message: 'Password successfully updated.',
+          })
+          this.toast.current.show()
+        })
+      }, handleFirebaseError)
     } else {
       return Promise.reject('auth.currentUser is null or undefined')
     }
   }
 
   canSubmit() {
-    return this.state.passwordIsValid && this.state.passwordsMatch
+    return this.state.currentPassword && this.state.passwordIsValid && this.state.passwordsMatch
   }
 
   render() {
@@ -100,15 +107,27 @@ class ChangePasswordModalBase extends React.Component {
           </p>
 
           <form className="change-password-form">
-            <label htmlFor="password">
+            <label htmlFor="current-password">
+              Current password<span>*</span>
+            </label>
+            <input
+              type="password"
+              required
+              aria-required={true}
+              id="current-password"
+              name="current-password"
+              value={this.state.currentPassword}
+              onChange={this.onChange}
+            />
+            <label htmlFor="new-password">
               New password<span>*</span>
             </label>
             <input
               type="password"
               required
               aria-required={true}
-              id="password"
-              name="password"
+              id="new-password"
+              name="new-password"
               value={this.state.password}
               onChange={this.onChange}
             />
