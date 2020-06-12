@@ -92,7 +92,7 @@ class ChangePasswordModalBase extends React.Component {
   render() {
     return (
       <div>
-        <Modal hidden={!this.state.visible} containerClass="change-password-modal-container">
+        <Modal hidden={!this.state.visible} containerClass="change-password-modal-container" isDismissible={false}>
           <h2>Welcome!</h2>
           <p>
             To make your account secure, please create a new password to replace the temporary password you were given
