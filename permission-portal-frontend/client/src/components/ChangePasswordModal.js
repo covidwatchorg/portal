@@ -1,9 +1,10 @@
-import React from 'react'
+import React, { createRef } from 'react'
 import Modal from '../components/Modal'
 import PendingOperationButton from '../components/PendingOperationButton'
 import { auth } from '../store/firebase'
 import { withStore } from '../store'
 import Logging from '../util/logging'
+import Toast from '../components/Toast'
 
 class ChangePasswordModalBase extends React.Component {
   constructor(props) {
@@ -14,11 +15,15 @@ class ChangePasswordModalBase extends React.Component {
       confirmPassword: '',
       passwordsMatch: false,
       passwordIsValid: false,
+      successful: false,
+      message: '',
     }
     this.onChange = this.onChange.bind(this)
     this.onSubmit = this.onSubmit.bind(this)
     this.onClose = this.onClose.bind(this)
     this.canSubmit = this.canSubmit.bind(this)
+
+    this.toast = createRef()
   }
 
   onChange(event) {
@@ -58,10 +63,22 @@ class ChangePasswordModalBase extends React.Component {
         },
         (err) => {
           Logging.error(err)
+          this.setState({
+            successful: false,
+            message: err.message,
+          })
+          this.toast.current.show()
         }
       )
       // 3. Close the modal
-      return setFirstTimeUser.then(this.onClose)
+      return setFirstTimeUser.then(() => {
+        this.onClose()
+        this.setState({
+          successful: true,
+          message: 'Password successfully updated.',
+        })
+        this.toast.current.show()
+      })
     } else {
       return Promise.reject('auth.currentUser is null or undefined')
     }
@@ -73,48 +90,51 @@ class ChangePasswordModalBase extends React.Component {
 
   render() {
     return (
-      <Modal hidden={!this.state.visible} containerClass="change-password-modal-container">
-        <h2>Welcome!</h2>
-        <p>
-          To make your account secure, please create a new password to replace the temporary password you were given in
-          the email invitation.
-        </p>
+      <div>
+        <Modal hidden={!this.state.visible} containerClass="change-password-modal-container">
+          <h2>Welcome!</h2>
+          <p>
+            To make your account secure, please create a new password to replace the temporary password you were given in
+            the email invitation.
+          </p>
 
-        <form className="change-password-form">
-          <label htmlFor="password">
-            New password<span>*</span>
-          </label>
-          <input
-            type="password"
-            required
-            aria-required={true}
-            id="password"
-            name="password"
-            value={this.state.password}
-            onChange={this.onChange}
-          />
-          <label htmlFor="confirm-password">
-            Confirm new password<span>*</span>
-          </label>
-          <input
-            type="password"
-            required
-            aria-required={true}
-            id="confirm-password"
-            name="confirm-password"
-            value={this.state.confirmPassword}
-            onChange={this.onChange}
-          />
+          <form className="change-password-form">
+            <label htmlFor="password">
+              New password<span>*</span>
+            </label>
+            <input
+              type="password"
+              required
+              aria-required={true}
+              id="password"
+              name="password"
+              value={this.state.password}
+              onChange={this.onChange}
+            />
+            <label htmlFor="confirm-password">
+              Confirm new password<span>*</span>
+            </label>
+            <input
+              type="password"
+              required
+              aria-required={true}
+              id="confirm-password"
+              name="confirm-password"
+              value={this.state.confirmPassword}
+              onChange={this.onChange}
+            />
 
-          {/* TODO Enable if state.passwordIsValid && state.passwordsMatch */}
-          <PendingOperationButton
-            className={`save-password${this.canSubmit() ? '' : '-disabled'}`}
-            operation={this.onSubmit}
-          >
-            Save
-          </PendingOperationButton>
-        </form>
-      </Modal>
+            {/* TODO Enable if state.passwordIsValid && state.passwordsMatch */}
+            <PendingOperationButton
+              className={`save-password${this.canSubmit() ? '' : '-disabled'}`}
+              operation={this.onSubmit}
+            >
+              Save
+            </PendingOperationButton>
+          </form>
+        </Modal>
+        <Toast ref={this.toast} isSuccess={this.state.successful} message={this.state.message} />
+      </div>
     )
   }
 }
