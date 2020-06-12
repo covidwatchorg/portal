@@ -1,5 +1,5 @@
-import { types, cast, flow, onSnapshot } from 'mobx-state-tree'
-import { auth, db, createUserCallable, deleteUserCallable, SESSION } from './firebase'
+import { types, cast, onSnapshot } from 'mobx-state-tree'
+import 'mobx-react-lite/batchingForReactDom'
 import Logging from '../util/logging'
 
 const User = types
@@ -24,23 +24,8 @@ const User = types
       Logging.log('Updated User:')
       Logging.log(self)
     }
-    const update = flow(function* (updates) {
-      try {
-        yield db.collection('users').doc(self.email).update(updates)
-      } catch (err) {
-        Logging.error('Error updating users', err)
-      }
-    })
-    const updateImage = flow(function* (blob) {
-      try {
-        // .set() with { merge: true } so that if the document dne, it's created, otherwise its updated
-        yield db.collection('userImages').doc(self.email).set({ blob: blob }, { merge: true })
-      } catch (err) {
-        Logging.error('Error updating image', err)
-      }
-    })
 
-    return { __update, update, updateImage }
+    return { __update }
   })
 
 const Organization = types
@@ -64,7 +49,7 @@ const Organization = types
     verificationNotSharedText: types.string,
     diagnosisText: types.string,
     exposureText: types.string,
-    members: types.array(User),
+    currentPageOfMembers: types.array(User),
   })
   .actions((self) => {
     const __update = (updates) => {
@@ -75,82 +60,17 @@ const Organization = types
       Logging.log(self)
     }
 
-    const update = flow(function* (updates) {
-      try {
-        yield db.collection('organizations').doc(self.id).update(updates)
-      } catch (err) {
-        Logging.error('Error updating organization texts', err)
-        throw err
-      }
-    })
-
-    const __setMembers = (members) => {
-      self.members = cast(members)
-      Logging.log('Set members:')
-      Logging.log(self.members[0])
+    const __setCurrentPageOfMembers = (pageOfMembers) => {
+      self.currentPageOfMembers = cast(pageOfMembers)
     }
 
-    return { __update, __setMembers, update }
+    return { __update, __setCurrentPageOfMembers }
   })
 
-const Store = types
-  .model({
-    user: User,
-    organization: Organization,
-  })
-  .actions(() => {
-    const signInWithEmailAndPassword = flow(function* (email, password) {
-      yield auth.setPersistence(SESSION)
-      yield auth.signInWithEmailAndPassword(email, password)
-    })
-
-    const signOut = flow(function* () {
-      yield auth.signOut()
-    })
-
-    const createUser = flow(function* (newUser) {
-      try {
-        const result = yield createUserCallable(newUser)
-        Logging.log(`Created new user: ${JSON.stringify(result.data)}`)
-        return result.data
-      } catch (err) {
-        Logging.log(err)
-        throw err
-      }
-    })
-
-    const deleteUser = flow(function* (email) {
-      try {
-        const result = yield deleteUserCallable({ email: email })
-        Logging.log(result)
-        return true
-      } catch (err) {
-        Logging.error(err)
-        throw err
-      }
-    })
-
-    const sendPasswordResetEmail = flow(function* (email) {
-      try {
-        yield auth.sendPasswordResetEmail(email)
-        return true
-      } catch (err) {
-        Logging.error(err)
-        throw err
-      }
-    })
-
-    const updateUserByEmail = flow(function* (email, updates) {
-      try {
-        yield db.collection('users').doc(email).update(updates)
-      } catch (err) {
-        Logging.error(`Error updating user: ${email}`, err)
-        throw err
-      }
-    })
-
-    return { signInWithEmailAndPassword, signOut, createUser, deleteUser, sendPasswordResetEmail, updateUserByEmail }
-  })
+const Store = types.model({
+  user: User,
+  organization: Organization,
+})
 
 const defaultUser = {
   isSignedIn: false,
@@ -185,7 +105,7 @@ const defaultOrganization = {
   verificationNotSharedText: '',
   diagnosisText: '',
   exposureText: '',
-  members: [],
+  currentPageOfMembers: [],
 }
 
 const defaultStore = {

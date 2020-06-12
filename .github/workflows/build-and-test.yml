@@ -20,7 +20,7 @@ jobs:
           node-version: "12.x"
 
       - name: Build node app
-        working-directory: permission-portal-frontend
+        working-directory: frontend
         env:
           CI: true
         run: |
@@ -35,24 +35,31 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Install
-        working-directory: permission-portal-cloud-functions/functions
+        working-directory: cloud-functions/functions
         run: npm install
       - name: Initialize config files
-        working-directory: permission-portal-cloud-functions/functions
+        working-directory: cloud-functions/functions
         run: npm run init       
+      - name: Setup functions config
+        working-directory: cloud-functions/functions
+        run: npm run config:set
+        env: 
+          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
+          SENDGRID_API_TOKEN: ${{ secrets.SENDGRID_API_TOKEN }}
+          NODE_ENV: test
       - name: Lint and Build
-        working-directory: permission-portal-cloud-functions/functions
+        working-directory: cloud-functions/functions
         run: |
           npm run lint
           npm run build
       - name: Remove node_modules for upload
-        working-directory: permission-portal-cloud-functions/functions
+        working-directory: cloud-functions/functions
         run: rm -r node_modules
       - name: Upload artifact
         uses: actions/upload-artifact@v2
         with:
           name: cloud-functions-artifact
-          path: permission-portal-cloud-functions/functions
+          path: cloud-functions/functions
 
   deploy-firebase:
     name: Deploy Firebase
@@ -63,17 +70,17 @@ jobs:
       - uses: actions/download-artifact@v2
         with:
           name: cloud-functions-artifact
-          path: permission-portal-cloud-functions/functions
+          path: cloud-functions/functions
       - name: Install 
-        working-directory: permission-portal-cloud-functions/functions
+        working-directory: cloud-functions/functions
         run: npm install
       - name: Deploy to Firebase Test Infra
         uses: w9jds/firebase-action@master
         with:
-          args: deploy --project=test
+          args: deploy -f --project=test
         env:
           FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
-          PROJECT_PATH: permission-portal-cloud-functions/
+          PROJECT_PATH: cloud-functions/
 
   firebase-tests:
     name: Run Firebase Tests
@@ -84,12 +91,12 @@ jobs:
       - uses: actions/download-artifact@v2
         with:
           name: cloud-functions-artifact
-          path: permission-portal-cloud-functions/functions
+          path: cloud-functions/functions
       - name: Install 
-        working-directory: permission-portal-cloud-functions/functions
+        working-directory: cloud-functions/functions
         run: npm install
       - name: Run Tests
-        working-directory: permission-portal-cloud-functions/functions
+        working-directory: cloud-functions/functions
         run: npm run test_ci
         env:
           FIREBASE_PRIVATE_KEY: ${{ secrets.FIREBASE_PRIVATE_KEY }}

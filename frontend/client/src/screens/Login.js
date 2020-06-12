@@ -68,7 +68,7 @@ const SignInFormBase = observer(
       <Fragment>
         <PageTitle title="Welcome" />
         <div className="topNav">
-          <img src={ucsf_health} id="orgLogo" alt={this.props.store.organization.name || 'UCSF Health'} />
+          <img src={ucsf_health} id="orgLogo" alt={this.props.store.data.organization.name || 'UCSF Health'} />
           <img src={powered_by_cw} id="poweredByCWLogo" alt="Powered by Covid Watch" />
         </div>
         <div className="mainContainer">
@@ -93,7 +93,7 @@ const SignInFormBase = observer(
     )
 
     render() {
-      return this.props.store.user.isSignedIn ? (
+      return this.props.store.data.user.isSignedIn ? (
         <Redirect to={ROUTES.CODE_VALIDATIONS} />
       ) : (
         <Fragment>
