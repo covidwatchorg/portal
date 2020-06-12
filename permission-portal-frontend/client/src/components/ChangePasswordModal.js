@@ -34,7 +34,7 @@ class ChangePasswordModalBase extends React.Component {
       let newState = {}
       if (fieldName === 'password') {
         newState.password = fieldContent
-        newState.passwordIsValid = newState.password !== ''
+        newState.passwordIsValid = newState.password && newState.password.length >= 6
         newState.passwordsMatch = newState.password === state.confirmPassword
       }
       if (fieldName === 'confirm-password') {
