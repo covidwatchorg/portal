@@ -15,11 +15,13 @@ class ChangePasswordModalBase extends React.Component {
       currentPassword: '',
       password: '',
       confirmPassword: '',
-      passwordsMatch: false,
+      passwordsMatch: true,
       passwordIsValid: false,
       successful: false,
       message: '',
       loginTimeoutError: false,
+      formHasBeenEdited: false,
+      confirmPasswordHasBeenEdited: false,
     }
     this.onChange = this.onChange.bind(this)
     this.onSubmit = this.onSubmit.bind(this)
@@ -36,7 +38,9 @@ class ChangePasswordModalBase extends React.Component {
     let fieldContent = event.target.value
     // Serialize updates
     this.setState((state) => {
-      let newState = {}
+      let newState = {
+        formHasBeenEdited: true,
+      }
       if (fieldName === 'current-password') {
         newState.currentPassword = fieldContent
       }
@@ -46,6 +50,7 @@ class ChangePasswordModalBase extends React.Component {
         newState.passwordsMatch = newState.password === state.confirmPassword
       }
       if (fieldName === 'confirm-password') {
+        newState.confirmPasswordHasBeenEdited = true
         newState.confirmPassword = fieldContent
         newState.passwordsMatch = state.password === newState.confirmPassword
       }
@@ -150,6 +155,9 @@ class ChangePasswordModalBase extends React.Component {
                   value={this.state.currentPassword}
                   onChange={this.onChange}
                 />
+                <div className="validationResult">
+                  {!this.state.currentPassword ? 'Current password cannot be blank' : ''}
+                </div>
               </>
             )}
             <label htmlFor="new-password">
@@ -164,6 +172,13 @@ class ChangePasswordModalBase extends React.Component {
               value={this.state.password}
               onChange={this.onChange}
             />
+            <div className="validationResult">
+              {!this.state.passwordIsValid && this.state.formHasBeenEdited
+                ? this.state.password.length > 0
+                  ? 'Password must be at least 6 characters long'
+                  : 'New password cannot be blank'
+                : ''}
+            </div>
             <label htmlFor="confirm-password">
               Confirm new password<span>*</span>
             </label>
@@ -176,8 +191,10 @@ class ChangePasswordModalBase extends React.Component {
               value={this.state.confirmPassword}
               onChange={this.onChange}
             />
+            <div className="validationResult">
+              {!this.state.passwordsMatch && this.state.confirmPasswordHasBeenEdited ? 'Passwords must match' : ''}
+            </div>
 
-            {/* TODO Enable if state.passwordIsValid && state.passwordsMatch */}
             <PendingOperationButton
               className={`save-password${this.canSubmit() ? '' : '-disabled'}`}
               operation={this.onSubmit}
