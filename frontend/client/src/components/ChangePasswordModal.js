@@ -211,6 +211,6 @@ class ChangePasswordModalBase extends React.Component {
   }
 }
 
-const ChangePasswordFirstTimeModal = withStore(ChangePasswordModalBase)
+const ChangePasswordModal = withStore(ChangePasswordModalBase)
 
-export default ChangePasswordFirstTimeModal
+export default ChangePasswordModal

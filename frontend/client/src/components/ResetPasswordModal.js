@@ -6,7 +6,7 @@ import { withStore } from '../store'
 import Logging from '../util/logging'
 import firebase from 'firebase'
 
-class ChangePasswordModalBase extends React.Component {
+class ResetPasswordModalBase extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
@@ -87,7 +87,11 @@ class ChangePasswordModalBase extends React.Component {
 
   render() {
     return (
-      <Modal hidden={this.props.hidden} onClose={this.props.onClose} containerClass="change-password-modal-container">
+      <Modal
+        hidden={this.props.hidden}
+        onClose={this.props.onClose}
+        containerClass="change-password-modal-container reset-modal-container"
+      >
         <h2> Change Password </h2>
         <form className="change-password-form">
           <label htmlFor="current-password">
@@ -152,6 +156,6 @@ class ChangePasswordModalBase extends React.Component {
   }
 }
 
-const ChangePasswordModal = withStore(ChangePasswordModalBase)
+const ResetPasswordModal = withStore(ResetPasswordModalBase)
 
-export default ChangePasswordModal
+export default ResetPasswordModal

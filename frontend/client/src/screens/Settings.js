@@ -95,7 +95,7 @@ const SettingsBase = observer((props) => {
   const primaryButton = primaryButtonStyles()
   const changeImage = changeImageModalStyles()
   const [showChangeImageModal, setShowChangeImageModal] = useState(false)
-  const [showChangePasswordModal, setShowChangePasswordModal] = useState(false)
+  const [showResetPasswordModal, setShowResetPasswordModal] = useState(false)
   const [toastInfo, setToastInfo] = useState({
     success: false,
     msg: '',
@@ -104,7 +104,7 @@ const SettingsBase = observer((props) => {
 
   const resetPassword = async (e) => {
     e.preventDefault()
-    setShowChangePasswordModal(true)
+    setShowResetPasswordModal(true)
   }
 
   const onChange = async (event) => {
@@ -155,7 +155,7 @@ const SettingsBase = observer((props) => {
       msg: 'Password Succesfully Reset',
     })
     toastRef.current.show()
-    setShowChangePasswordModal(false)
+    setShowResetPasswordModal(false)
   }
 
   const onChangePasswordFailure = (message) => {
@@ -167,7 +167,7 @@ const SettingsBase = observer((props) => {
   }
 
   const onChangePasswordClose = () => {
-    setShowChangePasswordModal(false)
+    setShowResetPasswordModal(false)
   }
 
   const changeImageModal = (
@@ -339,7 +339,7 @@ const SettingsBase = observer((props) => {
       </div>
       {settingsForm()}
       <ResetPasswordModal
-        hidden={!showChangePasswordModal}
+        hidden={!showResetPasswordModal}
         onClose={onChangePasswordClose}
         onSuccess={onChangePasswordSuccess}
         onFailure={onChangePasswordFailure}
