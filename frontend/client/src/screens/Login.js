@@ -86,6 +86,7 @@ const SignInFormBase = observer(
             <button onClick={this.clickSubmit}>Login</button>
             <a onClick={this.showModal}>Forgot password?</a>
           </div>
+          <div></div>
           <ForgotPasswordModal hidden={!this.state.showPassModal} onClose={this.hideModal} />
         </div>
         <Toast ref={this.errorToast} isSuccess={false} message={this.state.toastMessage} />
@@ -96,10 +97,10 @@ const SignInFormBase = observer(
       return this.props.store.data.user.isSignedIn ? (
         <Redirect to={ROUTES.CODE_VALIDATIONS} />
       ) : (
-        <Fragment>
+        <div className="module-container">
           {this.loginForm()}
           {this.bottomLevelContent()}
-        </Fragment>
+        </div>
       )
     }
   }
