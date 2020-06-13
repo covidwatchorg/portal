@@ -86,7 +86,6 @@ const SignInFormBase = observer(
             <button onClick={this.clickSubmit}>Login</button>
             <a onClick={this.showModal}>Forgot password?</a>
           </div>
-          <div></div>
           <ForgotPasswordModal hidden={!this.state.showPassModal} onClose={this.hideModal} />
         </div>
         <Toast ref={this.errorToast} isSuccess={false} message={this.state.toastMessage} />
