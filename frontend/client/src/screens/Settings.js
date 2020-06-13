@@ -11,6 +11,7 @@ import { observer } from 'mobx-react'
 import PageTitle from '../components/PageTitle'
 import photo_add from '../../assets/photo-add.svg'
 import Logging from '../util/logging'
+import ChangePasswordModal from '../components/ChangePasswordModal'
 
 const useStyles = makeStyles({
   root: {
@@ -324,6 +325,7 @@ const SettingsBase = observer((props) => {
           <p>Changes are automatically saved</p>
         </div>
         {settingsForm()}
+        <ChangePasswordModal />
       </div>
     </React.Fragment>
   ) : (

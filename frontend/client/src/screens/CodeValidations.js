@@ -8,6 +8,7 @@ import { Redirect } from 'react-router-dom'
 import { observer } from 'mobx-react'
 import PageTitle from '../components/PageTitle'
 import PendingOperationButton from '../components/PendingOperationButton'
+import ChangePasswordModal from '../components/ChangePasswordModal'
 
 // snackbars docs can be found here:
 // https://material-ui.com/components/snackbars/
@@ -63,6 +64,7 @@ const CodeValidationsBase = observer((props) => {
         </div>
       </div>
       <Toast ref={confirmedToast} isSuccess={toastInfo.success} message={toastInfo.msg} />
+      <ChangePasswordModal />
     </div>
   ) : (
     <Redirect to={ROUTES.LANDING} />
