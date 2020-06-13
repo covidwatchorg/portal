@@ -119,7 +119,9 @@ class ChangePasswordModalBase extends React.Component {
       <>
         <Modal
           hidden={!this.state.visible}
-          containerClass={`change-password-modal-container${this.state.loginTimeoutError ? ' err-timeout' : ''}`}
+          containerClass={`change-password-modal-container${
+            this.state.loginTimeoutError ? ' err-timeout' : ''
+          } first-time-modal-container`}
           isDismissible={false}
         >
           {!this.state.loginTimeoutError ? (
@@ -209,6 +211,6 @@ class ChangePasswordModalBase extends React.Component {
   }
 }
 
-const ChangePasswordModal = withStore(ChangePasswordModalBase)
+const ChangePasswordFirstTimeModal = withStore(ChangePasswordModalBase)
 
-export default ChangePasswordModal
+export default ChangePasswordFirstTimeModal
