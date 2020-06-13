@@ -57,10 +57,9 @@ class ChangePasswordModalBase extends React.Component {
     Logging.error(err)
     if (err.code === 'auth/wrong-password') {
       this.props.onFailure('Current password incorrect, please try again')
-    } else if(err.code === 'auth/too-many-requests') {
-          this.props.onFailure('Too many incorrect attempts. Please try again later')
-      }
-      else {
+    } else if (err.code === 'auth/too-many-requests') {
+      this.props.onFailure('Too many incorrect attempts. Please try again later')
+    } else {
       this.props.onFailure('Failed to reset password, please try again')
     }
     this.setState({ currentPassword: '', confirmPassword: '', password: '' })
