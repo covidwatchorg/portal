@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import doctor from '../../assets/404-doctor.svg'
 import '../../Styles/screens/404.scss'
 import PageTitle from '../components/PageTitle'
+import ChangePasswordModal from '../components/ChangePasswordModal'
 
 const NotFound = () => {
   return (
@@ -22,6 +23,7 @@ const NotFound = () => {
         {/* this could maybe link to a help desk page outside of React?  Just set to reload page for now */}
         <a href="/404">Get Support</a>
       </div>
+      <ChangePasswordModal />
     </div>
   )
 }

@@ -8,7 +8,7 @@ if (
   process.env.NODE_ENV !== 'test' &&
   process.env.NODE_ENV !== 'staging'
 ) {
-  throw new Error('Environment variable NODE_ENV must be set to one of `dev` or `test` or `staging`');
+  throw new Error('Environment variable NODE_ENV must be set to one of `dev` or `test` or `staging` or `local`');
 }
 
 // Initialize admin SDK
@@ -45,6 +45,7 @@ async function addMinimalSampleData() {
           disabled: false,
           firstName: uniqueNamesGenerator({ dictionaries: [names], length: 1 }),
           lastName: uniqueNamesGenerator({ dictionaries: [names], length: 1 }),
+          isFirstTimeUser: false,
         });
       try {
         await auth.createUser({
@@ -63,6 +64,7 @@ async function addMinimalSampleData() {
               disabled: false,
               firstName: uniqueNamesGenerator({ dictionaries: [names], length: 1 }),
               lastName: uniqueNamesGenerator({ dictionaries: [names], length: 1 }),
+              isFirstTimeUser: false,
             });
           try {
             await auth.createUser({
@@ -86,6 +88,7 @@ async function addMinimalSampleData() {
                     disabled: false,
                     firstName: uniqueNamesGenerator({ dictionaries: [names], length: 1 }),
                     lastName: uniqueNamesGenerator({ dictionaries: [names], length: 1 }),
+                    isFirstTimeUser: false,
                   });
                 try {
                   await auth.createUser({
@@ -104,6 +107,7 @@ async function addMinimalSampleData() {
                         disabled: false,
                         firstName: uniqueNamesGenerator({ dictionaries: [names], length: 1 }),
                         lastName: uniqueNamesGenerator({ dictionaries: [names], length: 1 }),
+                        isFirstTimeUser: false,
                       });
                     try {
                       await auth.createUser({
@@ -121,6 +125,7 @@ async function addMinimalSampleData() {
                           disabled: true,
                           firstName: uniqueNamesGenerator({ dictionaries: [names], length: 1 }),
                           lastName: uniqueNamesGenerator({ dictionaries: [names], length: 1 }),
+                          isFirstTimeUser: false,
                         });
                       await db
                         .collection('users')
@@ -132,6 +137,7 @@ async function addMinimalSampleData() {
                           disabled: true,
                           firstName: uniqueNamesGenerator({ dictionaries: [names], length: 1 }),
                           lastName: uniqueNamesGenerator({ dictionaries: [names], length: 1 }),
+                          isFirstTimeUser: false,
                         });
                       await auth.createUser({
                         email: 'disabled@soylentgreen.com',
@@ -246,6 +252,7 @@ async function createRandomUser(company) {
         disabled: false,
         firstName: firstName,
         lastName: lastName,
+        isFirstTimeUser: true,
       });
     console.log('users user created');
     try {
@@ -276,18 +283,6 @@ async function main() {
     for (let i = 0; i < 10; i++) {
       try {
         await createRandomUser('soylentgreen');
-      } catch (error) {
-        console.log('Encountered an error while attempting to create a random user');
-        console.log(error);
-        console.log('continuing');
-        i--;
-        continue;
-      }
-    }
-
-    for (let i = 0; i < 5000; i++) {
-      try {
-        await createRandomUser('initech');
       } catch (error) {
         console.log('Encountered an error while attempting to create a random user');
         console.log(error);
