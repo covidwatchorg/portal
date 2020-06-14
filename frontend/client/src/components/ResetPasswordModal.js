@@ -17,7 +17,8 @@ class ResetPasswordModalBase extends React.Component {
       passwordIsValid: false,
       successful: false,
       message: '',
-      formHasBeenEdited: false,
+      newPasswordHasBeenEdited: false,
+      currentPasswordHasBeenEdited: false,
       confirmPasswordHasBeenEdited: false,
     }
     this.onChange = this.onChange.bind(this)
@@ -33,13 +34,13 @@ class ResetPasswordModalBase extends React.Component {
     let fieldContent = event.target.value
     // Serialize updates
     this.setState((state) => {
-      let newState = {
-        formHasBeenEdited: true,
-      }
+      let newState = {}
       if (fieldName === 'current-password') {
         newState.currentPassword = fieldContent
+        newState.currentPasswordHasBeenEdited = true
       }
       if (fieldName === 'new-password') {
+        newState.newPasswordHasBeenEdited = true
         newState.password = fieldContent
         newState.passwordIsValid = newState.password && newState.password.length >= 6
         newState.passwordsMatch = newState.password === state.confirmPassword
@@ -57,12 +58,12 @@ class ResetPasswordModalBase extends React.Component {
     Logging.error(err)
     if (err.code === 'auth/wrong-password') {
       this.props.onFailure('Current password incorrect, please try again')
+      this.setState({ currentPassword: '', currentPasswordHasBeenEdited: false })
     } else if (err.code === 'auth/too-many-requests') {
       this.props.onFailure('Too many incorrect attempts. Please try again later')
     } else {
       this.props.onFailure('Failed to reset password, please try again')
     }
-    this.setState({ currentPassword: '', confirmPassword: '', password: '' })
   }
 
   onSubmit() {
@@ -107,7 +108,9 @@ class ResetPasswordModalBase extends React.Component {
             onChange={this.onChange}
           />
           <div className="validationResult">
-            {!this.state.currentPassword ? 'Current password cannot be blank' : ''}
+            {!this.state.currentPassword && this.state.currentPasswordHasBeenEdited
+              ? 'Current password cannot be blank'
+              : ''}
           </div>
           <label htmlFor="new-password">
             New password<span>*</span>
@@ -122,7 +125,7 @@ class ResetPasswordModalBase extends React.Component {
             onChange={this.onChange}
           />
           <div className="validationResult">
-            {!this.state.passwordIsValid && this.state.formHasBeenEdited
+            {!this.state.passwordIsValid && this.state.newPasswordHasBeenEdited
               ? this.state.password.length > 0
                 ? 'Password must be at least 6 characters long'
                 : 'New password cannot be blank'
