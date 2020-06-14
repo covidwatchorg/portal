@@ -15,13 +15,20 @@ function ChangePasswordModalBase(props) {
   const [confirmPassword, setConfirmPassword] = useState('')
   const [passwordsMatch, setPasswordsMatch] = useState(true)
   const [passwordIsValid, setPasswordIsValid] = useState(false)
-  const [successful, setSuccessful] = useState(false)
-  const [message, setMessage] = useState('')
   const [loginTimeoutError, setLoginTimeoutError] = useState(false)
   const [formHasBeenEdited, setFormHasBeenEdited] = useState(false)
   const [confirmPasswordHasBeenEdited, setConfirmPasswordHasBeenEdited] = useState(false)
 
-  const toast = useRef()
+  const toastRef = useRef()
+  const [toastState, setToastState] = useState({
+    successful: false,
+    message: '',
+  })
+
+  function displayToast(toastState) {
+    setToastState(toastState)
+    toastRef.current.show()
+  }
 
   function onChange(event) {
     let fieldName = event.target.name
@@ -44,9 +51,9 @@ function ChangePasswordModalBase(props) {
       setPassword(newFormState.password)
     }
     if (fieldName === 'confirm-password') {
-      setConfirmPasswordHasBeenEdited(true)
       newFormState.confirmPassword = fieldContent
       setConfirmPassword(newFormState.confirmPassword)
+      setConfirmPasswordHasBeenEdited(true)
     }
 
     setPasswordIsValid(newFormState.password && newFormState.password.length >= 6)
@@ -57,6 +64,22 @@ function ChangePasswordModalBase(props) {
     Logging.error(err)
     if (err.code === 'auth/requires-recent-login') {
       setLoginTimeoutError(true)
+    } else if (err.code === 'auth/wrong-password') {
+      setToastState({
+        successful: false,
+        message: 'Current password incorrect, please try again.',
+      })
+      setCurrentPassword('')
+    } else if (err.code === 'auth/too-many-requests') {
+      setToastState({
+        successful: false,
+        message: 'Too many incorrect attempts. Please try again later.',
+      })
+    } else {
+      setToastState({
+        successful: false,
+        message: 'Failed to update password, please try again.',
+      })
     }
     throw err
   }
@@ -76,9 +99,10 @@ function ChangePasswordModalBase(props) {
     // 3. Close the modal and pop the toast
     return setFirstTimeUser.then(() => {
       setVisible(false)
-      setSuccessful(true)
-      setMessage('Password successfully updated.')
-      toast.current.show()
+      displayToast({
+        successful: true,
+        message: 'Password successfully updated.',
+      })
     })
   }
 
@@ -184,7 +208,7 @@ function ChangePasswordModalBase(props) {
           </PendingOperationButton>
         </form>
       </Modal>
-      <Toast ref={toast} isSuccess={successful} message={message} />
+      <Toast ref={toastRef} isSuccess={toastState.successful} message={toastState.message} />
     </>
   )
 }
