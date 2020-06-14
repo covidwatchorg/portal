@@ -26,7 +26,7 @@ function ChangePasswordModalBase(props) {
   function onChange(event) {
     let fieldName = event.target.name
     let fieldContent = event.target.value
-    // Serialize updates
+
     setFormHasBeenEdited(true)
 
     let newFormState = {
@@ -37,18 +37,18 @@ function ChangePasswordModalBase(props) {
 
     if (fieldName === 'current-password') {
       newFormState.currentPassword = fieldContent
+      setCurrentPassword(newFormState.currentPassword)
     }
     if (fieldName === 'new-password') {
       newFormState.password = fieldContent
+      setPassword(newFormState.password)
     }
     if (fieldName === 'confirm-password') {
       setConfirmPasswordHasBeenEdited(true)
       newFormState.confirmPassword = fieldContent
+      setConfirmPassword(newFormState.confirmPassword)
     }
 
-    setCurrentPassword(newFormState.currentPassword)
-    setPassword(newFormState.password)
-    setConfirmPassword(newFormState.confirmPassword)
     setPasswordIsValid(newFormState.password && newFormState.password.length >= 6)
     setPasswordsMatch(newFormState.password === newFormState.confirmPassword)
   }
