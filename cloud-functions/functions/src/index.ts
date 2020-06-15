@@ -160,25 +160,6 @@ function isAdminGuard(context: functions.https.CallableContext): Promise<void> {
   });
 }
 
-// Throw error if user is not authenticed or not an admin or the user indexed by email is not in the same organization as the caller
-function isUserInCallersOrganizationGuard(email: string, context: functions.https.CallableContext): Promise<void> {
-  return isAdminGuard(context).then(() => {
-    return auth
-      .getUserByEmail(email)
-      .then((userRecord) => {
-        if (userRecord.customClaims!.organizationID !== context.auth?.token.organizationID) {
-          throw new functions.https.HttpsError(
-            'permission-denied',
-            'Operation cannot be performed on user in another organization.'
-          );
-        }
-      })
-      .catch((err) => {
-        throw err;
-      });
-  });
-}
-
 // Send email to new users instructing them to change their password
 function sendNewUserEmail(email: string, password: string, firstName: string, lastName: string) {
   const msg = {
@@ -279,37 +260,6 @@ export const createUser = functions.https.onCall((newUser, context) => {
                 } else {
                   reject(new functions.https.HttpsError('internal', err.errorInfo.message));
                 }
-              });
-          })
-          .catch((err) => {
-            reject(err);
-          });
-      })
-      .catch((err) => {
-        reject(err);
-      });
-  }).catch((err) => {
-    console.error(err);
-    throw err;
-  });
-});
-
-// Callable for admins to delete users in their organization.
-// Recall that firestore rules are made irrelevant by our use of the admin client, so we need to check ourselves
-// that the caller is an admin for the to-be-deleted user's organization (using isUserInCallersOrganizationGuard())
-export const deleteUser = functions.https.onCall((data, context) => {
-  return new Promise((resolve, reject) => {
-    isUserInCallersOrganizationGuard(data.email, context)
-      .then(() => {
-        auth
-          .getUserByEmail(data.email)
-          .then((userRecord) => {
-            deleteUserByUid(userRecord.uid)
-              .then(() => {
-                resolve(`Successfully deleted user ${data.email}`);
-              })
-              .catch((err) => {
-                reject(err);
               });
           })
           .catch((err) => {
