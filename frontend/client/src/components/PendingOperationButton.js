@@ -17,6 +17,7 @@ const PendingOperationButton = (props) => {
   })
 
   const className = (props.className || '') + ' button' + (props.disabled ? ' disabled' : '')
+  const style = props.style || {}
   const operation = props.operation || (() => {})
   const disabled = props.disabled || false
 
@@ -50,7 +51,7 @@ const PendingOperationButton = (props) => {
 
   if (!state.isOperationStarted) {
     return (
-      <button className={className} disabled={disabled} onClick={startOperation}>
+      <button className={className} disabled={disabled} style={style} onClick={startOperation}>
         {props.children}
       </button>
     )
