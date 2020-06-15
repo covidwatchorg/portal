@@ -5,7 +5,7 @@ import CircularProgress from '@material-ui/core/CircularProgress'
  * Encapsulates a button driven operation which takes time and may succeed or fail.
  *
  * Props:
- *  - operation: Should return a Promise.
+ *  - operation: Should return a Promise or be an async function.
  *  - className: Any additional styles to apply to this component instance. button and disabled
  *    are applied by default.
  *  - disabled: false by default.
