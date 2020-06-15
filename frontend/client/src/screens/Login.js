@@ -30,16 +30,13 @@ const SignInFormBase = observer(
       this.errorToast = createRef()
     }
 
-    clickSubmit = () => {
-      return new Promise(() => {
-        const { email, password } = this.state
-        try {
-          this.props.store.signInWithEmailAndPassword(email, password)
-        } catch (err) {
-          this.errorToast.current.show()
-          throw err
-        }
-      })
+    clickSubmit = async () => {
+      const { email, password } = this.state
+      try {
+        await this.props.store.signInWithEmailAndPassword(email, password)
+      } catch (err) {
+        this.errorToast.current.show()
+      }
     }
 
     onChange = (name) => (event) => {
