@@ -1,15 +1,24 @@
 import React from 'react'
 import CircularProgress from '@material-ui/core/CircularProgress'
 
-// Encapsulates a button driven operation which takes time and may succeed or fail
+/**
+ * Encapsulates a button driven operation which takes time and may succeed or fail.
+ *
+ * Props:
+ *  - operation: Should return a Promise.
+ *  - className: Any additional styles to apply to this component instance. button and disabled
+ *    are applied by default.
+ *  - disabled: false by default.
+ */
 const PendingOperationButton = (props) => {
   const [state, setState] = React.useState({
     isOperationStarted: false,
     operationSucceeded: false,
   })
 
-  const className = props.className || ''
+  const className = (props.className || '') + ' button' + (props.disabled ? ' disabled' : '')
   const operation = props.operation || (() => {})
+  const disabled = props.disabled || false
 
   const startOperation = () => {
     setState({
@@ -41,9 +50,9 @@ const PendingOperationButton = (props) => {
 
   if (!state.isOperationStarted) {
     return (
-      <div className={className} onClick={startOperation}>
+      <button className={className} disabled={disabled} onClick={startOperation}>
         {props.children}
-      </div>
+      </button>
     )
   } else {
     return (
