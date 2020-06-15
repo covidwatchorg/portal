@@ -57,12 +57,12 @@ class ResetPasswordModalBase extends React.Component {
   handleFirebaseError(err) {
     Logging.error(err)
     if (err.code === 'auth/wrong-password') {
-      this.props.onFailure('Current password incorrect, please try again')
+      this.props.onFailure('Current password incorrect. Please try again.')
       this.setState({ currentPassword: '', currentPasswordHasBeenEdited: false })
     } else if (err.code === 'auth/too-many-requests') {
-      this.props.onFailure('Too many incorrect attempts. Please try again later')
+      this.props.onFailure('Too many incorrect attempts. Please try again later.')
     } else {
-      this.props.onFailure('Failed to reset password, please try again')
+      this.props.onFailure('Failed to reset password. Please try again.')
     }
   }
 
