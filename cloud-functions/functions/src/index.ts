@@ -236,6 +236,7 @@ export const createUser = functions.https.onCall((newUser, context) => {
           disabled: false,
           firstName: newUser.firstName,
           lastName: newUser.lastName,
+          isFirstTimeUser: true,
         };
         db.collection('users')
           .doc(newUser.email.toLowerCase())
