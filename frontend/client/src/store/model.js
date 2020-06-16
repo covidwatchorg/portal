@@ -4,7 +4,7 @@ import Logging from '../util/logging'
 
 const User = types
   .model({
-    isSignedIn: types.maybe(types.boolean),
+    isSignedIn: types.boolean,
     email: types.string,
     isAdmin: types.boolean,
     isSuperAdmin: types.boolean,
@@ -14,7 +14,10 @@ const User = types
     firstName: types.string,
     lastName: types.string,
     organizationID: types.string,
-    isFirstTimeUser: types.maybe(types.boolean),
+    isFirstTimeUser: types.boolean,
+    passwordResetRequested: types.boolean,
+    passwordResetCompletedInCurrentSession: types.boolean,
+    signedInWithEmailLink: types.boolean,
   })
   .actions((self) => {
     const __update = (updates) => {
@@ -83,6 +86,10 @@ const defaultUser = {
   lastName: '',
   organizationID: '',
   imageBlob: null,
+  isFirstTimeUser: true,
+  passwordResetRequested: false,
+  passwordResetCompletedInCurrentSession: false,
+  signedInWithEmailLink: false,
 }
 
 const defaultOrganization = {
