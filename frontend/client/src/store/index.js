@@ -1,7 +1,7 @@
 import React from 'react'
 import { rootStore, defaultUser, defaultOrganization } from './model'
 import Logging from '../util/logging'
-import { auth, db, createUserCallable, SESSION } from './firebase'
+import { auth, db, SESSION, createUserCallable, initiatePasswordRecoveryCallable } from './firebase'
 
 const PAGE_SIZE = 15
 
@@ -11,6 +11,7 @@ const createStore = (WrappedComponent) => {
   return class extends React.Component {
     constructor(props) {
       super(props)
+      auth.setPersistence(SESSION)
       this.data = rootStore
       this.__userDocumentListener = null
       this.__userImageListener = null
@@ -18,6 +19,7 @@ const createStore = (WrappedComponent) => {
       this.__pageOfMembersListener = null
       this.__lastVisibleMember = null // pagination helper
       this.__firstVisibleMember = null // pagination helper
+      this.__signedInWithEmailLink = false // firebase doesn't tell us this so we need to track it ourself
       this.__authStateListener = auth.onAuthStateChanged(async (user) => {
         if (user) {
           Logging.log('User signed in')
@@ -32,6 +34,7 @@ const createStore = (WrappedComponent) => {
                   ...updatedUserDocumentSnapshot.data(),
                   email: updatedUserDocumentSnapshot.id,
                   isSignedIn: true,
+                  signedInWithEmailLink: this.__signedInWithEmailLink,
                 })
                 // If DNE, set up organization listener within this callback,
                 // since it relies on this.data.user.organizationID being set
@@ -175,8 +178,13 @@ const createStore = (WrappedComponent) => {
     }
 
     async signInWithEmailAndPassword(email, password) {
-      await auth.setPersistence(SESSION)
+      this.__signedInWithEmailLink = false
       await auth.signInWithEmailAndPassword(email, password)
+    }
+
+    async signInWithEmailLink(email, link) {
+      this.__signedInWithEmailLink = true
+      return auth.signInWithEmailLink(email, link)
     }
 
     async signOut() {
@@ -204,6 +212,19 @@ const createStore = (WrappedComponent) => {
       }
     }
 
+    async sendPasswordRecoveryEmail(email) {
+      try {
+        await initiatePasswordRecoveryCallable({ email: email })
+        // Save the email locally so you don't need to ask the user for it again if they open the link on the same device.
+        // See https://firebase.google.com/docs/auth/web/email-link-auth#send_an_authentication_link_to_the_users_email_address
+        window.localStorage.setItem('emailForSignIn', email)
+        return true
+      } catch (err) {
+        Logging.error(err)
+        throw err
+      }
+    }
+
     async updateUserByEmail(email, updates) {
       try {
         await db.collection('users').doc(email).update(updates)
@@ -211,6 +232,10 @@ const createStore = (WrappedComponent) => {
         Logging.error(`Error updating user: ${email}`, err)
         throw err
       }
+    }
+
+    isSignInWithEmailLink(link) {
+      return auth.isSignInWithEmailLink(link)
     }
 
     displayName = 'storeProvider'
