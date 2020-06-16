@@ -20,7 +20,7 @@ class ForgotPasswordModal extends React.Component {
     }
 
     try {
-      await this.props.store.sendPasswordResetEmail(this.state.email)
+      await this.props.store.sendPasswordRecoveryEmail(this.state.email)
       this.setState({ isSuccess: true, emailPrompt: false, email: '', validEmail: true })
     } catch {
       this.setState({ isSuccess: false, emailPrompt: false, email: '', validEmail: true })
