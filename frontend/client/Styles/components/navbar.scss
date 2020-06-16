@@ -3,7 +3,7 @@
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
-  padding: 16px 32px;
+  padding: 30px 32px 25px 32px;
   box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.1);
   #orgLogo {
     height: 35px;
@@ -26,13 +26,13 @@
 
   display: inline-block;
   text-align: center;
-  margin-right: 31px;
+  margin-right: 27px;
   margin-top: -42px;
 
   &.separator {
     margin-top: 0px;
-    border: 2px solid #E0E0E0;
-    height: 31px;
+    border: 1px solid #E0E0E0;
+    height: 63px;
     width: 0px;
   }
   &.avatar_text {
