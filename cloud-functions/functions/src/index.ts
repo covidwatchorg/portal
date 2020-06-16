@@ -401,7 +401,7 @@ export const userOnUpdate = functions.firestore.document('users/{email}').onUpda
   });
 });
 
-export const initiatePasswordRecovery = functions.https.onCall((body, context) => {
+export const initiatePasswordRecovery = functions.https.onCall((body) => {
   // tslint:disable-next-line: no-shadowed-variable
   return new Promise((resolve, reject) => {
     db.collection('users')

@@ -55,6 +55,7 @@ const SignInFormBase = observer(
     }
 
     trySignInWithEmailLink = async () => {
+      // Based on https://firebase.google.com/docs/auth/web/email-link-auth
       if (this.props.store.isSignInWithEmailLink(window.location.href)) {
         Logging.log('signInWithEmailLink detected')
         // Get the email if available. This should be available if the user completes

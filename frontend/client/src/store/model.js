@@ -4,7 +4,7 @@ import Logging from '../util/logging'
 
 const User = types
   .model({
-    isSignedIn: types.boolean,
+    isSignedIn: types.boolean, // frontend-only field
     email: types.string,
     isAdmin: types.boolean,
     isSuperAdmin: types.boolean,
@@ -16,8 +16,8 @@ const User = types
     organizationID: types.string,
     isFirstTimeUser: types.boolean,
     passwordResetRequested: types.boolean,
-    passwordResetCompletedInCurrentSession: types.boolean,
-    signedInWithEmailLink: types.boolean,
+    passwordResetCompletedInCurrentSession: types.boolean, // frontend-only field
+    signedInWithEmailLink: types.boolean, // frontend-only field
   })
   .actions((self) => {
     const __update = (updates) => {
@@ -76,7 +76,7 @@ const Store = types.model({
 })
 
 const defaultUser = {
-  isSignedIn: false, // frontend-only field
+  isSignedIn: false,
   email: '',
   isAdmin: false,
   isSuperAdmin: false,
@@ -88,8 +88,8 @@ const defaultUser = {
   imageBlob: null,
   isFirstTimeUser: true,
   passwordResetRequested: false,
-  passwordResetCompletedInCurrentSession: false, // frontend-only field
-  signedInWithEmailLink: false, // frontend-only field
+  passwordResetCompletedInCurrentSession: false,
+  signedInWithEmailLink: false,
 }
 
 const defaultOrganization = {

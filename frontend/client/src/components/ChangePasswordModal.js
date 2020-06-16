@@ -62,6 +62,7 @@ class ChangePasswordModalBase extends React.Component {
       subHeading:
         'An error occured while trying to reset your password. Please close this message and restart the process.',
       isDismissible: true,
+      showNewPasswordInputs: false,
     })
     throw err
   }
