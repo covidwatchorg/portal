@@ -44,7 +44,7 @@ const createStore = (WrappedComponent) => {
                     .doc(this.data.user.organizationID)
                     .onSnapshot((updatedOrganizationDocumentSnapshot) => {
                       Logging.log('Remote organization document changed')
-                      rootStore.organization.__update({
+                      this.data.organization.__update({
                         ...updatedOrganizationDocumentSnapshot.data(),
                         id: updatedOrganizationDocumentSnapshot.id,
                         currentPage: this.data.organization.currentPage,
@@ -236,6 +236,10 @@ const createStore = (WrappedComponent) => {
 
     isSignInWithEmailLink(link) {
       return auth.isSignInWithEmailLink(link)
+    }
+
+    setPasswordResetCompletedInCurrentSession(val) {
+      this.data.user.__update({ passwordResetCompletedInCurrentSession: val })
     }
 
     displayName = 'storeProvider'

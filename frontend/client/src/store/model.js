@@ -76,7 +76,7 @@ const Store = types.model({
 })
 
 const defaultUser = {
-  isSignedIn: false,
+  isSignedIn: false, // frontend-only field
   email: '',
   isAdmin: false,
   isSuperAdmin: false,
@@ -88,8 +88,8 @@ const defaultUser = {
   imageBlob: null,
   isFirstTimeUser: true,
   passwordResetRequested: false,
-  passwordResetCompletedInCurrentSession: false,
-  signedInWithEmailLink: false,
+  passwordResetCompletedInCurrentSession: false, // frontend-only field
+  signedInWithEmailLink: false, // frontend-only field
 }
 
 const defaultOrganization = {
@@ -123,8 +123,8 @@ const defaultStore = {
 let initialStore = defaultStore
 
 // Based on https://egghead.io/lessons/react-store-store-in-local-storage
-if (localStorage.getItem('store')) {
-  initialStore = JSON.parse(localStorage.getItem('store'))
+if (sessionStorage.getItem('store')) {
+  initialStore = JSON.parse(sessionStorage.getItem('store'))
 }
 
 const rootStore = Store.create({
@@ -133,7 +133,7 @@ const rootStore = Store.create({
 
 // Based on https://egghead.io/lessons/react-store-store-in-local-storage
 onSnapshot(rootStore, (snapshot) => {
-  localStorage.setItem('store', JSON.stringify(snapshot))
+  sessionStorage.setItem('store', JSON.stringify(snapshot))
 })
 
 export { rootStore, defaultUser, defaultOrganization }

@@ -58,7 +58,7 @@ class ChangePasswordModalBase extends React.Component {
   }
 
   onClose() {
-    this.props.store.updateUser({ passwordResetCompletedInCurrentSession: false })
+    this.props.store.setPasswordResetCompletedInCurrentSession(false)
     this.props.store.signOut()
     this.setState({ visible: false })
   }
@@ -90,8 +90,8 @@ class ChangePasswordModalBase extends React.Component {
       this.props.store.updateUser({
         isFirstTimeUser: false,
         passwordResetRequested: false,
-        passwordResetCompletedInCurrentSession: true,
       })
+      this.props.store.setPasswordResetCompletedInCurrentSession(true)
     }, this.handleFirebaseError)
     // 3. Close the modal and pop the toast
     return setFirstTimeUser.then(() => {
