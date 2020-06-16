@@ -16,7 +16,6 @@ function isCovidWatchUserProperlyFormatted(covidWatchUser: any): boolean {
   console.log(`checking that ${JSON.stringify(covidWatchUser)} is properly formatted`);
   return (
     typeof covidWatchUser.isAdmin === 'boolean' &&
-    typeof covidWatchUser.isSuperAdmin === 'boolean' &&
     typeof covidWatchUser.organizationID === 'string' &&
     typeof covidWatchUser.disabled === 'boolean' &&
     typeof covidWatchUser.firstName === 'string' &&
@@ -107,12 +106,10 @@ function syncAuthUserWithCovidWatchUser(email: string) {
         .then((authUser) => {
           auth
             .setCustomUserClaims(authUser.uid, {
-              isSuperAdmin: covidWatchUser.isSuperAdmin,
               isAdmin: covidWatchUser.isAdmin,
               organizationID: covidWatchUser.organizationID,
             })
             .then(() => {
-              console.log('user ' + email + ' isSuperAdmin claim set to ' + covidWatchUser.isSuperAdmin);
               console.log('user ' + email + ' isAdmin claim set to ' + covidWatchUser.isAdmin);
               console.log('user ' + email + ' organizationID claim set to ' + covidWatchUser.organizationID);
               auth
@@ -231,7 +228,6 @@ export const createUser = functions.https.onCall((newUser, context) => {
         }
         const newUserPrivileges = {
           isAdmin: newUser.isAdmin,
-          isSuperAdmin: false,
           organizationID: context.auth!.token.organizationID,
           disabled: false,
           firstName: newUser.firstName,
@@ -356,7 +352,6 @@ export const userOnUpdate = functions.firestore.document('users/{email}').onUpda
   // Force unwrap ok because document is guaranteed to exist (by definition its being updated)
   if (
     previousValue!.disabled !== newValue!.disabled ||
-    previousValue!.isSuperAdmin !== newValue!.isSuperAdmin ||
     previousValue!.isAdmin !== newValue!.isAdmin ||
     previousValue!.organizationID !== newValue!.organizationID
   ) {
