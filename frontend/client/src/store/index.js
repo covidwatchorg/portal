@@ -191,6 +191,10 @@ const createStore = (WrappedComponent) => {
       await auth.signOut()
     }
 
+    async updatePassword(password) {
+      await auth.currentUser.updatePassword(password)
+    }
+
     async createUser(newUser) {
       try {
         const result = await createUserCallable(newUser)
