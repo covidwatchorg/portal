@@ -30,7 +30,7 @@ service cloud.firestore {
       return isSignedIn() && (request.auth.token.email == resource.id)
     } 
 
-    function isNotEscalatingPrevileges() {
+    function isNotEscalatingPrivileges() {
       return ( resource.data.isAdmin == request.resource.data.isAdmin )
     }
     function isModifyingOrg() {
@@ -40,7 +40,7 @@ service cloud.firestore {
     match /users/{email} {
       allow write: if isSignedIn() && isAdmin() && isInOrganization(resource.data.organizationID) && !isModifyingOrg();
       allow read : if isSelf() || (isAdmin() && isInOrganization(resource.data.organizationID));
-      allow update : if isSelf() && isNotEscalatingPrevileges() && !isModifyingOrg();
+      allow update : if isSelf() && isNotEscalatingPrivileges() && !isModifyingOrg();
     }
 
     match /organizations/{organizationID} {
