@@ -162,6 +162,7 @@ const createStore = (WrappedComponent) => {
         await db.collection('userImages').doc(this.data.user.email).set({ blob: blob }, { merge: true })
       } catch (err) {
         Logging.error('Error updating image', err)
+        throw err
       }
     }
 
