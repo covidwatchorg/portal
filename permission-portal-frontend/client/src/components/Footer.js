@@ -5,15 +5,15 @@ const Footer = () => {
   const cwImg = require('../../assets/powered-by-cw.svg')
   let location = useLocation()
   let footerContainerStyle = {}
-  let footerStyle = {display:'flex'}
+  let footerStyle = { display: 'flex' }
 
   if (location.pathname === '/404') {
     footerContainerStyle = {
-      display: 'none'
+      display: 'none',
     }
 
     footerStyle = {
-      display: 'none'
+      display: 'none',
     }
   } else if (location.pathname !== '/') {
     footerContainerStyle = {
