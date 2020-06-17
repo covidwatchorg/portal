@@ -96,10 +96,10 @@ const SignInFormBase = observer(
       return this.props.store.data.user.isSignedIn ? (
         <Redirect to={ROUTES.CODE_VALIDATIONS} />
       ) : (
-        <Fragment>
+        <div className="module-container">
           {this.loginForm()}
           {this.bottomLevelContent()}
-        </Fragment>
+        </div>
       )
     }
   }

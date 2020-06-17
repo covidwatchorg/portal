@@ -24,7 +24,7 @@ const useStyles = makeStyles({
     color: '#585858',
     marginTop: 20,
     padding: 40,
-    paddingLeft: 75,
+    paddingLeft: 8,
   },
 })
 
@@ -170,7 +170,7 @@ const SettingsBase = observer((props) => {
 
   const settingsForm = () => (
     <Fragment>
-      <form className="module-container">
+      <form>
         <Grid container className={classes.root} spacing={2} direction="row" justify="center">
           <Grid item xs={4} xl={2}>
             <Grid container spacing={2} direction="column">
@@ -319,18 +319,20 @@ const SettingsBase = observer((props) => {
   return props.store.data.user.isSignedIn ? (
     <React.Fragment>
       <PageTitle title="My Settings" />
-      <div className="header">
-        <h1>My Settings</h1>
-        <p>Changes are automatically saved</p>
+      <div className="module-container">
+        <div className="header">
+          <h1>My Settings</h1>
+          <p>Changes are automatically saved</p>
+        </div>
+        {settingsForm()}
+        <ChangePasswordModal />
+        <ResetPasswordModal
+          hidden={!showResetPasswordModal}
+          onClose={onChangePasswordClose}
+          onSuccess={onChangePasswordSuccess}
+          onFailure={onChangePasswordFailure}
+        />
       </div>
-      {settingsForm()}
-      <ResetPasswordModal
-        hidden={!showResetPasswordModal}
-        onClose={onChangePasswordClose}
-        onSuccess={onChangePasswordSuccess}
-        onFailure={onChangePasswordFailure}
-      />
-      <ChangePasswordModal />
     </React.Fragment>
   ) : (
     <Redirect to={ROUTES.LANDING} />
