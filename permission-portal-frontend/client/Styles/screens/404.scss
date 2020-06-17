@@ -1,27 +1,31 @@
 #not-found {
     display: flex;
     justify-content: space-evenly;
-    background-image: url('../../assets/fade-background-404.svg');
+    // background-image: url('../../assets/fade-background-404.svg');
     // TO DO: make a linear gradient background instead
+
+    // background: linear-gradient(rgba(255, 255, 255, 0) 100%, #43C4D9 0%);
+    background: linear-gradient(white 30%, #43C4D9);
+    height: 100vh;
 
     #doctor-img {
         display: flex;
-        width: 20%;
+        width: 24%;
         align-items: flex-end;
+        min-width: 200px;
 
         img {
-            height: 70%;
             width: 100%;
         }
     }
 
     #female-doctor-img {
         display: flex;
-        width: 24%;
+        width: 26%;
         align-items: flex-end;
+        min-width: 200px;
 
          img {
-            height: 70%;
             width: 100%;
         }
     }

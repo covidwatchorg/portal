@@ -11,7 +11,7 @@ const NotFound = () => {
   return (
     <div>
       <div className="topNav">
-        <img src={ucsf_health} id="orgLogo" alt='UCSF Health' />
+        <img src={ucsf_health} id="orgLogo" alt="UCSF Health" />
         <img src={powered_by_cw} id="poweredByCWLogo" alt="Powered by Covid Watch" />
       </div>
       <div id="not-found">
