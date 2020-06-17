@@ -399,7 +399,7 @@ test('User can be toggled between enabled and disabled', async () => {
   // Delay to allow userOnUpdate time to run
   await delay(DELAY * 5);
 
-  let userRecordDisabled = await adminAuth.getUserByEmail('disabled@soylentgreen.com');
+  const userRecordDisabled = await adminAuth.getUserByEmail('disabled@soylentgreen.com');
   expect(userRecordDisabled.disabled).toBe(false);
   await adminDb
     .collection('users')
@@ -409,7 +409,7 @@ test('User can be toggled between enabled and disabled', async () => {
     });
   await delay(DELAY * 5);
 
-  let userRecordEnabled = await adminAuth.getUserByEmail('disabled@soylentgreen.com');
+  const userRecordEnabled = await adminAuth.getUserByEmail('disabled@soylentgreen.com');
   expect(userRecordEnabled.disabled).toBe(true);
 });
 
@@ -444,6 +444,6 @@ test('User can be toggled between isAdmin and not isAdmin', async () => {
   await delay(DELAY * 3);
 
   // Check that isAdmin claim has been updated properly
-  idTokenResult = await clientAuth.currentUser!.getIdTokenResult(true);
+  idTokenResult = await clientAuth.currentUser.getIdTokenResult(true);
   expect(idTokenResult.claims.isAdmin).toEqual(false);
 });
