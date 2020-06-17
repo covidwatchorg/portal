@@ -1,0 +1,41 @@
+{
+  "indexes": [
+    {
+      "collectionGroup": "users",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "organizationID",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "lastName",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "firstName",
+          "order": "ASCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "users",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "organizationID",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "lastName",
+          "order": "DESCENDING"
+        },
+        {
+          "fieldPath": "firstName",
+          "order": "DESCENDING"
+        }
+      ]
+    }
+  ],
+  "fieldOverrides": []
+}
