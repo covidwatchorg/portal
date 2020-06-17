@@ -2,7 +2,6 @@ import React, { useState } from 'react'
 import { Redirect } from 'react-router-dom'
 import { makeStyles } from '@material-ui/core/styles'
 import IconButton from '@material-ui/core/IconButton'
-import MenuIcon from '@material-ui/icons/Menu'
 import MenuItem from '@material-ui/core/MenuItem'
 import Menu from '@material-ui/core/Menu'
 import ucsf_health from '../../assets/ucsf-health.svg'
@@ -10,6 +9,7 @@ import profile from '../../assets/placeholder/profile.png'
 import * as ROLES from '../constants/roles'
 import { withStore } from '../store'
 import { observer } from 'mobx-react'
+import menu from '../../assets/menu.svg'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -69,7 +69,7 @@ const NavBarBase = observer((props) => {
       </div>
       <div className="avatar_group separator" />
       <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu" onClick={handleMenu}>
-        <MenuIcon />
+        <img src={menu} alt="Menu" />
       </IconButton>
       <Menu
         id="menu-appbar"
