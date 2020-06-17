@@ -1,57 +1,52 @@
 // @import url('https://fonts.googleapis.com/css2?family=Montserrat');
 
-.header{
-    display: flex;
-    align-items: center;
+.header {
+  display: flex;
+  align-items: center;
 
-    p{
-        margin-left: 6%;
-        font-size: 18px;
-        color: #585858;
-    }
+  p {
+    margin-left: 6%;
+    font-size: 18px;
+    color: #585858;
+  }
 
-    h1{
-        margin-left: 99px;
-    }
+  h1 {
+    margin-left: 99px;
+  }
 }
 
-.changeImageModalContainer{
-    height: 200px;
-    width: 400px;
-    padding: 20px;
+.changeImageModalContainer {
+  height: 200px;
+  width: 400px;
+  padding: 20px;
 
-    .close-btn {
-        margin-left: 380px;
-        font-size: 18px;
+  .close-btn {
+    margin-left: 380px;
+    font-size: 18px;
+  }
+
+  .close-btn:hover {
+    cursor: pointer;
+  }
+
+  .modal-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: -15px;
+
+    p {
+      font-size: 18px;
     }
 
-    .close-btn:hover {
-        cursor: pointer;
+    input {
+      margin-top: 15px;
     }
+  }
 
-    .modal-content {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        margin-top: -15px;
-
-        p{
-            font-size: 18px;
-        }
-
-        PendingOperationButton{
-            margin-top: 20px;
-        }
-
-        input{
-            margin-top: 15px;
-        }
-    }
-
-    .save-button {
-        width: 200px;
-        height: 30px;
-        line-height: 30px;
-        margin-top: 40px;
-    }
+  .save-button {
+    width: 200px;
+    height: 30px;
+    padding: 0;
+  }
 }
