@@ -1,27 +1,42 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
-import doctor from '../../assets/404-doctor.svg'
+import MaleDoctor from '../../assets/404-doctor.svg'
+import FemaleDoctor from '../../assets/female-doctor-404.svg'
 import '../../Styles/screens/404.scss'
 import PageTitle from '../components/PageTitle'
+import ucsf_health from '../../assets/ucsf-health.svg'
+import powered_by_cw from '../../assets/powered-by-cw.svg'
+import ChangePasswordModal from '../components/ChangePasswordModal'
 
 const NotFound = () => {
   return (
-    <div id="not-found">
-      <PageTitle title="404 Not Found" />
-      <div id="doctor-img">
-        <img src={doctor} alt="doctor" />
+    <div>
+      <div className="topNav">
+        <img src={ucsf_health} id="orgLogo" alt="UCSF Health" />
+        <img src={powered_by_cw} id="poweredByCWLogo" alt="Powered by Covid Watch" />
       </div>
+      <div id="not-found">
+        <PageTitle title="404 Not Found" />
+        <div id="doctor-img">
+          <img src={MaleDoctor} alt="doctor" />
+        </div>
 
-      <div id="message">
-        <div id="main">404</div>
-        <span>This page does not exist.</span>
-        <Link className="button" to="/code_validations">
-          Go Back
-        </Link>
+        <div id="message">
+          <div id="main">404</div>
+          <span>This page does not exist.</span>
+          <Link className="button" to="/code_validations">
+            Go Back
+          </Link>
 
-        {/* this could maybe link to a help desk page outside of React?  Just set to reload page for now */}
-        <a href="/404">Get Support</a>
+          {/* this could maybe link to a help desk page outside of React?  Just set to reload page for now */}
+          <a href="/404">Get Support</a>
+        </div>
+
+        <div id="female-doctor-img">
+          <img src={FemaleDoctor} alt="doctor" />
+        </div>
       </div>
+      <ChangePasswordModal />
     </div>
   )
 }
