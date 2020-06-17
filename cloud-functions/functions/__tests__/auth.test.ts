@@ -16,22 +16,34 @@ const testUserEmail =
     .substr(0, 5) +
   '@soylentgreen.com';
 
-afterEach(async () => {
-  try {
-    await adminAuth.deleteUser(testUid)
-    await adminDb
-      .collection('users')
-      .doc(testUserEmail)
-      .delete()
+afterEach(() => {
+  return (
+    adminAuth
+      .deleteUser(testUid)
+      .then(() => {
+        return (
+          adminDb
+            .collection('users')
+            .doc(testUserEmail)
+            .delete()
+            .then(() => {
+              clientAuth.signOut().catch((err) => {
+                console.error(err);
+              });
+            })
+            // tslint:disable-next-line: no-empty
+            .catch((err) => {
+              /* suppress expected error */
+            })
+        );
+      })
       // tslint:disable-next-line: no-empty
       .catch((err) => {
-        /* suppress expected error */
+        clientAuth.signOut().catch((err1) => {
+          console.error(err1);
+        });
       })
-  } finally {
-    await clientAuth.signOut().catch((err1) => {
-      console.error(err1);
-    });
-  }
+  );
 });
 
 test('createUser cannot be called without being authenticated', () => {
