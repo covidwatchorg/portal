@@ -1,0 +1,13 @@
+## Compiled JavaScript files
+**/*.js
+**/*.js.map
+!firebase-repl.js
+!jest.config.js
+
+# Typescript v1 declaration files
+typings/
+
+node_modules/
+permission-portal-*-firebase-admin*.json
+!reset-infrastructure.js
+!set-config.js

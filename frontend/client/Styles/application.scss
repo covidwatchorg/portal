@@ -1,0 +1,40 @@
+@import 'screens/login';
+@import 'screens/settings';
+@import 'screens/add_member_modal';
+@import 'screens/forgot_password_modal';
+@import 'screens/change_password_modal';
+@import 'components/footer';
+@import 'components/navbar';
+@import 'components/toast';
+@import 'components/button';
+@import 'components/modal';
+
+.hidden {
+  display: none;
+}
+
+body {
+  margin: 0px;
+
+  // Default text style
+  font-family: Montserrat;
+  font-style: normal;
+  color: #333333;
+}
+
+h1 {
+  font-family: Montserrat;
+  font-style: normal;
+  font-weight: 600;
+  font-size: 2.5em;
+  line-height: 49px;
+  color: #333333;
+}
+
+.module-container {
+  min-height: 86vh;
+  margin: 0 98px;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+}

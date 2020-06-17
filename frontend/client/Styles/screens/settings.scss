@@ -1,0 +1,48 @@
+// @import url('https://fonts.googleapis.com/css2?family=Montserrat');
+
+.header {
+  display: flex;
+  align-items: center;
+
+  p {
+    margin-left: 6%;
+    font-size: 18px;
+    color: #585858;
+  }
+}
+
+.changeImageModalContainer {
+  height: 200px;
+  width: 400px;
+  padding: 20px;
+
+  .close-btn {
+    margin-left: 380px;
+    font-size: 18px;
+  }
+
+  .close-btn:hover {
+    cursor: pointer;
+  }
+
+  .modal-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: -15px;
+
+    p {
+      font-size: 18px;
+    }
+
+    input {
+      margin-top: 15px;
+    }
+  }
+
+  .save-button {
+    width: 200px;
+    height: 30px;
+    padding: 0;
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "projects": {
+    "default": "permission-portal-dev",
+    "prod": "permission-portal",
+    "test": "permission-portal-test",
+    "dev": "permission-portal-dev",
+    "local": "permission-portal-isaiah",
+    "staging": "permission-portal-staging"
+  }
+}
