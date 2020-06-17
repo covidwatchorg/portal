@@ -437,7 +437,13 @@ test('User can be toggled between enabled and disabled', () => {
         });
       });
     })
-    .catch((err) => {
+    .catch(async (err) => {
+      await adminDb
+        .collection('users')
+        .doc('disabled@soylentgreen.com')
+        .update({
+          disabled: true,
+        })
       throw err;
     });
 });
