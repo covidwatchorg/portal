@@ -294,145 +294,123 @@ test("Manually added, improperly formatted user in users table can't be signed u
     });
 });
 
-test("Manually added user in users table with non-existent organizationID can't be signed up", () => {
-  return (
-    // set faulty document in users table
-    adminDb
-      .collection('users')
-      .doc(testUserEmail)
-      .set({
-        isAdmin: false,
-        isSuperAdmin: false,
-        organizationID: "This id doesn't exist",
-        disabled: false,
-        firstName: 'test',
-        lastName: 'user',
-      })
-      .then(() => {
-        // try to create corresponding user in Firebase auth
-        return adminAuth
-          .createUser({
-            email: testUserEmail,
-            password: testUserEmail,
-          })
-          .then(() => {
-            // delay to allow onCreate to trigger and realize users table document is faulty
-            return delay(DELAY * 2).then(() => {
-              // check that user has been deleted from Firebase Auth
-              return adminAuth
-                .getUserByEmail(testUserEmail)
-                .then((userRecord) => {
-                  throw new Error(
-                    "User with non-existent organizationID should have been deleted from Auth but wasn't"
-                  );
-                })
-                .catch((err1) => {
-                  expect(true).toEqual(true);
-                  return adminDb
-                    .collection('users')
-                    .doc(testUserEmail)
-                    .get()
-                    .then((user) => {
-                      expect(user.exists).toEqual(false);
-                    })
-                    .catch((err2) => {
-                      throw err2;
-                    });
-                });
-            });
-          });
-      })
-      .catch((err) => {
-        throw err;
-      })
-  );
+test("Manually added user in users table with non-existent organizationID can't be signed up", async () => {
+  // set faulty document in users table
+  await adminDb
+    .collection('users')
+    .doc(testUserEmail)
+    .set({
+      isAdmin: false,
+      isSuperAdmin: false,
+      organizationID: "This id doesn't exist",
+      disabled: false,
+      firstName: 'test',
+      lastName: 'user',
+    });
+
+  // try to create corresponding user in Firebase auth
+  await adminAuth
+    .createUser({
+      email: testUserEmail,
+      password: testUserEmail,
+    });
+
+  // delay to allow onCreate to trigger and realize users table document is faulty
+  await delay(DELAY * 2);
+
+  // check that user has been deleted from Firebase Auth
+  await adminAuth
+    .getUserByEmail(testUserEmail)
+    .then((userRecord) => {
+      throw new Error(
+        "User with non-existent organizationID should have been deleted from Auth but wasn't"
+      );
+    })
+    .catch((err1) => {
+      expect(true).toEqual(true);
+      return adminDb
+        .collection('users')
+        .doc(testUserEmail)
+        .get()
+        .then((user) => {
+          expect(user.exists).toEqual(false);
+        })
+        .catch((err2) => {
+          throw err2;
+        });
+    });
 });
 
-test("Manually added user in users table with empty string organizationID can't be signed up", () => {
-  return (
-    // set faulty document in users table
-    adminDb
-      .collection('users')
-      .doc(testUserEmail)
-      .set({
-        isAdmin: false,
-        isSuperAdmin: false,
-        organizationID: '',
-        disabled: false,
-        firstName: 'test',
-        lastName: 'user',
-      })
-      .then(() => {
-        // try to create corresponding user in Firebase auth
-        return adminAuth
-          .createUser({
-            email: testUserEmail,
-            password: testUserEmail,
-          })
-          .then(() => {
-            // delay to allow onCreate to trigger and realize users table document is faulty
-            return delay(DELAY * 2).then(() => {
-              // check that user has been deleted from Firebase Auth
-              return adminAuth
-                .getUserByEmail(testUserEmail)
-                .then((userRecord) => {
-                  throw new Error(
-                    "User with empty string organizationID should have been deleted from Auth but wasn't"
-                  );
-                })
-                .catch((err1) => {
-                  expect(true).toEqual(true);
-                  return adminDb
-                    .collection('users')
-                    .doc(testUserEmail)
-                    .get()
-                    .then((user) => {
-                      expect(user.exists).toEqual(false);
-                    })
-                    .catch((err2) => {
-                      throw err2;
-                    });
-                });
-            });
-          });
-      })
-      .catch((err) => {
-        throw err;
-      })
-  );
+test("Manually added user in users table with empty string organizationID can't be signed up", async () => {
+  // set faulty document in users table
+  await adminDb
+    .collection('users')
+    .doc(testUserEmail)
+    .set({
+      isAdmin: false,
+      isSuperAdmin: false,
+      organizationID: '',
+      disabled: false,
+      firstName: 'test',
+      lastName: 'user',
+    });
+
+  // try to create corresponding user in Firebase auth
+  await adminAuth
+    .createUser({
+      email: testUserEmail,
+      password: testUserEmail,
+    });
+
+  // delay to allow onCreate to trigger and realize users table document is faulty
+  await delay(DELAY * 2)
+
+  // check that user has been deleted from Firebase Auth
+  await adminAuth
+    .getUserByEmail(testUserEmail)
+    .then((userRecord) => {
+      throw new Error(
+        "User with empty string organizationID should have been deleted from Auth but wasn't"
+      );
+    })
+    .catch((err1) => {
+      expect(true).toEqual(true);
+      return adminDb
+        .collection('users')
+        .doc(testUserEmail)
+        .get()
+        .then((user) => {
+          expect(user.exists).toEqual(false);
+        })
+        .catch((err2) => {
+          throw err2;
+        });
+    });
 });
 
-test('User can be toggled between enabled and disabled', () => {
-  return adminDb
+test('User can be toggled between enabled and disabled', async () => {
+  await adminDb
     .collection('users')
     .doc('disabled@soylentgreen.com')
     .update({
       disabled: false,
-    })
-    .then(() => {
-      // Delay to allow userOnUpdate time to run
-      return delay(DELAY * 5).then(() => {
-        return adminAuth.getUserByEmail('disabled@soylentgreen.com').then((userRecordDisabled) => {
-          expect(userRecordDisabled.disabled).toBe(false);
-          return adminDb
-            .collection('users')
-            .doc('disabled@soylentgreen.com')
-            .update({
-              disabled: true,
-            })
-            .then(() => {
-              return delay(DELAY * 5).then(() => {
-                return adminAuth.getUserByEmail('disabled@soylentgreen.com').then((userRecordEnabled) => {
-                  expect(userRecordEnabled.disabled).toBe(true);
-                });
-              });
-            });
-        });
-      });
-    })
-    .catch((err) => {
-      throw err;
     });
+
+  // Delay to allow userOnUpdate time to run
+  await delay(DELAY * 5);
+
+  let userRecordDisabled = await adminAuth.getUserByEmail('disabled@soylentgreen.com');
+  expect(userRecordDisabled.disabled).toBe(false);
+  await adminDb
+    .collection('users')
+    .doc('disabled@soylentgreen.com')
+    .update({
+      disabled: true,
+    });
+  await delay(DELAY * 5);
+
+  let userRecordEnabled = await adminAuth.getUserByEmail('disabled@soylentgreen.com');
+  expect(userRecordEnabled.disabled).toBe(true);
 });
 
 test('User can be toggled between isAdmin and not isAdmin', () => {
