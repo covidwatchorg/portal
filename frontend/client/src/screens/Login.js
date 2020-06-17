@@ -10,6 +10,7 @@ import { observer } from 'mobx-react'
 import ForgotPasswordModal from '../components/ForgotPasswordModal'
 import PageTitle from '../components/PageTitle'
 import Toast from '../components/Toast'
+import PendingOperationButton from '../components/PendingOperationButton'
 
 const INITIAL_STATE = {
   email: '',
@@ -29,8 +30,7 @@ const SignInFormBase = observer(
       this.errorToast = createRef()
     }
 
-    clickSubmit = async (event) => {
-      event.preventDefault()
+    clickSubmit = async () => {
       const { email, password } = this.state
       try {
         await this.props.store.signInWithEmailAndPassword(email, password)
@@ -83,7 +83,7 @@ const SignInFormBase = observer(
             <input onChange={this.onChange('email')} type="email" id="email" name="email" />
             <label htmlFor="password">Password</label>
             <input onChange={this.onChange('password')} type="password" id="password" name="password" />
-            <button onClick={this.clickSubmit}>Login</button>
+            <PendingOperationButton operation={this.clickSubmit}>Login</PendingOperationButton>
             <a onClick={this.showModal}>Forgot password?</a>
           </div>
           <ForgotPasswordModal hidden={!this.state.showPassModal} onClose={this.hideModal} />

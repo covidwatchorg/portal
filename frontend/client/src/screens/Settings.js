@@ -1,6 +1,6 @@
 import React, { useRef, Fragment, useState } from 'react'
 import Grid from '@material-ui/core/Grid'
-import Modal from '@material-ui/core/Modal'
+import Modal from '../components/Modal'
 import { makeStyles } from '@material-ui/core/styles'
 import * as ROLES from '../constants/roles'
 import Toast from '../components/Toast'
@@ -11,6 +11,8 @@ import { observer } from 'mobx-react'
 import PageTitle from '../components/PageTitle'
 import photo_add from '../../assets/photo-add.svg'
 import Logging from '../util/logging'
+import PendingOperationButton from '../components/PendingOperationButton'
+import ResetPasswordModal from '../components/ResetPasswordModal'
 import ChangePasswordModal from '../components/ChangePasswordModal'
 
 const useStyles = makeStyles({
@@ -42,18 +44,6 @@ const inputStyles = makeStyles({
   },
 })
 
-const primaryButtonStyles = makeStyles({
-  root: {
-    backgroundColor: '#2C58B1',
-    color: 'white',
-    width: '75%',
-    fontSize: '18px',
-    padding: '5px',
-    borderRadius: '7px',
-    height: 40,
-    marginTop: 20,
-  },
-})
 const secondaryButtonStyles = makeStyles({
   root: {
     color: '#2C58B1',
@@ -72,18 +62,6 @@ const secondaryButtonStyles = makeStyles({
   },
 })
 
-const changeImageModalStyles = makeStyles({
-  root: {
-    fontFamily: 'Montserrat',
-    margin: 'auto',
-    marginTop: '200px',
-    width: '40%',
-    height: '20%',
-    backgroundColor: 'white',
-    padding: 50,
-    borderRadius: '7px',
-  },
-})
 const MAXFILESIZE = 10 * 1024 * 1024
 const SettingsBase = observer((props) => {
   const classes = useStyles()
@@ -91,33 +69,19 @@ const SettingsBase = observer((props) => {
   const imgUploader = useRef()
 
   const secondaryButton = secondaryButtonStyles()
-  const primaryButton = primaryButtonStyles()
-  const changeImage = changeImageModalStyles()
   const [open, setOpen] = useState(false)
+  const [showResetPasswordModal, setShowResetPasswordModal] = useState(false)
   const [toastInfo, setToastInfo] = useState({
     success: false,
     msg: '',
   })
   const toastRef = useRef()
 
-  const handleOpen = () => {
-    setOpen(true)
-  }
-  const handleClose = () => {
-    setOpen(false)
-  }
   const resetPassword = async (e) => {
     e.preventDefault()
-    try {
-      await props.store.sendPasswordResetEmail(props.store.data.user.email)
-      setToastInfo({ success: true, msg: `Password Reset Email Sent to ${props.store.data.user.email}` })
-      toastRef.current.show()
-    } catch (err) {
-      Logging.error(err)
-      setToastInfo({ success: false, msg: 'Password Reset Failed. Please try again' })
-      toastRef.current.show()
-    }
+    setShowResetPasswordModal(true)
   }
+
   const onChange = async (event) => {
     if (event.target.name == 'prefix') {
       props.store.updateUser({ prefix: event.target.value })
@@ -128,16 +92,13 @@ const SettingsBase = observer((props) => {
     }
   }
 
-  const saveImage = async (e) => {
-    e.preventDefault()
-    setOpen(false)
+  const saveImage = async () => {
     if (imgUploader.current.files.length == 0) {
       Logging.log('no image uploaded')
       return
     }
     try {
       let size = imgUploader.current.files[0].size
-      Logging.log('size' + size)
 
       if (size > MAXFILESIZE) {
         setToastInfo({
@@ -146,31 +107,64 @@ const SettingsBase = observer((props) => {
         })
         toastRef.current.show()
         imgUploader.current.value = null
-        return
       }
       let reader = new FileReader()
       // set up onload trigger to run when data is read
-      reader.onload = (e) => {
-        props.store.updateUserImage(e.target.result)
+      reader.onload = async (e) => {
+        return props.store
+          .updateUserImage(e.target.result)
+          .then(() => {
+            setToastInfo({
+              success: true,
+              msg: 'Image Updated',
+            })
+            toastRef.current.show()
+            setOpen(false)
+          })
+          .catch(() => {
+            setToastInfo({
+              success: false,
+              msg: 'Error Updating Image, Please Try Again',
+            })
+            toastRef.current.show()
+          })
       }
       // read data
-      reader.readAsDataURL(imgUploader.current.files[0])
+      return reader.readAsDataURL(imgUploader.current.files[0])
     } catch (err) {
       Logging.log(err)
+      return false
     }
   }
 
+  const onChangePasswordSuccess = () => {
+    setToastInfo({
+      success: true,
+      msg: 'Password Succesfully Reset',
+    })
+    toastRef.current.show()
+    setShowResetPasswordModal(false)
+  }
+
+  const onChangePasswordFailure = (message) => {
+    setToastInfo({
+      success: false,
+      msg: message,
+    })
+    toastRef.current.show()
+  }
+
+  const onChangePasswordClose = () => {
+    setShowResetPasswordModal(false)
+  }
+
   const changeImageModal = (
-    <div className={changeImage.root}>
+    <div className="modal-content">
+      <p> Please Select a File to Upload </p>
       <input type="file" ref={imgUploader} accepts="image/jpeg, image/png" />
-      <div style={{ alignContent: 'right', marginTop: '35px' }}>
-        <button onClick={handleClose} className={secondaryButton.root} style={{ width: '100px', border: 'none' }}>
-          Discard
-        </button>
-        <button onClick={saveImage} className={primaryButton.root} style={{ width: '70px', borderStyle: 'none' }}>
-          Upload
-        </button>
-      </div>
+      <PendingOperationButton operation={saveImage} className="save-button">
+        Upload
+      </PendingOperationButton>
     </div>
   )
 
@@ -201,10 +195,16 @@ const SettingsBase = observer((props) => {
                 Accepted file types: jpg or png
               </div>
               <div style={{ fontSize: '12px', fontWeight: 'normal', color: '#585858' }}>Maximum file size: 10 MB</div>
-              <button onClick={handleOpen} type="button" className={secondaryButton.root}>
+              <button onClick={() => setOpen(true)} type="button" className={secondaryButton.root}>
                 Change Image
               </button>
-              <Modal open={open} onClose={handleClose}>
+              <Modal
+                hidden={!open}
+                onClose={() => {
+                  setOpen(false)
+                }}
+                containerClass="changeImageModalContainer"
+              >
                 {changeImageModal}
               </Modal>
             </Grid>
@@ -326,6 +326,12 @@ const SettingsBase = observer((props) => {
         </div>
         {settingsForm()}
         <ChangePasswordModal />
+        <ResetPasswordModal
+          hidden={!showResetPasswordModal}
+          onClose={onChangePasswordClose}
+          onSuccess={onChangePasswordSuccess}
+          onFailure={onChangePasswordFailure}
+        />
       </div>
     </React.Fragment>
   ) : (

@@ -160,25 +160,6 @@ function isAdminGuard(context: functions.https.CallableContext): Promise<void> {
   });
 }
 
-// Throw error if user is not authenticed or not an admin or the user indexed by email is not in the same organization as the caller
-function isUserInCallersOrganizationGuard(email: string, context: functions.https.CallableContext): Promise<void> {
-  return isAdminGuard(context).then(() => {
-    return auth
-      .getUserByEmail(email)
-      .then((userRecord) => {
-        if (userRecord.customClaims!.organizationID !== context.auth?.token.organizationID) {
-          throw new functions.https.HttpsError(
-            'permission-denied',
-            'Operation cannot be performed on user in another organization.'
-          );
-        }
-      })
-      .catch((err) => {
-        throw err;
-      });
-  });
-}
-
 // Send email to new users instructing them to change their password
 function sendNewUserEmail(email: string, password: string, firstName: string, lastName: string) {
   const msg = {
@@ -186,14 +167,15 @@ function sendNewUserEmail(email: string, password: string, firstName: string, la
     from: 'welcome@covid-watch.org',
     subject: 'Welcome to the Covid Watch Permission Portal',
     html: `
-    <p>${firstName} ${lastName},</p>
-    <p>You are receiving this email because you were added as a new member of Covid Watch by an Account Administrator.</p>
-    <p><em>Your user name:</em> ${email}<br />  <em>Your password:</em> ${password}</p>
-    <p>Please click the following link or copy-paste it in your browser to sign in to your new account.</p>
-    <p><a href=${functions.config().client.url}>Sign In</a></p>
-    <p>If you recieved this message in error, you can safely ignore it.</p>
-    <p>You can reply to this message, or email support@covid-watch.org if you have any questions.</p>
-    <p>Thank you,<br />Covid Watch Team</p>`,
+    <!DOCTYPE html>
+    <p style="font-family: Montserrat;font-size:18px;color: #585858;">${firstName} ${lastName},</p>
+    <p style="font-family: Montserrat;font-size:18px;color: #585858;">You are receiving this email because you were added as a new member of Covid Watch by the Account Administrator.</p>
+    <p style="font-family: Montserrat;font-size:18px;color: #585858;"><b>Your user name:</b> ${email}<br />  <b>Your temporary password:</b> ${password}</p>
+    <p style="font-family: Montserrat;font-size:18px;color: #585858;">Please click the following link or copy and paste it into your browser to sign in to your new account:</p>
+    <p style="font-family: Montserrat;font-size:18px;color: #585858;"><a href=${functions.config().client.url}>Sign In</a></p>
+    <p style="font-family: Montserrat;font-size:18px;color: #585858;">If you recieved this message in error, you can safely ignore it.</p>
+    <p style="font-family: Montserrat;font-size:18px;color: #585858;">You can reply to this message, or email support@covid-watch.org if you have any questions.</p>
+    <p style="font-family: Montserrat;font-size:18px;color: #585858;">Thank you,<br />Covid Watch Team</p> `,
   };
   sgMail
     .send(msg)
@@ -279,37 +261,6 @@ export const createUser = functions.https.onCall((newUser, context) => {
                 } else {
                   reject(new functions.https.HttpsError('internal', err.errorInfo.message));
                 }
-              });
-          })
-          .catch((err) => {
-            reject(err);
-          });
-      })
-      .catch((err) => {
-        reject(err);
-      });
-  }).catch((err) => {
-    console.error(err);
-    throw err;
-  });
-});
-
-// Callable for admins to delete users in their organization.
-// Recall that firestore rules are made irrelevant by our use of the admin client, so we need to check ourselves
-// that the caller is an admin for the to-be-deleted user's organization (using isUserInCallersOrganizationGuard())
-export const deleteUser = functions.https.onCall((data, context) => {
-  return new Promise((resolve, reject) => {
-    isUserInCallersOrganizationGuard(data.email, context)
-      .then(() => {
-        auth
-          .getUserByEmail(data.email)
-          .then((userRecord) => {
-            deleteUserByUid(userRecord.uid)
-              .then(() => {
-                resolve(`Successfully deleted user ${data.email}`);
-              })
-              .catch((err) => {
-                reject(err);
               });
           })
           .catch((err) => {

@@ -23,7 +23,6 @@ const App = () => {
           <Route path={ROUTES.LANDING} exact component={Login} />
           <Route path={ROUTES.NOT_FOUND}>
             <Fragment>
-              <NavBar />
               <NotFound />
             </Fragment>
           </Route>
