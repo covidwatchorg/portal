@@ -16,7 +16,7 @@ class ForgotPasswordModal extends React.Component {
   async onSubmit() {
     if (!validateEmail(this.state.email)) {
       this.setState({ validEmail: false })
-      return
+      throw new Error()
     }
 
     try {
