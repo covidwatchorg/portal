@@ -413,44 +413,37 @@ test('User can be toggled between enabled and disabled', async () => {
   expect(userRecordEnabled.disabled).toBe(true);
 });
 
-test('User can be toggled between isAdmin and not isAdmin', () => {
-  return adminDb
+test('User can be toggled between isAdmin and not isAdmin', async () => {
+  await adminDb
     .collection('users')
     .doc('user@soylentgreen.com')
     .update({
       isAdmin: true,
-    })
-    .then(() => {
-      // Delay to allow userOnUpdate time to run
-      return delay(DELAY * 3).then(() => {
-        return clientAuth.signInWithEmailAndPassword('user@soylentgreen.com', 'user@soylentgreen.com').then(() => {
-          if (clientAuth.currentUser === null) {
-            throw new Error('clientAuth.currentUser returned null');
-          }
-          return clientAuth.currentUser
-            .getIdTokenResult(true)
-            .then((idTokenResult) => {
-              // Check that isAdmin claim has been updated properly
-              expect(idTokenResult.claims.isAdmin).toEqual(true);
-            })
-            .then(() => {
-              return adminDb
-                .collection('users')
-                .doc('user@soylentgreen.com')
-                .update({
-                  isAdmin: false,
-                })
-                .then(() => {
-                  // Delay to allow userOnUpdate time to run
-                  return delay(DELAY * 3).then(() => {
-                    return clientAuth.currentUser!.getIdTokenResult(true).then((idTokenResult) => {
-                      // Check that isAdmin claim has been updated properly
-                      expect(idTokenResult.claims.isAdmin).toEqual(false);
-                    });
-                  });
-                });
-            });
-        });
-      });
     });
+
+  // Delay to allow userOnUpdate time to run
+  await delay(DELAY * 3);
+
+  await clientAuth.signInWithEmailAndPassword('user@soylentgreen.com', 'user@soylentgreen.com');
+  if (clientAuth.currentUser === null) {
+    throw new Error('clientAuth.currentUser returned null');
+  }
+
+  // Check that isAdmin claim has been updated properly
+  let idTokenResult = await clientAuth.currentUser.getIdTokenResult(true);
+  expect(idTokenResult.claims.isAdmin).toEqual(true);
+
+  await adminDb
+    .collection('users')
+    .doc('user@soylentgreen.com')
+    .update({
+      isAdmin: false,
+    });
+
+    // Delay to allow userOnUpdate time to run
+  await delay(DELAY * 3);
+
+  // Check that isAdmin claim has been updated properly
+  idTokenResult = await clientAuth.currentUser!.getIdTokenResult(true);
+  expect(idTokenResult.claims.isAdmin).toEqual(false);
 });
