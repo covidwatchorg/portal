@@ -1,6 +1,7 @@
 import React from 'react'
 import Modal from '../components/Modal'
 import { withStore } from '../store'
+import PendingOperationButton from './PendingOperationButton'
 
 class ForgotPasswordModal extends React.Component {
   constructor(props) {
@@ -11,15 +12,12 @@ class ForgotPasswordModal extends React.Component {
     this.handleChange = this.handleChange.bind(this)
   }
 
-  async onSubmit(event) {
-    event.preventDefault()
-
+  async onSubmit() {
     if (!this.state.email) {
       this.setState({ validEmail: false })
-      return
+      throw new Error()
     }
-
-    const isSuccess = await this.props.store.sendPasswordResetEmail(this.state.email)
+    const isSuccess = this.props.store.sendPasswordResetEmail(this.state.email)
     this.setState({ isSuccess: isSuccess, emailPrompt: false, email: '', validEmail: true })
   }
 
@@ -40,10 +38,9 @@ class ForgotPasswordModal extends React.Component {
           <form onSubmit={this.onSubmit} onChange={this.handleChange}>
             <label htmlFor="email-or-username">Email or User Name</label>
             <input type="text" id="email-or-username" required />
-            <button type="submit" className="save-button recovery-button">
-              {' '}
-              Email Recovery Link{' '}
-            </button>
+            <PendingOperationButton operation={this.onSubmit} className="save-button recovery-button">
+              Email Recovery Link
+            </PendingOperationButton>
             {!this.state.validEmail && <div className="validationResult">Please enter an email or user name.</div>}
           </form>
         </Modal>

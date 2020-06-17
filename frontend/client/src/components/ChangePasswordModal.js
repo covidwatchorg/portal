@@ -119,7 +119,9 @@ class ChangePasswordModalBase extends React.Component {
       <>
         <Modal
           hidden={!this.state.visible}
-          containerClass={`change-password-modal-container${this.state.loginTimeoutError ? ' err-timeout' : ''}`}
+          containerClass={`change-password-modal-container${
+            this.state.loginTimeoutError ? ' err-timeout' : ''
+          } first-time-modal-container`}
           isDismissible={false}
         >
           {!this.state.loginTimeoutError ? (
@@ -195,10 +197,7 @@ class ChangePasswordModalBase extends React.Component {
               {!this.state.passwordsMatch && this.state.confirmPasswordHasBeenEdited ? 'Passwords must match' : ''}
             </div>
 
-            <PendingOperationButton
-              className={`save-password${this.canSubmit() ? '' : '-disabled'}`}
-              operation={this.onSubmit}
-            >
+            <PendingOperationButton className="save-password" disabled={!this.canSubmit()} operation={this.onSubmit}>
               {!this.state.loginTimeoutError ? 'Save' : 'Retry'}
             </PendingOperationButton>
           </form>
