@@ -16,34 +16,22 @@ const testUserEmail =
     .substr(0, 5) +
   '@soylentgreen.com';
 
-afterEach(() => {
-  return (
-    adminAuth
-      .deleteUser(testUid)
-      .then(() => {
-        return (
-          adminDb
-            .collection('users')
-            .doc(testUserEmail)
-            .delete()
-            .then(() => {
-              clientAuth.signOut().catch((err) => {
-                console.error(err);
-              });
-            })
-            // tslint:disable-next-line: no-empty
-            .catch((err) => {
-              /* suppress expected error */
-            })
-        );
-      })
+afterEach(async () => {
+  try {
+    await adminAuth.deleteUser(testUid)
+    await adminDb
+      .collection('users')
+      .doc(testUserEmail)
+      .delete()
       // tslint:disable-next-line: no-empty
       .catch((err) => {
-        clientAuth.signOut().catch((err1) => {
-          console.error(err1);
-        });
+        /* suppress expected error */
       })
-  );
+  } finally {
+    await clientAuth.signOut().catch((err1) => {
+      console.error(err1);
+    });
+  }
 });
 
 test('createUser cannot be called without being authenticated', () => {
@@ -252,53 +240,46 @@ test('Attempting to sign up a user through clientAuth.createUserWithEmailAndPass
     });
 });
 
-test("Manually added, improperly formatted user in users table can't be signed up", () => {
-  return (
-    // set faulty document in users table
-    adminDb
-      .collection('users')
-      .doc(testUserEmail)
-      .set({
-        isAdmin: false,
-        isSuperAdmin: false,
-        // This is missing fields
-      })
-      .then(() => {
-        // try to create corresponding user in Firebase auth
-        return adminAuth
-          .createUser({
-            email: testUserEmail,
-            password: testUserEmail,
-          })
-          .then(() => {
-            // delay to allow onCreate to trigger and realize users table document is faulty
-            return delay(DELAY * 2).then(() => {
-              // check that user has been deleted from Firebase Auth
-              return adminAuth
-                .getUserByEmail(testUserEmail)
-                .then((userRecord) => {
-                  throw new Error("Improperly formatted user should have been deleted from Auth but wasn't");
-                })
-                .catch((err1) => {
-                  expect(true).toEqual(true);
-                  return adminDb
-                    .collection('users')
-                    .doc(testUserEmail)
-                    .get()
-                    .then((user) => {
-                      expect(user.exists).toEqual(false);
-                    })
-                    .catch((err2) => {
-                      throw err2;
-                    });
-                });
-            });
-          });
-      })
-      .catch((err) => {
-        throw err;
-      })
-  );
+test("Manually added, improperly formatted user in users table can't be signed up", async () => {
+  // set faulty document in users table
+  await adminDb
+    .collection('users')
+    .doc(testUserEmail)
+    .set({
+      isAdmin: false,
+      isSuperAdmin: false,
+      // This is missing fields
+    })
+
+  // try to create corresponding user in Firebase auth
+  await adminAuth
+    .createUser({
+      email: testUserEmail,
+      password: testUserEmail,
+    })
+  
+  // delay to allow onCreate to trigger and realize users table document is faulty
+  await delay(DELAY * 2)
+
+  // check that user has been deleted from Firebase Auth
+  await adminAuth
+    .getUserByEmail(testUserEmail)
+    .then((userRecord) => {
+      throw new Error("Improperly formatted user should have been deleted from Auth but wasn't");
+    })
+    .catch((err1) => {
+      expect(true).toEqual(true);
+      return adminDb
+        .collection('users')
+        .doc(testUserEmail)
+        .get()
+        .then((user) => {
+          expect(user.exists).toEqual(false);
+        })
+        .catch((err2) => {
+          throw err2;
+        });
+    });
 });
 
 test("Manually added user in users table with non-existent organizationID can't be signed up", () => {
