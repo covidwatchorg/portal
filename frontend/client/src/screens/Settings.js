@@ -13,6 +13,7 @@ import photo_add from '../../assets/photo-add.svg'
 import Logging from '../util/logging'
 import ResetPasswordModal from '../components/ResetPasswordModal'
 import ChangePasswordModal from '../components/ChangePasswordModal'
+import PendingOperationButton from '../components/PendingOperationButton'
 
 const useStyles = makeStyles({
   root: {
@@ -181,9 +182,13 @@ const SettingsBase = observer((props) => {
         >
           Discard
         </button>
-        <button onClick={saveImage} className={primaryButton.root} style={{ width: '70px', borderStyle: 'none' }}>
+        <PendingOperationButton
+          operation={saveImage}
+          className={primaryButton.root}
+          style={{ width: '96px', borderStyle: 'none' }}
+        >
           Upload
-        </button>
+        </PendingOperationButton>
       </div>
     </div>
   )

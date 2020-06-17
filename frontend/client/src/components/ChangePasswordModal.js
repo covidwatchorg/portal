@@ -197,10 +197,7 @@ class ChangePasswordModalBase extends React.Component {
               {!this.state.passwordsMatch && this.state.confirmPasswordHasBeenEdited ? 'Passwords must match' : ''}
             </div>
 
-            <PendingOperationButton
-              className={`save-password${this.canSubmit() ? '' : '-disabled'}`}
-              operation={this.onSubmit}
-            >
+            <PendingOperationButton className="save-password" disabled={!this.canSubmit()} operation={this.onSubmit}>
               {!this.state.loginTimeoutError ? 'Save' : 'Retry'}
             </PendingOperationButton>
           </form>
