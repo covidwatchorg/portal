@@ -438,6 +438,7 @@ test('User can be toggled between enabled and disabled', () => {
       });
     })
     .catch(async (err) => {
+      // Revert to previous state if the test fails
       await adminDb
         .collection('users')
         .doc('disabled@soylentgreen.com')
