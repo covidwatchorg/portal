@@ -120,107 +120,77 @@ test('Email address can only be used once', () => {
     });
 });
 
-test('createUser works for admins', () => {
-  return clientAuth
-    .signInWithEmailAndPassword('admin@soylentgreen.com', 'admin@soylentgreen.com')
-    .then(() => {
-      return createUser({
-        email: testUserEmail,
-        password: testUserEmail,
-        firstName: 'test',
-        lastName: 'user',
-        isAdmin: false,
-      })
-        .then((result) => result.data)
-        .then((userRecord) => {
-          testUid = userRecord.uid;
-          // Check that the endpoint responded with the proper user
-          expect(userRecord.email).toEqual(testUserEmail);
-          // delay for 6 sec to allow functions.auth.user().onCreate to trigger and propagate
-          return delay(DELAY).then(() => {
-            return clientAuth
-              .signInWithEmailAndPassword(testUserEmail, testUserEmail)
-              .then(() => {
-                // Check that we can sign in with this user
-                const currentUser = clientAuth.currentUser;
-                if (currentUser === null) {
-                  throw new Error('clientAuth.currentUser returned null');
-                }
-                expect(currentUser.email).toEqual(testUserEmail);
-                return delay(DELAY).then(() => {
-                  return currentUser.getIdTokenResult(true).then((idTokenResult) => {
-                    // Check that custom claims are being added properly
-                    expect(idTokenResult.claims.isSuperAdmin).toEqual(false);
-                    expect(idTokenResult.claims.isAdmin).toEqual(false);
-                    expect(idTokenResult.claims.organizationID).toEqual(soylentGreenID);
-                  });
-                });
-              })
-              .catch((err) => {
-                throw err;
-              });
-          });
-        })
-        .catch((err) => {
-          throw err;
-        });
-    })
-    .catch((err) => {
-      throw err;
-    });
+test('createUser works for admins', async () => {
+  await clientAuth.signInWithEmailAndPassword('admin@soylentgreen.com', 'admin@soylentgreen.com');
+  
+  const userRecord = (await createUser({
+    email: testUserEmail,
+    password: testUserEmail,
+    firstName: 'test',
+    lastName: 'user',
+    isAdmin: false,
+  })).data
+  testUid = userRecord.uid;
+
+  // Check that the endpoint responded with the proper user
+  expect(userRecord.email).toEqual(testUserEmail);
+
+  // delay for 6 sec to allow functions.auth.user().onCreate to trigger and propagate
+  await delay(DELAY);
+
+  await clientAuth.signInWithEmailAndPassword(testUserEmail, testUserEmail);
+  
+  // Check that we can sign in with this user
+  const currentUser = clientAuth.currentUser;
+  if (currentUser === null) {
+    throw new Error('clientAuth.currentUser returned null');
+  }
+  expect(currentUser.email).toEqual(testUserEmail);
+
+  await delay(DELAY);
+  const idTokenResult = await currentUser.getIdTokenResult(true);
+  // Check that custom claims are being added properly
+  expect(idTokenResult.claims.isSuperAdmin).toEqual(false);
+  expect(idTokenResult.claims.isAdmin).toEqual(false);
+  expect(idTokenResult.claims.organizationID).toEqual(soylentGreenID);
 });
 
-test('createUser works for emails with uppercase letters', () => {
-  return clientAuth
-    .signInWithEmailAndPassword('admin@soylentgreen.com', 'admin@soylentgreen.com')
-    .then(() => {
-      return createUser({
-        email: 'UPPERCASE@email.com',
-        password: 'password',
-        firstName: 'test',
-        lastName: 'user',
-        isAdmin: false,
-      })
-        .then((result) => result.data)
-        .then((userRecord) => {
-          testUid = userRecord.uid;
-          // Check that the endpoint responded with the proper user
-          expect(userRecord.email).toEqual('uppercase@email.com');
-          // delay for 6 sec to allow functions.auth.user().onCreate to trigger and propagate
-          return delay(DELAY).then(() => {
-            return clientAuth
-              .signInWithEmailAndPassword('UPPERCASE@email.com', 'password')
-              .then(() => {
-                // Check that we can sign in with this user
-                const currentUser = clientAuth.currentUser;
-                if (currentUser === null) {
-                  throw new Error('clientAuth.currentUser returned null');
-                }
-                expect(currentUser.email).toEqual('uppercase@email.com');
-                return delay(DELAY).then(() => {
-                  return adminDb
-                    .collection('users')
-                    .doc('uppercase@email.com')
-                    .get()
-                    .then((userDoc) => {
-                      expect(userDoc.exists).toBe(true);
-                      // delete uppercase user to keep test idempotent
-                      return adminDb.collection('users').doc('uppercase@email.com').delete();
-                    });
-                });
-              })
-              .catch((err) => {
-                throw err;
-              });
-          });
-        })
-        .catch((err) => {
-          throw err;
-        });
-    })
-    .catch((err) => {
-      throw err;
-    });
+test('createUser works for emails with uppercase letters', async () => {
+  await clientAuth.signInWithEmailAndPassword('admin@soylentgreen.com', 'admin@soylentgreen.com');
+  
+  const userRecord = (await createUser({
+    email: 'UPPERCASE@email.com',
+    password: 'password',
+    firstName: 'test',
+    lastName: 'user',
+    isAdmin: false,
+  })).data;
+
+  testUid = userRecord.uid;
+  
+  // Check that the endpoint responded with the proper user
+  expect(userRecord.email).toEqual('uppercase@email.com');
+
+  // delay for 6 sec to allow functions.auth.user().onCreate to trigger and propagate
+  await delay(DELAY);
+
+  await clientAuth.signInWithEmailAndPassword('UPPERCASE@email.com', 'password');
+  // Check that we can sign in with this user
+  const currentUser = clientAuth.currentUser;
+  if (currentUser === null) {
+    throw new Error('clientAuth.currentUser returned null');
+  }
+  expect(currentUser.email).toEqual('uppercase@email.com');
+  
+  await delay(DELAY);
+  const userDoc = await adminDb
+    .collection('users')
+    .doc('uppercase@email.com')
+    .get();
+  
+    expect(userDoc.exists).toBe(true);
+  // delete uppercase user to keep test idempotent
+  await adminDb.collection('users').doc('uppercase@email.com').delete();
 });
 
 test('createUser fails if invalid request body', () => {
