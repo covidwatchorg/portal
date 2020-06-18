@@ -16,6 +16,24 @@ const testUserEmail =
     .substr(0, 5) +
   '@soylentgreen.com';
 
+/**
+ * Makes a copy of an existing user. The new user's email address and password will be `newEmail`.
+ * @param oldEmail the existing user's email address
+ * @param newEmail the new user's email address
+ */
+async function copyUser(oldEmail: string, newEmail: string) {
+  // Copy user data
+  const userData = (await adminDb.collection('users').doc(oldEmail).get()).data()!
+  await adminDb.collection('users').doc(newEmail).set(userData)
+
+  // Create auth record
+  const userRecord = await adminAuth.createUser({
+    email: newEmail,
+    password: newEmail,
+  })
+  testUid = userRecord.uid
+}
+
 afterEach(() => {
   return (
     adminAuth
@@ -389,9 +407,12 @@ test("Manually added user in users table with empty string organizationID can't 
 });
 
 test('User can be toggled between enabled and disabled', async () => {
+  // Create a new user to avoid race conditions
+  await copyUser('disabled@soylentgreen.com', testUserEmail)
+
   await adminDb
     .collection('users')
-    .doc('disabled@soylentgreen.com')
+    .doc(testUserEmail)
     .update({
       disabled: false,
     });
@@ -399,32 +420,37 @@ test('User can be toggled between enabled and disabled', async () => {
   // Delay to allow userOnUpdate time to run
   await delay(DELAY * 5);
 
-  const userRecordDisabled = await adminAuth.getUserByEmail('disabled@soylentgreen.com');
+  const userRecordDisabled = await adminAuth.getUserByEmail(testUserEmail);
   expect(userRecordDisabled.disabled).toBe(false);
   await adminDb
     .collection('users')
-    .doc('disabled@soylentgreen.com')
+    .doc(testUserEmail)
     .update({
       disabled: true,
     });
+
+    // Delay to allow userOnUpdate time to run
   await delay(DELAY * 5);
 
-  const userRecordEnabled = await adminAuth.getUserByEmail('disabled@soylentgreen.com');
+  const userRecordEnabled = await adminAuth.getUserByEmail(testUserEmail);
   expect(userRecordEnabled.disabled).toBe(true);
 });
 
 test('User can be toggled between isAdmin and not isAdmin', async () => {
+  // Create a new user to avoid race conditions
+  await copyUser('user@soylentgreen.com', testUserEmail)
+
   await adminDb
     .collection('users')
-    .doc('user@soylentgreen.com')
+    .doc(testUserEmail)
     .update({
       isAdmin: true,
     });
 
   // Delay to allow userOnUpdate time to run
-  await delay(DELAY * 3);
+  await delay(DELAY * 5);
 
-  await clientAuth.signInWithEmailAndPassword('user@soylentgreen.com', 'user@soylentgreen.com');
+  await clientAuth.signInWithEmailAndPassword(testUserEmail, testUserEmail);
   if (clientAuth.currentUser === null) {
     throw new Error('clientAuth.currentUser returned null');
   }
@@ -435,13 +461,13 @@ test('User can be toggled between isAdmin and not isAdmin', async () => {
 
   await adminDb
     .collection('users')
-    .doc('user@soylentgreen.com')
+    .doc(testUserEmail)
     .update({
       isAdmin: false,
     });
 
-    // Delay to allow userOnUpdate time to run
-  await delay(DELAY * 3);
+  // Delay to allow userOnUpdate time to run
+  await delay(DELAY * 5);
 
   // Check that isAdmin claim has been updated properly
   idTokenResult = await clientAuth.currentUser.getIdTokenResult(true);
