@@ -114,9 +114,6 @@ test('Email address can only be used once', () => {
           expect(err.code).toEqual('already-exists');
           expect(err.message).toEqual('The email address is already in use by another account.');
         });
-    })
-    .catch((err) => {
-      throw Error(err);
     });
 });
 
@@ -225,17 +222,8 @@ test('Attempting to sign up a user through clientAuth.createUserWithEmailAndPass
             .get()
             .then((user) => {
               expect(user.exists).toEqual(false);
-            })
-            .catch((err) => {
-              throw err;
             });
-        })
-        .catch((err) => {
-          throw err;
         });
-    })
-    .catch((err) => {
-      throw err;
     });
 });
 
@@ -273,9 +261,6 @@ test("Manually added, improperly formatted user in users table can't be signed u
         .get()
         .then((user) => {
           expect(user.exists).toEqual(false);
-        })
-        .catch((err2) => {
-          throw err2;
         });
     });
 });
@@ -319,9 +304,6 @@ test("Manually added user in users table with non-existent organizationID can't 
         .get()
         .then((user) => {
           expect(user.exists).toEqual(false);
-        })
-        .catch((err2) => {
-          throw err2;
         });
     });
 });
@@ -365,9 +347,6 @@ test("Manually added user in users table with empty string organizationID can't 
         .get()
         .then((user) => {
           expect(user.exists).toEqual(false);
-        })
-        .catch((err2) => {
-          throw err2;
         });
     });
 });
