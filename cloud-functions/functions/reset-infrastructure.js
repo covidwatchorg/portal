@@ -2,13 +2,14 @@ const admin = require('firebase-admin');
 const client = require('firebase-tools');
 const { uniqueNamesGenerator, names } = require('unique-names-generator');
 
+// FIXME The Firebase auth tests rely on hardcoded organization IDs. Running this script on 'test'
+// will break them because it re-creates the database with new, randomly generated IDs.
 if (
   process.env.NODE_ENV !== 'local' &&
   process.env.NODE_ENV !== 'dev' &&
-  process.env.NODE_ENV !== 'test' &&
   process.env.NODE_ENV !== 'staging'
 ) {
-  throw new Error('Environment variable NODE_ENV must be set to one of `dev` or `test` or `staging` or `local`');
+  throw new Error('Environment variable NODE_ENV must be set to one of `dev` or `staging` or `local`');
 }
 
 // Initialize admin SDK
