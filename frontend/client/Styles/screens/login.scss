@@ -5,7 +5,7 @@
   flex-direction: row;
   justify-content: space-between;
   align-items: stretch;
-  margin: 32px 32px 0 32px;
+  margin: 32px 32px 0 0px;
   #orgLogo {
     height: 35px;
   }
@@ -17,7 +17,7 @@
 .mainContainer {
   display: flex;
   flex-direction: row;
-  justify-content: space-evenly;
+  justify-content: space-between;
   h1 {
     font-family: 'Montserrat', sans-serif;
     font-style: normal;
@@ -116,4 +116,3 @@
   height: 88px;
   margin-top: 90px;
 }
-

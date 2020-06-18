@@ -111,7 +111,6 @@ describe('Test proper read/write permissions for regular users (non-admins)', ()
           .doc('user@soylentgreen.com')
           .update({
             isAdmin: 'true',
-            isSuperAdmin: true
           });
           fail('user should not be able to escalate scope');
         }catch(err) {
