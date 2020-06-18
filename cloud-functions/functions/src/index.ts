@@ -157,6 +157,8 @@ function isAdminGuard(context: functions.https.CallableContext): Promise<void> {
   });
 }
 
+const EMAILSTYLE = `style="font-family: Montserrat, Arial, Helvetica, sans-serif;font-size:18px;color: #585858;"`;
+
 // Send email to new users instructing them to change their password
 function sendNewUserEmail(email: string, password: string, firstName: string, lastName: string) {
   const msg = {
@@ -165,14 +167,14 @@ function sendNewUserEmail(email: string, password: string, firstName: string, la
     subject: 'Welcome to the Covid Watch Permission Portal',
     html: `
     <!DOCTYPE html>
-    <p style="font-family: Montserrat;font-size:18px;color: #585858;">${firstName} ${lastName},</p>
-    <p style="font-family: Montserrat;font-size:18px;color: #585858;">You are receiving this email because you were added as a new member of Covid Watch by the Account Administrator.</p>
-    <p style="font-family: Montserrat;font-size:18px;color: #585858;"><b>Your user name:</b> ${email}<br />  <b>Your temporary password:</b> ${password}</p>
-    <p style="font-family: Montserrat;font-size:18px;color: #585858;">Please click the following link or copy and paste it into your browser to sign in to your new account:</p>
-    <p style="font-family: Montserrat;font-size:18px;color: #585858;"><a href=${functions.config().client.url}>Sign In</a></p>
-    <p style="font-family: Montserrat;font-size:18px;color: #585858;">If you recieved this message in error, you can safely ignore it.</p>
-    <p style="font-family: Montserrat;font-size:18px;color: #585858;">You can reply to this message, or email support@covid-watch.org if you have any questions.</p>
-    <p style="font-family: Montserrat;font-size:18px;color: #585858;">Thank you,<br />Covid Watch Team</p> `,
+    <p ${EMAILSTYLE}>${firstName} ${lastName},</p>
+    <p ${EMAILSTYLE}>You are receiving this email because you were added as a new member of Covid Watch by the Account Administrator.</p>
+    <p ${EMAILSTYLE}><b>Your user name:</b> ${email}<br />  <b>Your temporary password:</b> ${password}</p>
+    <p ${EMAILSTYLE}>Please click the following link or copy and paste it into your browser to sign in to your new account:</p>
+    <p ${EMAILSTYLE}><a href=${functions.config().client.url}>Sign In</a></p>
+    <p ${EMAILSTYLE}>If you recieved this message in error, you can safely ignore it.</p>
+    <p ${EMAILSTYLE}>You can reply to this message, or email support@covid-watch.org if you have any questions.</p>
+    <p ${EMAILSTYLE}>Thank you,<br />Covid Watch Team</p> `,
   };
   sgMail
     .send(msg)

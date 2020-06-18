@@ -1,11 +1,11 @@
 // get this from Firebase console, Project Settings -> General -> Web Apps -> Firebase SDK Snippet
 
-module.exports =  {
-  apiKey: "AIzaSyARyxmf2Q01LzjVDNPP41Dct1K5ux-_t88",
-  authDomain: "permission-portal-isaiah.firebaseapp.com",
-  databaseURL: "https://permission-portal-isaiah.firebaseio.com",
-  projectId: "permission-portal-isaiah",
-  storageBucket: "permission-portal-isaiah.appspot.com",
-  messagingSenderId: "93009283931",
-  appId: "1:93009283931:web:7baa67ee5e5c4d8a73e87e"
+module.exports = {
+  apiKey: "AIzaSyD7oKxbCwcTM3ej4KWVpFq6t5MFL5TxGgs",
+  authDomain: "permission-portal-isaiah-1c00d.firebaseapp.com",
+  databaseURL: "https://permission-portal-isaiah-1c00d.firebaseio.com",
+  projectId: "permission-portal-isaiah-1c00d",
+  storageBucket: "permission-portal-isaiah-1c00d.appspot.com",
+  messagingSenderId: "1003313553971",
+  appId: "1:1003313553971:web:96af3fbdd8824fa2857946",
 };
