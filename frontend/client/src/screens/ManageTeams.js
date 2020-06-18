@@ -44,6 +44,18 @@ const ManageTeamsBase = observer((props) => {
     setShowAddMemberModal(false)
   }
 
+  const handleRoleChange = (e, isAdmin, firstName, lastName, email) => {
+    if (
+      confirm(
+        `Are you sure you want swicth ${firstName} ${lastName} from ${
+          isAdmin ? ROLES.ADMIN_LABEL : ROLES.NON_ADMIN_LABEL
+        } to ${isAdmin ? ROLES.NON_ADMIN_LABEL : ROLES.ADMIN_LABEL}`
+      )
+    ) {
+      props.store.updateUserByEmail(email, { isAdmin: e.target.value == ROLES.ADMIN_LABEL })
+    }
+  }
+
   const resetPassword = async (e, email) => {
     e.preventDefault()
     try {
@@ -92,9 +104,7 @@ const ManageTeamsBase = observer((props) => {
                 <td style={{ padding: 0 }}>
                   <RoleSelector
                     memberIndex={index}
-                    onChange={(e) => {
-                      props.store.updateUserByEmail(data.email, { isAdmin: e.target.value == ROLES.ADMIN_LABEL })
-                    }}
+                    onChange={(e) => handleRoleChange(e, data.isAdmin, data.firstName, data.lastName, data.email)}
                     ariaLabelledBy="role-header"
                   />
                 </td>

@@ -85,7 +85,7 @@ const AccountBrandingBase = observer((props) => {
   }
 
   return props.store.data.user.isSignedIn && props.store.data.user.isAdmin ? (
-    <div className="module-container">
+    <div className="module-container module-container-branding">
       <PageTitle title="Account Branding" />
       <h1 className="branding-header">Account Branding</h1>
       <div className="branding-container">

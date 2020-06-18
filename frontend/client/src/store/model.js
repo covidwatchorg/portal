@@ -7,7 +7,6 @@ const User = types
     isSignedIn: types.boolean, // frontend-only field
     email: types.string,
     isAdmin: types.boolean,
-    isSuperAdmin: types.boolean,
     disabled: types.boolean,
     prefix: types.maybe(types.string),
     imageBlob: types.maybeNull(types.string),
@@ -79,7 +78,6 @@ const defaultUser = {
   isSignedIn: false,
   email: '',
   isAdmin: false,
-  isSuperAdmin: false,
   disabled: false,
   prefix: '',
   firstName: '',

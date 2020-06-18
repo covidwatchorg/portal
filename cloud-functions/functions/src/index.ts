@@ -16,7 +16,6 @@ function isCovidWatchUserProperlyFormatted(covidWatchUser: any): boolean {
   console.log(`checking that ${JSON.stringify(covidWatchUser)} is properly formatted`);
   return (
     typeof covidWatchUser.isAdmin === 'boolean' &&
-    typeof covidWatchUser.isSuperAdmin === 'boolean' &&
     typeof covidWatchUser.organizationID === 'string' &&
     typeof covidWatchUser.disabled === 'boolean' &&
     typeof covidWatchUser.firstName === 'string' &&
@@ -107,12 +106,10 @@ function syncAuthUserWithCovidWatchUser(email: string) {
         .then((authUser) => {
           auth
             .setCustomUserClaims(authUser.uid, {
-              isSuperAdmin: covidWatchUser.isSuperAdmin,
               isAdmin: covidWatchUser.isAdmin,
               organizationID: covidWatchUser.organizationID,
             })
             .then(() => {
-              console.log('user ' + email + ' isSuperAdmin claim set to ' + covidWatchUser.isSuperAdmin);
               console.log('user ' + email + ' isAdmin claim set to ' + covidWatchUser.isAdmin);
               console.log('user ' + email + ' organizationID claim set to ' + covidWatchUser.organizationID);
               auth
@@ -167,14 +164,17 @@ function sendNewUserEmail(email: string, password: string, firstName: string, la
     from: 'welcome@covid-watch.org',
     subject: 'Welcome to the Covid Watch Permission Portal',
     html: `
-    <p>${firstName} ${lastName},</p>
-    <p>You are receiving this email because you were added as a new member of Covid Watch by an Account Administrator.</p>
-    <p><em>Your user name:</em> ${email}<br />  <em>Your password:</em> ${password}</p>
-    <p>Please click the following link or copy-paste it in your browser to sign in to your new account.</p>
-    <p><a href=${functions.config().client.url}>Sign In</a></p>
-    <p>If you recieved this message in error, you can safely ignore it.</p>
-    <p>You can reply to this message, or email support@covid-watch.org if you have any questions.</p>
-    <p>Thank you,<br />Covid Watch Team</p>`,
+    <!DOCTYPE html>
+    <p style="font-family: Montserrat;font-size:18px;color: #585858;">${firstName} ${lastName},</p>
+    <p style="font-family: Montserrat;font-size:18px;color: #585858;">You are receiving this email because you were added as a new member of Covid Watch by the Account Administrator.</p>
+    <p style="font-family: Montserrat;font-size:18px;color: #585858;"><b>Your user name:</b> ${email}<br />  <b>Your temporary password:</b> ${password}</p>
+    <p style="font-family: Montserrat;font-size:18px;color: #585858;">Please click the following link or copy and paste it into your browser to sign in to your new account:</p>
+    <p style="font-family: Montserrat;font-size:18px;color: #585858;"><a href=${
+      functions.config().client.url
+    }>Sign In</a></p>
+    <p style="font-family: Montserrat;font-size:18px;color: #585858;">If you recieved this message in error, you can safely ignore it.</p>
+    <p style="font-family: Montserrat;font-size:18px;color: #585858;">You can reply to this message, or email support@covid-watch.org if you have any questions.</p>
+    <p style="font-family: Montserrat;font-size:18px;color: #585858;">Thank you,<br />Covid Watch Team</p> `,
   };
   sgMail
     .send(msg)
@@ -261,7 +261,6 @@ export const createUser = functions.https.onCall((newUser, context) => {
         }
         const newUserPrivileges = {
           isAdmin: newUser.isAdmin,
-          isSuperAdmin: false,
           organizationID: context.auth!.token.organizationID,
           disabled: false,
           firstName: newUser.firstName,

@@ -132,7 +132,6 @@ test('createUser works for admins', () => {
                 return delay(DELAY).then(() => {
                   return currentUser.getIdTokenResult(true).then((idTokenResult) => {
                     // Check that custom claims are being added properly
-                    expect(idTokenResult.claims.isSuperAdmin).toEqual(false);
                     expect(idTokenResult.claims.isAdmin).toEqual(false);
                     expect(idTokenResult.claims.organizationID).toEqual(soylentGreenID);
                   });
@@ -260,7 +259,6 @@ test("Manually added, improperly formatted user in users table can't be signed u
       .doc(testUserEmail)
       .set({
         isAdmin: false,
-        isSuperAdmin: false,
         // This is missing fields
       })
       .then(() => {
@@ -309,7 +307,6 @@ test("Manually added user in users table with non-existent organizationID can't 
       .doc(testUserEmail)
       .set({
         isAdmin: false,
-        isSuperAdmin: false,
         organizationID: "This id doesn't exist",
         disabled: false,
         firstName: 'test',
@@ -363,7 +360,6 @@ test("Manually added user in users table with empty string organizationID can't 
       .doc(testUserEmail)
       .set({
         isAdmin: false,
-        isSuperAdmin: false,
         organizationID: '',
         disabled: false,
         firstName: 'test',

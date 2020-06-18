@@ -1,17 +1,40 @@
 #not-found {
     display: flex;
+    justify-content: space-evenly;
+    // background-image: url('../../assets/fade-background-404.svg');
+    // TO DO: make a linear gradient background instead
+
+    // background: linear-gradient(rgba(255, 255, 255, 0) 100%, #43C4D9 0%);
+    background: linear-gradient(white 30%, #43C4D9);
+    height: 100vh;
 
     #doctor-img {
-        margin-left: 20px;
-        width: 10%;
+        display: flex;
+        width: 24%;
+        align-items: flex-end;
+        min-width: 200px;
+
+        img {
+            width: 100%;
+        }
+    }
+
+    #female-doctor-img {
+        display: flex;
+        width: 26%;
+        align-items: flex-end;
+        min-width: 200px;
+
+         img {
+            width: 100%;
+        }
     }
 
     #message {
-        width: 77%;
         display: flex;
         flex-direction: column;
         align-items: center;
-        justify-content: center;
+        margin-top: 10%;
 
         #main {
             width: 449px;
@@ -51,7 +74,7 @@
         margin-top: 60px;
         margin-bottom: 20px;
         width: 294px;
-        height: 50px;
+        height: 30px;
 
         /* Gradient White */
         background: #2C58B1;
@@ -61,7 +84,7 @@
         font-style: normal;
         font-weight: 600;
         font-size: 18px;
-        line-height: 50px;
+        line-height: 30px;
         text-align: center;
         text-decoration: none;
         /* Bluejay */

@@ -130,8 +130,10 @@ const SignInFormBase = observer(
     render() {
       return (
         <Fragment>
-          {this.loginForm()}
-          {this.bottomLevelContent()}
+          <div className="module-container">
+            {this.loginForm()}
+            {this.bottomLevelContent()}
+          </div>
           {this.props.store.data.user.isSignedIn ? (
             this.props.store.data.user.isFirstTimeUser ? (
               <ChangePasswordModal

@@ -39,7 +39,6 @@ async function addMinimalSampleData() {
         .collection('users')
         .doc('admin@soylentgreen.com')
         .set({
-          isSuperAdmin: false,
           isAdmin: true,
           organizationID: soylentGreenID,
           disabled: false,
@@ -58,7 +57,6 @@ async function addMinimalSampleData() {
             .collection('users')
             .doc('user@soylentgreen.com')
             .set({
-              isSuperAdmin: false,
               isAdmin: false,
               organizationID: soylentGreenID,
               disabled: false,
@@ -82,7 +80,6 @@ async function addMinimalSampleData() {
                   .collection('users')
                   .doc('admin@initech.com')
                   .set({
-                    isSuperAdmin: false,
                     isAdmin: true,
                     organizationID: initechID,
                     disabled: false,
@@ -101,7 +98,6 @@ async function addMinimalSampleData() {
                       .collection('users')
                       .doc('user@initech.com')
                       .set({
-                        isSuperAdmin: false,
                         isAdmin: false,
                         organizationID: initechID,
                         disabled: false,
@@ -119,7 +115,6 @@ async function addMinimalSampleData() {
                         .collection('users')
                         .doc('disabled@soylentgreen.com')
                         .set({
-                          isSuperAdmin: false,
                           isAdmin: false,
                           organizationID: soylentGreenID,
                           disabled: true,
@@ -131,7 +126,6 @@ async function addMinimalSampleData() {
                         .collection('users')
                         .doc('disabled@initech.com')
                         .set({
-                          isSuperAdmin: false,
                           isAdmin: false,
                           organizationID: initechID,
                           disabled: true,
@@ -246,7 +240,6 @@ async function createRandomUser(company) {
       .collection('users')
       .doc(`${firstName}${lastName}@${companyWebsite}`.toLowerCase())
       .set({
-        isSuperAdmin: false,
         isAdmin: Math.random() >= 0.5,
         organizationID: company === 'soylentgreen' ? soylentGreenID : initechID,
         disabled: false,
