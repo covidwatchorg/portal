@@ -143,7 +143,9 @@ const ManageTeamsBase = observer((props) => {
             }}
           >
             <img src={arrowLeft} alt="Previous" />
+            <div style={{ marginLeft: 5 }}>Previous</div>
           </div>
+          <div style={{ width: 30 }}></div>
           <div
             className="arrow"
             onClick={(e) => {
@@ -151,6 +153,7 @@ const ManageTeamsBase = observer((props) => {
               props.store.nextPageOfMembers()
             }}
           >
+            <div style={{ marginRight: 5 }}>Next</div>
             <img src={arrowRight} alt="Next" />
           </div>
         </div>
