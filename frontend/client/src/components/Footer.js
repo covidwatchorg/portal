@@ -28,7 +28,7 @@ const Footer = () => {
 
   return (
     <div id="footer" style={footerStyle}>
-      <div div className="footerContainer" style={footerContainerStyle}>
+      <div className="footerContainer" style={footerContainerStyle}>
         <p id="copyright">© 2020 Covid Watch. All rights reserved.</p>
         <a href="url">Privacy Policy</a>
         <a href="url">Terms of Use</a>

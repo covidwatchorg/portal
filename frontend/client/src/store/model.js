@@ -4,7 +4,7 @@ import Logging from '../util/logging'
 
 const User = types
   .model({
-    isSignedIn: types.maybe(types.boolean),
+    isSignedIn: types.maybe(types.boolean), // frontend-only field
     email: types.string,
     isAdmin: types.boolean,
     disabled: types.boolean,
@@ -13,7 +13,10 @@ const User = types
     firstName: types.string,
     lastName: types.string,
     organizationID: types.string,
-    isFirstTimeUser: types.maybe(types.boolean),
+    isFirstTimeUser: types.boolean,
+    passwordResetRequested: types.maybe(types.boolean),
+    passwordResetCompletedInCurrentSession: types.maybe(types.boolean), // frontend-only field
+    signedInWithEmailLink: types.maybe(types.boolean), // frontend-only field
   })
   .actions((self) => {
     const __update = (updates) => {
@@ -81,6 +84,10 @@ const defaultUser = {
   lastName: '',
   organizationID: '',
   imageBlob: null,
+  isFirstTimeUser: true,
+  passwordResetRequested: false,
+  passwordResetCompletedInCurrentSession: false,
+  signedInWithEmailLink: false,
 }
 
 const defaultOrganization = {
@@ -114,8 +121,8 @@ const defaultStore = {
 let initialStore = defaultStore
 
 // Based on https://egghead.io/lessons/react-store-store-in-local-storage
-if (localStorage.getItem('store')) {
-  initialStore = JSON.parse(localStorage.getItem('store'))
+if (sessionStorage.getItem('store')) {
+  initialStore = JSON.parse(sessionStorage.getItem('store'))
 }
 
 const rootStore = Store.create({
@@ -124,7 +131,7 @@ const rootStore = Store.create({
 
 // Based on https://egghead.io/lessons/react-store-store-in-local-storage
 onSnapshot(rootStore, (snapshot) => {
-  localStorage.setItem('store', JSON.stringify(snapshot))
+  sessionStorage.setItem('store', JSON.stringify(snapshot))
 })
 
 export { rootStore, defaultUser, defaultOrganization }
