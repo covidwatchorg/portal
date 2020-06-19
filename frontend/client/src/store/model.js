@@ -4,7 +4,7 @@ import Logging from '../util/logging'
 
 const User = types
   .model({
-    isSignedIn: types.boolean, // frontend-only field
+    isSignedIn: types.maybe(types.boolean), // frontend-only field
     email: types.string,
     isAdmin: types.boolean,
     disabled: types.boolean,
@@ -14,9 +14,9 @@ const User = types
     lastName: types.string,
     organizationID: types.string,
     isFirstTimeUser: types.boolean,
-    passwordResetRequested: types.boolean,
-    passwordResetCompletedInCurrentSession: types.boolean, // frontend-only field
-    signedInWithEmailLink: types.boolean, // frontend-only field
+    passwordResetRequested: types.maybe(types.boolean),
+    passwordResetCompletedInCurrentSession: types.maybe(types.boolean), // frontend-only field
+    signedInWithEmailLink: types.maybe(types.boolean), // frontend-only field
   })
   .actions((self) => {
     const __update = (updates) => {
