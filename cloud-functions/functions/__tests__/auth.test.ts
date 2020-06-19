@@ -34,34 +34,26 @@ async function copyUser(oldEmail: string, newEmail: string) {
   testUid = userRecord.uid
 }
 
-afterEach(() => {
-  return (
-    adminAuth
-      .deleteUser(testUid)
-      .then(() => {
-        return (
-          adminDb
-            .collection('users')
-            .doc(testUserEmail)
-            .delete()
-            .then(() => {
-              clientAuth.signOut().catch((err) => {
-                console.error(err);
-              });
-            })
-            // tslint:disable-next-line: no-empty
-            .catch((err) => {
-              /* suppress expected error */
-            })
-        );
-      })
-      // tslint:disable-next-line: no-empty
-      .catch((err) => {
-        clientAuth.signOut().catch((err1) => {
-          console.error(err1);
-        });
-      })
-  );
+afterEach(async () => {
+  try {
+    await adminAuth.deleteUser(testUid);
+    try {
+      await adminDb
+        .collection('users')
+        .doc(testUserEmail)
+        .delete();
+      await clientAuth.signOut().catch((err) => {
+        console.error(err);
+      });
+    } catch (err) {
+      /* suppress expected error */
+    }
+  } catch (err) {
+    // Do not consolidate these signOut() calls into a finally block! It will not work!
+    await clientAuth.signOut().catch((err1) => {
+      console.error(err1);
+    });
+  }
 });
 
 test('createUser cannot be called without being authenticated', () => {
