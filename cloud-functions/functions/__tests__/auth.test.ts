@@ -56,57 +56,51 @@ afterEach(async () => {
   }
 });
 
-test('createUser cannot be called without being authenticated', () => {
-  return createUser({})
-    .then((result) => {
-      throw new Error("This shouldn't happen!");
-    })
-    .catch((err) => {
-      expect(err.code).toEqual('unauthenticated');
-      expect(err.message).toEqual('The function must be called while authenticated.');
-    });
+test('createUser cannot be called without being authenticated', async () => {
+  try {
+    await createUser({});
+    fail("This shouldn't happen!");
+  } catch (err) {
+    expect(err.code).toEqual('unauthenticated');
+    expect(err.message).toEqual('The function must be called while authenticated.');
+  }
 });
 
-test('createUser cannot be called by non-admin', () => {
-  return clientAuth
-    .signInWithEmailAndPassword('user@soylentgreen.com', 'user@soylentgreen.com')
-    .then(() => {
-      return createUser({})
-        .then((result) => {
-          throw new Error("This shouldn't happen!");
-        })
-        .catch((err) => {
-          expect(err.code).toEqual('permission-denied');
-          expect(err.message).toEqual('The function must be called by an admin.');
-        });
-    })
-    .catch((err) => {
-      console.log(err);
-      throw Error("This shouldn't happen!");
-    });
+test('createUser cannot be called by non-admin', async () => {
+  try {
+    await clientAuth
+      .signInWithEmailAndPassword('user@soylentgreen.com', 'user@soylentgreen.com');
+    try {
+      await createUser({});
+      fail("This shouldn't happen!");
+    } catch (err) {
+      expect(err.code).toEqual('permission-denied');
+      expect(err.message).toEqual('The function must be called by an admin.');
+    }
+  } catch (err) {
+    console.log(err);
+    fail("This shouldn't happen!");
+  }
 });
 
-test('Email address can only be used once', () => {
-  return clientAuth
-    .signInWithEmailAndPassword('admin@soylentgreen.com', 'admin@soylentgreen.com')
-    .then(() => {
-      return createUser({
-        email: 'user@soylentgreen.com',
-        password: 'user@soylentgreen.com',
-        firstName: 'Heather',
-        lastName: 'Sykes',
-        isAdmin: false,
-      })
-        .then((result) => {
-          throw new Error(
-            'user@soylentgreen.com should already be in the test database, and the email should not be allowed to be used again!'
-          );
-        })
-        .catch((err) => {
-          expect(err.code).toEqual('already-exists');
-          expect(err.message).toEqual('The email address is already in use by another account.');
-        });
+test('Email address can only be used once', async () => {
+  await clientAuth
+    .signInWithEmailAndPassword('admin@soylentgreen.com', 'admin@soylentgreen.com');
+  try {
+    await createUser({
+      email: 'user@soylentgreen.com',
+      password: 'user@soylentgreen.com',
+      firstName: 'Heather',
+      lastName: 'Sykes',
+      isAdmin: false,
     });
+    fail(
+      'user@soylentgreen.com should already be in the test database, and the email should not be allowed to be used again!'
+    );
+  } catch (err) {
+    expect(err.code).toEqual('already-exists');
+    expect(err.message).toEqual('The email address is already in use by another account.');
+  }
 });
 
 test('createUser works for admins', async () => {
@@ -181,42 +175,33 @@ test('createUser works for emails with uppercase letters', async () => {
   await adminDb.collection('users').doc('uppercase@email.com').delete();
 });
 
-test('createUser fails if invalid request body', () => {
-  return clientAuth.signInWithEmailAndPassword('admin@soylentgreen.com', 'admin@soylentgreen.com').then(() => {
-    return createUser({
+test('createUser fails if invalid request body', async () => {
+  await clientAuth.signInWithEmailAndPassword('admin@soylentgreen.com', 'admin@soylentgreen.com');
+  try {
+    await createUser({
       email: testUserEmail,
       password: testUserEmail,
       // Missing required fields
     })
-      .then((result) => {
-        throw new Error('createUser returned a 200 despite improperly formatted request');
-      })
-      .catch((err) => {
-        expect(err.code).toEqual('invalid-argument');
-        expect(err.message).toEqual('Request body is invalidly formatted.');
-      });
-  });
+    fail('createUser returned a 200 despite improperly formatted request');
+  } catch (err) {
+    expect(err.code).toEqual('invalid-argument');
+    expect(err.message).toEqual('Request body is invalidly formatted.');
+  }
 });
 
-test('Attempting to sign up a user through clientAuth.createUserWithEmailAndPassword and not through createUser endpoint results in the user being deleted', () => {
-  return clientAuth
-    .createUserWithEmailAndPassword(testUserEmail, testUserEmail)
-    .then((userCredential) => {
-      expect(userCredential.user?.email).toEqual(testUserEmail);
-      if (userCredential.user) {
-        testUid = userCredential.user.uid;
-      }
-      // Give onCreate some time to delete the user
-      return delay(DELAY * 2)
-        .then(() => {
-          return adminDb
-            .doc('users/' + testUserEmail)
-            .get()
-            .then((user) => {
-              expect(user.exists).toEqual(false);
-            });
-        });
-    });
+test('Attempting to sign up a user through clientAuth.createUserWithEmailAndPassword and not through createUser endpoint results in the user being deleted', async () => {
+  const userCredential = await clientAuth
+    .createUserWithEmailAndPassword(testUserEmail, testUserEmail);
+  expect(userCredential.user?.email).toEqual(testUserEmail);
+  if (userCredential.user) {
+    testUid = userCredential.user.uid;
+  }
+  await delay(DELAY * 2);
+  const user = await adminDb
+    .doc('users/' + testUserEmail)
+    .get();
+  expect(user.exists).toEqual(false);
 });
 
 test("Manually added, improperly formatted user in users table can't be signed up", async () => {
@@ -240,21 +225,17 @@ test("Manually added, improperly formatted user in users table can't be signed u
   await delay(DELAY * 2)
 
   // check that user has been deleted from Firebase Auth
-  await adminAuth
-    .getUserByEmail(testUserEmail)
-    .then((userRecord) => {
-      throw new Error("Improperly formatted user should have been deleted from Auth but wasn't");
-    })
-    .catch((err1) => {
-      expect(true).toEqual(true);
-      return adminDb
-        .collection('users')
-        .doc(testUserEmail)
-        .get()
-        .then((user) => {
-          expect(user.exists).toEqual(false);
-        });
-    });
+  try {
+    await adminAuth.getUserByEmail(testUserEmail);
+    fail("Improperly formatted user should have been deleted from Auth but wasn't");
+  } catch (err1) {
+    expect(true).toEqual(true);
+    const user = await adminDb
+      .collection('users')
+      .doc(testUserEmail)
+      .get();
+    expect(user.exists).toEqual(false);
+  }
 });
 
 test("Manually added user in users table with non-existent organizationID can't be signed up", async () => {
@@ -281,23 +262,19 @@ test("Manually added user in users table with non-existent organizationID can't 
   await delay(DELAY * 2);
 
   // check that user has been deleted from Firebase Auth
-  await adminAuth
-    .getUserByEmail(testUserEmail)
-    .then((userRecord) => {
-      throw new Error(
-        "User with non-existent organizationID should have been deleted from Auth but wasn't"
-      );
-    })
-    .catch((err1) => {
-      expect(true).toEqual(true);
-      return adminDb
-        .collection('users')
-        .doc(testUserEmail)
-        .get()
-        .then((user) => {
-          expect(user.exists).toEqual(false);
-        });
-    });
+  try {
+    await adminAuth.getUserByEmail(testUserEmail);
+    fail(
+      "User with non-existent organizationID should have been deleted from Auth but wasn't"
+    );
+  } catch (err1) {
+    expect(true).toEqual(true);
+    const user = await adminDb
+      .collection('users')
+      .doc(testUserEmail)
+      .get();
+    expect(user.exists).toEqual(false);
+  }
 });
 
 test("Manually added user in users table with empty string organizationID can't be signed up", async () => {
@@ -324,23 +301,19 @@ test("Manually added user in users table with empty string organizationID can't 
   await delay(DELAY * 2)
 
   // check that user has been deleted from Firebase Auth
-  await adminAuth
-    .getUserByEmail(testUserEmail)
-    .then((userRecord) => {
-      throw new Error(
-        "User with empty string organizationID should have been deleted from Auth but wasn't"
-      );
-    })
-    .catch((err1) => {
-      expect(true).toEqual(true);
-      return adminDb
-        .collection('users')
-        .doc(testUserEmail)
-        .get()
-        .then((user) => {
-          expect(user.exists).toEqual(false);
-        });
-    });
+  try {
+    await adminAuth.getUserByEmail(testUserEmail);
+    fail(
+      "User with empty string organizationID should have been deleted from Auth but wasn't"
+    );
+  } catch (err1) {
+    expect(true).toEqual(true);
+    const user = await adminDb
+      .collection('users')
+      .doc(testUserEmail)
+      .get();
+    expect(user.exists).toEqual(false);
+  }
 });
 
 test('User can be toggled between enabled and disabled', async () => {
