@@ -4,7 +4,7 @@
     "prod": "permission-portal",
     "test": "permission-portal-test",
     "dev": "permission-portal-dev",
-    "local": "permission-portal-isaiah",
+    "local": "permission-portal-isaiah-1c00d",
     "staging": "permission-portal-staging"
   }
 }

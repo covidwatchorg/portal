@@ -1,36 +1,30 @@
-import React, { createRef } from 'react'
+import React from 'react'
 import Modal from '../components/Modal'
 import PendingOperationButton from '../components/PendingOperationButton'
-import { auth } from '../store/firebase'
 import { withStore } from '../store'
 import Logging from '../util/logging'
-import Toast from '../components/Toast'
-import firebase from 'firebase'
 
 class ChangePasswordModalBase extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      visible: props.store.data.user.isFirstTimeUser || false,
-      currentPassword: '',
+      heading: this.props.heading,
+      subHeading: this.props.subHeading,
+      isDismissible: false,
+      visible: props.visible,
       password: '',
       confirmPassword: '',
       passwordsMatch: true,
       passwordIsValid: false,
-      successful: false,
-      message: '',
-      loginTimeoutError: false,
       formHasBeenEdited: false,
       confirmPasswordHasBeenEdited: false,
+      showNewPasswordInputs: true,
     }
     this.onChange = this.onChange.bind(this)
-    this.onSubmit = this.onSubmit.bind(this)
+    this.onClose = this.onClose.bind(this)
     this.canSubmit = this.canSubmit.bind(this)
     this.handleFirebaseError = this.handleFirebaseError.bind(this)
-    this.reauthenticate = this.reauthenticate.bind(this)
-    this.updatePasswordAndClose = this.updatePasswordAndClose.bind(this)
-
-    this.toast = createRef()
+    this.tryUpdatePassword = this.tryUpdatePassword.bind(this)
   }
 
   onChange(event) {
@@ -40,9 +34,6 @@ class ChangePasswordModalBase extends React.Component {
     this.setState((state) => {
       let newState = {
         formHasBeenEdited: true,
-      }
-      if (fieldName === 'current-password') {
-        newState.currentPassword = fieldContent
       }
       if (fieldName === 'new-password') {
         newState.password = fieldContent
@@ -58,60 +49,49 @@ class ChangePasswordModalBase extends React.Component {
     })
   }
 
+  onClose() {
+    this.props.store.setPasswordResetCompletedInCurrentSession(false)
+    this.props.store.signOut()
+    this.setState({ visible: false })
+  }
+
   handleFirebaseError(err) {
     Logging.error(err)
-    if (err.code === 'auth/requires-recent-login') {
-      this.setState({
-        loginTimeoutError: true,
-      })
-    }
+    this.setState({
+      heading: 'Oops!',
+      subHeading:
+        'An error occured while trying to reset your password. Please close this message and restart the process.',
+      isDismissible: true,
+      showNewPasswordInputs: false,
+    })
     throw err
   }
 
-  reauthenticate(user) {
-    const credential = firebase.auth.EmailAuthProvider.credential(user.email, this.state.currentPassword)
-    return user.reauthenticateWithCredential(credential).catch(this.handleFirebaseError)
-  }
-
-  updatePasswordAndClose(user) {
-    // 1. Change user password to state.password
-    const updatePwd = user.updatePassword(this.state.password)
-    // 2. Set user.isFirstTimeUser to false
-    const setFirstTimeUser = updatePwd.then(() => {
-      this.props.store.updateUser({ isFirstTimeUser: false })
-    }, this.handleFirebaseError)
-    // 3. Close the modal and pop the toast
-    return setFirstTimeUser.then(() => {
-      this.setState({
-        visible: false,
-        successful: true,
-        message: 'Password successfully updated.',
+  async tryUpdatePassword() {
+    try {
+      // Change user password to state.password
+      await this.props.store.updatePassword(this.state.password)
+      // Set passwordResetCompletedInCurrentSession to true so that modal is not dismissed on updateUser (see Login.js)
+      this.props.store.setPasswordResetCompletedInCurrentSession(true)
+      // updateUser
+      await this.props.store.updateUser({
+        isFirstTimeUser: false,
+        passwordResetRequested: false,
       })
-      this.toast.current.show()
-    })
-  }
-
-  onSubmit() {
-    const user = auth.currentUser
-    if (user) {
-      if (this.state.loginTimeoutError) {
-        return this.reauthenticate(user).then(() => {
-          this.updatePasswordAndClose(user)
-        })
-      } else {
-        return this.updatePasswordAndClose(user)
-      }
-    } else {
-      return Promise.reject('auth.currentUser is null or undefined')
+      // Update Modal state
+      this.setState({
+        isDismissible: true,
+        heading: 'Password Successfully Reset',
+        subHeading: 'Your password has successfully been updated. Go ahead and log in with your new password.',
+        showNewPasswordInputs: false,
+      })
+    } catch (err) {
+      this.handleFirebaseError()
     }
   }
 
   canSubmit() {
-    return (
-      (!this.state.loginTimeoutError || this.state.currentPassword) &&
-      this.state.passwordIsValid &&
-      this.state.passwordsMatch
-    )
+    return this.state.passwordIsValid && this.state.passwordsMatch
   }
 
   render() {
@@ -119,90 +99,58 @@ class ChangePasswordModalBase extends React.Component {
       <>
         <Modal
           hidden={!this.state.visible}
-          containerClass={`change-password-modal-container${
-            this.state.loginTimeoutError ? ' err-timeout' : ''
-          } first-time-modal-container`}
-          isDismissible={false}
+          containerClass={`change-password-modal-container`}
+          isDismissible={this.state.isDismissible}
+          onClose={this.onClose}
         >
-          {!this.state.loginTimeoutError ? (
-            <>
-              <h2>Welcome!</h2>
-              <p>
-                To secure your account, please create a new password to replace the temporary password you were given in
-                the email invitation.
-              </p>
-            </>
-          ) : (
-            <>
-              <h2>Oops!</h2>
-              <p>
-                Unfortunately, we were unable to change your password because you signed in too long ago. Please
-                re-authenticate with the temporary password you were given in the email invitation and try again.
-              </p>
-            </>
+          <h2>{this.state.heading}</h2>
+          <p>{this.state.subHeading}</p>
+          {this.state.showNewPasswordInputs && (
+            <form className="change-password-form">
+              <label htmlFor="new-password">
+                New password<span>*</span>
+              </label>
+              <input
+                type="password"
+                required
+                aria-required={true}
+                id="new-password"
+                name="new-password"
+                value={this.state.password}
+                onChange={this.onChange}
+              />
+              <div className="validationResult">
+                {!this.state.passwordIsValid && this.state.formHasBeenEdited
+                  ? this.state.password.length > 0
+                    ? 'Password must be at least 6 characters long'
+                    : 'New password cannot be blank'
+                  : ''}
+              </div>
+              <label htmlFor="confirm-password">
+                Confirm new password<span>*</span>
+              </label>
+              <input
+                type="password"
+                required
+                aria-required={true}
+                id="confirm-password"
+                name="confirm-password"
+                value={this.state.confirmPassword}
+                onChange={this.onChange}
+              />
+              <div className="validationResult">
+                {!this.state.passwordsMatch && this.state.confirmPasswordHasBeenEdited ? 'Passwords must match' : ''}
+              </div>
+
+              <PendingOperationButton
+                className={`save-password${this.canSubmit() ? '' : '-disabled'}`}
+                operation={this.tryUpdatePassword}
+              >
+                Save
+              </PendingOperationButton>
+            </form>
           )}
-
-          <form className="change-password-form">
-            {this.state.loginTimeoutError && (
-              <>
-                <label htmlFor="current-password">
-                  Current password<span>*</span>
-                </label>
-                <input
-                  type="password"
-                  required
-                  aria-required={true}
-                  id="current-password"
-                  name="current-password"
-                  value={this.state.currentPassword}
-                  onChange={this.onChange}
-                />
-                <div className="validationResult">
-                  {!this.state.currentPassword ? 'Current password cannot be blank' : ''}
-                </div>
-              </>
-            )}
-            <label htmlFor="new-password">
-              New password<span>*</span>
-            </label>
-            <input
-              type="password"
-              required
-              aria-required={true}
-              id="new-password"
-              name="new-password"
-              value={this.state.password}
-              onChange={this.onChange}
-            />
-            <div className="validationResult">
-              {!this.state.passwordIsValid && this.state.formHasBeenEdited
-                ? this.state.password.length > 0
-                  ? 'Password must be at least 6 characters long'
-                  : 'New password cannot be blank'
-                : ''}
-            </div>
-            <label htmlFor="confirm-password">
-              Confirm new password<span>*</span>
-            </label>
-            <input
-              type="password"
-              required
-              aria-required={true}
-              id="confirm-password"
-              name="confirm-password"
-              value={this.state.confirmPassword}
-              onChange={this.onChange}
-            />
-            <div className="validationResult">
-              {!this.state.passwordsMatch && this.state.confirmPasswordHasBeenEdited ? 'Passwords must match' : ''}
-            </div>
-
-            <PendingOperationButton className="save-password" disabled={!this.canSubmit()} operation={this.onSubmit}>
-              {!this.state.loginTimeoutError ? 'Save' : 'Retry'}
-            </PendingOperationButton>
-          </form>
         </Modal>
-        <Toast ref={this.toast} isSuccess={this.state.successful} message={this.state.message} />
       </>
     )
   }
