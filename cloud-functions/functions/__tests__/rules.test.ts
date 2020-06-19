@@ -253,18 +253,14 @@ describe('Test proper read/write permissions for regular users (non-admins)', ()
     await clientAuth.signInWithEmailAndPassword('user@soylentgreen.com', 'user@soylentgreen.com');
     expect(clientAuth.currentUser).toBeTruthy();
     const idTokenResult = await clientAuth.currentUser!.getIdTokenResult(true);
-    await clientDb
+    const orgSnapshot = await clientDb
       .collection('organizations')
       .doc(idTokenResult.claims.organizationID)
-      .get()
-      .then((orgSnapshot) => {
-        expect(orgSnapshot.id).toEqual(idTokenResult.claims.organizationID);
-        return orgSnapshot.data();
-      })
-      .then((org) => {
-        expect(org).toBeDefined();
-        expect(org!.name).toEqual('Soylent Green');
-      });
+      .get();
+    expect(orgSnapshot.id).toEqual(idTokenResult.claims.organizationID);
+    const org = orgSnapshot.data();
+    expect(org).toBeDefined();
+    expect(org!.name).toEqual('Soylent Green');
   });
 
   test("Authenticated regular user can't read an organization he doesn't belong to", async () => {
