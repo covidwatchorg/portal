@@ -101,7 +101,6 @@ describe('Test proper read/write permissions for regular users (non-admins)', ()
       fail('user should not be able to escalate scope');
     }
     catch (err) {
-      //console.log(err.code);
       expect(err.code).toEqual('permission-denied');
     }
   });
@@ -118,7 +117,6 @@ describe('Test proper read/write permissions for regular users (non-admins)', ()
       fail('user should not be able to update org');
     }
     catch (err) {
-      //console.log(err.code);
       expect(err.code).toEqual('permission-denied');
     }
   });
@@ -135,7 +133,6 @@ describe('Test proper read/write permissions for regular users (non-admins)', ()
       fail('user should not be able to update org');
     }
     catch (err) {
-      //console.log(err.code);
       expect(err.code).toEqual('permission-denied');
     }
   });
@@ -152,7 +149,6 @@ describe('Test proper read/write permissions for regular users (non-admins)', ()
       fail('user should not be able to update org');
     }
     catch (err) {
-      //console.log(err.code);
       expect(err.code).toEqual('permission-denied');
     }
   });
@@ -168,9 +164,7 @@ describe('Test proper read/write permissions for regular users (non-admins)', ()
         });
     }
     catch (err) {
-      //console.log(err.code);
       fail('user should be able to make regular updates');
-
     }
   });
 
