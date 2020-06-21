@@ -6,7 +6,7 @@ Permission Portal is to be used by an agent who has the authority to verify a po
 - Ability to verify a test result so that a user can notify others of potential exposure
 - Ability to customize the user app experience for the community by setting phone numbers, testing center info, etc
 
-You can see how our mobile app and permission portal work together in the quick [5 minute demo video on our website](https://www.covid-watch.org/pilot).
+You can see how our mobile app and permission portal work together in the quick [5 minute demo video on our website](https://youtu.be/vgT0Cysh7m4).  See [our website](https://www.covidwatch.org/) for more general information about our organization and goals.
 
 
 ### To contribute code:
