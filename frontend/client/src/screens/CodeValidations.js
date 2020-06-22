@@ -1,6 +1,5 @@
 import React, { useState, createRef } from 'react'
 import Toast from '../components/Toast'
-import info_icon from '../../assets/info-icon.svg'
 import '../../Styles/screens/code_validations.scss'
 import * as ROUTES from '../constants/routes'
 import { withStore } from '../store'
@@ -42,20 +41,9 @@ const CodeValidationsBase = observer((props) => {
         <div className="validation-container">
           <div className="section-heading-container">
             <h2>Validation Code</h2>
-            <div className="tooltip">
-              <img src={info_icon} alt="info" />
-              <div className="tooltip-msg">
-                {/* TODO replace tooltip text */}
-                <div className="tooltip-title">Test Validation Codes</div>
-                <div className="tooltip-body">
-                  Quisque sagittis, vel hendrerit consectetur tincidunt senectus. Feugiat aenean nunc, tempus tempus,
-                  porta nibh. Nunc id donec enim ut potenti risus amet amet.
-                </div>
-              </div>
-            </div>
           </div>
           <div className="validation-text">
-            Provide this validation code to the person you want to verify over the phone
+            Provide this code to the person you want to verify over the phone. Each code can only be used once.
           </div>
           <div className="code-box">{code}</div>
           <PendingOperationButton className="save-button generate-button" operation={genNewCode}>
