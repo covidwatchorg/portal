@@ -281,7 +281,16 @@ export const createUser = functions.https.onCall((newUser, context) => {
               })
               .then((userRecord) => {
                 sendNewUserEmail(newUser.email, password, newUser.firstName, newUser.lastName);
-                resolve(userRecord.toJSON());
+                // Create record for user in the userImages collection
+                db.collection('userImages')
+                  .doc(newUser.email.toLowerCase())
+                  .set({ imageBlob: null })
+                  .then(() => {
+                    resolve(userRecord.toJSON());
+                  })
+                  .catch((err) => {
+                    reject(err);
+                  });
               })
               .catch((err) => {
                 if (err.errorInfo.code === 'auth/email-already-exists') {
