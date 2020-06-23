@@ -316,7 +316,11 @@ const SettingsBase = observer((props) => {
     </Fragment>
   )
 
-  return props.store.data.user.isSignedIn ? (
+  return !props.store.data.user.isSignedIn ||
+    props.store.data.user.isFirstTimeUser ||
+    (props.store.data.user.passwordResetRequested && props.store.data.user.signedInWithEmailLink) ? (
+    <Redirect to={ROUTES.LANDING} />
+  ) : (
     <React.Fragment>
       <PageTitle title="My Settings" />
       <div className="module-container">
@@ -334,8 +338,6 @@ const SettingsBase = observer((props) => {
         />
       </div>
     </React.Fragment>
-  ) : (
-    <Redirect to={ROUTES.LANDING} />
   )
 })
 

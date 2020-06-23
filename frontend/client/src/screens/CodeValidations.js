@@ -33,7 +33,11 @@ const CodeValidationsBase = observer((props) => {
     }
   }
 
-  return props.store.data.user.isSignedIn ? (
+  return !props.store.data.user.isSignedIn ||
+    props.store.data.user.isFirstTimeUser ||
+    (props.store.data.user.passwordResetRequested && props.store.data.user.signedInWithEmailLink) ? (
+    <Redirect to={ROUTES.LANDING} />
+  ) : (
     <div className="module-container">
       <PageTitle title="Positive Test Validations" />
       <h1>Positive Test Validations</h1>
@@ -54,8 +58,6 @@ const CodeValidationsBase = observer((props) => {
       <Toast ref={confirmedToast} isSuccess={toastInfo.success} message={toastInfo.msg} />
       <ChangePasswordModal />
     </div>
-  ) : (
-    <Redirect to={ROUTES.LANDING} />
   )
 })
 
