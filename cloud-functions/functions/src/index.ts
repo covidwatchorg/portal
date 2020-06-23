@@ -199,8 +199,12 @@ function sendPasswordRecoveryEmail(email: string) {
         from: 'recovery@covid-watch.org',
         subject: 'Password Recovery Requested',
         html: `
-      <p><a href=${link}>Recover Account</a></p>
-      `,
+        <!DOCTYPE html>
+        <p ${EMAILSTYLE}>You are receiving this message because you requested a password reset for the Covid Watch Portal account associated with this email address.</p>
+        <p ${EMAILSTYLE}>Please click the following link or copy and paste it into your browser to reset your account password:</p>   
+        <p ${EMAILSTYLE}><a href=${link}>Recover Account</a></p>
+        <p ${EMAILSTYLE}>If you received this message in error, you can safely ignore it.</p>
+        <p ${EMAILSTYLE}>Thank you,<br />Covid Watch Team</p>`,
       };
       sgMail
         .send(msg)
