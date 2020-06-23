@@ -105,24 +105,32 @@ test('Email address can only be used once', async () => {
 
 test('createUser works for admins', async () => {
   await clientAuth.signInWithEmailAndPassword('admin@soylentgreen.com', 'admin@soylentgreen.com');
-  
+
   const userRecord = (await createUser({
     email: testUserEmail,
     password: testUserEmail,
     firstName: 'test',
     lastName: 'user',
     isAdmin: false,
-  })).data
+  })).data;
   testUid = userRecord.uid;
 
   // Check that the endpoint responded with the proper user
   expect(userRecord.email).toEqual(testUserEmail);
 
-  // delay for 6 sec to allow functions.auth.user().onCreate to trigger and propagate
+  // Check that corresponding document in userImages was created
+  console.log(`testUserEmail = ${testUserEmail}`);
+  const docSnapshot = await adminDb
+    .collection('userImages')
+    .doc(testUserEmail)
+    .get();
+  expect(docSnapshot.exists).toEqual(true);
+
+  // delay for 10 sec to allow functions.auth.user().onCreate to trigger and propagate
   await delay(DELAY);
 
   await clientAuth.signInWithEmailAndPassword(testUserEmail, testUserEmail);
-  
+
   // Check that we can sign in with this user
   const currentUser = clientAuth.currentUser;
   if (currentUser === null) {
@@ -135,7 +143,7 @@ test('createUser works for admins', async () => {
   // Check that custom claims are being added properly
   expect(idTokenResult.claims.isAdmin).toEqual(false);
   expect(idTokenResult.claims.organizationID).toEqual(soylentGreenID);
-});
+})
 
 test('createUser works for emails with uppercase letters', async () => {
   await clientAuth.signInWithEmailAndPassword('admin@soylentgreen.com', 'admin@soylentgreen.com');

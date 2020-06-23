@@ -29,155 +29,86 @@ async function addMinimalSampleData() {
   const initechRef = db.collection('organizations').doc();
   soylentGreenID = soylentGreenRef.id;
   initechID = initechRef.id;
+  await soylentGreenRef.set({
+    name: 'Soylent Green',
+  });
+  await initechRef.set({
+    name: 'Initech',
+  });
+  await createUser({
+    email: 'admin@soylentgreen.com',
+    isAdmin: true,
+    organizationID: soylentGreenID,
+    disabled: false,
+    firstName: uniqueNamesGenerator({ dictionaries: [names], length: 1 }),
+    lastName: uniqueNamesGenerator({ dictionaries: [names], length: 1 }),
+    isFirstTimeUser: false,
+  });
+  await createUser({
+    email: 'user@soylentgreen.com',
+    isAdmin: false,
+    organizationID: soylentGreenID,
+    disabled: false,
+    firstName: uniqueNamesGenerator({ dictionaries: [names], length: 1 }),
+    lastName: uniqueNamesGenerator({ dictionaries: [names], length: 1 }),
+    isFirstTimeUser: false,
+  });
+  await createUser({
+    email: 'disabled@soylentgreen.com',
+    isAdmin: false,
+    organizationID: soylentGreenID,
+    disabled: true,
+    firstName: uniqueNamesGenerator({ dictionaries: [names], length: 1 }),
+    lastName: uniqueNamesGenerator({ dictionaries: [names], length: 1 }),
+    isFirstTimeUser: false,
+  });
+  await createUser({
+    email: 'admin@initech.com',
+    isAdmin: true,
+    organizationID: initechID,
+    disabled: false,
+    firstName: uniqueNamesGenerator({ dictionaries: [names], length: 1 }),
+    lastName: uniqueNamesGenerator({ dictionaries: [names], length: 1 }),
+    isFirstTimeUser: false,
+  });
+  await createUser({
+    email: 'user@initech.com',
+    isAdmin: false,
+    organizationID: initechID,
+    disabled: false,
+    firstName: uniqueNamesGenerator({ dictionaries: [names], length: 1 }),
+    lastName: uniqueNamesGenerator({ dictionaries: [names], length: 1 }),
+    isFirstTimeUser: false,
+  });
+  await createUser({
+    email: 'disabled@initech.com',
+    isAdmin: false,
+    organizationID: initechID,
+    disabled: true,
+    firstName: uniqueNamesGenerator({ dictionaries: [names], length: 1 }),
+    lastName: uniqueNamesGenerator({ dictionaries: [names], length: 1 }),
+    isFirstTimeUser: false,
+  });
+}
 
-  try {
-    await soylentGreenRef.set({
-      name: 'Soylent Green',
-    });
-    console.log(`Successfully created organization Soylent Green with document ID ${soylentGreenID}`);
-    try {
-      await db
-        .collection('users')
-        .doc('admin@soylentgreen.com')
-        .set({
-          isAdmin: true,
-          organizationID: soylentGreenID,
-          disabled: false,
-          firstName: uniqueNamesGenerator({ dictionaries: [names], length: 1 }),
-          lastName: uniqueNamesGenerator({ dictionaries: [names], length: 1 }),
-          isFirstTimeUser: false,
-        });
-      try {
-        await auth.createUser({
-          email: 'admin@soylentgreen.com',
-          password: 'admin@soylentgreen.com',
-        });
-        console.log(`Successfully created Soylent Green admin user with username/password admin@soylentgreen.com`);
-        try {
-          await db
-            .collection('users')
-            .doc('user@soylentgreen.com')
-            .set({
-              isAdmin: false,
-              organizationID: soylentGreenID,
-              disabled: false,
-              firstName: uniqueNamesGenerator({ dictionaries: [names], length: 1 }),
-              lastName: uniqueNamesGenerator({ dictionaries: [names], length: 1 }),
-              isFirstTimeUser: false,
-            });
-          try {
-            await auth.createUser({
-              email: 'user@soylentgreen.com',
-              password: 'user@soylentgreen.com',
-            });
-            console.log(`Successfully created Soylent Green regular user with username/password user@soylentgreen.com`);
-            try {
-              await initechRef.set({
-                name: 'Initech',
-              });
-              console.log(`Successfully created organization Initech with document ID ${initechID}`);
-              try {
-                await db
-                  .collection('users')
-                  .doc('admin@initech.com')
-                  .set({
-                    isAdmin: true,
-                    organizationID: initechID,
-                    disabled: false,
-                    firstName: uniqueNamesGenerator({ dictionaries: [names], length: 1 }),
-                    lastName: uniqueNamesGenerator({ dictionaries: [names], length: 1 }),
-                    isFirstTimeUser: false,
-                  });
-                try {
-                  await auth.createUser({
-                    email: 'admin@initech.com',
-                    password: 'admin@initech.com',
-                  });
-                  console.log(`Successfully created Initech admin user with username/password admin@initech.com`);
-                  try {
-                    await db
-                      .collection('users')
-                      .doc('user@initech.com')
-                      .set({
-                        isAdmin: false,
-                        organizationID: initechID,
-                        disabled: false,
-                        firstName: uniqueNamesGenerator({ dictionaries: [names], length: 1 }),
-                        lastName: uniqueNamesGenerator({ dictionaries: [names], length: 1 }),
-                        isFirstTimeUser: false,
-                      });
-                    try {
-                      await auth.createUser({
-                        email: 'user@initech.com',
-                        password: 'user@initech.com',
-                      });
-                      console.log(`Successfully created Initech regular user with username/password user@initech.com`);
-                      await db
-                        .collection('users')
-                        .doc('disabled@soylentgreen.com')
-                        .set({
-                          isAdmin: false,
-                          organizationID: soylentGreenID,
-                          disabled: true,
-                          firstName: uniqueNamesGenerator({ dictionaries: [names], length: 1 }),
-                          lastName: uniqueNamesGenerator({ dictionaries: [names], length: 1 }),
-                          isFirstTimeUser: false,
-                        });
-                      await db
-                        .collection('users')
-                        .doc('disabled@initech.com')
-                        .set({
-                          isAdmin: false,
-                          organizationID: initechID,
-                          disabled: true,
-                          firstName: uniqueNamesGenerator({ dictionaries: [names], length: 1 }),
-                          lastName: uniqueNamesGenerator({ dictionaries: [names], length: 1 }),
-                          isFirstTimeUser: false,
-                        });
-                      await auth.createUser({
-                        email: 'disabled@soylentgreen.com',
-                        password: 'disabled@soylentgreen.com',
-                      });
-                      console.log(
-                        `Successfully created Soylent Green disabled user with username/password disabled@soylentgreen.com`
-                      );
-                      await auth.createUser({
-                        email: 'disabled@initech.com',
-                        password: 'disabled@initech.com',
-                      });
-                      console.log(
-                        `Successfully created Initech disabled user with username/password disabled@initech.com`
-                      );
-                    } catch (err) {
-                      throw err;
-                    }
-                  } catch (err_1) {
-                    throw err_1;
-                  }
-                } catch (err_2) {
-                  throw err_2;
-                }
-              } catch (err_3) {
-                throw err_3;
-              }
-            } catch (err_4) {
-              throw err_4;
-            }
-          } catch (err_5) {
-            throw err_5;
-          }
-        } catch (err_6) {
-          throw err_6;
-        }
-      } catch (err_7) {
-        throw err_7;
-      }
-    } catch (err_8) {
-      throw err_8;
-    }
-  } catch (err_9) {
-    throw err_9;
-  }
+async function createUser(user) {
+  await db.collection('users').doc(user.email).set({
+    isAdmin: user.isAdmin,
+    organizationID: user.organizationID,
+    disabled: user.disabled,
+    firstName: user.firstName,
+    lastName: user.lastName,
+    isFirstTimeUser: user.isFirstTimeUser,
+  });
+  await db.collection('userImages').doc(user.email).set({ imageBlob: null });
+  await auth.createUser({ email: user.email, password: user.password ? user.password : user.email });
+  console.log(
+    `Successfully created ${user.organizationID === soylentGreenID ? 'Soylent Green' : 'Initech'} ${
+      user.isAdmin ? 'admin' : 'regular'
+    }, ${user.disabled ? 'disabled' : 'enabled'} user with username ${user.email} and password ${
+      user.password ? user.password : user.email
+    }`
+  );
 }
 
 async function deleteUser(uid) {
@@ -185,88 +116,53 @@ async function deleteUser(uid) {
     await admin.auth().deleteUser(uid);
     console.log('Successfully deleted user', uid);
   } catch (error) {
-    console.log('Error deleting user:', error);
+    console.error('Error deleting user:', error);
   }
 }
 
 async function deleteAllUsers(nextPageToken) {
-  try {
-    const listUsersResult = await admin.auth().listUsers(100, nextPageToken);
-    listUsersResult.users.forEach(function (userRecord) {
-      uid = userRecord.toJSON().uid;
-      return deleteUser(uid);
-    });
-    if (listUsersResult.pageToken) {
-      deleteAllUsers(listUsersResult.pageToken);
-    }
-  } catch (err) {
-    throw err;
+  const listUsersResult = await admin.auth().listUsers(100, nextPageToken);
+  listUsersResult.users.forEach(function (userRecord) {
+    uid = userRecord.toJSON().uid;
+    return deleteUser(uid);
+  });
+  if (listUsersResult.pageToken) {
+    deleteAllUsers(listUsersResult.pageToken);
   }
 }
 
-function hardReset() {
-  return client.firestore
-    .delete('/organizations', {
-      project: process.env.NODE_ENV,
-      recursive: true,
-      yes: true,
-    })
-    .then(() => {
-      console.log('Successfully deleted organizations collection');
-      return client.firestore
-        .delete('/users', {
-          project: process.env.NODE_ENV,
-          recursive: true,
-          yes: true,
-        })
-        .then(() => {
-          console.log('Successfully deleted users collection');
-          return client.firestore
-            .delete('/userImages', { project: process.env.NODE_ENV, recursive: true, yes: true })
-            .then(() => {
-              console.log('Successfully deleted userImages collection');
-              return deleteAllUsers();
-            });
-        });
-    });
+async function hardReset() {
+  await client.firestore.delete('/organizations', {
+    project: process.env.NODE_ENV,
+    recursive: true,
+    yes: true,
+  });
+  console.log('Successfully deleted organizations collection');
+  await client.firestore.delete('/users', {
+    project: process.env.NODE_ENV,
+    recursive: true,
+    yes: true,
+  });
+  console.log('Successfully deleted users collection');
+  await client.firestore.delete('/userImages', { project: process.env.NODE_ENV, recursive: true, yes: true });
+  console.log('Successfully deleted userImages collection');
+  await deleteAllUsers();
 }
 
 async function createRandomUser(company) {
   const firstName = uniqueNamesGenerator({ dictionaries: [names], length: 1 });
   const lastName = uniqueNamesGenerator({ dictionaries: [names], length: 1 });
-  companyWebsite = company === 'soylentgreen' ? 'soylentgreen.com' : 'initech.com';
-  try {
-    console.log(`creating new user in users table ${firstName}${lastName}@${companyWebsite}`);
-    await db
-      .collection('users')
-      .doc(`${firstName}${lastName}@${companyWebsite}`.toLowerCase())
-      .set({
-        isAdmin: Math.random() >= 0.5,
-        organizationID: company === 'soylentgreen' ? soylentGreenID : initechID,
-        disabled: false,
-        firstName: firstName,
-        lastName: lastName,
-        isFirstTimeUser: true,
-      });
-    console.log('users user created');
-    try {
-      console.log(`creating new auth user with email/password ${firstName}${lastName}@${companyWebsite}`);
-      await auth.createUser({
-        email: `${firstName}${lastName}@${companyWebsite}`,
-        password: `${firstName}${lastName}@${companyWebsite}`,
-      });
-      console.log('auth user created');
-    } catch (error) {
-      // createUser seems to commonly fail and so we need to catch and delete the entry in the user collection
-      db.collection('users').doc(`${firstName}${lastName}@${companyWebsite}`).delete();
-      throw error;
-    }
-    console.log(
-      `Successfully created Soylent Green user with username/password ${firstName}${lastName}@${companyWebsite}`
-    );
-  } catch (err) {
-    throw err;
-  }
+  const companyWebsite = company === 'soylentgreen' ? 'soylentgreen.com' : 'initech.com';
+  const email = `${firstName}${lastName}@${companyWebsite}`.toLowerCase();
+  await createUser({
+    email: email,
+    isAdmin: Math.random() >= 0.5,
+    organizationID: company === 'soylentgreen' ? soylentGreenID : initechID,
+    disabled: false,
+    firstName: firstName,
+    lastName: lastName,
+    isFirstTimeUser: true,
+  });
 }
 
 async function main() {
