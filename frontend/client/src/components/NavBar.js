@@ -63,7 +63,7 @@ const NavBarBase = observer((props) => {
       <div className="avatar_group avatar_image">
         <img
           src={props.store.data.user.imageBlob ? props.store.data.user.imageBlob : profile}
-          style={{ objectFit: 'cover', display: 'block', margin: 'auto' }}
+          className="profile_photo"
           alt=""
         ></img>
       </div>
