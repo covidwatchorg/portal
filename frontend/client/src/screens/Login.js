@@ -10,6 +10,8 @@ import { observer } from 'mobx-react'
 import ForgotPasswordModal from '../components/ForgotPasswordModal'
 import PageTitle from '../components/PageTitle'
 import Toast from '../components/Toast'
+import ChangePasswordModal from '../components/ChangePasswordModal'
+import Logging from '../util/logging'
 import PendingOperationButton from '../components/PendingOperationButton'
 
 const INITIAL_STATE = {
@@ -28,6 +30,7 @@ const SignInFormBase = observer(
       this.state = { ...INITIAL_STATE }
       this.onChange = this.onChange.bind(this)
       this.errorToast = createRef()
+      this.trySignInWithEmailLink()
     }
 
     clickSubmit = async () => {
@@ -49,6 +52,38 @@ const SignInFormBase = observer(
 
     hideModal = () => {
       this.setState({ showPassModal: false })
+    }
+
+    trySignInWithEmailLink = async () => {
+      // Based on https://firebase.google.com/docs/auth/web/email-link-auth
+      if (this.props.store.isSignInWithEmailLink(window.location.href)) {
+        Logging.log('signInWithEmailLink detected')
+        // Get the email if available. This should be available if the user completes
+        // the flow on the same device where they started it.
+        var email = window.localStorage.getItem('emailForSignIn')
+        if (!email) {
+          // User opened the link on a different device. To prevent session fixation
+          // attacks, ask the user to provide the associated email again. For example:
+          email = window.prompt('Please provide your email for confirmation')
+        }
+        await this.props.store
+          .signInWithEmailLink(email, window.location.href)
+          .then(() => {
+            // Clear email from storage.
+            window.localStorage.removeItem('emailForSignIn')
+            // You can access the new user via result.user
+            // Additional user info profile not available via:
+            // result.additionalUserInfo.profile == null
+            // You can check if the user is new or existing:
+            // result.additionalUserInfo.isNewUser
+            Logging.log('Logged in via signInWithEmailLink')
+          })
+          .catch((err) => {
+            // Some error occurred, you can inspect the code: error.code
+            // Common errors could be invalid email and invalid or expired OTPs.
+            Logging.error(err)
+          })
+      }
     }
 
     bottomLevelContent = () => (
@@ -93,13 +128,30 @@ const SignInFormBase = observer(
     )
 
     render() {
-      return this.props.store.data.user.isSignedIn ? (
-        <Redirect to={ROUTES.CODE_VALIDATIONS} />
-      ) : (
-        <div className="module-container">
-          {this.loginForm()}
-          {this.bottomLevelContent()}
-        </div>
+      return (
+        <Fragment>
+          <div className="module-container">
+            {this.loginForm()}
+            {this.bottomLevelContent()}
+          </div>
+          {this.props.store.data.user.isSignedIn ? (
+            this.props.store.data.user.isFirstTimeUser ? (
+              <ChangePasswordModal
+                visible={true}
+                heading={'Welcome!'}
+                subHeading={
+                  'To make your account secure, please create a new password to replace the temporary password you were given in the email invitation.'
+                }
+              />
+            ) : this.props.store.data.user.passwordResetCompletedInCurrentSession ||
+              (this.props.store.data.user.passwordResetRequested &&
+                this.props.store.data.user.signedInWithEmailLink) ? (
+              <ChangePasswordModal visible={true} heading={'Reset Password'} subHeading={''} />
+            ) : (
+              <Redirect to={ROUTES.CODE_VALIDATIONS} />
+            )
+          ) : null}
+        </Fragment>
       )
     }
   }

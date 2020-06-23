@@ -12,7 +12,9 @@ const firebaseConfig = require(`../../../../config/firebase.config.test.js`);
 
 firebase.initializeApp(firebaseConfig);
 // Initialize admin SDK
-const serviceCredentials = `../../permission-portal-test-firebase-admin-key.json`;
+const serviceCredentials = process.env.NODE_ENV
+  ? `../../permission-portal-${process.env.NODE_ENV}-firebase-admin-key.json`
+  : `../../permission-portal-test-firebase-admin-key.json`;
 const serviceAccount =
   process.env.NODE_ENV === 'ci'
     ? {
@@ -24,6 +26,12 @@ const serviceAccount =
         clientEmail: 'firebase-adminsdk-nqxd8@permission-portal-test.iam.gserviceaccount.com',
       }
     : require(serviceCredentials);
+
+process.env.NODE_ENV
+  ? process.env.NODE_ENV === 'ci'
+    ? console.log(`Running tests on test infrastructure`)
+    : console.log(`Running tests on ${process.env.NODE_ENV} infrastructure`)
+  : console.log(`Running tests on test infrastructure`);
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),

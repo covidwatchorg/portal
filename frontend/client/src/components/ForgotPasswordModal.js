@@ -1,7 +1,8 @@
 import React from 'react'
 import Modal from '../components/Modal'
 import { withStore } from '../store'
-import PendingOperationButton from './PendingOperationButton'
+import PendingOperationButton from '../components/PendingOperationButton'
+import validateEmail from '../util/validateEmail'
 
 class ForgotPasswordModal extends React.Component {
   constructor(props) {
@@ -13,12 +14,17 @@ class ForgotPasswordModal extends React.Component {
   }
 
   async onSubmit() {
-    if (!this.state.email) {
+    if (!validateEmail(this.state.email)) {
       this.setState({ validEmail: false })
       throw new Error()
     }
-    const isSuccess = this.props.store.sendPasswordResetEmail(this.state.email)
-    this.setState({ isSuccess: isSuccess, emailPrompt: false, email: '', validEmail: true })
+
+    try {
+      await this.props.store.sendPasswordRecoveryEmail(this.state.email)
+      this.setState({ isSuccess: true, emailPrompt: false, email: '', validEmail: true })
+    } catch {
+      this.setState({ isSuccess: false, emailPrompt: false, email: '', validEmail: true })
+    }
   }
 
   handleChange(event) {
@@ -26,7 +32,7 @@ class ForgotPasswordModal extends React.Component {
   }
 
   onClose() {
-    this.setState({ emailPrompt: true })
+    this.setState({ emailPrompt: true, email: '', validEmail: true, isSuccess: false })
     this.props.onClose()
   }
 
@@ -41,7 +47,8 @@ class ForgotPasswordModal extends React.Component {
             <PendingOperationButton operation={this.onSubmit} className="save-button recovery-button">
               Email Recovery Link
             </PendingOperationButton>
-            {!this.state.validEmail && <div className="validationResult">Please enter an email or user name.</div>}
+            {!this.state.validEmail && <div className="validationResult">Please enter a valid email or user name.</div>}
+            {this.state.isError && <div className="validationResult">Error sending reset email. Please try again.</div>}
           </form>
         </Modal>
       )

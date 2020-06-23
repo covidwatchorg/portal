@@ -10,9 +10,7 @@
     "deploy": "firebase deploy --only functions",
     "logs": "firebase functions:log",
     "test": "jest --forceExit",
-    "test:dev": "NODE_ENV=dev npm run test",
     "test:local": "NODE_ENV=local npm run test",
-    "test:test": "NODE_ENV=test npm run test",
     "test_ci": "npm run init && NODE_ENV=ci npm run test",
     "config:set": "node set-config.js"
   },

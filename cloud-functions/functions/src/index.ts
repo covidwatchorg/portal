@@ -120,19 +120,19 @@ function syncAuthUserWithCovidWatchUser(email: string) {
                   console.log(`User ${email}'s disabled flag in Auth updated to ${covidWatchUser.disabled}`);
                 })
                 .catch((err) => {
-                  console.error(err);
+                  throw err;
                 });
             })
             .catch((err) => {
-              console.error(err);
+              throw err;
             });
         })
         .catch((err) => {
-          console.error(err);
+          throw err;
         });
     })
     .catch((err) => {
-      console.error(err);
+      throw err;
     });
 }
 
@@ -157,30 +157,78 @@ function isAdminGuard(context: functions.https.CallableContext): Promise<void> {
   });
 }
 
+const EMAILSTYLE = `style="font-family: Montserrat, Arial, Helvetica, sans-serif;font-size:18px;color: #585858;"`;
+
 // Send email to new users instructing them to change their password
 function sendNewUserEmail(email: string, password: string, firstName: string, lastName: string) {
-  const msg = {
-    to: email,
-    from: 'welcome@covid-watch.org',
-    subject: 'Welcome to the Covid Watch Permission Portal',
-    html: `
+  auth
+    .generateSignInWithEmailLink(email, {
+      url: functions.config().client.url,
+      // This must be true.
+      handleCodeInApp: true,
+    })
+    .then((link) => {
+      const msg = {
+        to: email,
+        from: 'welcome@covid-watch.org',
+        subject: 'Welcome to the Covid Watch Permission Portal',
+        html: `
     <!DOCTYPE html>
-    <p style="font-family: Montserrat;font-size:18px;color: #585858;">${firstName} ${lastName},</p>
-    <p style="font-family: Montserrat;font-size:18px;color: #585858;">You are receiving this email because you were added as a new member of Covid Watch by the Account Administrator.</p>
-    <p style="font-family: Montserrat;font-size:18px;color: #585858;"><b>Your user name:</b> ${email}<br />  <b>Your temporary password:</b> ${password}</p>
-    <p style="font-family: Montserrat;font-size:18px;color: #585858;">Please click the following link or copy and paste it into your browser to sign in to your new account:</p>
-    <p style="font-family: Montserrat;font-size:18px;color: #585858;"><a href=${functions.config().client.url}>Sign In</a></p>
-    <p style="font-family: Montserrat;font-size:18px;color: #585858;">If you recieved this message in error, you can safely ignore it.</p>
-    <p style="font-family: Montserrat;font-size:18px;color: #585858;">You can reply to this message, or email support@covid-watch.org if you have any questions.</p>
-    <p style="font-family: Montserrat;font-size:18px;color: #585858;">Thank you,<br />Covid Watch Team</p> `,
-  };
-  sgMail
-    .send(msg)
-    .then(() => {
-      console.log(`New user email sent to ${email}`);
+    <p ${EMAILSTYLE}>${firstName} ${lastName},</p>
+    <p ${EMAILSTYLE}>You are receiving this email because you were added as a new member of Covid Watch by the Account Administrator.</p>
+    <p ${EMAILSTYLE}><b>Your user name:</b> ${email}<br />  <b>Your temporary password:</b> ${password}</p>
+    <p ${EMAILSTYLE}>Please click the following link or copy and paste it into your browser to sign in to your new account:</p>
+    <p ${EMAILSTYLE}><a href=${link}>Sign In</a></p>
+    <p ${EMAILSTYLE}>If you recieved this message in error, you can safely ignore it.</p>
+    <p ${EMAILSTYLE}>You can reply to this message, or email support@covid-watch.org if you have any questions.</p>
+    <p ${EMAILSTYLE}>Thank you,<br />Covid Watch Team</p> `,
+      };
+      sgMail
+        .send(msg)
+        .then(() => {
+          console.log(`New user email sent to ${email}`);
+        })
+        .catch((err) => {
+          console.error(JSON.stringify(err));
+        });
     })
     .catch((err) => {
-      console.error(JSON.stringify(err));
+      console.error(err);
+      throw err;
+    });
+}
+
+function sendPasswordRecoveryEmail(email: string) {
+  auth
+    .generateSignInWithEmailLink(email, {
+      url: functions.config().client.url,
+      // This must be true.
+      handleCodeInApp: true,
+    })
+    .then((link) => {
+      const msg = {
+        to: email,
+        from: 'recovery@covid-watch.org',
+        subject: 'Password Recovery Requested',
+        html: `
+        <!DOCTYPE html>
+        <p ${EMAILSTYLE}>You are receiving this message because you requested a password reset for the Covid Watch Portal account associated with this email address.</p>
+        <p ${EMAILSTYLE}>Please click the following link or copy and paste it into your browser to reset your account password:</p>   
+        <p ${EMAILSTYLE}><a href=${link}>Recover Account</a></p>
+        <p ${EMAILSTYLE}>If you received this message in error, you can safely ignore it.</p>
+        <p ${EMAILSTYLE}>Thank you,<br />Covid Watch Team</p>`,
+      };
+      sgMail
+        .send(msg)
+        .then(() => {
+          console.log(`Password recovery email sent to ${email}`);
+        })
+        .catch((err) => {
+          throw err;
+        });
+    })
+    .catch((err) => {
+      throw err;
     });
 }
 
@@ -341,22 +389,45 @@ export const onCreate = functions.auth.user().onCreate((firebaseAuthUser) => {
 // Triggered whenever a user's document in the users/ collection is updated
 // This can be used to keep Firebase Auth records in sync with user collection records
 export const userOnUpdate = functions.firestore.document('users/{email}').onUpdate((change, context) => {
-  const previousValue = change.before.data();
-  const newValue = change.after.data();
-  const email = context.params.email;
-  console.log(
-    `Updating user with email ${email}.\n\nprevious value: ${JSON.stringify(
-      previousValue
-    )}, new value: ${JSON.stringify(newValue)}`
-  );
+  return new Promise((resolve, reject) => {
+    const previousValue = change.before.data();
+    const newValue = change.after.data();
+    const email = context.params.email;
+    console.log(
+      `Updating user with email ${email}.\n\nprevious value: ${JSON.stringify(
+        previousValue
+      )}, new value: ${JSON.stringify(newValue)}`
+    );
 
-  // Force unwrap ok because document is guaranteed to exist (by definition its being updated)
-  if (
-    previousValue!.disabled !== newValue!.disabled ||
-    previousValue!.isAdmin !== newValue!.isAdmin ||
-    previousValue!.organizationID !== newValue!.organizationID
-  ) {
-    syncAuthUserWithCovidWatchUser(email);
-  }
-  return new Promise((resolve) => resolve());
+    // Force unwrap ok because document is guaranteed to exist (by definition its being updated)
+    if (
+      previousValue!.disabled !== newValue!.disabled ||
+      previousValue!.isSuperAdmin !== newValue!.isSuperAdmin ||
+      previousValue!.isAdmin !== newValue!.isAdmin ||
+      previousValue!.organizationID !== newValue!.organizationID
+    ) {
+      try {
+        syncAuthUserWithCovidWatchUser(email);
+      } catch (error) {
+        reject(error);
+      }
+    }
+    resolve();
+  });
+});
+
+export const initiatePasswordRecovery = functions.https.onCall((body) => {
+  // tslint:disable-next-line: no-shadowed-variable
+  return new Promise((resolve, reject) => {
+    db.collection('users')
+      .doc(body.email)
+      .update({ passwordResetRequested: true })
+      .then(() => {
+        sendPasswordRecoveryEmail(body.email);
+        resolve();
+      })
+      .catch((err) => {
+        reject(err);
+      });
+  });
 });
