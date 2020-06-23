@@ -99,7 +99,7 @@ async function createUser(user) {
     lastName: user.lastName,
     isFirstTimeUser: user.isFirstTimeUser,
   });
-  await db.collection('userImages').doc(user.email).set({});
+  await db.collection('userImages').doc(user.email).set({ imageBlob: null });
   await auth.createUser({ email: user.email, password: user.password ? user.password : user.email });
   console.log(
     `Successfully created ${user.organizationID === soylentGreenID ? 'Soylent Green' : 'Initech'} ${
