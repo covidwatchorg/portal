@@ -9,7 +9,7 @@ import AddMemberModal from '../components/AddMemberModal'
 import Toast from '../components/Toast'
 import RoleSelector from '../components/RoleSelector'
 import * as ROLES from '../constants/roles'
-import { withStore } from '../store'
+import { withStore, PAGE_SIZE } from '../store'
 import { observer } from 'mobx-react'
 import PageTitle from '../components/PageTitle'
 import Logging from '../util/logging'
@@ -100,14 +100,14 @@ const ManageTeamsBase = observer((props) => {
           </tr>
         </thead>
         <tbody>
-          {props.store.data.organization.currentPageOfMembers &&
+          {props.store.data.organization.members &&
             props.store.data.organization.currentPageOfMembers.map((data, index) => (
               <tr key={index}>
                 <td>{data.lastName + ', ' + data.firstName}</td>
                 <td>{data.email}</td>
                 <td style={{ padding: 0 }}>
                   <RoleSelector
-                    memberIndex={index}
+                    memberIndex={index + (props.store.data.organization.membersPage - 1) * PAGE_SIZE}
                     onChange={(e) => handleRoleChange(e, data.isAdmin, data.firstName, data.lastName, data.email)}
                     ariaLabelledBy="role-header"
                   />
@@ -143,22 +143,34 @@ const ManageTeamsBase = observer((props) => {
             className="arrow"
             onClick={(e) => {
               e.preventDefault()
-              props.store.previousPageOfMembers()
+              if (props.store.data.organization.membersPage - 1 > 0) {
+                props.store.data.organization.setMembersPage(props.store.data.organization.membersPage - 1)
+              }
             }}
           >
-            <img src={arrowLeft} alt="Previous" />
-            <div style={{ marginLeft: 5 }}>Previous</div>
+            <img style={{ marginRight: 4 }} src={arrowLeft} alt="Previous" />
           </div>
-          <div style={{ width: 30 }}></div>
+          {[...Array(props.store.data.organization.totalPagesOfMembers).keys()].map((pageNumber) => (
+            <div
+              className={pageNumber + 1 === props.store.data.organization.membersPage ? 'current-page' : 'page'}
+              key={pageNumber.toString()}
+              onClick={() => {
+                props.store.data.organization.setMembersPage(pageNumber + 1)
+              }}
+            >
+              {pageNumber + 1}
+            </div>
+          ))}
           <div
             className="arrow"
             onClick={(e) => {
               e.preventDefault()
-              props.store.nextPageOfMembers()
+              if (props.store.data.organization.membersPage + 1 <= props.store.data.organization.totalPagesOfMembers) {
+                props.store.data.organization.setMembersPage(props.store.data.organization.membersPage + 1)
+              }
             }}
           >
-            <div style={{ marginRight: 5 }}>Next</div>
-            <img src={arrowRight} alt="Next" />
+            <img style={{ marginLeft: 4 }} src={arrowRight} alt="Next" />
           </div>
         </div>
       </div>

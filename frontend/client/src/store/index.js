@@ -16,7 +16,7 @@ const createStore = (WrappedComponent) => {
       this.__userDocumentListener = null
       this.__userImageListener = null
       this.__organizationDocumentListener = null
-      this.__pageOfMembersListener = null
+      this.__membersListener = null
       this.__lastVisibleMember = null // pagination helper
       this.__firstVisibleMember = null // pagination helper
       this.__signedInWithEmailLink = false // firebase doesn't tell us this so we need to track it ourself
@@ -49,15 +49,14 @@ const createStore = (WrappedComponent) => {
                         id: updatedOrganizationDocumentSnapshot.id,
                         currentPage: this.data.organization.currentPage,
                       })
-                      if (this.data.user.isAdmin && this.__pageOfMembersListener === null) {
+                      if (this.data.user.isAdmin && this.__membersListener === null) {
                         var newListener = db
                           .collection('users')
                           .where('organizationID', '==', this.data.organization.id)
                           .orderBy('lastName')
                           .orderBy('firstName')
-                          .limit(PAGE_SIZE)
-                          .onSnapshot((pageOfMembersSnapshot) => {
-                            this.__updatePageOfMembersOnSnapshot(pageOfMembersSnapshot.docs, newListener)
+                          .onSnapshot((membersSnapshot) => {
+                            this.__updateMembersOnSnapshot(membersSnapshot.docs, newListener)
                           })
                       }
                     })
@@ -97,25 +96,25 @@ const createStore = (WrappedComponent) => {
             this.__organizationDocumentListener()
             this.__organizationDocumentListener = null
           }
-          if (this.__pageOfMembersListener !== null) {
-            this.__pageOfMembersListener()
-            this.__pageOfMembersListener = null
+          if (this.__membersListener !== null) {
+            this.__membersListener()
+            this.__membersListener = null
           }
         }
       })
     }
 
-    __updatePageOfMembersOnSnapshot(pageOfMembersSnapshotDocs, newListener) {
-      if (pageOfMembersSnapshotDocs.length > 0) {
-        if (this.__pageOfMembersListener != newListener) {
-          this.__pageOfMembersListener = newListener
+    __updateMembersOnSnapshot(membersSnapshotDocs, newListener) {
+      if (membersSnapshotDocs.length > 0) {
+        if (this.__membersListener != newListener) {
+          this.__membersListener = newListener
         }
         // Based on https://firebase.google.com/docs/firestore/query-data/query-cursors#paginate_a_query
-        this.__firstVisibleMember = pageOfMembersSnapshotDocs[0]
-        this.__lastVisibleMember = pageOfMembersSnapshotDocs[pageOfMembersSnapshotDocs.length - 1]
-        this.data.organization.__setCurrentPageOfMembers(
+        this.__firstVisibleMember = membersSnapshotDocs[0]
+        this.__lastVisibleMember = membersSnapshotDocs[membersSnapshotDocs.length - 1]
+        this.data.organization.__setMembers(
           // See https://stackoverflow.com/a/24806827
-          pageOfMembersSnapshotDocs.reduce((result, userDoc) => {
+          membersSnapshotDocs.reduce((result, userDoc) => {
             if (userDoc.id !== this.data.user.email) {
               result.push({ ...userDoc.data(), email: userDoc.id })
             }
@@ -123,32 +122,6 @@ const createStore = (WrappedComponent) => {
           }, [])
         )
       }
-    }
-
-    nextPageOfMembers() {
-      var newListener = db
-        .collection('users')
-        .where('organizationID', '==', this.data.organization.id)
-        .orderBy('lastName')
-        .orderBy('firstName')
-        .startAfter(this.__lastVisibleMember)
-        .limit(PAGE_SIZE)
-        .onSnapshot((pageOfMembersSnapshot) => {
-          this.__updatePageOfMembersOnSnapshot(pageOfMembersSnapshot.docs, newListener)
-        })
-    }
-
-    previousPageOfMembers() {
-      var newListener = db
-        .collection('users')
-        .where('organizationID', '==', this.data.organization.id)
-        .orderBy('lastName', 'desc')
-        .orderBy('firstName', 'desc')
-        .startAfter(this.__firstVisibleMember)
-        .limit(PAGE_SIZE)
-        .onSnapshot((pageOfMembersSnapshot) => {
-          this.__updatePageOfMembersOnSnapshot(pageOfMembersSnapshot.docs.reverse(), newListener)
-        })
     }
 
     async updateUser(updates) {

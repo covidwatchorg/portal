@@ -1,6 +1,7 @@
 import { types, cast, onSnapshot } from 'mobx-state-tree'
 import 'mobx-react-lite/batchingForReactDom'
 import Logging from '../util/logging'
+import { PAGE_SIZE } from '.'
 
 const User = types
   .model({
@@ -51,7 +52,8 @@ const Organization = types
     verificationNotSharedText: types.string,
     diagnosisText: types.string,
     exposureText: types.string,
-    currentPageOfMembers: types.array(User),
+    members: types.array(User),
+    membersPage: types.number,
   })
   .actions((self) => {
     const __update = (updates) => {
@@ -62,12 +64,24 @@ const Organization = types
       Logging.log(self)
     }
 
-    const __setCurrentPageOfMembers = (pageOfMembers) => {
-      self.currentPageOfMembers = cast(pageOfMembers)
+    const __setMembers = (members) => {
+      self.members = cast(members)
     }
 
-    return { __update, __setCurrentPageOfMembers }
+    const setMembersPage = (page) => {
+      self.membersPage = page
+    }
+
+    return { __update, __setMembers, setMembersPage }
   })
+  .views((self) => ({
+    get currentPageOfMembers() {
+      return self.members.slice((self.membersPage - 1) * PAGE_SIZE, (self.membersPage - 1) * PAGE_SIZE + PAGE_SIZE)
+    },
+    get totalPagesOfMembers() {
+      return Math.ceil(self.members.length / PAGE_SIZE)
+    },
+  }))
 
 const Store = types.model({
   user: User,
@@ -110,7 +124,8 @@ const defaultOrganization = {
   verificationNotSharedText: '',
   diagnosisText: '',
   exposureText: '',
-  currentPageOfMembers: [],
+  members: [],
+  membersPage: 1,
 }
 
 const defaultStore = {
