@@ -13,7 +13,6 @@ import photo_add from '../../assets/photo-add.svg'
 import Logging from '../util/logging'
 import PendingOperationButton from '../components/PendingOperationButton'
 import ResetPasswordModal from '../components/ResetPasswordModal'
-import ChangePasswordModal from '../components/ChangePasswordModal'
 
 const useStyles = makeStyles({
   root: {
@@ -329,7 +328,6 @@ const SettingsBase = observer((props) => {
           <p>Changes are automatically saved</p>
         </div>
         {settingsForm()}
-        <ChangePasswordModal />
         <ResetPasswordModal
           hidden={!showResetPasswordModal}
           onClose={onChangePasswordClose}

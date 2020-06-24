@@ -7,7 +7,6 @@ import * as ROUTES from '../constants/routes'
 import { observer } from 'mobx-react'
 import PageTitle from '../components/PageTitle'
 import Logging from '../util/logging'
-import ChangePasswordModal from '../components/ChangePasswordModal'
 
 const AccountBrandingBase = observer((props) => {
   const [isSuccess, setIsSuccess] = useState(false)
@@ -189,7 +188,6 @@ const AccountBrandingBase = observer((props) => {
         isSuccess={isSuccess}
         message={isSuccess ? 'Branding saved successfully' : 'Failed to save branding'}
       />
-      <ChangePasswordModal />
     </div>
   )
 })
