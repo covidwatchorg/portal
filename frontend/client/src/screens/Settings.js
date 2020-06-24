@@ -13,7 +13,6 @@ import photo_add from '../../assets/photo-add.svg'
 import Logging from '../util/logging'
 import PendingOperationButton from '../components/PendingOperationButton'
 import ResetPasswordModal from '../components/ResetPasswordModal'
-import ChangePasswordModal from '../components/ChangePasswordModal'
 
 const useStyles = makeStyles({
   root: {
@@ -317,7 +316,11 @@ const SettingsBase = observer((props) => {
     </Fragment>
   )
 
-  return props.store.data.user.isSignedIn ? (
+  return !props.store.data.user.isSignedIn ||
+    props.store.data.user.isFirstTimeUser ||
+    (props.store.data.user.passwordResetRequested && props.store.data.user.signedInWithEmailLink) ? (
+    <Redirect to={ROUTES.LANDING} />
+  ) : (
     <React.Fragment>
       <PageTitle title="My Settings" />
       <div className="module-container">
@@ -326,7 +329,6 @@ const SettingsBase = observer((props) => {
           <p>Changes are automatically saved</p>
         </div>
         {settingsForm()}
-        <ChangePasswordModal />
         <ResetPasswordModal
           hidden={!showResetPasswordModal}
           onClose={onChangePasswordClose}
@@ -335,8 +337,6 @@ const SettingsBase = observer((props) => {
         />
       </div>
     </React.Fragment>
-  ) : (
-    <Redirect to={ROUTES.LANDING} />
   )
 })
 

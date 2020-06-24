@@ -6,7 +6,6 @@ import '../../Styles/screens/404.scss'
 import PageTitle from '../components/PageTitle'
 import ucsf_health from '../../assets/ucsf-health.svg'
 import powered_by_cw from '../../assets/powered-by-cw.svg'
-import ChangePasswordModal from '../components/ChangePasswordModal'
 
 const NotFound = () => {
   return (
@@ -36,7 +35,6 @@ const NotFound = () => {
           <img src={FemaleDoctor} alt="doctor" />
         </div>
       </div>
-      <ChangePasswordModal />
     </div>
   )
 }

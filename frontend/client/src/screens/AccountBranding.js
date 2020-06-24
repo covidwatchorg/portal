@@ -7,7 +7,6 @@ import * as ROUTES from '../constants/routes'
 import { observer } from 'mobx-react'
 import PageTitle from '../components/PageTitle'
 import Logging from '../util/logging'
-import ChangePasswordModal from '../components/ChangePasswordModal'
 
 const AccountBrandingBase = observer((props) => {
   const [isSuccess, setIsSuccess] = useState(false)
@@ -84,7 +83,12 @@ const AccountBrandingBase = observer((props) => {
     setExposureTextIsEditing(false)
   }
 
-  return props.store.data.user.isSignedIn && props.store.data.user.isAdmin ? (
+  return !props.store.data.user.isSignedIn ||
+    !props.store.data.user.isAdmin ||
+    props.store.data.user.isFirstTimeUser ||
+    (props.store.data.user.passwordResetRequested && props.store.data.user.signedInWithEmailLink) ? (
+    <Redirect to={ROUTES.LANDING} />
+  ) : (
     <div className="module-container module-container-branding">
       <PageTitle title="Account Branding" />
       <h1 className="branding-header">Account Branding</h1>
@@ -184,12 +188,7 @@ const AccountBrandingBase = observer((props) => {
         isSuccess={isSuccess}
         message={isSuccess ? 'Branding saved successfully' : 'Failed to save branding'}
       />
-      <ChangePasswordModal />
     </div>
-  ) : props.store.data.user.isSignedIn ? (
-    <Redirect to={ROUTES.CODE_VALIDATIONS} />
-  ) : (
-    <Redirect to={ROUTES.LANDING} />
   )
 })
 

@@ -13,7 +13,6 @@ import { withStore } from '../store'
 import { observer } from 'mobx-react'
 import PageTitle from '../components/PageTitle'
 import Logging from '../util/logging'
-import ChangePasswordModal from '../components/ChangePasswordModal'
 
 const ManageTeamsBase = observer((props) => {
   const userEmail = props.store.data.user.email
@@ -71,7 +70,12 @@ const ManageTeamsBase = observer((props) => {
     }
   }
 
-  return props.store.data.user.isSignedIn && props.store.data.user.isAdmin ? (
+  return !props.store.data.user.isSignedIn ||
+    !props.store.data.user.isAdmin ||
+    props.store.data.user.isFirstTimeUser ||
+    (props.store.data.user.passwordResetRequested && props.store.data.user.signedInWithEmailLink) ? (
+    <Redirect to={ROUTES.LANDING} />
+  ) : (
     <div className="module-container">
       <PageTitle title="Manage Members" />
       <h1>Manage Members</h1>
@@ -159,12 +163,7 @@ const ManageTeamsBase = observer((props) => {
         </div>
       </div>
       <Toast ref={confirmationToast} isSuccess={isSuccess} message={toastMessage} />
-      <ChangePasswordModal />
     </div>
-  ) : props.store.data.user.isSignedIn ? (
-    <Redirect to={ROUTES.CODE_VALIDATIONS} />
-  ) : (
-    <Redirect to={ROUTES.LANDING} />
   )
 })
 
