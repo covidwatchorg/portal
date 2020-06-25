@@ -118,7 +118,7 @@ const AddMemberModalBase = observer((props) => {
           onChange={handleChange}
         />
         {state.firstNameValidationFailed && <div className="validationResult">{state.firstNameValidationMessage}</div>}
-        <label htmlFor="lastName">
+        <label htmlFor="lastName" style={{ marginTop: state.firstNameValidationFailed ? '6px' : null }}>
           Last Name<span>*</span>
         </label>
         <input
@@ -131,7 +131,7 @@ const AddMemberModalBase = observer((props) => {
           onChange={handleChange}
         />
         {state.lastNameValidationFailed && <div className="validationResult">{state.lastNameValidationMessage}</div>}
-        <label htmlFor="email">
+        <label htmlFor="email" style={{ marginTop: state.lastNameValidationFailed ? '6px' : null }}>
           Email<span>*</span>
         </label>
         <input
@@ -144,7 +144,7 @@ const AddMemberModalBase = observer((props) => {
           onChange={handleChange}
         />
         {state.emailValidationFailed && <div className="validationResult">{state.emailValidationMessage}</div>}
-        <label htmlFor="role">
+        <label htmlFor="role" style={{ marginTop: state.emailValidationFailed ? '6px' : null }}>
           Role<span>*</span>
         </label>
         <RoleSelector isAdmin={false} id="role" required={true} onChange={handleChange} />
