@@ -99,7 +99,7 @@ class ChangePasswordModalBase extends React.Component {
       <>
         <Modal
           hidden={!this.state.visible}
-          containerClass={`change-password-modal-container`}
+          containerClass="change-password-modal-container"
           isDismissible={this.state.isDismissible}
           onClose={this.onClose}
         >

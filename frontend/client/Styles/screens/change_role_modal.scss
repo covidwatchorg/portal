@@ -1,0 +1,29 @@
+.change-role-modal-container {
+  width: 360px;
+  min-height: 300px;
+  padding: 25px 27px 44px 49px;
+
+  h2 {
+    margin-top: 0px;
+    margin-bottom: 35px;
+    font-weight: 600;
+    font-family: Montserrat;
+    font-size: 28px;
+  }
+
+  p {
+    color: #585858;
+    font-size: 16px;
+    line-height: 20px;
+    margin-right: 15px;
+  }
+
+  b {
+    font-weight: 600;
+  }
+
+  .close-btn {
+    margin-left: 330px;
+    font-size: 18px;
+  }
+}

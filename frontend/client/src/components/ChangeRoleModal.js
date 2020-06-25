@@ -15,12 +15,12 @@ const ChangeRoleModalBase = (props) => {
   }
 
   return (
-    <Modal hidden={props.hidden} onClose={props.onClose}>
+    <Modal hidden={props.hidden} onClose={props.onClose} containerClass="change-role-modal-container">
       <h2>Confirm Change</h2>
 
       <p>
-        Please confirm that you would like to change the role of {fullName} from
-        {fromRole} to {toRole}. {fullName} will recieve an email notification once this change is confirmed.
+        Please confirm that you would like to change the role of {fullName} from <b>{fromRole}</b> to <b>{toRole}</b>.{' '}
+        {fullName} will recieve an email notification once this change is confirmed.
       </p>
 
       <button onClick={props.onClose}>Cancel</button>
