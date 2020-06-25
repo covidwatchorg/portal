@@ -71,7 +71,7 @@ const createStore = (WrappedComponent) => {
               .onSnapshot((updatedUserImageDocumentSnapshot) => {
                 if (updatedUserImageDocumentSnapshot.exists) {
                   this.data.user.__update({
-                    imageBlob: updatedUserImageDocumentSnapshot.data().blob,
+                    imageBlob: updatedUserImageDocumentSnapshot.data().imageBlob,
                   })
                 }
               })
@@ -132,10 +132,10 @@ const createStore = (WrappedComponent) => {
       }
     }
 
-    async updateUserImage(blob) {
+    async updateUserImage(imageBlob) {
       try {
         // .set() with { merge: true } so that if the document dne, it's created, otherwise its updated
-        await db.collection('userImages').doc(this.data.user.email).set({ blob: blob }, { merge: true })
+        await db.collection('userImages').doc(this.data.user.email).set({ imageBlob: imageBlob }, { merge: true })
       } catch (err) {
         Logging.error('Error updating image', err)
         throw err
