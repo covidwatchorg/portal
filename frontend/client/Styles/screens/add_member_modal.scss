@@ -4,6 +4,10 @@
   max-height: 634px;
   padding: 20px;
 
+  @media screen and (max-height: 634px) {
+    overflow: scroll;
+  }
+
   h1 {
     margin-left: 48px;
     margin-bottom: 10px;
