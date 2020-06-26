@@ -19,23 +19,21 @@ const ChangeRoleModalBase = (props) => {
       <h2>Confirm Change</h2>
 
       <p>
-        Please confirm that you would like to change the role of <b>{fullName}</b>. 
+        Please confirm that you would like to change the role of <b>{fullName}</b>.
       </p>
       <p>
-        From <b>{fromRole}</b>  
+        From <b>{fromRole}</b>
       </p>
 
       <p>
         To <b>{toRole}</b>
       </p>
-      <p>
-        {fullName} will recieve an email notification once this change is confirmed.
-      </p>
+      <p>{fullName} will recieve an email notification once this change is confirmed.</p>
 
       <button className="button cancel" onClick={props.onClose}>
         Cancel
       </button>
-      <PendingOperationButton className="confirm" operation={onConfirm}>
+      <PendingOperationButton className="button confirm" operation={onConfirm}>
         Confirm
       </PendingOperationButton>
     </Modal>
