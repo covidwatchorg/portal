@@ -8,11 +8,11 @@ import '../../Styles/screens/manage_teams.scss'
 import AddMemberModal from '../components/AddMemberModal'
 import Toast from '../components/Toast'
 import RoleSelector from '../components/RoleSelector'
-import * as ROLES from '../constants/roles'
 import { withStore, PAGE_SIZE } from '../store'
 import { observer } from 'mobx-react'
 import PageTitle from '../components/PageTitle'
 import Logging from '../util/logging'
+import ChangeRoleModal from '../components/ChangeRoleModal'
 
 const ManageTeamsBase = observer((props) => {
   const userEmail = props.store.data.user.email
@@ -23,6 +23,8 @@ const ManageTeamsBase = observer((props) => {
   const confirmationToast = useRef()
 
   const [showAddMemberModal, setShowAddMemberModal] = useState(false)
+  const [showChangeRoleModal, setShowChangeRoleModal] = useState(false)
+  const [changeRoleModalUserProperties, setChangeRoleModalUserProperties] = useState({})
 
   const onAddMemberCancel = () => {
     setShowAddMemberModal(false)
@@ -44,15 +46,17 @@ const ManageTeamsBase = observer((props) => {
   }
 
   const handleRoleChange = (e, isAdmin, firstName, lastName, email) => {
-    if (
-      confirm(
-        `Are you sure you want swicth ${firstName} ${lastName} from ${
-          isAdmin ? ROLES.ADMIN_LABEL : ROLES.NON_ADMIN_LABEL
-        } to ${isAdmin ? ROLES.NON_ADMIN_LABEL : ROLES.ADMIN_LABEL}`
-      )
-    ) {
-      props.store.updateUserByEmail(email, { isAdmin: e.target.value == ROLES.ADMIN_LABEL })
-    }
+    setChangeRoleModalUserProperties({
+      isAdmin,
+      firstName,
+      lastName,
+      email,
+    })
+    setShowChangeRoleModal(true)
+  }
+
+  const onChangeRoleModalClose = () => {
+    setShowChangeRoleModal(false)
   }
 
   const resetPassword = async (e, email) => {
@@ -88,6 +92,11 @@ const ManageTeamsBase = observer((props) => {
         onClose={onAddMemberCancel}
         onSuccess={onAddMemberSuccess}
         onFailure={onAddMemberFailure}
+      />
+      <ChangeRoleModal
+        hidden={!showChangeRoleModal}
+        onClose={onChangeRoleModalClose}
+        userProperties={changeRoleModalUserProperties}
       />
       <table>
         <thead>
