@@ -17,6 +17,10 @@
     background: #FFFFFF;
     color: #BDBDBD;
   }
+
+  &:hover {
+    cursor: pointer;
+  }
 }
 
 #progress-container {

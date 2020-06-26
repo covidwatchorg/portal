@@ -35,23 +35,11 @@
   .button {
     width: 165px;
     height: 50px;
-    font-size: 18px;
-    line-height: 22px;
-
   }
   
-  .button:hover {
-    cursor: pointer;
-  }
-
   .cancel {
     background-color: white;
     color: #2C58B1;
-    border: 2px solid #2C58B1;
     margin-right: 21px;
-  }
-
-  .confirm {
-    border: 2px solid #2C58B1;
   }
 }
