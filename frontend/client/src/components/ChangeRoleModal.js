@@ -19,7 +19,16 @@ const ChangeRoleModalBase = (props) => {
       <h2>Confirm Change</h2>
 
       <p>
-        Please confirm that you would like to change the role of {fullName} from <b>{fromRole}</b> to <b>{toRole}</b>.{' '}
+        Please confirm that you would like to change the role of <b>{fullName}</b>. 
+      </p>
+      <p>
+        From <b>{fromRole}</b>  
+      </p>
+
+      <p>
+        To <b>{toRole}</b>
+      </p>
+      <p>
         {fullName} will recieve an email notification once this change is confirmed.
       </p>
 
