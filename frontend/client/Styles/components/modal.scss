@@ -19,8 +19,15 @@
   z-index: 1;
   border: 2px solid #BDBDBD;
 
-  .close-btn:hover {
-    cursor: pointer;
+  .close-btn {
+    font-size: 18px;
+    position: absolute;
+    top: 20px;
+    right: 20px;
+
+    :hover {
+      cursor: pointer;
+    }
   }
 }
 
