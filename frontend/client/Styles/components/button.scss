@@ -24,6 +24,12 @@
 }
 
 #progress-container {
-    display: flex;
-    justify-content: center;
+  display: flex;
+  justify-content: center;
+}
+
+.save-button {
+  width: 350px;
+  height: 50px;
+  align-items: center;
 }
