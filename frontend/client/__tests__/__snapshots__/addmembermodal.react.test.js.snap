@@ -1,0 +1,120 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`renders correctly 1`] = `
+<ContextProvider
+  value={
+    Component {
+      "__authStateListener": [Function],
+      "__firstVisibleMember": null,
+      "__lastVisibleMember": null,
+      "__organizationDocumentListener": null,
+      "__pageOfMembersListener": null,
+      "__userDocumentListener": null,
+      "__userImageListener": null,
+      "context": Object {},
+      "data": Object {
+        "organization": Object {
+          "currentPageOfMembers": Array [],
+          "diagnosisText": "",
+          "enableExposureText": "",
+          "exposureAboutText": "",
+          "exposureDetailsLearnText": "",
+          "exposureDetailsText": "",
+          "exposureInfoText": "",
+          "exposureText": "",
+          "id": "",
+          "name": "",
+          "notifyingOthersText": "",
+          "recommendExposureText": "",
+          "verificationAdministrationDateText": "",
+          "verificationIdentifierAboutText": "",
+          "verificationIdentifierText": "",
+          "verificationNotSharedText": "",
+          "verificationReviewText": "",
+          "verificationSharedText": "",
+          "verificationStartText": "",
+          "welcomeText": "",
+        },
+        "user": Object {
+          "disabled": false,
+          "email": "",
+          "firstName": "",
+          "imageBlob": null,
+          "isAdmin": false,
+          "isFirstTimeUser": undefined,
+          "isSignedIn": false,
+          "lastName": "",
+          "organizationID": "",
+          "prefix": "",
+        },
+      },
+      "displayName": "storeProvider",
+      "props": Object {
+        "hidden": false,
+        "onClose": [MockFunction],
+        "onFailure": [MockFunction],
+        "onSuccess": [MockFunction],
+      },
+      "refs": Object {},
+      "setState": [Function],
+      "state": null,
+      "updater": Updater {
+        "_callbacks": Array [],
+        "_renderer": ReactShallowRenderer {
+          "_context": Object {},
+          "_didScheduleRenderPhaseUpdate": false,
+          "_dispatcher": Object {
+            "readContext": [Function],
+            "useCallback": [Function],
+            "useContext": [Function],
+            "useDebugValue": [Function],
+            "useDeferredValue": [Function],
+            "useEffect": [Function],
+            "useImperativeHandle": [Function],
+            "useLayoutEffect": [Function],
+            "useMemo": [Function],
+            "useReducer": [Function],
+            "useRef": [Function],
+            "useResponder": [Function],
+            "useState": [Function],
+            "useTransition": [Function],
+          },
+          "_element": <Component
+            hidden={false}
+            onClose={[MockFunction]}
+            onFailure={[MockFunction]}
+            onSuccess={[MockFunction]}
+          />,
+          "_firstWorkInProgressHook": null,
+          "_forcedUpdate": false,
+          "_instance": [Circular],
+          "_isReRender": false,
+          "_newState": null,
+          "_numberOfReRenders": 0,
+          "_renderPhaseUpdates": null,
+          "_rendered": <Context.Provider
+            value={[Circular]}
+          >
+            <Component
+              hidden={false}
+              onClose={[MockFunction]}
+              onFailure={[MockFunction]}
+              onSuccess={[MockFunction]}
+            />
+          </Context.Provider>,
+          "_rendering": false,
+          "_updater": [Circular],
+          "_workInProgressHook": null,
+        },
+      },
+    }
+  }
+>
+  <Component
+    hidden={false}
+    onClose={[MockFunction]}
+    onFailure={[MockFunction]}
+    onSuccess={[MockFunction]}
+  />
+</ContextProvider>
+`;
