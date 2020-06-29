@@ -111,7 +111,7 @@ const AccountBrandingBase = observer((props) => {
           />
           {!diagnosisTextIsEditing ? (
             <div
-              className="save-or-edit-button"
+              className="button btn-small btn-tertiary"
               onClick={() => {
                 if (noTextBoxesBeingEdited()) {
                   setDiagnosisTextIsEditing(true)
@@ -124,10 +124,14 @@ const AccountBrandingBase = observer((props) => {
             </div>
           ) : (
             <div>
-              <div className="save-or-edit-button" style={{ display: 'inline-block' }} onClick={saveData}>
+              <div className="button btn-small btn-tertiary" style={{ display: 'inline-block' }} onClick={saveData}>
                 Save
               </div>
-              <div className="cancel-button" style={{ display: 'inline-block' }} onClick={resetAllTextBoxes}>
+              <div
+                className="button btn-small btn-gray cancel-button"
+                style={{ display: 'inline-block' }}
+                onClick={resetAllTextBoxes}
+              >
                 Cancel
               </div>
             </div>
@@ -151,7 +155,7 @@ const AccountBrandingBase = observer((props) => {
           />
           {!exposureTextIsEditing ? (
             <div
-              className="save-or-edit-button"
+              className="button btn-small btn-tertiary"
               onClick={() => {
                 if (noTextBoxesBeingEdited()) {
                   setExposureTextIsEditing(true)
@@ -164,10 +168,14 @@ const AccountBrandingBase = observer((props) => {
             </div>
           ) : (
             <div>
-              <div className="save-or-edit-button" style={{ display: 'inline-block' }} onClick={saveData}>
+              <div className="button btn-small btn-tertiary" style={{ display: 'inline-block' }} onClick={saveData}>
                 Save
               </div>
-              <div className="cancel-button" style={{ display: 'inline-block' }} onClick={resetAllTextBoxes}>
+              <div
+                className="button btn-small btn-gray cancel-button"
+                style={{ display: 'inline-block' }}
+                onClick={resetAllTextBoxes}
+              >
                 Cancel
               </div>
             </div>
@@ -178,7 +186,7 @@ const AccountBrandingBase = observer((props) => {
           <p className="section-description">
             Your dedicated account manager will gladly help you with other branding and customization needs.
           </p>
-          <div id="contact-button" onClick={onContactUsClicked}>
+          <div className="button btn-small btn-tertiary" id="contact-button" onClick={onContactUsClicked}>
             Contact Us
           </div>
         </div>

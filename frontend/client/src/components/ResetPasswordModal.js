@@ -147,7 +147,11 @@ class ResetPasswordModalBase extends React.Component {
             {!this.state.passwordsMatch && this.state.confirmPasswordHasBeenEdited ? 'Passwords must match' : ''}
           </div>
 
-          <PendingOperationButton className={`save-password`} disabled={!this.canSubmit()} operation={this.onSubmit}>
+          <PendingOperationButton
+            className="save-password btn-fullwidth"
+            disabled={!this.canSubmit()}
+            operation={this.onSubmit}
+          >
             Change Password
           </PendingOperationButton>
         </form>

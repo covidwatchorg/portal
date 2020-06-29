@@ -45,6 +45,7 @@ const inputStyles = makeStyles({
 
 const secondaryButtonStyles = makeStyles({
   root: {
+    fontFamily: 'Montserrat',
     color: '#2C58B1',
     width: '195px',
     height: 35,

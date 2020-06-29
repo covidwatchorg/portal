@@ -23,7 +23,7 @@ const NotFound = () => {
         <div id="message">
           <div id="main">404</div>
           <span>This page does not exist.</span>
-          <Link className="button" to="/code_validations">
+          <Link className="button btn-medium btn-primary" to="/code_validations">
             Go Back
           </Link>
 

@@ -1,26 +1,80 @@
+// Common colors
+$dark-blue: #2C58B1;
+$dark-gray: #727272;
+$gray: #BDBDBD;
+$white: #FFFFFF;
+
+// Common button class
 .button {
-  margin-top: 32px;
+  // margin-top: 32px;
   border-radius: 7px;
   font-family: Montserrat;
   font-style: normal;
-  font-weight: bold;
-  font-size: 18px;
-  line-height: 22px;
   text-align: center;
-  padding: 10px;
-  border: 2px solid #2C58B1;
-
-  background: #2C58B1;
-  color: #FFFFFF;
-
-  &.disabled {
-    background: #FFFFFF;
-    color: #BDBDBD;
-  }
+  border-style: solid;
 
   &:hover {
     cursor: pointer;
   }
+}
+
+// Button size classes
+
+.btn-small {
+  width: 60px;
+  height: 25px;
+  font-weight: 650;
+  font-size: 12px;
+  line-height: 25px;
+  border-width: 1.5px;
+}
+
+.btn-medium {
+  font-weight: bold;
+  font-size: 18px;
+  line-height: 22px;
+  border-width: 2px;
+  padding: 10px;
+}
+
+.btn-fullwidth {
+  width: 100%;
+}
+
+// Button color classes
+
+// Blue background
+.btn-primary {
+  background: $dark-blue;
+  color: $white;
+  border-color:  $dark-blue;
+}
+
+// Blue text, blue border
+.btn-secondary {
+  background-color: $white;
+  color: $dark-blue;
+  border-color:  $dark-blue;
+}
+
+// Blue text, gray border
+.btn-tertiary {
+  background-color: $white;
+  color: $dark-blue;
+  border-color: $gray;
+}
+
+// Gray text, gray border
+.btn-gray {
+  background-color: $white;
+  color: $dark-gray;
+  border-color: $gray;
+}
+
+// Disabled button
+.disabled {
+  background: $white;
+  color: $gray;
 }
 
 #progress-container {

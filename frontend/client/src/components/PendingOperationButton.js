@@ -13,7 +13,7 @@ import CircularProgress from '@material-ui/core/CircularProgress'
 const PendingOperationButton = (props) => {
   const [isOperationPending, setIsOperationPending] = useState(false)
 
-  const className = (props.className || '') + ' button' + (props.disabled ? ' disabled' : '')
+  const className = (props.className || '') + ' button btn-medium' + (props.disabled ? ' disabled' : ' btn-primary')
   const style = props.style || {}
   const operation = props.operation || (() => {})
   const disabled = props.disabled || false
