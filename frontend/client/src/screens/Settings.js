@@ -50,7 +50,7 @@ const secondaryButtonStyles = makeStyles({
     width: '195px',
     height: 35,
     fontSize: '18px',
-    fontWeight: 'bold',
+    fontWeight: '600',
     padding: '5px',
     border: '2px solid #BDBDBD',
     borderRadius: '7px',
