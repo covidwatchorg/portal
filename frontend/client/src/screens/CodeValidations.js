@@ -23,9 +23,9 @@ const CodeValidationsBase = observer((props) => {
   //TODO show confired toast when code confirmed by app
 
   const genNewCode = async () => {
-    // TODO get new code from server
     try {
-      setCode('123-45-9')
+      let code = await props.store.getVerificationCode()
+      setCode(code.split('').join(' '))
     } catch (err) {
       setToastInfo({ success: false, msg: 'Could not generate new code, please try again' })
       confirmedToast.current.show()
