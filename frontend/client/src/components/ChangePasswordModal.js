@@ -143,7 +143,8 @@ class ChangePasswordModalBase extends React.Component {
               </div>
 
               <PendingOperationButton
-                className={`save-password${this.canSubmit() ? '' : '-disabled'}`}
+                className={'save-password btn-fullwidth'}
+                disabled={!this.canSubmit()}
                 operation={this.tryUpdatePassword}
               >
                 Save

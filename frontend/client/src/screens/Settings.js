@@ -45,11 +45,12 @@ const inputStyles = makeStyles({
 
 const secondaryButtonStyles = makeStyles({
   root: {
+    fontFamily: 'Montserrat',
     color: '#2C58B1',
     width: '195px',
     height: 35,
     fontSize: '18px',
-    fontWeight: 'bold',
+    fontWeight: '600',
     padding: '5px',
     border: '2px solid #BDBDBD',
     borderRadius: '7px',

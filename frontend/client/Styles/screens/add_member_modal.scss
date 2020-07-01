@@ -13,17 +13,9 @@
     margin-bottom: 10px;
   }
 
-  .close-btn {
-    margin-left: 430px;
-    font-size: 18px;
-  }
-
   .add-member-form {
     display: flex;
     flex-direction: column;
-  }
-  .close-btn:hover {
-    cursor: pointer;
   }
 }
 
@@ -54,15 +46,10 @@
     margin-bottom: -25px;
     margin-top: 25px;
   }
-  button {
+  .button {
     width: 350px;
     height: 50px;
-    color: white;
-    background: #2c58b1;
-    border-radius: 7px;
     margin-top: 30px;
-    font-size: 16px;
-    font-family: 'Montserrat', sans-serif;
   }
   select {
     margin-left: 48px;
@@ -76,7 +63,7 @@
   }
 
   .save-button-container {
-    margin-top: 10px;
-    margin-bottom: 20px;
+    margin: 10px auto 20px;
+    width: 350px;
   }
 }

@@ -2,15 +2,10 @@
 
 .add-member-button {
     align-self: flex-start;
-    padding: 12px;
-    border: 2px solid #BDBDBD;
-    border-radius: 7px;
+    margin-top: 0px;
     margin-bottom: 12px;
     .add-button-text {
       margin-left: 12px;
-      font-family: Montserrat;
-      font-weight: 600;
-      color: #2C58B1;
     }
   }
   .add-member-button:hover {

@@ -28,10 +28,10 @@ const ChangeRoleModalBase = (props) => {
       </p>
       <p>{fullName} will recieve an email notification once this change is confirmed.</p>
 
-      <button className="button cancel" onClick={props.onClose}>
+      <button className="button btn-medium btn-secondary" onClick={props.onClose}>
         Cancel
       </button>
-      <PendingOperationButton className="button confirm" operation={onConfirm}>
+      <PendingOperationButton className="confirm" operation={onConfirm}>
         Confirm
       </PendingOperationButton>
     </Modal>

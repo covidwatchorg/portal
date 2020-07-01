@@ -66,98 +66,13 @@ textarea {
   color: #585858;
 }
 
-.save-button-container {
-  margin: auto;
-  margin-top: 32px;
-  width: 350px;
-}
-
-.save-button {
-  width: 350px;
-  height: 50px;
-  background: #2c58b1;
-  border-radius: 7px;
-  font-family: Montserrat;
-  font-style: normal;
-  font-weight: bold;
-  font-size: 18px;
-  line-height: 50px;
-  align-items: center;
-  text-align: center;
-  color: #ffffff;
-}
-
-.save-button:hover {
-  cursor: pointer;
-}
-
-#contact-button {
-  width: 212px;
-  height: 35px;
-
-  /* Gradient White */
-  background: #ffffff;
-  /* Gray 4 */
-  border: 2px solid #bdbdbd;
-  border-radius: 7px;
-  font-family: Montserrat;
-  font-style: normal;
-  font-weight: bold;
-  font-size: 14px;
-  line-height: 35px;
-  text-align: center;
-  /* Bluejay */
-  color: #2c58b1;
-}
-
-#contact-button:hover {
-  cursor: pointer;
-}
-
-.save-or-edit-button {
-  width: 60px;
-  height: 25px;
-
-  /* Gradient White */
-  background: #ffffff;
-  /* Gray 4 */
-  border: 1.5px solid #bdbdbd;
-  border-radius: 7px;
-  font-family: Montserrat;
-  font-style: normal;
-  font-weight: 650;
-  font-size: 12px;
-  line-height: 25px;
-  text-align: center;
-  /* Bluejay */
-  color: #2c58b1;
-}
-
-.save-or-edit-button:hover {
-  cursor: pointer;
-}
+// #contact-button {
+  // width: 212px;
+  // height: 35px;
+  // font-size: 14px;
+  // line-height: 35px;
+// }
 
 .cancel-button {
-  width: 60px;
-  height: 25px;
-
-  /* Gradient White */
-  background: #ffffff;
-  /* Gray 4 */
-  border: 1.5px solid #bdbdbd;
-  border-radius: 7px;
-  font-family: Montserrat;
-  font-style: normal;
-  font-weight: 650;
-  font-size: 12px;
-  line-height: 25px;
-  text-align: center;
-  /* Bluejay */
-  color: #727272;
-
   margin-left: 10px;
-}
-
-.cancel-button:hover {
-  cursor: pointer;
 }

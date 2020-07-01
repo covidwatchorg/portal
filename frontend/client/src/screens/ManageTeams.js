@@ -83,10 +83,10 @@ const ManageTeamsBase = observer((props) => {
     <div className="module-container">
       <PageTitle title="Manage Members" />
       <h1>Manage Members</h1>
-      <div className="add-member-button" onClick={() => setShowAddMemberModal(true)}>
+      <button className="button btn-medium btn-tertiary add-member-button" onClick={() => setShowAddMemberModal(true)}>
         <img src={addMember} alt="" />
         <span className="add-button-text">Add Member</span>
-      </div>
+      </button>
       <AddMemberModal
         hidden={!showAddMemberModal}
         onClose={onAddMemberCancel}
