@@ -1,0 +1,4 @@
+#! /bin/bash
+
+export VERIF_SERVER_PASSWORD=heyitscolby
+export VERIF_SEVER_FIREBASE_API_KEY=AIzaSyDu0tFeyA-BhUGNoZONKCVdi-eWCZIgAbI

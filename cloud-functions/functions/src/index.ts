@@ -440,3 +440,46 @@ export const initiatePasswordRecovery = functions.https.onCall((body) => {
       });
   });
 });
+
+export const getVerificationCode = functions.https.onCall(async () => {
+    const axios = require('axios')
+    const axiosCookieJarSupport = require('axios-cookiejar-support').default;
+    const tough = require('tough-cookie');
+    const qs = require('querystring')
+    axiosCookieJarSupport(axios);
+
+    let config = functions.config().verif_server
+    let url = config.url
+
+    const cookieJar = new tough.CookieJar();
+    let instance = await axios.create({
+                jar:cookieJar,
+                withCredentials: true,
+            });
+
+    try {
+        let response = await instance.post(
+            'https://www.googleapis.com/identitytoolkit/v3/relyingparty/verifyPassword?key=' + config.key,
+            {email: config.email, password: config.password, returnSecureToken: true})
+
+        let form = {idToken: response.data.idToken}
+
+        // Get CSRF token
+        response = await instance.get(url)
+
+        response = await instance.post(url + 'session', qs.stringify(form), {
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'X-CSRF-Token': response.headers['x-csrf-token'],
+                }})
+
+        response = await instance.get(url + 'home/csrf')
+        response = await instance.post(url + 'home/issue', {"testType":"confirmed"},{headers: {'X-CSRF-TOKEN': response.data.csrftoken}})
+        return response.data.code
+    }
+    catch(err){
+        console.error(err)
+        throw err
+    }
+})
+
