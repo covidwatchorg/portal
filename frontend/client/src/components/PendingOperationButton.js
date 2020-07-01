@@ -36,7 +36,7 @@ const PendingOperationButton = (props) => {
     )
   } else {
     return (
-      <div id="progress-container">
+      <div className="progress-container">
         <CircularProgress />
       </div>
     )
