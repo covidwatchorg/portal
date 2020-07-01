@@ -31,7 +31,7 @@ const ChangeRoleModalBase = (props) => {
       <button className="button btn-medium btn-secondary" onClick={props.onClose}>
         Cancel
       </button>
-      <PendingOperationButton className="button confirm" operation={onConfirm}>
+      <PendingOperationButton className="confirm" operation={onConfirm}>
         Confirm
       </PendingOperationButton>
     </Modal>
