@@ -12,7 +12,7 @@ import PendingOperationButton from '../components/PendingOperationButton'
 // https://material-ui.com/components/snackbars/
 
 const CodeValidationsBase = observer((props) => {
-  const [code, setCode] = useState('123-45-6')
+  const [code, setCode] = useState('')
   const [toastInfo, setToastInfo] = useState({
     success: false,
     msg: '',
@@ -25,7 +25,7 @@ const CodeValidationsBase = observer((props) => {
   const genNewCode = async () => {
     try {
       let code = await props.store.getVerificationCode()
-      setCode(code.split('').join(' '))
+      setCode(code.data.split('').join(' '))
     } catch (err) {
       setToastInfo({ success: false, msg: 'Could not generate new code, please try again' })
       confirmedToast.current.show()
