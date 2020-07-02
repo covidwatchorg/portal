@@ -53,7 +53,7 @@ afterEach(async () => {
   }
 });
 
-test('clientAuth.createUser winds up with a deleted user even if they try to quickly create their own record in /users table', async () => {
+test('An attacker cannot create an account and then quickly create their own record in /users table before onCreate has time to run and delete them', async () => {
   // Attacker creates an account with the client auth
   await clientAuth.createUserWithEmailAndPassword('shouldBe@deleted.com', 'shouldBe@deleted.com');
   // Immediately signs in
