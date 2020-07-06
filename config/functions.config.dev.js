@@ -1,6 +1,6 @@
 var config = {
     "client": {
-        "url": "http://localhost:8080/"
+        "url": "http://localhost:3000/"
     },
     "sendgrid": {
         "key": process.env.SENDGRID_API_KEY

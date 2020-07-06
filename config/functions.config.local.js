@@ -1,6 +1,6 @@
 var config = {
     "client": {
-        "url": "http://localhost:8080/"
+        "url": "http://localhost:3000/"
     },
     "sendgrid": {
         "key": process.env.SENDGRID_API_KEY
@@ -8,8 +8,8 @@ var config = {
     "verif_server": {
         "url": "**url**",
         "email": "**email**",
-        "password": process.env.VERIF_SERVER_PASSWORD,
-        "key": process.env.VERIF_SEVER_FIREBASE_API_KEY
+        "key": "**firebase-api-key**",
+        "password": process.env.VERIF_SERVER_PASSWORD
     }
 }
 

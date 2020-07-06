@@ -2,6 +2,10 @@ import * as admin from 'firebase-admin';
 import * as functions from 'firebase-functions';
 import * as sgMail from '@sendgrid/mail';
 import { randomBytes } from 'crypto';
+import axios from 'axios';
+import axiosCookieJarSupport from 'axios-cookiejar-support';
+import toughCookie from 'tough-cookie';
+import queryString from 'query-string';
 
 // Initialize firebse admin and get db instance
 admin.initializeApp(functions.config().firebase);
@@ -442,17 +446,13 @@ export const initiatePasswordRecovery = functions.https.onCall((body) => {
 });
 
 export const getVerificationCode = functions.https.onCall(async () => {
-  const axios = require('axios');
-  const axiosCookieJarSupport = require('axios-cookiejar-support').default;
-  const tough = require('tough-cookie');
-  const qs = require('querystring');
   axiosCookieJarSupport(axios);
 
-  let config = functions.config().verif_server;
-  let url = config.url;
+  const config = functions.config().verif_server;
+  const url = config.url.slice(-1) === '/' ? config.url : config.url + '/';
 
-  const cookieJar = new tough.CookieJar();
-  let instance = await axios.create({
+  const cookieJar = new toughCookie.CookieJar();
+  const instance = await axios.create({
     jar: cookieJar,
     withCredentials: true,
   });
@@ -463,12 +463,12 @@ export const getVerificationCode = functions.https.onCall(async () => {
       { email: config.email, password: config.password, returnSecureToken: true }
     );
 
-    let form = { idToken: response.data.idToken };
+    const form = { idToken: response.data.idToken };
 
     // Get CSRF token
     response = await instance.get(url);
 
-    response = await instance.post(url + 'session', qs.stringify(form), {
+    response = await instance.post(url + 'session', queryString.stringify(form), {
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
         'X-CSRF-Token': response.headers['x-csrf-token'],
