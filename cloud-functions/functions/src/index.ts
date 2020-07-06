@@ -157,16 +157,19 @@ function isAdminGuard(context: functions.https.CallableContext): Promise<void> {
   });
 }
 
+function generateSignInWithEmailLink(email: string): Promise<string> {
+  return auth.generateSignInWithEmailLink(email, {
+    url: functions.config().client.url + `?email=${email}`,
+    // This must be true.
+    handleCodeInApp: true,
+  });
+}
+
 const EMAILSTYLE = `style="font-family: Montserrat, Arial, Helvetica, sans-serif;font-size:18px;color: #585858;"`;
 
 // Send email to new users instructing them to change their password
 function sendNewUserEmail(email: string, password: string, firstName: string, lastName: string) {
-  auth
-    .generateSignInWithEmailLink(email, {
-      url: functions.config().client.url,
-      // This must be true.
-      handleCodeInApp: true,
-    })
+  generateSignInWithEmailLink(email)
     .then((link) => {
       const msg = {
         to: email,
@@ -199,12 +202,7 @@ function sendNewUserEmail(email: string, password: string, firstName: string, la
 }
 
 function sendPasswordRecoveryEmail(email: string) {
-  auth
-    .generateSignInWithEmailLink(email, {
-      url: functions.config().client.url,
-      // This must be true.
-      handleCodeInApp: true,
-    })
+  generateSignInWithEmailLink(email)
     .then((link) => {
       const msg = {
         to: email,
