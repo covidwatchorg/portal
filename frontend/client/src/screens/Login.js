@@ -58,9 +58,9 @@ const SignInFormBase = observer(
       // Based on https://firebase.google.com/docs/auth/web/email-link-auth
       if (this.props.store.isSignInWithEmailLink(window.location.href)) {
         Logging.log('signInWithEmailLink detected')
+        var email = new URL(location.href).searchParams.get('email')
         // Get the email if available. This should be available if the user completes
         // the flow on the same device where they started it.
-        var email = window.localStorage.getItem('emailForSignIn')
         if (!email) {
           // User opened the link on a different device. To prevent session fixation
           // attacks, ask the user to provide the associated email again. For example:
@@ -69,18 +69,9 @@ const SignInFormBase = observer(
         await this.props.store
           .signInWithEmailLink(email, window.location.href)
           .then(() => {
-            // Clear email from storage.
-            window.localStorage.removeItem('emailForSignIn')
-            // You can access the new user via result.user
-            // Additional user info profile not available via:
-            // result.additionalUserInfo.profile == null
-            // You can check if the user is new or existing:
-            // result.additionalUserInfo.isNewUser
             Logging.log('Logged in via signInWithEmailLink')
           })
           .catch((err) => {
-            // Some error occurred, you can inspect the code: error.code
-            // Common errors could be invalid email and invalid or expired OTPs.
             Logging.error(err)
           })
       }

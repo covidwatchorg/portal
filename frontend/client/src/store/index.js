@@ -183,9 +183,6 @@ const createStore = (WrappedComponent) => {
     async sendPasswordRecoveryEmail(email) {
       try {
         await initiatePasswordRecoveryCallable({ email: email })
-        // Save the email locally so you don't need to ask the user for it again if they open the link on the same device.
-        // See https://firebase.google.com/docs/auth/web/email-link-auth#send_an_authentication_link_to_the_users_email_address
-        window.localStorage.setItem('emailForSignIn', email)
         return true
       } catch (err) {
         Logging.error(err)
