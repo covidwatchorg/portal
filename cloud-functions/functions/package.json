@@ -22,6 +22,7 @@
   "main": "lib/src/index.js",
   "dependencies": {
     "@sendgrid/mail": "^7.1.0",
+    "@types/tough-cookie": "^4.0.0",
     "axios": "^0.19.2",
     "axios-cookiejar-support": "^1.0.0",
     "cpy-cli": "^3.1.1",
@@ -30,6 +31,7 @@
     "firebase-admin": "^8.10.0",
     "firebase-functions": "^3.6.1",
     "jest-environment-uint8array": "^1.0.0",
+    "query-string": "^6.13.1",
     "querystring": "^0.2.0",
     "reflect-metadata": "^0.1.13",
     "tough-cookie": "^4.0.0"

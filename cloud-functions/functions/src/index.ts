@@ -4,8 +4,8 @@ import * as sgMail from '@sendgrid/mail';
 import { randomBytes } from 'crypto';
 import axios from 'axios';
 import axiosCookieJarSupport from 'axios-cookiejar-support';
-import toughCookie from 'tough-cookie';
-import queryString from 'query-string';
+import * as toughCookie from 'tough-cookie';
+import * as queryString from 'query-string';
 
 // Initialize firebse admin and get db instance
 admin.initializeApp(functions.config().firebase);
