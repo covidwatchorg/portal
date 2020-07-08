@@ -20,7 +20,7 @@ const INITIAL_STATE = {
   error: null,
   redirect: false,
   showPassModal: false,
-  toastMessage: 'Error logging in, email or password may be invalid',
+  toastMessage: '',
 }
 
 const SignInFormBase = observer(
@@ -38,6 +38,7 @@ const SignInFormBase = observer(
       try {
         await this.props.store.signInWithEmailAndPassword(email, password)
       } catch (err) {
+        this.state.toastMessage = 'Error logging in, email or password may be invalid'
         this.errorToast.current.show()
       }
     }
@@ -82,6 +83,14 @@ const SignInFormBase = observer(
             // Some error occurred, you can inspect the code: error.code
             // Common errors could be invalid email and invalid or expired OTPs.
             Logging.error(err)
+            if (err.code === 'auth/expired-action-code') {
+              this.state.toastMessage =
+                'This magic link has expired. Please sign in with your password or restart the password recovery process.'
+            } else {
+              // Neither auth/invalid-email nor auth/user-disabled should happen
+              this.state.toastMessage = 'Invalid magic link'
+            }
+            this.errorToast.show()
           })
       }
     }
