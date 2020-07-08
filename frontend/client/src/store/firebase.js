@@ -28,5 +28,6 @@ const SESSION = app.auth.Auth.Persistence.SESSION
 const db = app.firestore()
 const createUserCallable = app.functions().httpsCallable('createUser')
 const initiatePasswordRecoveryCallable = app.functions().httpsCallable('initiatePasswordRecovery')
+const getVerificationCodeCallable = app.functions().httpsCallable('getVerificationCode')
 
-export { auth, db, SESSION, createUserCallable, initiatePasswordRecoveryCallable }
+export { auth, db, SESSION, createUserCallable, initiatePasswordRecoveryCallable, getVerificationCodeCallable }

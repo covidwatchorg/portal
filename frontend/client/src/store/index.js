@@ -1,7 +1,14 @@
 import React from 'react'
 import { rootStore, defaultUser, defaultOrganization } from './model'
 import Logging from '../util/logging'
-import { auth, db, SESSION, createUserCallable, initiatePasswordRecoveryCallable } from './firebase'
+import {
+  auth,
+  db,
+  SESSION,
+  createUserCallable,
+  initiatePasswordRecoveryCallable,
+  getVerificationCodeCallable,
+} from './firebase'
 
 const PAGE_SIZE = 15
 
@@ -198,6 +205,15 @@ const createStore = (WrappedComponent) => {
         await db.collection('users').doc(email).update(updates)
       } catch (err) {
         Logging.error(`Error updating user: ${email}`, err)
+        throw err
+      }
+    }
+
+    async getVerificationCode() {
+      try {
+        return await getVerificationCodeCallable()
+      } catch (err) {
+        Logging.error(err)
         throw err
       }
     }

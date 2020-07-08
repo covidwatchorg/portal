@@ -65,23 +65,25 @@ jobs:
         run: npm install
       - name: Initialize config files
         working-directory: cloud-functions/functions
-        run: npm run init       
+        run: npm run init
       - name: Setup functions config
         if: github.ref == 'refs/heads/dev'
         working-directory: cloud-functions/functions
         run: npm run config:set
-        env: 
+        env:
           FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
-          SENDGRID_API_TOKEN: ${{ secrets.SENDGRID_API_TOKEN }}
+          SENDGRID_API_KEY: ${{ secrets.SENDGRID_API_KEY }}
           NODE_ENV: staging
+          VERIF_SERVER_PASSWORD: ${{ secrets.VERIF_SERVER_PASSWORD }}
       - name: Setup functions config
         if: github.ref == 'refs/heads/master'
         working-directory: cloud-functions/functions
         run: npm run config:set
-        env: 
+        env:
           FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
-          SENDGRID_API_TOKEN: ${{ secrets.SENDGRID_API_TOKEN }}
+          SENDGRID_API_KEY: ${{ secrets.SENDGRID_API_KEY }}
           NODE_ENV: prod
+          VERIF_SERVER_PASSWORD: ${{ secrets.VERIF_SERVER_PASSWORD }}
       - name: Lint and Build
         working-directory: cloud-functions/functions
         run: |
@@ -108,7 +110,7 @@ jobs:
           name: cloud-functions-artifact
           path: cloud-functions/functions
 
-      - name: Install 
+      - name: Install
         working-directory: cloud-functions/functions
         run: npm install
 
