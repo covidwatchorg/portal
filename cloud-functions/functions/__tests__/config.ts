@@ -44,6 +44,7 @@ export const adminDb = admin.firestore();
 export const clientAuth = firebase.auth();
 export const adminAuth = admin.auth();
 export const createUser = firebase.functions().httpsCallable('createUser');
+export const getVerificationCode = firebase.functions().httpsCallable('getVerificationCode');
 
 // Delay function to deal with Cloud Functions triggers needing time to propagate.
 export const delay = (t: number) => new Promise((resolve) => setTimeout(resolve, t));
