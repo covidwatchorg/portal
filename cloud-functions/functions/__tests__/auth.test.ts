@@ -366,3 +366,13 @@ test('User can be toggled between isAdmin and not isAdmin', async () => {
   idTokenResult = await clientAuth.currentUser.getIdTokenResult(true);
   expect(idTokenResult.claims.isAdmin).toEqual(false);
 });
+
+test('getVerificationCode cannot be called without being authenticated', async () => {
+  try {
+    await getVerificationCode({});
+    fail("This shouldn't happen!");
+  } catch (err) {
+    expect(err.code).toEqual('unauthenticated');
+    expect(err.message).toEqual('The function must be called while authenticated.');
+  }
+});

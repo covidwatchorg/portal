@@ -2,6 +2,10 @@ import * as admin from 'firebase-admin';
 import * as functions from 'firebase-functions';
 import * as sgMail from '@sendgrid/mail';
 import { randomBytes } from 'crypto';
+import axios from 'axios';
+import axiosCookieJarSupport from 'axios-cookiejar-support';
+import * as toughCookie from 'tough-cookie';
+import * as queryString from 'query-string';
 
 // Initialize firebse admin and get db instance
 admin.initializeApp(functions.config().firebase);
@@ -436,6 +440,57 @@ export const initiatePasswordRecovery = functions.https.onCall((body) => {
         resolve();
       })
       .catch((err) => {
+        reject(err);
+      });
+  });
+});
+
+export const getVerificationCode = functions.https.onCall(async (_, context) => {
+  return new Promise((resolve, reject) => {
+    authGuard(context)
+      .then(async () => {
+        axiosCookieJarSupport(axios);
+
+        const config = functions.config().verif_server;
+        const url = config.url.slice(-1) === '/' ? config.url : config.url + '/';
+
+        const cookieJar = new toughCookie.CookieJar();
+        const instance = axios.create({
+          jar: cookieJar,
+          withCredentials: true,
+        });
+
+        try {
+          let response = await instance.post(
+            'https://www.googleapis.com/identitytoolkit/v3/relyingparty/verifyPassword?key=' + config.key,
+            { email: config.email, password: config.password, returnSecureToken: true }
+          );
+
+          const form = { idToken: response.data.idToken };
+
+          // Get CSRF token
+          response = await instance.get(url);
+
+          response = await instance.post(url + 'session', queryString.stringify(form), {
+            headers: {
+              'Content-Type': 'application/x-www-form-urlencoded',
+              'X-CSRF-Token': response.headers['x-csrf-token'],
+            },
+          });
+
+          response = await instance.get(url + 'home/csrf');
+          response = await instance.post(
+            url + 'home/issue',
+            { testType: 'confirmed' },
+            { headers: { 'X-CSRF-TOKEN': response.data.csrftoken } }
+          );
+          resolve(response.data.code);
+        } catch (err) {
+          reject(err);
+        }
+      })
+      .catch((err) => {
+        console.error(err);
         reject(err);
       });
   });
