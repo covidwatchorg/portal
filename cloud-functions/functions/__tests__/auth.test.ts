@@ -1,4 +1,14 @@
-import { adminDb, clientAuth, adminAuth, createUser, delay, DELAY, soylentGreenID, clientDb } from './config';
+import {
+  adminDb,
+  clientAuth,
+  adminAuth,
+  createUser,
+  delay,
+  DELAY,
+  soylentGreenID,
+  clientDb,
+  getVerificationCode,
+} from './config';
 
 jest.setTimeout(120000);
 
