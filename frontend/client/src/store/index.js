@@ -209,9 +209,10 @@ const createStore = (WrappedComponent) => {
       }
     }
 
-    async getVerificationCode() {
+    // issueCodeRequest looks like {testType: "likely", testDate: "2020-07-02"} or {testType: "confirmed", testDate: "2020-07-02"}
+    async getVerificationCode(issueCodeRequest) {
       try {
-        return await getVerificationCodeCallable()
+        return await getVerificationCodeCallable(issueCodeRequest)
       } catch (err) {
         Logging.error(err)
         throw err

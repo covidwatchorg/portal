@@ -24,7 +24,11 @@ const CodeValidationsBase = observer((props) => {
 
   const genNewCode = async () => {
     try {
-      let code = await props.store.getVerificationCode()
+      // TODO: testType and testDate should be set by fields in the interface; blocked awaiting v4 figma
+      let code = await props.store.getVerificationCode({
+        testType: 'confirmed',
+        testDate: new Date().toJSON().substring(0, 10),
+      })
       setCode(code.data.split('').join(' '))
     } catch (err) {
       setToastInfo({ success: false, msg: 'Could not generate new code, please try again' })
