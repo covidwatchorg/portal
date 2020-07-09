@@ -33,6 +33,8 @@ service cloud.firestore {
     function isNotEscalatingPrivileges() {
       return ( resource.data.isAdmin == request.resource.data.isAdmin )
     }
+
+    // Checks that the caller is not trying to change the organizationID in the request
     function isModifyingOrg() {
       return ( resource.data.organizationID != request.resource.data.organizationID )
     }

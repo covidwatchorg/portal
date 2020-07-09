@@ -3,10 +3,11 @@ import {
   clientAuth,
   adminAuth,
   createUser,
-  getVerificationCode,
   delay,
   DELAY,
   soylentGreenID,
+  clientDb,
+  getVerificationCode,
 } from './config';
 
 jest.setTimeout(120000);
@@ -59,6 +60,28 @@ afterEach(async () => {
     await clientAuth.signOut().catch((err1) => {
       console.error(err1);
     });
+  }
+});
+
+test('An attacker cannot create an account and then quickly create their own record in /users table before onCreate has time to run and delete them', async () => {
+  // Attacker creates an account with the client auth
+  await clientAuth.createUserWithEmailAndPassword('shouldBe@deleted.com', 'shouldBe@deleted.com');
+  // Immediately signs in
+  await clientAuth.signInWithEmailAndPassword('shouldBe@deleted.com', 'shouldBe@deleted.com');
+  // Immediately attempts to create their own record in the /users table before onCreate has time to run and delete them
+  try {
+    await clientDb.collection('users').doc('shouldBe@deleted.com').set({
+      isAdmin: true,
+      organizationID: soylentGreenID,
+      disabled: false,
+      firstName: 'ShouldBe',
+      lastName: 'Deleted',
+      isFirstTimeUser: false,
+    });
+    fail('We are vulnerable!');
+  } catch (err) {
+    expect(err.code).toEqual('permission-denied');
+    expect(err.message).toEqual('7 PERMISSION_DENIED: Missing or insufficient permissions.');
   }
 });
 
@@ -129,7 +152,7 @@ test('createUser works for admins', async () => {
   const docSnapshot = await adminDb.collection('userImages').doc(testUserEmail).get();
   expect(docSnapshot.exists).toEqual(true);
 
-  // delay for 10 sec to allow functions.auth.user().onCreate to trigger and propagate
+  // delay for DELAY sec to allow functions.auth.user().onCreate to trigger and propagate
   await delay(DELAY);
 
   await clientAuth.signInWithEmailAndPassword(testUserEmail, testUserEmail);
