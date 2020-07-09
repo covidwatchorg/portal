@@ -445,7 +445,8 @@ export const initiatePasswordRecovery = functions.https.onCall((body) => {
   });
 });
 
-export const getVerificationCode = functions.https.onCall(async (_, context) => {
+// issueCodeRequest looks like {testType: "likely", testDate: "2020-07-02"} or {testType: "confirmed", testDate: "2020-07-02"}
+export const getVerificationCode = functions.https.onCall(async (issueCodeRequest, context) => {
   return new Promise((resolve, reject) => {
     authGuard(context)
       .then(async () => {
@@ -479,11 +480,9 @@ export const getVerificationCode = functions.https.onCall(async (_, context) => 
           });
 
           response = await instance.get(url + 'home/csrf');
-          response = await instance.post(
-            url + 'home/issue',
-            { testType: 'confirmed' },
-            { headers: { 'X-CSRF-TOKEN': response.data.csrftoken } }
-          );
+          response = await instance.post(url + 'home/issue', issueCodeRequest, {
+            headers: { 'X-CSRF-TOKEN': response.data.csrftoken },
+          });
           resolve(response.data.code);
         } catch (err) {
           reject(err);
