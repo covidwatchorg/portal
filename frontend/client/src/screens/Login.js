@@ -9,6 +9,7 @@ import Toast from '../components/Toast'
 import ChangePasswordModal from '../components/ChangePasswordModal'
 import Logging from '../util/logging'
 import PendingOperationButton from '../components/PendingOperationButton'
+import Students from '../../assets/students.svg'
 
 const INITIAL_STATE = {
   email: '',
@@ -100,6 +101,10 @@ const SignInFormBase = observer(
               diagnosis, which allows the app to anonymously notify those who were nearby when the patient was llikely
               infectious. <a href="https://www.covidwatch.org">Learn more</a>.
             </h3>
+
+            <div id="students-container">
+              <img src={Students}></img>
+            </div>
           </div>
           <div className="loginContainer">
             <label htmlFor="email">Email Address</label>
