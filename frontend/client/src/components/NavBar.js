@@ -67,6 +67,7 @@ const NavBarBase = observer((props) => {
         ></img>
       </div>
       <div className="avatar_group separator" />
+
       <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu" onClick={handleMenu}>
         <img src={menu} alt="Menu" />
       </IconButton>
