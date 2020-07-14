@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Redirect } from 'react-router-dom'
+import { Redirect, Link } from 'react-router-dom'
 import { makeStyles } from '@material-ui/core/styles'
 import IconButton from '@material-ui/core/IconButton'
 import MenuItem from '@material-ui/core/MenuItem'
@@ -55,7 +55,9 @@ const NavBarBase = observer((props) => {
 
   return (
     <div className="navbarContainer">
-      <img src={ucsf_health} id="orgLogo" alt={props.store.data.organization.name || 'UCSF Health'} />
+      <Link to="/code_validations">
+        <img src={ucsf_health} id="orgLogo" alt={props.store.data.organization.name || 'UCSF Health'} />
+      </Link>
       <div className="avatar_group avatar_text">
         <div className="name">{props.store.data.user.firstName + ' ' + props.store.data.user.lastName}</div>
         <div className="title">{props.store.data.user.isAdmin ? ROLES.ADMIN_LABEL : ROLES.NON_ADMIN_LABEL}</div>
@@ -68,6 +70,7 @@ const NavBarBase = observer((props) => {
         ></img>
       </div>
       <div className="avatar_group separator" />
+
       <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu" onClick={handleMenu}>
         <img src={menu} alt="Menu" />
       </IconButton>
