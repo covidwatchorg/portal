@@ -24,6 +24,7 @@
     line-height: 50px;
     text-transform: capitalize;
     color: #383838;
+    margin-bottom: 10px;
   }
   h3 {
     font-family: Montserrat;
@@ -44,7 +45,7 @@
   display: flex;
   flex-direction: column;
   background-color: #efefef;
-  width: 498px;
+  width: 40%;
   height: 420px;
   margin-top: 5%;
   padding: 40px 60px 40px 60px;
@@ -90,9 +91,9 @@
   flex-direction: column;
   width: 50%;
   height: 88px;
-  margin-top: 90px;
+  margin-top: 4%;
 
   #students-container {
-    margin-top: 40px;
+    margin-top: 20px;
   }
 }
