@@ -1,21 +1,25 @@
 #footer {
   height: 50px;
+  display: 'flex'
 }
 
 .footerContainer {
   position:absolute;
   display: flex;
-  flex-direction: row;
   left: 0;
   bottom: 0;
   height: 100px;
   width: 100%;
-  justify-content: flex-end;
+  justify-content: space-around;
   align-items: center;
+
+  #footer-text {
+    display: flex;
+  }
   
   a {
     font-family: Montserrat;
-    font-size: 16px;
+    font-size: 12px;
     text-align: center;
     color: #2C58B1;
     text-decoration: none;
@@ -23,9 +27,9 @@
   }
   p {
     font-family: Montserrat;
-    font-size: 16px;
+    font-size: 12px;
     text-align: center;
-    color: #2C58B1;
+    color: #828282;
     margin: 0px;
     margin-right: 50px;
   }

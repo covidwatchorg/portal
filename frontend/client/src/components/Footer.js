@@ -5,7 +5,6 @@ const Footer = () => {
   const cwImg = require('../../assets/powered-by-cw.svg')
   let location = useLocation()
   let footerContainerStyle = {}
-  let footerStyle = { display: 'flex' }
 
   if (location.pathname === '/404') {
     footerContainerStyle = {
@@ -15,23 +14,20 @@ const Footer = () => {
     footerStyle = {
       display: 'none',
     }
-  } else {
-    footerContainerStyle = {
-      minHeight: '100%',
-      position: 'relative',
-      background: 'url(' + cwImg + ')',
-      backgroundRepeat: 'no-repeat',
-      backgroundPositionX: '115px',
-      backgroundPositionY: '36px',
-    }
   }
 
   return (
-    <div id="footer" style={footerStyle}>
+    <div id="footer">
       <div className="footerContainer" style={footerContainerStyle}>
-        <p id="copyright">© 2020 Covid Watch. All rights reserved.</p>
-        <a href="url">Privacy Policy</a>
-        <a href="url">Terms of Use</a>
+        <div id="footer-img">
+          <img src={cwImg}></img>
+        </div>
+        <div id="footer-text">
+          <p id="copyright">© 2020 Covid Watch. All rights reserved.</p>
+          <a href="https://covidwatch.org/covid_watch_privacy_policy.pdf">Privacy Policy</a>
+          <a href="url">Terms of Use</a>
+          <a href="url">Support</a>
+        </div>
       </div>
     </div>
   )
