@@ -3,10 +3,10 @@
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
-  padding: 30px 98px 25px 101px;
+  padding: 10px 98px 10px 101px;
   box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.1);
   #orgLogo {
-    height: 35px;
+    height: 30px;
   }
 }
 
@@ -30,8 +30,9 @@
   &.separator {
     margin-top: 0px;
     border: 1px solid #e0e0e0;
-    height: 63px;
     width: 0px;
+    height: 50px;
+    border-right: 1px solid #e0e0e0;
   }
   &.avatar_text {
     margin-top: 0px;
