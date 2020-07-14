@@ -1,17 +1,13 @@
 #footer {
-  height: 50px;
   display: 'flex';
 }
 
 .footerContainer {
   position: relative;
   display: flex;
-  left: 0;
-  bottom: 0;
   width: 100%;
   justify-content: space-around;
   align-items: center;
-  min-height: '100%';
 
   #footer-text {
     display: flex;
