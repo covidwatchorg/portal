@@ -1,7 +1,6 @@
 import React, { Fragment, createRef } from 'react'
 import { Redirect } from 'react-router-dom'
 import * as ROUTES from '../constants/routes'
-import ucsf_health from '../../assets/ucsf-health.svg'
 import { withStore } from '../store'
 import { observer } from 'mobx-react'
 import ForgotPasswordModal from '../components/ForgotPasswordModal'
@@ -87,7 +86,7 @@ const SignInFormBase = observer(
     loginForm = () => (
       <Fragment>
         <PageTitle title="Welcome" />
-        <NavBar/>
+        <NavBar />
         <div className="mainContainer">
           <div className="welcome">
             <h1>
