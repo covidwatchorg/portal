@@ -15,7 +15,7 @@ const Footer = () => {
     footerStyle = {
       display: 'none',
     }
-  } else if (location.pathname !== '/') {
+  } else {
     footerContainerStyle = {
       minHeight: '100%',
       position: 'relative',

@@ -19,20 +19,24 @@
   flex-direction: row;
   justify-content: space-between;
   h1 {
-    font-family: 'Montserrat', sans-serif;
-    font-style: normal;
-    font-weight: 900;
-    font-size: 2.5em;
-    line-height: 55px;
-    color: #f05452;
+    font-weight: 600;
+    font-size: 40px;
+    line-height: 50px;
+    text-transform: capitalize;
+    color: #383838;
   }
   h3 {
     font-family: Montserrat;
     font-style: normal;
     font-weight: normal;
-    font-size: 1.5em;
-    line-height: 34px;
+    font-size: 16px;
+    line-height: 23px;
     color: #333333;
+  }
+
+  a {
+    text-decoration: none;
+    color: #2C58B1;
   }
 }
 
@@ -107,7 +111,7 @@
 .welcome {
   display: flex;
   flex-direction: column;
-  width: 711px;
+  width: 50%;
   height: 88px;
   margin-top: 90px;
 }
