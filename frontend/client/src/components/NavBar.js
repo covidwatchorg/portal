@@ -54,7 +54,7 @@ const NavBarBase = observer((props) => {
   }
 
   const LoggedInIcons = (
-    <div>
+    <div id="logged-in-icons-container">
       <div className="avatar_group avatar_text">
         <div className="name">{props.store.data.user.firstName + ' ' + props.store.data.user.lastName}</div>
         <div className="title">{props.store.data.user.isAdmin ? ROLES.ADMIN_LABEL : ROLES.NON_ADMIN_LABEL}</div>
@@ -125,7 +125,7 @@ const NavBarBase = observer((props) => {
       <Link to="/code_validations">
         <img src={ucsf_health} id="orgLogo" alt={props.store.data.organization.name || 'UCSF Health'} />
       </Link>
-      {props.store.data.user.firstName ? LoggedInIcons : undefined}
+      {props.store.data.user.firstName ? LoggedInIcons : <div id="logged-in-icons-container" />}
     </div>
   )
 })
