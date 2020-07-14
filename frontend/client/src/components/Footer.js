@@ -1,24 +1,11 @@
 import React from 'react'
-import { useLocation } from 'react-router'
 
 const Footer = () => {
   const cwImg = require('../../assets/powered-by-cw.svg')
-  let location = useLocation()
-  let footerContainerStyle = {}
-
-  if (location.pathname === '/404') {
-    footerContainerStyle = {
-      display: 'none',
-    }
-
-    footerStyle = {
-      display: 'none',
-    }
-  }
 
   return (
     <div id="footer">
-      <div className="footerContainer" style={footerContainerStyle}>
+      <div className="footerContainer">
         <div id="footer-img">
           <img src={cwImg}></img>
         </div>

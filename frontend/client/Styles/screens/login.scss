@@ -40,34 +40,12 @@
   }
 }
 
-.doctorContainer > * {
-  z-index: -1;
-}
-
-.doctor1 {
-  position: absolute;
-  left: 7.43%;
-  right: 74.29%;
-  bottom: 0%;
-  height: 33vh;
-  max-height: 287px;
-}
-
-.doctor2 {
-  position: absolute;
-  left: 29.18%;
-  right: 56.32%;
-  bottom: 0%;
-  height: 33vh;
-  max-height: 287px;
-}
-
 .loginContainer {
   display: flex;
   flex-direction: column;
   background-color: #efefef;
   width: 498px;
-  height: 397.89px;
+  height: 420px;
   margin-top: 5%;
   padding: 40px 60px 40px 60px;
   border: 1px solid #e0e0e0;
@@ -89,7 +67,7 @@
     margin-top: 25px;
   }
   .button {
-    margin-top: 30px;
+    margin-top: 43px;
   }
   a {
     font-family: Montserrat;
