@@ -4,7 +4,7 @@ import { makeStyles } from '@material-ui/core/styles'
 import IconButton from '@material-ui/core/IconButton'
 import MenuItem from '@material-ui/core/MenuItem'
 import Menu from '@material-ui/core/Menu'
-import ucsf_health from '../../assets/ucsf-health.svg'
+import UofA from '../../assets/uofa-logo.svg'
 import profile from '../../assets/placeholder/profile.png'
 import * as ROLES from '../constants/roles'
 import { withStore } from '../store'
@@ -56,7 +56,7 @@ const NavBarBase = observer((props) => {
   return (
     <div className="navbarContainer">
       <Link to="/code_validations">
-        <img src={ucsf_health} id="orgLogo" alt={props.store.data.organization.name || 'UCSF Health'} />
+        <img src={UofA} id="orgLogo" alt={props.store.data.organization.name || 'University of Arizona'} />
       </Link>
       <div className="avatar_group avatar_text">
         <div className="name">{props.store.data.user.firstName + ' ' + props.store.data.user.lastName}</div>
