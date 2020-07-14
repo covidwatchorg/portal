@@ -10,6 +10,7 @@ import Toast from '../components/Toast'
 import ChangePasswordModal from '../components/ChangePasswordModal'
 import Logging from '../util/logging'
 import PendingOperationButton from '../components/PendingOperationButton'
+import NavBar from '../components/NavBar'
 
 const INITIAL_STATE = {
   email: '',
@@ -86,9 +87,7 @@ const SignInFormBase = observer(
     loginForm = () => (
       <Fragment>
         <PageTitle title="Welcome" />
-        <div className="topNav">
-          <img src={ucsf_health} id="orgLogo" alt={this.props.store.data.organization.name || 'UCSF Health'} />
-        </div>
+        <NavBar/>
         <div className="mainContainer">
           <div className="welcome">
             <h1>

@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Redirect } from 'react-router-dom'
+import { Redirect, Link } from 'react-router-dom'
 import { makeStyles } from '@material-ui/core/styles'
 import IconButton from '@material-ui/core/IconButton'
 import MenuItem from '@material-ui/core/MenuItem'
@@ -53,70 +53,80 @@ const NavBarBase = observer((props) => {
     setRedirect(num)
   }
 
-  return (
-    <div className="navbarContainer">
-      <img src={ucsf_health} id="orgLogo" alt={props.store.data.organization.name || 'UCSF Health'} />
+  const LoggedInIcons = (
+    <div>
       <div className="avatar_group avatar_text">
         <div className="name">{props.store.data.user.firstName + ' ' + props.store.data.user.lastName}</div>
         <div className="title">{props.store.data.user.isAdmin ? ROLES.ADMIN_LABEL : ROLES.NON_ADMIN_LABEL}</div>
       </div>
-      <div className="avatar_group avatar_image">
-        <img
-          src={props.store.data.user.imageBlob ? props.store.data.user.imageBlob : profile}
-          className="profile_photo"
-          alt=""
-        ></img>
+        <div className="avatar_group avatar_image">
+          <img
+            src={props.store.data.user.imageBlob ? props.store.data.user.imageBlob : profile}
+            className="profile_photo"
+            alt=""
+          ></img>
+        </div>
+        <div className="avatar_group separator" />
+        <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu" onClick={handleMenu}>
+          <img src={menu} alt="Menu" />
+        </IconButton>
+        <Menu
+          id="menu-appbar"
+          anchorEl={anchorEl}
+          anchorOrigin={{
+            vertical: 'top',
+            horizontal: 'right',
+          }}
+          keepMounted
+          transformOrigin={{
+            vertical: 'top',
+            horizontal: 'right',
+          }}
+          open={open}
+          onClose={handleClose}
+        >
+          <MenuItem style={linkStyles} onClick={() => onClickMenuItem(0)}>
+            Positive Test Validations
+            </MenuItem>
+          {props.store.data.user.isAdmin && (
+            <MenuItem style={linkStyles} onClick={() => onClickMenuItem(1)}>
+              Manage Members
+            </MenuItem>
+          )}
+          {props.store.data.user.isAdmin && (
+            <MenuItem style={linkStyles} onClick={() => onClickMenuItem(2)}>
+              Account Branding
+            </MenuItem>
+          )}
+          <MenuItem style={linkStyles} onClick={() => onClickMenuItem(3)}>
+            My Settings
+            </MenuItem>
+          <MenuItem style={linkStyles} onClick={() => onClickMenuItem(4)}>
+            Logout
+            </MenuItem>
+        </Menu>
+          {
+            redirect === 0 ? (
+              <Redirect to="/code_validations" />
+            ) : redirect === 1 ? (
+              <Redirect to="/manage_members" />
+            ) : redirect === 2 ? (
+              <Redirect to="/branding" />
+            ) : redirect === 3 ? (
+              <Redirect to="/settings" />
+            ) : (
+                    redirect === 4 && <Redirect to="/" />
+                  )
+          }
       </div>
-      <div className="avatar_group separator" />
-      <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu" onClick={handleMenu}>
-        <img src={menu} alt="Menu" />
-      </IconButton>
-      <Menu
-        id="menu-appbar"
-        anchorEl={anchorEl}
-        anchorOrigin={{
-          vertical: 'top',
-          horizontal: 'right',
-        }}
-        keepMounted
-        transformOrigin={{
-          vertical: 'top',
-          horizontal: 'right',
-        }}
-        open={open}
-        onClose={handleClose}
-      >
-        <MenuItem style={linkStyles} onClick={() => onClickMenuItem(0)}>
-          Positive Test Validations
-        </MenuItem>
-        {props.store.data.user.isAdmin && (
-          <MenuItem style={linkStyles} onClick={() => onClickMenuItem(1)}>
-            Manage Members
-          </MenuItem>
-        )}
-        {props.store.data.user.isAdmin && (
-          <MenuItem style={linkStyles} onClick={() => onClickMenuItem(2)}>
-            Account Branding
-          </MenuItem>
-        )}
-        <MenuItem style={linkStyles} onClick={() => onClickMenuItem(3)}>
-          My Settings
-        </MenuItem>
-        <MenuItem style={linkStyles} onClick={() => onClickMenuItem(4)}>
-          Logout
-        </MenuItem>
-      </Menu>
-      {redirect === 0 ? (
-        <Redirect to="/code_validations" />
-      ) : redirect === 1 ? (
-        <Redirect to="/manage_members" />
-      ) : redirect === 2 ? (
-        <Redirect to="/branding" />
-      ) : redirect === 3 ? (
-        <Redirect to="/settings" />
-      ) : (
-        redirect === 4 && <Redirect to="/" />
-      )}
+    )
+
+  return (
+    <div className="navbarContainer">
+      <Link to="/code_validations">
+        <img src={ucsf_health} id="orgLogo" alt={props.store.data.organization.name || 'UCSF Health'} />
+      </Link>
+      {props.store.data.user.firstName ? LoggedInIcons : undefined}
     </div>
   )
 })

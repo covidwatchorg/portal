@@ -8,9 +8,6 @@ import { observer } from 'mobx-react'
 import PageTitle from '../components/PageTitle'
 import PendingOperationButton from '../components/PendingOperationButton'
 
-// snackbars docs can be found here:
-// https://material-ui.com/components/snackbars/
-
 const CodeValidationsBase = observer((props) => {
   const [code, setCode] = useState('')
   const [toastInfo, setToastInfo] = useState({
@@ -19,8 +16,6 @@ const CodeValidationsBase = observer((props) => {
   })
 
   let confirmedToast = createRef()
-
-  //TODO show confired toast when code confirmed by app
 
   const genNewCode = async () => {
     try {
