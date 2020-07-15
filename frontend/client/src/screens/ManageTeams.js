@@ -47,7 +47,7 @@ const ManageTeamsBase = observer((props) => {
     setShowAddMemberModal(false)
   }
 
-  const handleRoleChange = (e, isAdmin, firstName, lastName, email) => {
+  const handleRoleChange = (isAdmin, firstName, lastName, email) => {
     setModalUserProperties({
       isAdmin,
       firstName,
@@ -138,7 +138,7 @@ const ManageTeamsBase = observer((props) => {
                 <td style={{ padding: 0 }}>
                   <RoleSelector
                     memberIndex={index + (props.store.data.organization.membersPage - 1) * PAGE_SIZE}
-                    onChange={(e) => handleRoleChange(e, data.isAdmin, data.firstName, data.lastName, data.email)}
+                    onChange={() => handleRoleChange(data.isAdmin, data.firstName, data.lastName, data.email)}
                     ariaLabelledBy="role-header"
                   />
                 </td>
