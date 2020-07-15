@@ -3,7 +3,7 @@ import Modal from '../components/Modal'
 import { withStore } from '../store'
 import PendingOperationButton from './PendingOperationButton'
 
-const ChangeStatusModalBase = (props) => {
+const ChangeStatusModal = withStore((props) => {
   const fullName = `${props.userProperties.firstName} ${props.userProperties.lastName}`
   const toStatus = props.userProperties.toStatus
 
@@ -28,8 +28,6 @@ const ChangeStatusModalBase = (props) => {
       </PendingOperationButton>
     </Modal>
   )
-}
-
-const ChangeStatusModal = withStore(ChangeStatusModalBase)
+})
 
 export default ChangeStatusModal
