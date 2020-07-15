@@ -25,9 +25,8 @@ const ManageTeamsBase = observer((props) => {
 
   const [showAddMemberModal, setShowAddMemberModal] = useState(false)
   const [showChangeRoleModal, setShowChangeRoleModal] = useState(false)
-  const [changeRoleModalUserProperties, setChangeRoleModalUserProperties] = useState({})
   const [showChangeStatusModal, setShowChangeStatusModal] = useState(false)
-  const [changeStatusModalUserProperties, setChangeStatusModalUserProperties] = useState({})
+  const [modalUserProperties, setModalUserProperties] = useState({})
 
   const onAddMemberCancel = () => {
     setShowAddMemberModal(false)
@@ -49,7 +48,7 @@ const ManageTeamsBase = observer((props) => {
   }
 
   const handleRoleChange = (e, isAdmin, firstName, lastName, email) => {
-    setChangeRoleModalUserProperties({
+    setModalUserProperties({
       isAdmin,
       firstName,
       lastName,
@@ -63,7 +62,7 @@ const ManageTeamsBase = observer((props) => {
   }
 
   const handleStatusChange = (email, toStatus, firstName, lastName) => {
-    setChangeStatusModalUserProperties({
+    setModalUserProperties({
       email,
       toStatus,
       firstName,
@@ -113,12 +112,12 @@ const ManageTeamsBase = observer((props) => {
       <ChangeRoleModal
         hidden={!showChangeRoleModal}
         onClose={onChangeRoleModalClose}
-        userProperties={changeRoleModalUserProperties}
+        userProperties={modalUserProperties}
       />
       <ChangeStatusModal
         hidden={!showChangeStatusModal}
         onClose={onChangeStatusModalClose}
-        userProperties={changeStatusModalUserProperties}
+        userProperties={modalUserProperties}
       />
       <table>
         <thead>
