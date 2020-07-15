@@ -18,6 +18,7 @@ const App = () => {
   return (
     <BrowserRouter>
       <ThemeProvider theme={theme}>
+        <NavBar />
         <Switch>
           <Route path={ROUTES.BUILD_INFO} exact component={BuildInfo} />
           <Route path={ROUTES.LANDING} exact component={Login} />
@@ -28,25 +29,21 @@ const App = () => {
           </Route>
           <Route path={ROUTES.SETTINGS}>
             <Fragment>
-              <NavBar />
               <Settings />
             </Fragment>
           </Route>
           <Route path={ROUTES.CODE_VALIDATIONS}>
             <Fragment>
-              <NavBar />
               <CodeValidations />
             </Fragment>
           </Route>
           <Route path={ROUTES.BRANDING}>
             <Fragment>
-              <NavBar />
               <AccountBranding />
             </Fragment>
           </Route>
           <Route path={ROUTES.MANAGE_MEMBERS}>
             <Fragment>
-              <NavBar />
               <ManageTeams />
             </Fragment>
           </Route>

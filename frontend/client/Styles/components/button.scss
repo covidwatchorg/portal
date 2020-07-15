@@ -7,7 +7,7 @@ $white: #FFFFFF;
 // Common button class
 .button {
   margin-top: 32px;
-  border-radius: 7px;
+  border-radius: 4px;
   font-family: Montserrat;
   font-style: normal;
   text-align: center;
@@ -32,6 +32,7 @@ $white: #FFFFFF;
 .btn-medium {
   font-weight: 600;
   font-size: 18px;
+  height: 45px;
   line-height: 22px;
   border-width: 2px;
   padding: 10px;

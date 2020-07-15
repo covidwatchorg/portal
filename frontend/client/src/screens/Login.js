@@ -1,10 +1,6 @@
 import React, { Fragment, createRef } from 'react'
 import { Redirect } from 'react-router-dom'
 import * as ROUTES from '../constants/routes'
-import doctor1 from '../../assets/doctor1.svg'
-import doctor2 from '../../assets/doctor2.svg'
-import ucsf_health from '../../assets/ucsf-health.svg'
-import powered_by_cw from '../../assets/powered-by-cw.svg'
 import { withStore } from '../store'
 import { observer } from 'mobx-react'
 import ForgotPasswordModal from '../components/ForgotPasswordModal'
@@ -13,6 +9,7 @@ import Toast from '../components/Toast'
 import ChangePasswordModal from '../components/ChangePasswordModal'
 import Logging from '../util/logging'
 import PendingOperationButton from '../components/PendingOperationButton'
+import Students from '../../assets/students.svg'
 
 const INITIAL_STATE = {
   email: '',
@@ -95,35 +92,31 @@ const SignInFormBase = observer(
       }
     }
 
-    bottomLevelContent = () => (
-      <Fragment>
-        <div className="doctorContainer">
-          <div className="doctor1">
-            <img src={doctor1} alt="" />
-          </div>
-          <div className="doctor2">
-            <img src={doctor2} alt="" />
-          </div>
-        </div>
-      </Fragment>
-    )
-
     loginForm = () => (
       <Fragment>
         <PageTitle title="Welcome" />
-        <div className="topNav">
-          <img src={ucsf_health} id="orgLogo" alt={this.props.store.data.organization.name || 'UCSF Health'} />
-          <img src={powered_by_cw} id="poweredByCWLogo" alt="Powered by Covid Watch" />
-        </div>
         <div className="mainContainer">
           <div className="welcome">
-            <h1 id="heroTitle">Welcome to the Covid Watch Community Tracing Portal</h1>
+            <h1>
+              {this.props.store.data.organization.name
+                ? this.props.store.data.organization.name
+                : 'University of Arizona'}
+              <br></br>
+              Covid Watch Portal
+            </h1>
             <h3>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquet nullam condimentum quam magna tortor.
+              Welcome to the Portal where your team can generate diagnosis verification codes to share with patients who
+              test positive for COVID-19. With your help, they can decrease their risk to others by sharing a positive
+              diagnosis, which allows the app to anonymously notify those who were nearby when the patient was llikely
+              infectious. <a href="https://www.covidwatch.org">Learn more</a>.
             </h3>
+
+            <div id="students-container">
+              <img src={Students}></img>
+            </div>
           </div>
           <div className="loginContainer">
-            <label htmlFor="email">Email</label>
+            <label htmlFor="email">Email Address</label>
             <input onChange={this.onChange('email')} type="email" id="email" name="email" />
             <label htmlFor="password">Password</label>
             <input onChange={this.onChange('password')} type="password" id="password" name="password" />
@@ -139,10 +132,7 @@ const SignInFormBase = observer(
     render() {
       return (
         <Fragment>
-          <div className="module-container">
-            {this.loginForm()}
-            {this.bottomLevelContent()}
-          </div>
+          <div className="module-container">{this.loginForm()}</div>
           {this.props.store.data.user.isSignedIn ? (
             this.props.store.data.user.isFirstTimeUser ? (
               <ChangePasswordModal

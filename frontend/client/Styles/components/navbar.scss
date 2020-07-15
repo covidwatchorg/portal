@@ -7,8 +7,13 @@
   border-bottom: 1px solid #e0e0e0;
 
   #orgLogo {
-    height: 30px;
+    height: 40px;
   }
+}
+
+#logged-in-icons-container {
+  display: flex;
+  height: 50px;
 }
 
 .avatar_group {
