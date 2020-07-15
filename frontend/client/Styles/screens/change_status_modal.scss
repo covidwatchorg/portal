@@ -1,10 +1,10 @@
-.change-role-modal-container {
+.change-status-modal-container {
   width: 360px;
-  min-height: 300px;
+  min-height: 240px;
   padding: 25px 27px 44px 49px;
 
   h2 {
-    margin-top: 0px;
+    margin-top: 10px;
     margin-bottom: 35px;
     font-weight: 600;
     font-family: Montserrat;
@@ -17,10 +17,6 @@
     line-height: 20px;
     margin-right: 15px;
     margin-bottom: 14px;
-  }
-
-  .role-change {
-    margin-left: 1em;
   }
 
   b {

@@ -13,7 +13,7 @@ const ChangeStatusModal = withStore((props) => {
   }
 
   return (
-    <Modal hidden={props.hidden} onClose={props.onClose} containerClass="change-role-modal-container">
+    <Modal hidden={props.hidden} onClose={props.onClose} containerClass="change-status-modal-container">
       <h2>Confirm Change</h2>
 
       <p>
