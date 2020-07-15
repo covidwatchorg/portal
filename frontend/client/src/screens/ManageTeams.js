@@ -13,6 +13,7 @@ import { observer } from 'mobx-react'
 import PageTitle from '../components/PageTitle'
 import Logging from '../util/logging'
 import ChangeRoleModal from '../components/ChangeRoleModal'
+import ChangeStatusModal from '../components/ChangeStatusModal'
 
 const ManageTeamsBase = observer((props) => {
   const userEmail = props.store.data.user.email
@@ -25,6 +26,8 @@ const ManageTeamsBase = observer((props) => {
   const [showAddMemberModal, setShowAddMemberModal] = useState(false)
   const [showChangeRoleModal, setShowChangeRoleModal] = useState(false)
   const [changeRoleModalUserProperties, setChangeRoleModalUserProperties] = useState({})
+  const [showChangeStatusModal, setShowChangeStatusModal] = useState(false)
+  const [changeStatusModalUserProperties, setChangeStatusModalUserProperties] = useState({})
 
   const onAddMemberCancel = () => {
     setShowAddMemberModal(false)
@@ -57,6 +60,20 @@ const ManageTeamsBase = observer((props) => {
 
   const onChangeRoleModalClose = () => {
     setShowChangeRoleModal(false)
+  }
+
+  const handleStatusChange = (email, toStatus, firstName, lastName) => {
+    setChangeStatusModalUserProperties({
+      email,
+      toStatus,
+      firstName,
+      lastName,
+    })
+    setShowChangeStatusModal(true)
+  }
+
+  const onChangeStatusModalClose = () => {
+    setShowChangeStatusModal(false)
   }
 
   const resetPassword = async (e, email) => {
@@ -98,6 +115,11 @@ const ManageTeamsBase = observer((props) => {
         onClose={onChangeRoleModalClose}
         userProperties={changeRoleModalUserProperties}
       />
+      <ChangeStatusModal
+        hidden={!showChangeStatusModal}
+        onClose={onChangeStatusModalClose}
+        userProperties={changeStatusModalUserProperties}
+      />
       <table>
         <thead>
           <tr>
@@ -124,12 +146,10 @@ const ManageTeamsBase = observer((props) => {
                 <td style={{ padding: 0 }}>
                   <div className="custom-select">
                     <select
-                      disabled={data.email == userEmail}
+                      disabled={data.email === userEmail}
                       className={!data.disabled ? 'active' : 'inactive'}
                       value={!data.disabled ? 'active' : 'deactivated'}
-                      onChange={(e) => {
-                        props.store.updateUserByEmail(data.email, { disabled: e.target.value == 'deactivated' })
-                      }}
+                      onChange={(e) => handleStatusChange(data.email, e.target.value, data.firstName, data.lastName)}
                       aria-labelledby="status-header"
                     >
                       <option value="active">Active</option>
