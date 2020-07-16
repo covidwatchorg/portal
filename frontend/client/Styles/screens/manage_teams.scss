@@ -87,6 +87,9 @@
     justify-content: space-between;
     align-items: center;
     margin: 12px 0;
+    font-weight: 600;
+    font-size: 14px;
+    line-height: 18px;
     .pages-container {
       display: flex;
       flex-direction: row;
@@ -105,15 +108,17 @@
       cursor: pointer;
     }
     .current-page {
-      color: #2C58B1;
+      color: #333333;
       margin: 0 12px;
-      text-decoration: underline;
+      font-weight: bold;
+      border-bottom: 2px solid #333333;
+      padding-top: 2px; // prevents number from being bumped "up" higher than the other ones
     }
     .current-page:hover {
       cursor: default;
     }
     .page {
-      color: #4f4f4f;
+      color: #828282;
       margin: 0 12px;
     }
     .page:hover {
