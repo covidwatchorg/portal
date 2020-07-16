@@ -186,7 +186,7 @@ const AccountBrandingBase = observer((props) => {
           <p className="section-description">
             Your dedicated account manager will gladly help you with other branding and customization needs.
           </p>
-          <div className="button btn-medium btn-tertiary" id="contact-button" onClick={onContactUsClicked}>
+          <div className="button btn-short-and-wide btn-tertiary" id="contact-button" onClick={onContactUsClicked}>
             Contact Us
           </div>
         </div>

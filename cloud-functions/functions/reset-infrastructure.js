@@ -4,11 +4,7 @@ const { uniqueNamesGenerator, names } = require('unique-names-generator');
 
 // FIXME The Firebase auth tests rely on hardcoded organization IDs. Running this script on 'test'
 // will break them because it re-creates the database with new, randomly generated IDs.
-if (
-  process.env.NODE_ENV !== 'local' &&
-  process.env.NODE_ENV !== 'dev' &&
-  process.env.NODE_ENV !== 'staging'
-) {
+if (process.env.NODE_ENV !== 'local' && process.env.NODE_ENV !== 'dev' && process.env.NODE_ENV !== 'staging') {
   throw new Error('Environment variable NODE_ENV must be set to one of `dev` or `staging` or `local`');
 }
 
@@ -170,9 +166,21 @@ async function main() {
     await hardReset();
     await addMinimalSampleData();
 
-    for (let i = 0; i < 10; i++) {
+    for (let i = 0; i < 30; i++) {
       try {
         await createRandomUser('soylentgreen');
+      } catch (error) {
+        console.log('Encountered an error while attempting to create a random user');
+        console.log(error);
+        console.log('continuing');
+        i--;
+        continue;
+      }
+    }
+
+    for (let i = 0; i < 30; i++) {
+      try {
+        await createRandomUser('initech');
       } catch (error) {
         console.log('Encountered an error while attempting to create a random user');
         console.log(error);

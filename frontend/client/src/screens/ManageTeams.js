@@ -13,6 +13,7 @@ import { observer } from 'mobx-react'
 import PageTitle from '../components/PageTitle'
 import Logging from '../util/logging'
 import ChangeRoleModal from '../components/ChangeRoleModal'
+import ChangeStatusModal from '../components/ChangeStatusModal'
 
 const ManageTeamsBase = observer((props) => {
   const userEmail = props.store.data.user.email
@@ -24,7 +25,8 @@ const ManageTeamsBase = observer((props) => {
 
   const [showAddMemberModal, setShowAddMemberModal] = useState(false)
   const [showChangeRoleModal, setShowChangeRoleModal] = useState(false)
-  const [changeRoleModalUserProperties, setChangeRoleModalUserProperties] = useState({})
+  const [showChangeStatusModal, setShowChangeStatusModal] = useState(false)
+  const [modalUserProperties, setModalUserProperties] = useState({})
 
   const onAddMemberCancel = () => {
     setShowAddMemberModal(false)
@@ -45,8 +47,8 @@ const ManageTeamsBase = observer((props) => {
     setShowAddMemberModal(false)
   }
 
-  const handleRoleChange = (e, isAdmin, firstName, lastName, email) => {
-    setChangeRoleModalUserProperties({
+  const handleRoleChange = (isAdmin, firstName, lastName, email) => {
+    setModalUserProperties({
       isAdmin,
       firstName,
       lastName,
@@ -57,6 +59,20 @@ const ManageTeamsBase = observer((props) => {
 
   const onChangeRoleModalClose = () => {
     setShowChangeRoleModal(false)
+  }
+
+  const handleStatusChange = (email, toStatus, firstName, lastName) => {
+    setModalUserProperties({
+      email,
+      toStatus,
+      firstName,
+      lastName,
+    })
+    setShowChangeStatusModal(true)
+  }
+
+  const onChangeStatusModalClose = () => {
+    setShowChangeStatusModal(false)
   }
 
   const resetPassword = async (e, email) => {
@@ -96,16 +112,21 @@ const ManageTeamsBase = observer((props) => {
       <ChangeRoleModal
         hidden={!showChangeRoleModal}
         onClose={onChangeRoleModalClose}
-        userProperties={changeRoleModalUserProperties}
+        userProperties={modalUserProperties}
+      />
+      <ChangeStatusModal
+        hidden={!showChangeStatusModal}
+        onClose={onChangeStatusModalClose}
+        userProperties={modalUserProperties}
       />
       <table>
         <thead>
           <tr>
-            <th style={{ borderTopLeftRadius: 5 }}>Name</th>
+            <th>Name</th>
             <th>Email Address</th>
-            <th id="role-header">Role</th>
-            <th id="status-header">Status</th>
-            <th style={{ borderTopRightRadius: 5 }}>Settings</th>
+            <th>Role</th>
+            <th>Status</th>
+            <th>Settings</th>
           </tr>
         </thead>
         <tbody>
@@ -117,20 +138,16 @@ const ManageTeamsBase = observer((props) => {
                 <td style={{ padding: 0 }}>
                   <RoleSelector
                     memberIndex={index + (props.store.data.organization.membersPage - 1) * PAGE_SIZE}
-                    onChange={(e) => handleRoleChange(e, data.isAdmin, data.firstName, data.lastName, data.email)}
-                    ariaLabelledBy="role-header"
+                    onChange={() => handleRoleChange(data.isAdmin, data.firstName, data.lastName, data.email)}
                   />
                 </td>
                 <td style={{ padding: 0 }}>
                   <div className="custom-select">
                     <select
-                      disabled={data.email == userEmail}
+                      disabled={data.email === userEmail}
                       className={!data.disabled ? 'active' : 'inactive'}
                       value={!data.disabled ? 'active' : 'deactivated'}
-                      onChange={(e) => {
-                        props.store.updateUserByEmail(data.email, { disabled: e.target.value == 'deactivated' })
-                      }}
-                      aria-labelledby="status-header"
+                      onChange={(e) => handleStatusChange(data.email, e.target.value, data.firstName, data.lastName)}
                     >
                       <option value="active">Active</option>
                       <option value="deactivated">Deactivated</option>
