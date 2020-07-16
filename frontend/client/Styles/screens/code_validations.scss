@@ -53,8 +53,9 @@
         display: flex;
         flex-direction: column;
 
-        input {
-          margin-right: 10px;
+        .radio-input {
+          transform: scale(1.23);
+          margin-right: 20px;
         }
 
         .col-2-header-container {
@@ -133,6 +134,14 @@
           font-family: Montserrat;
           font-size: 16px;
           line-height: 16px;
+        }
+
+        // to be refactored later to make buttons more consistent.  See button.scss
+        .progress-container {
+          margin-top: 0px;
+          width: 350px;
+          display: flex;
+          justify-content: center;
         }
 
         // no-value and with-value control the Code and Date changing colors

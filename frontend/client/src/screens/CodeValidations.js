@@ -8,10 +8,12 @@ import { observer } from 'mobx-react'
 import PageTitle from '../components/PageTitle'
 import PendingOperationButton from '../components/PendingOperationButton'
 import Clock from '../../assets/clock.svg'
-import getOneHourAhead from '../util/time'
+import { getOneHourAhead, getDay, getFourteenDaysAgo} from '../util/time'
+
+const codePlaceholder = '00000000'
 
 const CodeValidationsBase = observer((props) => {
-  const [code, setCode] = useState('000000000')
+  const [code, setCode] = useState(codePlaceholder)
   const [testType, setTestType] = useState('')
   const [testDate, setDate] = useState('')
   const [buttonDisabled, setButtonDisabled] = useState(true)
@@ -29,8 +31,9 @@ const CodeValidationsBase = observer((props) => {
         testType: testType,
         testDate: testDate,
       })
-      setCode(code.data.split('').join(' '))
+      setCode(code.data.split('').join(''))
       codeTimeStamp()
+      setButtonDisabled(true)
     } catch (err) {
       setToastInfo({ success: false, msg: 'Could not generate new code, please try again' })
       confirmedToast.current.show()
@@ -48,7 +51,7 @@ const CodeValidationsBase = observer((props) => {
     e.target.classList.add('with-value')
     e.target.classList.remove('no-value')
     setDate(e.target.value)
-    if (testType != '') {
+    if (testType !== '') {
       setButtonDisabled(false)
     }
   }
@@ -61,14 +64,15 @@ const CodeValidationsBase = observer((props) => {
     document.getElementById('code-box').classList.toggle('with-value')
     document.getElementById('code-box').classList.toggle('no-value')
     document.getElementById('code-box').classList.toggle('code-generated')
+    setButtonDisabled(true)
+    setCode(codePlaceholder)
     setTestType('')
     setDate('')
-    setCode('000000000')
     setCodeGenStamp('')
   }
 
   const codeTimeStamp = () => {
-    // since this is theoretically same moment that a code is generated, we also make the code text black (this assumes the API call will never fail)
+    // since this is nearly the same moment that a code is generated, we also make the code text black (this assumes the API call will never fail)
     document.getElementById('code-box').classList.toggle('with-value')
     document.getElementById('code-box').classList.toggle('no-value')
     document.getElementById('code-box').classList.toggle('code-generated')
@@ -127,7 +131,8 @@ const CodeValidationsBase = observer((props) => {
               id="date-picker"
               className="no-value"
               type="date"
-              placeholder="Select Date"
+              min={getFourteenDaysAgo()}
+              max={getDay()}
               onChange={handleDate}
             ></input>
           </form>
@@ -147,24 +152,16 @@ const CodeValidationsBase = observer((props) => {
         <div className="col-2">
           <PendingOperationButton
             disabled={buttonDisabled}
-            className="save-button generate-button"
+            className="save-button"
             operation={genNewCode}
-            // to test out UI workflow locally, sub above line with:
-            // operation={codeTimeStamp}
-          >
-            Generate New Code
+            >
+            Generate Code
           </PendingOperationButton>
           <div id="code-box" className="no-value">
             {code.slice(0, 3)}-{code.slice(3, 6)}-{code.slice(6)}
           </div>
 
-          {/* for local testing:
-            sub in for this conditional on line 156 instead of code !== "000000000":
-
-            codeGenStamp !== ''
-              
-          */}
-            {code !== '000000000' && (
+          {code !== codePlaceholder && (
             <div>
               <div id="share-urgently">
                 <img src={Clock}></img>
@@ -175,7 +172,7 @@ const CodeValidationsBase = observer((props) => {
                 </span>
               </div>
 
-              <PendingOperationButton operation={resetState} className="save-button generate-button">
+              <PendingOperationButton operation={resetState} className="save-button">
                 Reset Code and Form
               </PendingOperationButton>
             </div>
