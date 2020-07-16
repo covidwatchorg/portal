@@ -8,7 +8,7 @@ import { observer } from 'mobx-react'
 import PageTitle from '../components/PageTitle'
 import PendingOperationButton from '../components/PendingOperationButton'
 import Clock from '../../assets/clock.svg'
-import { getOneHourAhead, getDay, getFourteenDaysAgo} from '../util/time'
+import { getOneHourAhead, getDay, getFourteenDaysAgo } from '../util/time'
 
 const codePlaceholder = '00000000'
 
@@ -150,11 +150,7 @@ const CodeValidationsBase = observer((props) => {
           </p>
         </div>
         <div className="col-2">
-          <PendingOperationButton
-            disabled={buttonDisabled}
-            className="save-button"
-            operation={genNewCode}
-            >
+          <PendingOperationButton disabled={buttonDisabled} className="save-button" operation={genNewCode}>
             Generate Code
           </PendingOperationButton>
           <div id="code-box" className="no-value">
@@ -167,7 +163,6 @@ const CodeValidationsBase = observer((props) => {
                 <img src={Clock}></img>
                 <div>Share the code ASAP. &nbsp;</div>
                 <span>
-                  {' '}
                   It will expire in {60 - Math.abs(codeGenStamp - new Date().getMinutes())} min at {getOneHourAhead()}
                 </span>
               </div>
