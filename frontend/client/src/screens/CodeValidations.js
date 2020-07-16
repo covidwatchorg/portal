@@ -29,8 +29,8 @@ const CodeValidationsBase = observer((props) => {
         testType: testType,
         testDate: testDate,
       })
-      setCode(code.data.split('').join(' '));
-      codeTimeStamp();
+      setCode(code.data.split('').join(' '))
+      codeTimeStamp()
     } catch (err) {
       setToastInfo({ success: false, msg: 'Could not generate new code, please try again' })
       confirmedToast.current.show()
@@ -45,8 +45,8 @@ const CodeValidationsBase = observer((props) => {
   }
 
   const handleDate = (e) => {
-    e.target.classList.toggle('with-value')
-    e.target.classList.toggle('no-value')
+    e.target.classList.add('with-value')
+    e.target.classList.remove('no-value')
     setDate(e.target.value)
     if (testType != '') {
       setButtonDisabled(false)
@@ -56,8 +56,8 @@ const CodeValidationsBase = observer((props) => {
   const resetState = () => {
     document.getElementById('radio-form').reset()
     document.getElementById('date-form').reset()
-    document.getElementById('date-picker').classList.toggle('with-value')
-    document.getElementById('date-picker').classList.toggle('no-value')
+    document.getElementById('date-picker').classList.remove('with-value')
+    document.getElementById('date-picker').classList.add('no-value')
     document.getElementById('code-box').classList.toggle('with-value')
     document.getElementById('code-box').classList.toggle('no-value')
     document.getElementById('code-box').classList.toggle('code-generated')
@@ -162,9 +162,9 @@ const CodeValidationsBase = observer((props) => {
             sub in for this conditional on line 156 instead of code !== "000000000":
 
             codeGenStamp !== ''
-
+              
           */}
-          {code !== '000000000' && (
+            {code !== '000000000' && (
             <div>
               <div id="share-urgently">
                 <img src={Clock}></img>
