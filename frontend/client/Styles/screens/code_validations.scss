@@ -145,5 +145,34 @@
           color: #383838;
         }
       }
+
+      #share-urgently {
+        display: flex;
+        margin-top: 10px;
+        margin-bottom: 40px;
+        //arbitrary width to get all text to fit in one line
+        width: 620px;
+
+        img {
+          margin-right: 10px;
+        }
+
+        div, span {
+          font-family: Montserrat;
+          font-style: normal;
+          font-weight: normal;
+          font-size: 14px;
+          line-height: 20px;
+        }
+        
+        div {
+          color: #383838;
+        }
+
+        span {
+          color: #F05452;
+        }
+
+      }
     }
   }
