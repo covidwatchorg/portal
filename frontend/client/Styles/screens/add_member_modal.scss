@@ -1,8 +1,7 @@
 .add-member-modal-container {
   width: 450px;
-  height: 570px;
+  height: 600px;
   max-height: 634px;
-  padding: 20px;
 
   @media screen and (max-height: 634px) {
     overflow: scroll;
@@ -11,6 +10,10 @@
   h1 {
     margin-left: 48px;
     margin-bottom: 10px;
+    margin-top: 48px;
+    font-weight: 600;
+    font-size: 28px;
+    line-height: 34px;
   }
 
   .add-member-form {
@@ -61,7 +64,7 @@
   }
 
   .save-button-container {
-    margin: 10px auto 20px;
+    margin: 10px auto 60px;
     width: 350px;
   }
 }

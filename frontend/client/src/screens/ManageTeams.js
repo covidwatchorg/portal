@@ -122,11 +122,11 @@ const ManageTeamsBase = observer((props) => {
       <table>
         <thead>
           <tr>
-            <th style={{ borderTopLeftRadius: 5 }}>Name</th>
+            <th>Name</th>
             <th>Email Address</th>
-            <th id="role-header">Role</th>
-            <th id="status-header">Status</th>
-            <th style={{ borderTopRightRadius: 5 }}>Settings</th>
+            <th>Role</th>
+            <th>Status</th>
+            <th>Settings</th>
           </tr>
         </thead>
         <tbody>
@@ -139,7 +139,6 @@ const ManageTeamsBase = observer((props) => {
                   <RoleSelector
                     memberIndex={index + (props.store.data.organization.membersPage - 1) * PAGE_SIZE}
                     onChange={() => handleRoleChange(data.isAdmin, data.firstName, data.lastName, data.email)}
-                    ariaLabelledBy="role-header"
                   />
                 </td>
                 <td style={{ padding: 0 }}>
@@ -149,7 +148,6 @@ const ManageTeamsBase = observer((props) => {
                       className={!data.disabled ? 'active' : 'inactive'}
                       value={!data.disabled ? 'active' : 'deactivated'}
                       onChange={(e) => handleStatusChange(data.email, e.target.value, data.firstName, data.lastName)}
-                      aria-labelledby="status-header"
                     >
                       <option value="active">Active</option>
                       <option value="deactivated">Deactivated</option>
