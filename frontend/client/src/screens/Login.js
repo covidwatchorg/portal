@@ -120,7 +120,9 @@ const SignInFormBase = observer(
             <input onChange={this.onChange('email')} type="email" id="email" name="email" />
             <label htmlFor="password">Password</label>
             <input onChange={this.onChange('password')} type="password" id="password" name="password" />
-            <PendingOperationButton operation={this.clickSubmit}>Login</PendingOperationButton>
+            <PendingOperationButton operation={this.clickSubmit} className="save-button" style={{ width: '370px' }}>
+              Login
+            </PendingOperationButton>
             <a onClick={this.showModal}>Forgot password?</a>
           </div>
           <ForgotPasswordModal hidden={!this.state.showPassModal} onClose={this.hideModal} />

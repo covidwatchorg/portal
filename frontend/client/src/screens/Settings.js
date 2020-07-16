@@ -20,7 +20,7 @@ const useStyles = makeStyles({
     fontSize: 24,
     fontStyle: 'normal',
     fontWeight: 'bolder',
-    color: '#585858',
+    color: '#383838',
     marginTop: 20,
     padding: 40,
     paddingLeft: 8,
@@ -192,10 +192,10 @@ const SettingsBase = observer((props) => {
                   style={{ width: '212px', height: '217px' }}
                 ></img>
               </div>
-              <div style={{ marginTop: '15px', fontSize: '12px', fontWeight: 'normal', color: '#585858' }}>
+              <div style={{ marginTop: '15px', fontSize: '12px', fontWeight: 'normal', color: '#383838' }}>
                 Accepted file types: jpg or png
               </div>
-              <div style={{ fontSize: '12px', fontWeight: 'normal', color: '#585858' }}>Maximum file size: 10 MB</div>
+              <div style={{ fontSize: '12px', fontWeight: 'normal', color: '#383838' }}>Maximum file size: 10 MB</div>
               <button onClick={() => setOpen(true)} type="button" className={secondaryButton.root}>
                 Change Image
               </button>
