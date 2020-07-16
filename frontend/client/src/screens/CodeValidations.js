@@ -29,7 +29,8 @@ const CodeValidationsBase = observer((props) => {
         testType: testType,
         testDate: testDate,
       })
-      setCode(code.data.split('').join(' '))
+      setCode(code.data.split('').join(' '));
+      codeTimeStamp();
     } catch (err) {
       setToastInfo({ success: false, msg: 'Could not generate new code, please try again' })
       confirmedToast.current.show()
@@ -122,7 +123,13 @@ const CodeValidationsBase = observer((props) => {
         </div>
         <div className="col-2">
           <form id="date-form">
-            <input id="date-picker" className="no-value" type="date" placeholder="Select Date" onChange={handleDate}></input>
+            <input
+              id="date-picker"
+              className="no-value"
+              type="date"
+              placeholder="Select Date"
+              onChange={handleDate}
+            ></input>
           </form>
           <div className="date-desc">This system is based on UTC dates, so you may need to adjust accordingly.</div>
           <div className="date-sub-desc">The current UTC date is {new Date().toJSON().substring(0, 10)}</div>
@@ -141,15 +148,8 @@ const CodeValidationsBase = observer((props) => {
           <PendingOperationButton
             disabled={buttonDisabled}
             className="save-button generate-button"
-            // note: the operation below I wasn't able to test locally
-            // desired result: genNewCode runs AND codeTimeStamp runs
-            // I was testing locally just using codeTimeStamp (commented out below)
-
-            operation={() => {
-              genNewCode
-              codeTimeStamp
-            }}
-
+            operation={genNewCode}
+            // to test out UI workflow locally, sub above line with:
             // operation={codeTimeStamp}
           >
             Generate New Code
@@ -164,7 +164,7 @@ const CodeValidationsBase = observer((props) => {
             codeGenStamp !== ''
 
           */}
-          { code !== '000000000' && (
+          {code !== '000000000' && (
             <div>
               <div id="share-urgently">
                 <img src={Clock}></img>
