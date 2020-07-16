@@ -1,37 +1,37 @@
-import React, { useState } from 'react'
-// import Toast from '../components/Toast'
+import React, { useState, createRef } from 'react'
+import Toast from '../components/Toast'
 import '../../Styles/screens/code_validations.scss'
 import * as ROUTES from '../constants/routes'
 import { withStore } from '../store'
 import { Redirect } from 'react-router-dom'
 import { observer } from 'mobx-react'
 import PageTitle from '../components/PageTitle'
-// import PendingOperationButton from '../components/PendingOperationButton'
+import PendingOperationButton from '../components/PendingOperationButton'
 
 const CodeValidationsBase = observer((props) => {
-  // const [code, setCode] = useState('')
+  const [code, setCode] = useState('000000000')
   const [testType, setTestType] = useState('')
   const [testDate, setDate] = useState('')
-  // const [toastInfo, setToastInfo] = useState({
-  //   success: false,
-  //   msg: '',
-  // })
+  const [toastInfo, setToastInfo] = useState({
+    success: false,
+    msg: '',
+  })
 
-  // let confirmedToast = createRef()
+  let confirmedToast = createRef()
 
-  // const genNewCode = async () => {
-  //   try {
-  //     // TODO: testType and testDate should be set by fields in the interface; blocked awaiting v4 figma
-  //     let code = await props.store.getVerificationCode({
-  //       testType: 'confirmed',
-  //       testDate: new Date().toJSON().substring(0, 10),
-  //     })
-  //     setCode(code.data.split('').join(' '))
-  //   } catch (err) {
-  //     setToastInfo({ success: false, msg: 'Could not generate new code, please try again' })
-  //     confirmedToast.current.show()
-  //   }
-  // }
+  const genNewCode = async () => {
+    try {
+      // TODO: testType and testDate should be set by fields in the interface; blocked awaiting v4 figma
+      let code = await props.store.getVerificationCode({
+        testType: testType,
+        testDate: testDate,
+      })
+      setCode(code.data.split('').join(' '))
+    } catch (err) {
+      setToastInfo({ success: false, msg: 'Could not generate new code, diagnosis and date must be entered' })
+      confirmedToast.current.show()
+    }
+  }
 
   const handleRadio = (e) => {
     setTestType(e.target.value)
@@ -50,8 +50,6 @@ const CodeValidationsBase = observer((props) => {
       <PageTitle title="Diagnosis Verification Codes" />
       <h1>Diagnosis Verification Codes</h1>
       <h2>Submit this form when you are prepared to generate and immediately share the code with a patient.</h2>
-      <p>{testType}</p>
-      <p>{testDate}</p>
 
       <div className="row" id="test-type-form">
         <div className="col-1">
@@ -86,11 +84,11 @@ const CodeValidationsBase = observer((props) => {
 
       <div className="row" id="test-date-form">
         <div className="col-1">
-          <div className="sect-header">Symptom Onset Date</div>
+          <div className="sect-header">Test Date</div>
           <p>The date must be within the past 14 days</p>
         </div>
         <div className="col-2">
-          <input name="date" type="date" onChange={handleDate}></input>
+          <input id="date-picker" type="date" placeholder="Select Date" onChange={handleDate}></input>
           <div className="date-desc">This system is basted on UTC dates, so you may need to adjust accordingly.</div>
           <div className="date-sub-desc">The current UTC date is {new Date().toJSON().substring(0, 10)}</div>
         </div>
@@ -104,24 +102,16 @@ const CodeValidationsBase = observer((props) => {
             verified positive diagnosis with others who were nearby when they were possibly contagious.
           </p>
         </div>
-        <div className="col-2"></div>
-      </div>
-
-      {/* <div id="actions-box" className="gray-background">
-        <div className="validation-container">
-          <div className="section-heading-container">
-            <h2>Validation Code</h2>
-          </div>
-          <div className="validation-text">
-            Provide this code to the person you want to verify over the phone. Each code can only be used once.
-          </div>
-          <div className="code-box">{code}</div>
+        <div className="col-2">
           <PendingOperationButton className="save-button generate-button" operation={genNewCode}>
-            Generate New Code
+              Generate New Code
           </PendingOperationButton>
-        </div> */}
-      {/* </div> */}
-      {/* <Toast ref={confirmedToast} isSuccess={toastInfo.success} message={toastInfo.msg} /> */}
+          <div id="code-box">
+              {code.slice(0, 3)}-{code.slice(3, 6)}-{code.slice(6)}
+          </div>
+        </div>
+      </div>
+      <Toast ref={confirmedToast} isSuccess={toastInfo.success} message={toastInfo.msg} />
     </div>
   )
 })
