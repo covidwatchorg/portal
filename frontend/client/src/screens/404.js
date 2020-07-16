@@ -8,7 +8,7 @@ const NotFound = () => {
       <PageTitle title="404 Not Found" />
       <div id="not-found">
         <h1>404</h1>
-        <h2>This page does not exist</h2>
+        <h2>This page does not exist.</h2>
       </div>
     </div>
   )
