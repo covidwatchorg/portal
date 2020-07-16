@@ -44,7 +44,8 @@ const CodeValidationsBase = observer((props) => {
   }
 
   const handleDate = (e) => {
-    e.target.classList.add('date-chosen')
+    e.target.classList.toggle('with-value')
+    e.target.classList.toggle('no-value')
     setDate(e.target.value)
     if (testType != '') {
       setButtonDisabled(false)
@@ -52,18 +53,26 @@ const CodeValidationsBase = observer((props) => {
   }
 
   const resetState = () => {
-    document.getElementById("radio-form").reset();
-    document.getElementById("date-form").reset();
-    setTestType('');
-    setDate('');
-    setCode('000000000');
-    setCodeGenStamp('');
+    document.getElementById('radio-form').reset()
+    document.getElementById('date-form').reset()
+    document.getElementById('date-picker').classList.toggle('with-value')
+    document.getElementById('date-picker').classList.toggle('no-value')
+    document.getElementById('code-box').classList.toggle('with-value')
+    document.getElementById('code-box').classList.toggle('no-value')
+    document.getElementById('code-box').classList.toggle('code-generated')
+    setTestType('')
+    setDate('')
+    setCode('000000000')
+    setCodeGenStamp('')
   }
 
   const codeTimeStamp = () => {
-    setCodeGenStamp(new Date().getMinutes());
+    // since this is theoretically same moment that a code is generated, we also make the code text black (this assumes the API call will never fail)
+    document.getElementById('code-box').classList.toggle('with-value')
+    document.getElementById('code-box').classList.toggle('no-value')
+    document.getElementById('code-box').classList.toggle('code-generated')
+    setCodeGenStamp(new Date().getMinutes())
   }
-
 
   return !props.store.data.user.isSignedIn ||
     props.store.data.user.isFirstTimeUser ||
@@ -79,31 +88,31 @@ const CodeValidationsBase = observer((props) => {
         <div className="col-1">
           <div className="sect-header">COVID-19 Diagnosis</div>
         </div>
-          <form id="radio-form" className="col-2">
-            <div className="radio">
-              <input className="radio-input" name="testType" type="radio" onClick={handleRadio} value="confirmed"></input>
-              <div className="col-2-header-container">
-                <div className="col-2-header">Confirmed Positive Test</div>
-                <div className="col-2-sub-header">Confirmed positive result from an official testing source.</div>
-              </div>
+        <form id="radio-form" className="col-2">
+          <div className="radio">
+            <input className="radio-input" name="testType" type="radio" onClick={handleRadio} value="confirmed"></input>
+            <div className="col-2-header-container">
+              <div className="col-2-header">Confirmed Positive Test</div>
+              <div className="col-2-sub-header">Confirmed positive result from an official testing source.</div>
             </div>
+          </div>
 
-            <div className="radio">
-              <input className="radio-input" name="testType" type="radio" onClick={handleRadio} value="likely"></input>
-              <div className="col-2-header-container">
-                <div className="col-2-header">Likely Positive Diagnosis</div>
-                <div className="col-2-sub-header">Clincial diagnosis without a test.</div>
-              </div>
+          <div className="radio">
+            <input className="radio-input" name="testType" type="radio" onClick={handleRadio} value="likely"></input>
+            <div className="col-2-header-container">
+              <div className="col-2-header">Likely Positive Diagnosis</div>
+              <div className="col-2-sub-header">Clincial diagnosis without a test.</div>
             </div>
+          </div>
 
-            <div className="radio">
-              <input className="radio-input"name="testType" type="radio" onClick={handleRadio} value="negative"></input>
-              <div className="col-2-header-container">
-                <div className="col-2-header">Confirmed Negative Test</div>
-                <div className="col-2-sub-header">Confirmed negative result from an official testing source.</div>
-              </div>
+          <div className="radio">
+            <input className="radio-input" name="testType" type="radio" onClick={handleRadio} value="negative"></input>
+            <div className="col-2-header-container">
+              <div className="col-2-header">Confirmed Negative Test</div>
+              <div className="col-2-sub-header">Confirmed negative result from an official testing source.</div>
             </div>
-          </form>
+          </div>
+        </form>
       </div>
 
       <div className="row" id="test-date-form">
@@ -113,7 +122,7 @@ const CodeValidationsBase = observer((props) => {
         </div>
         <div className="col-2">
           <form id="date-form">
-            <input id="date-picker" type="date" placeholder="Select Date" onChange={handleDate}></input>
+            <input id="date-picker" className="no-value" type="date" placeholder="Select Date" onChange={handleDate}></input>
           </form>
           <div className="date-desc">This system is based on UTC dates, so you may need to adjust accordingly.</div>
           <div className="date-sub-desc">The current UTC date is {new Date().toJSON().substring(0, 10)}</div>
@@ -132,44 +141,45 @@ const CodeValidationsBase = observer((props) => {
           <PendingOperationButton
             disabled={buttonDisabled}
             className="save-button generate-button"
-            
             // note: the operation below I wasn't able to test locally
             // desired result: genNewCode runs AND codeTimeStamp runs
             // I was testing locally just using codeTimeStamp (commented out below)
-            
-            // operation={() => { genNewCode ; codeTimeStamp}}
-            
-            operation={codeTimeStamp}
+
+            operation={() => {
+              genNewCode
+              codeTimeStamp
+            }}
+
+            // operation={codeTimeStamp}
           >
             Generate New Code
           </PendingOperationButton>
-          <div id="code-box">
+          <div id="code-box" className="no-value">
             {code.slice(0, 3)}-{code.slice(3, 6)}-{code.slice(6)}
           </div>
 
           {/* for local testing:
-            sub in for this conditional:
+            sub in for this conditional on line 156 instead of code !== "000000000":
 
             codeGenStamp !== ''
 
           */}
-          {code !== "000000000" && 
+          { code !== '000000000' && (
             <div>
               <div id="share-urgently">
                 <img src={Clock}></img>
-                  <div>Share the code ASAP. &nbsp;</div>
-                <span> It will expire in {60 - Math.abs(codeGenStamp - new Date().getMinutes())} min at {getOneHourAhead()}</span>
+                <div>Share the code ASAP. &nbsp;</div>
+                <span>
+                  {' '}
+                  It will expire in {60 - Math.abs(codeGenStamp - new Date().getMinutes())} min at {getOneHourAhead()}
+                </span>
               </div>
 
-              <PendingOperationButton
-                operation={resetState}
-                className="save-button generate-button"
-              >
+              <PendingOperationButton operation={resetState} className="save-button generate-button">
                 Reset Code and Form
               </PendingOperationButton>
             </div>
-          } 
-
+          )}
         </div>
       </div>
       <Toast ref={confirmedToast} isSuccess={toastInfo.success} message={toastInfo.msg} />

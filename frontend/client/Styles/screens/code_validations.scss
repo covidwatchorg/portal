@@ -91,14 +91,11 @@
           box-sizing: border-box;
           border-radius: 4px;
           font-family: Montserrat;
-          font-style: italic;
-          font-weight: normal;
           font-size: 28px;
           line-height: 28px;
           padding: 20px;
           display: flex;
           align-items: center;
-          color: #BDBDBD;
           width: 350px;
         }
 
@@ -130,19 +127,33 @@
           border: 1px solid #BDBDBD;
           box-sizing: border-box;
           border-radius: 4px;
-          color:#BDBDBD;
           // width is the same as the button
           width: 350px;
           padding: 9px 20px 9px 20px;
           font-family: Montserrat;
-          font-style: italic;
-          font-weight: normal;
           font-size: 16px;
           line-height: 16px;
         }
 
-        .date-chosen {
+        // no-value and with-value control the Code and Date changing colors
+        .no-value {
+          color:#BDBDBD;
+          font-weight: normal;
+          font-style: italic;
+        }
+
+        .with-value {
           color: #383838;
+          font-weight: 600;
+          font-style: normal;
+        }
+
+        //governs the background change of the Code Box once it has a generated value there
+        .code-generated {
+          background: #BBCCEE;
+          opacity: 0.7;   
+          // the opacity and .with-value color interact in a way that dilutes the color so setting the color to black appears to have the desired effect
+          color: black;
         }
       }
 
