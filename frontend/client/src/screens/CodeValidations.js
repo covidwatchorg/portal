@@ -12,6 +12,7 @@ const CodeValidationsBase = observer((props) => {
   const [code, setCode] = useState('000000000')
   const [testType, setTestType] = useState('')
   const [testDate, setDate] = useState('')
+  const [buttonDisabled, setButtonDisabled] = useState(true)
   const [toastInfo, setToastInfo] = useState({
     success: false,
     msg: '',
@@ -21,7 +22,6 @@ const CodeValidationsBase = observer((props) => {
 
   const genNewCode = async () => {
     try {
-      // TODO: testType and testDate should be set by fields in the interface; blocked awaiting v4 figma
       let code = await props.store.getVerificationCode({
         testType: testType,
         testDate: testDate,
@@ -34,11 +34,18 @@ const CodeValidationsBase = observer((props) => {
   }
 
   const handleRadio = (e) => {
-    setTestType(e.target.value)
+    setTestType(e.target.value);
+    if (testDate != '') {
+      setButtonDisabled(false);
+    }
   }
 
   const handleDate = (e) => {
-    setDate(e.target.value)
+    e.target.classList.add('date-chosen');
+    setDate(e.target.value);
+    if (testType != '') {
+      setButtonDisabled(false);
+    }
   }
 
   return !props.store.data.user.isSignedIn ||
@@ -103,11 +110,11 @@ const CodeValidationsBase = observer((props) => {
           </p>
         </div>
         <div className="col-2">
-          <PendingOperationButton className="save-button generate-button" operation={genNewCode}>
-              Generate New Code
+          <PendingOperationButton disabled={buttonDisabled} className="save-button generate-button" operation={genNewCode}>
+            Generate New Code
           </PendingOperationButton>
           <div id="code-box">
-              {code.slice(0, 3)}-{code.slice(3, 6)}-{code.slice(6)}
+            {code.slice(0, 3)}-{code.slice(3, 6)}-{code.slice(6)}
           </div>
         </div>
       </div>
