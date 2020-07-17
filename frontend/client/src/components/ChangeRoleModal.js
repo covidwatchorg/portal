@@ -4,7 +4,7 @@ import { withStore } from '../store'
 import * as ROLES from '../constants/roles'
 import PendingOperationButton from './PendingOperationButton'
 
-const ChangeRoleModalBase = (props) => {
+const ChangeRoleModal = withStore((props) => {
   const fullName = `${props.userProperties.firstName} ${props.userProperties.lastName}`
   const fromRole = props.userProperties.isAdmin ? ROLES.ADMIN_LABEL : ROLES.NON_ADMIN_LABEL
   const toRole = props.userProperties.isAdmin ? ROLES.NON_ADMIN_LABEL : ROLES.ADMIN_LABEL
@@ -26,7 +26,6 @@ const ChangeRoleModalBase = (props) => {
         <br />
         To: <b>{toRole}</b>
       </p>
-      <p>{fullName} will recieve an email notification once this change is confirmed.</p>
 
       <button className="button btn-medium btn-secondary" onClick={props.onClose}>
         Cancel
@@ -36,8 +35,6 @@ const ChangeRoleModalBase = (props) => {
       </PendingOperationButton>
     </Modal>
   )
-}
-
-const ChangeRoleModal = withStore(ChangeRoleModalBase)
+})
 
 export default ChangeRoleModal

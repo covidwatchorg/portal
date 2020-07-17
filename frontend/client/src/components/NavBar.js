@@ -96,7 +96,7 @@ const NavBarBase = observer((props) => {
         )}
         {props.store.data.user.isAdmin && (
           <MenuItem style={linkStyles} onClick={() => onClickMenuItem(2)}>
-            Account Branding
+            Mobile App Settings
           </MenuItem>
         )}
         <MenuItem style={linkStyles} onClick={() => onClickMenuItem(3)}>
