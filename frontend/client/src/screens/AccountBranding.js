@@ -28,7 +28,7 @@ const AccountBrandingBase = observer((props) => {
           <span>This page is in progress.</span>
           <div>
             To edit your account settings and customize the messaging mobile app users receive in your region,
-            <br></br> 
+            <br></br>
             get in touch with your Covid Watch point of contact.
           </div>
         </div>
