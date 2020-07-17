@@ -107,19 +107,21 @@
     .arrow:hover {
       cursor: pointer;
     }
+    .page, .current-page {
+      margin: 0 7px;
+      padding: 2px 7px 3px; // use left and right padding to create wide underline
+    }
     .current-page {
       color: #333333;
-      margin: 0 12px;
       font-weight: bold;
       border-bottom: 2px solid #333333;
-      padding-top: 2px; // prevents number from being bumped "up" higher than the other ones
     }
     .current-page:hover {
       cursor: default;
     }
     .page {
       color: #828282;
-      margin: 0 12px;
+      border-bottom: 2px solid transparent; // "fake border" for consistency
     }
     .page:hover {
       cursor: pointer;
