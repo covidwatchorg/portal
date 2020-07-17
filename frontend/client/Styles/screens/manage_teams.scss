@@ -40,7 +40,7 @@
         line-height: 18px;
         border: 1px solid #828282;
         .custom-select {
-          width: 93%;
+          width: 100%;
           height: 100%;
           position: relative;
           top: 0;
@@ -49,7 +49,7 @@
           border-radius: 0;
           select {
             border: none;
-            width: 93%;
+            width: 100%;
             height: 100%;
             appearance: none;
             -webkit-appearance: none;
@@ -66,8 +66,8 @@
         }
         .custom-select:after{
             content: url("../../assets/arrow-down.svg");
-            top: 0;
             position: absolute;
+            right: 0px;
         }
         .settings-container {
           display: flex;
