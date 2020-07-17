@@ -6,7 +6,6 @@ $white: #FFFFFF;
 
 // Common button class
 .button {
-  margin-top: 32px;
   border-radius: 4px;
   font-family: Montserrat;
   font-style: normal;
@@ -32,7 +31,17 @@ $white: #FFFFFF;
 .btn-medium {
   font-weight: 600;
   font-size: 18px;
-  height: 45px;
+  height: 35px;
+  line-height: 22px;
+  border-width: 2px;
+  padding: 0px 10px;
+}
+
+// Duplicate of btn-medium but with height 25px
+.btn-short-and-wide {
+  font-weight: 600;
+  font-size: 18px;
+  height: 25px;
   line-height: 22px;
   border-width: 2px;
   padding: 10px;
@@ -87,6 +96,6 @@ $white: #FFFFFF;
 
 .save-button {
   width: 350px;
-  height: 50px;
+  height: 49px;
   align-items: center;
 }
