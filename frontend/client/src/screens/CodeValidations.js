@@ -15,7 +15,7 @@ const codePlaceholder = '00000000'
 const CodeValidationsBase = observer((props) => {
   const [code, setCode] = useState(codePlaceholder)
   const [testType, setTestType] = useState('')
-  const [testDate, setDate] = useState('')
+  const [testDate, setTestDate] = useState('')
   const [buttonDisabled, setButtonDisabled] = useState(true)
   const [codeGenStamp, setCodeGenStamp] = useState('')
   const [toastInfo, setToastInfo] = useState({
@@ -51,20 +51,18 @@ const CodeValidationsBase = observer((props) => {
     e.target.classList.add('with-value')
     e.target.classList.remove('no-value')
 
-    // this logic here needs to be cleaned up.  specifically the moreThanFourteenDaysAgo and dateInFuture functions in time.js
+    // does not allow testDate in state to be set if date selected is more than 14 days ago or in the future
     if (moreThanFourteenDaysAgo(e.target.value)) {
       setToastInfo({ success: false, msg: 'Date cannot be more than 14 days ago' })
       confirmedToast.current.show()
-      setDate(getFourteenDaysAgo())
     } else if (dateInFuture(e.target.value)) {
       setToastInfo({ success: false, msg: 'Date cannot be in the future' })
       confirmedToast.current.show()
-      setDate(getDay())
     } else {
-      setDate(e.target.value)
-    }
-    if (testType !== '' && testDate === '') {
-      setButtonDisabled(false)
+      setTestDate(e.target.value)
+      if (testType !== '' && testDate === '') {
+        setButtonDisabled(false)
+      }
     }
   }
 
@@ -79,7 +77,7 @@ const CodeValidationsBase = observer((props) => {
     setButtonDisabled(true)
     setCode(codePlaceholder)
     setTestType('')
-    setDate('')
+    setTestDate('')
     setCodeGenStamp('')
   }
 
@@ -100,6 +98,10 @@ const CodeValidationsBase = observer((props) => {
       <PageTitle title="Diagnosis Verification Codes" />
       <h1>Diagnosis Verification Codes</h1>
       <h2>Submit this form when you are prepared to generate and immediately share the code with a patient.</h2>
+
+      <p>{code}</p>
+      <p>{testType}</p>
+      <p>{testDate}</p>
 
       <div className="row" id="test-type-form">
         <div className="col-1">
