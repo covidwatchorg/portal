@@ -50,15 +50,14 @@ const CodeValidationsBase = observer((props) => {
   const handleDate = (e) => {
     e.target.classList.add('with-value')
     e.target.classList.remove('no-value')
-    const todayDate = new Date();
 
     // this logic here needs to be cleaned up.  specifically the moreThanFourteenDaysAgo and dateInFuture functions in time.js
     if (moreThanFourteenDaysAgo(e.target.value)) {
-      setToastInfo({ success: false, msg: "Chose a date of more than 14 days ago... defaulting to 14 days ago" })
+      setToastInfo({ success: false, msg: 'Date cannot be more than 14 days ago' })
       confirmedToast.current.show()
       setDate(getFourteenDaysAgo())
     } else if (dateInFuture(e.target.value)) {
-      setToastInfo({ success: false, msg: "Chose a date in the future... defaulting to today's date" })
+      setToastInfo({ success: false, msg: 'Date cannot be in the future' })
       confirmedToast.current.show()
       setDate(getDay())
     } else {
