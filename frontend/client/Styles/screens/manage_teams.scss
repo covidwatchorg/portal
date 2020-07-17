@@ -45,6 +45,7 @@ table {
         background-color: #ffffff;
         border-radius: 0;
         select {
+          padding: 0 10px;
           border: none;
           width: 100%;
           height: 100%;
@@ -72,11 +73,6 @@ table {
         top: 7px;
         border-radius: 0;
         background-color: transparent;
-      }
-      .custom-select:after {
-        content: url('../../assets/arrow-down.svg');
-        position: absolute;
-        right: 0px;
       }
       .settings-container {
         display: flex;
