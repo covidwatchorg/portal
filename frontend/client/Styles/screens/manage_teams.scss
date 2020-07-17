@@ -16,8 +16,9 @@ table {
   border: 1px solid #828282;
   border-collapse: collapse;
   tr {
+    height: 45px;
     th {
-      padding: 10px;
+      padding: 5px 10px;
       background-color: #e0e0e0;
       font-family: Montserrat;
       font-style: normal;
@@ -28,7 +29,7 @@ table {
     }
 
     td {
-      padding: 6px 10px;
+      padding: 5px 10px;
       background-color: #ffffff;
       font-family: Montserrat;
       font-style: normal;
@@ -62,7 +63,6 @@ table {
           -webkit-appearance: none;
           -moz-appearance: none;
           -ms-appearance: none;
-          padding-left: 20px;
         }
       }
       .custom-select:after {
