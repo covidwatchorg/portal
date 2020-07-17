@@ -49,7 +49,7 @@ class Toast extends React.Component {
             display: 'flex',
             justifyContent: 'center',
             alignItems: 'center',
-            marginTop: '57px',
+            marginTop: '46px',
           }}
           message={
             <span id="msg">

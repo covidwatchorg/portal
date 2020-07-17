@@ -1,78 +1,51 @@
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800&display=swap');
 
-.module-container-branding{
-    margin-left: 66px !important;
-}
+#mobile-application-settings {
+  h1, p {
+    font-family: Montserrat;
+    font-style: normal;
+    color: #383838;
+  }
 
-.branding-container {
-  display: flex;
-  flex-direction: row;
-}
+  h1 {
+    font-weight: 600;
+    font-size: 32px;
+    line-height: 39px;
+  }
 
-.branding-header {
-  margin-left: 32px;
-}
+  p {
+    font-weight: normal;
+    font-size: 16px;
+    line-height: 20px;
 
-.branding-section {
-  flex: 1;
-  flex-direction: column;
-  justify-content: flex-start;
-  align-items: stretch;
-  padding: 32px;
-}
+  }
 
-.section-heading {
-  height: 58px;
+  a {
+    text-decoration: none;
+    color: #2C58B1
+  }
 
-  font-family: Montserrat;
-  font-style: normal;
-  font-weight: 600;
-  font-size: 24px;
-  line-height: 29px;
 
-  /* Dark Gray */
-  color: #383838;
-}
+  .center-box-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 80px;
 
-.section-description {
-  height: 80px;
+    .center-box {
+      background: rgba(187, 204, 238, 0.2);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 37px 105px 37px 105px;
 
-  font-family: Montserrat;
-  font-style: normal;
-  font-weight: normal;
-  font-size: 16px;
-  line-height: 20px;
-
-  /* Dark Gray */
-  color: #383838;
-}
-
-.section-input {
-  resize: none;
-  border: 1.5px solid #bdbdbd;
-  border-radius: 7px;
-}
-
-textarea {
-  padding: 2.5%;
-  width: 95%;
-  height: 19.5vh;
-  flex: 1;
-  font-family: Montserrat;
-  font-style: normal;
-  font-weight: normal;
-  font-size: 16px;
-  line-height: 20px;
-  color: #383838;
-}
-
-// #contact-button {
-  // width: 212px;
-  // height: 35px;
-  // font-size: 14px;
-  // line-height: 35px;
-// }
-
-.cancel-button {
-  margin-left: 10px;
+      span {
+        font-family: Montserrat;
+        font-style: normal;
+        font-weight: 600;
+        font-size: 22px;
+        line-height: 40px;
+        color: #000000;
+      }
+    }
+  }
 }

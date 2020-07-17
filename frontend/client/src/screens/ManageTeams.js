@@ -135,13 +135,13 @@ const ManageTeamsBase = observer((props) => {
               <tr key={index}>
                 <td>{data.lastName + ', ' + data.firstName}</td>
                 <td>{data.email}</td>
-                <td style={{ padding: 0 }}>
+                <td>
                   <RoleSelector
                     memberIndex={index + (props.store.data.organization.membersPage - 1) * PAGE_SIZE}
                     onChange={() => handleRoleChange(data.isAdmin, data.firstName, data.lastName, data.email)}
                   />
                 </td>
-                <td style={{ padding: 0 }}>
+                <td>
                   <div className="custom-select">
                     <select
                       disabled={data.email === userEmail}
