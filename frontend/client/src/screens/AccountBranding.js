@@ -26,9 +26,11 @@ const AccountBrandingBase = observer((props) => {
       <div className="center-box-container">
         <div className="center-box">
           <span>This page is in progress.</span>
-          <span>
-            Visit <a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ">this document</a> to edit your account settings.
-          </span>
+          <div>
+            To edit your account settings and customize the messaging mobile app users receive in your region,
+            <br></br> 
+            get in touch with your Covid Watch point of contact.
+          </div>
         </div>
       </div>
     </div>
