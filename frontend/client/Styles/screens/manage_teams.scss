@@ -51,16 +51,17 @@
             border: none;
             width: 93%;
             height: 100%;
-            appearance:none;
-	        -webkit-appearance:none;
-	        -moz-appearance:none;
-	        -ms-appearance:none;
+            appearance: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            -ms-appearance: none;
             font-family: Montserrat;
             font-style: normal;
             font-weight: normal;
             font-size: 14px;
             line-height: 18px;
             border-radius: 0;
+            background-color: transparent;
           }
         }
         .custom-select:after{
