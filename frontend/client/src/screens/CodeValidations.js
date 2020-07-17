@@ -42,7 +42,7 @@ const CodeValidationsBase = observer((props) => {
 
   const handleRadio = (e) => {
     setTestType(e.target.value)
-    if (testDate != '') {
+    if (testDate != '' && testType === '') {
       setButtonDisabled(false)
     }
   }
@@ -51,7 +51,7 @@ const CodeValidationsBase = observer((props) => {
     e.target.classList.add('with-value')
     e.target.classList.remove('no-value')
     setDate(e.target.value)
-    if (testType !== '') {
+    if (testType !== '' && testDate === '') {
       setButtonDisabled(false)
     }
   }
