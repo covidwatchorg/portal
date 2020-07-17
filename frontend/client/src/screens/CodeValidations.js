@@ -98,11 +98,6 @@ const CodeValidationsBase = observer((props) => {
       <PageTitle title="Diagnosis Verification Codes" />
       <h1>Diagnosis Verification Codes</h1>
       <h2>Submit this form when you are prepared to generate and immediately share the code with a patient.</h2>
-
-      <p>{code}</p>
-      <p>{testType}</p>
-      <p>{testDate}</p>
-
       <div className="row" id="test-type-form">
         <div className="col-1">
           <div className="sect-header">COVID-19 Diagnosis</div>
@@ -168,7 +163,7 @@ const CodeValidationsBase = observer((props) => {
             Generate Code
           </PendingOperationButton>
           <div id="code-box" className="no-value">
-            {code.slice(0, 4)}-{code.slice(4)}
+              {code.slice(0, 3)}-{code.slice(3, 6)}-{code.slice(6)}
           </div>
 
           {code !== codePlaceholder && (
