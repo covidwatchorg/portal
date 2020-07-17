@@ -53,3 +53,24 @@ export const getDay = (now = new Date()) => {
 
   return year + '-' + month + '-' + day
 }
+
+export const moreThanFourteenDaysAgo = (strChosenDate) => {
+  // source for this approach
+  // https://stackoverflow.com/questions/54383799/check-if-date-string-is-greater-than-3-days
+
+  // I cannot figure out why date1 defaults to July 1 for me here but in my browser console when I do it, it generates: Thu Jul 16 2020 18:26:04 GMT-0700 (Pacific Daylight Time)
+  // maybe some weird setting on my computer that is reading a date wrong or something/?? idk I'm probably just making a dumb error somewhere
+
+  let date1 = new Date()
+  let date2 = new Date(strChosenDate)
+  var isLess = +date2 > date1.setDate(date1.getDate() - 14)
+  return isLess
+}
+
+// is this date in the future?
+export const dateInFuture = (strChosenDate) => {
+  let date1 = new Date()
+  let date2 = new Date(strChosenDate)
+  var isGreater = +date2 > date1.setDate(date1.getDate() + 1)
+  return isGreater
+}

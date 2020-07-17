@@ -8,7 +8,7 @@ import { observer } from 'mobx-react'
 import PageTitle from '../components/PageTitle'
 import PendingOperationButton from '../components/PendingOperationButton'
 import Clock from '../../assets/clock.svg'
-import { getOneHourAhead, getDay, getFourteenDaysAgo } from '../util/time'
+import { getOneHourAhead, getDay, getFourteenDaysAgo, moreThanFourteenDaysAgo, dateInFuture } from '../util/time'
 
 const codePlaceholder = '00000000'
 
@@ -50,7 +50,20 @@ const CodeValidationsBase = observer((props) => {
   const handleDate = (e) => {
     e.target.classList.add('with-value')
     e.target.classList.remove('no-value')
-    setDate(e.target.value)
+    const todayDate = new Date();
+
+    // this logic here needs to be cleaned up.  specifically the moreThanFourteenDaysAgo and dateInFuture functions in time.js
+    if (moreThanFourteenDaysAgo(e.target.value)) {
+      setToastInfo({ success: false, msg: "Chose a date of more than 14 days ago... defaulting to 14 days ago" })
+      confirmedToast.current.show()
+      setDate(getFourteenDaysAgo())
+    } else if (dateInFuture(e.target.value)) {
+      setToastInfo({ success: false, msg: "Chose a date in the future... defaulting to today's date" })
+      confirmedToast.current.show()
+      setDate(getDay())
+    } else {
+      setDate(e.target.value)
+    }
     if (testType !== '' && testDate === '') {
       setButtonDisabled(false)
     }
@@ -154,7 +167,7 @@ const CodeValidationsBase = observer((props) => {
             Generate Code
           </PendingOperationButton>
           <div id="code-box" className="no-value">
-            {code.slice(0, 3)}-{code.slice(3, 6)}-{code.slice(6)}
+            {code.slice(0, 4)}-{code.slice(4)}
           </div>
 
           {code !== codePlaceholder && (
