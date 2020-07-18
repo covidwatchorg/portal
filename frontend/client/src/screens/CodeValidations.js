@@ -1,4 +1,4 @@
-import React, { useState, createRef } from 'react'
+import React, { useState, createRef, useEffect } from 'react'
 import Toast from '../components/Toast'
 import '../../Styles/screens/code_validations.scss'
 import * as ROUTES from '../constants/routes'
@@ -13,11 +13,13 @@ import { getOneHourAhead, getFourteenDaysAgo, moreThanFourteenDaysAgo, dateInFut
 const codePlaceholder = '00000000'
 
 const CodeValidationsBase = observer((props) => {
-  const [code, setCode] = useState(codePlaceholder)
   const [testType, setTestType] = useState('')
   const [testDate, setTestDate] = useState('')
-  const [buttonDisabled, setButtonDisabled] = useState(true)
+  const [dateInvalid, setDateInvalid] = useState(false)
+  const [needsReset, setNeedsReset] = useState(false)
+  const [code, setCode] = useState(codePlaceholder)
   const [codeGenStamp, setCodeGenStamp] = useState('')
+  const [buttonDisabled, setButtonDisabled] = useState(true)
   const [expirationTime, setExpirationTime] = useState('')
   const [toastInfo, setToastInfo] = useState({
     success: false,
@@ -25,6 +27,19 @@ const CodeValidationsBase = observer((props) => {
   })
 
   let confirmedToast = createRef()
+
+  useEffect(() => {
+    updateButtonDisabled()
+  })
+
+  // Updates the buttonDisabled variable state based on other state variables
+  const updateButtonDisabled = () => {
+    if (needsReset || testType === '' || dateInvalid) {
+      setButtonDisabled(true)
+    } else {
+      setButtonDisabled(false)
+    }
+  }
 
   const genNewCode = async () => {
     try {
@@ -34,7 +49,8 @@ const CodeValidationsBase = observer((props) => {
       })
       setCode(code.data.split('').join(''))
       codeTimeStamp()
-      setButtonDisabled(true)
+      setNeedsReset(true)
+      updateButtonDisabled()
     } catch (err) {
       setToastInfo({ success: false, msg: 'Could not generate new code, please try again' })
       confirmedToast.current.show()
@@ -43,9 +59,7 @@ const CodeValidationsBase = observer((props) => {
 
   const handleRadio = (e) => {
     setTestType(e.target.value)
-    if (testDate != '' && testType === '') {
-      setButtonDisabled(false)
-    }
+    updateButtonDisabled()
   }
 
   const handleDate = (e) => {
@@ -54,23 +68,18 @@ const CodeValidationsBase = observer((props) => {
 
     // does not allow testDate in state to be set if date selected is more than 14 days ago or in the future
     if (moreThanFourteenDaysAgo(e.target.value)) {
+      setDateInvalid(true)
       setToastInfo({ success: false, msg: 'Date cannot be more than 14 days ago' })
       confirmedToast.current.show()
-      setButtonDisabled(true)
     } else if (dateInFuture(e.target.value)) {
+      setDateInvalid(true)
       setToastInfo({ success: false, msg: 'Date cannot be in the future' })
       confirmedToast.current.show()
-      setButtonDisabled(true)
     } else {
+      setDateInvalid(false)
       setTestDate(e.target.value)
-      if (
-        (testType !== '' && testDate === '') ||
-        (testType !== '' && !dateInFuture(e.target.value) && testDate === '') ||
-        (testType !== '' && !moreThanFourteenDaysAgo(e.target.value) && testDate === '')
-      ) {
-        setButtonDisabled(false)
-      }
     }
+    updateButtonDisabled()
   }
 
   const resetState = () => {
@@ -81,11 +90,13 @@ const CodeValidationsBase = observer((props) => {
     document.getElementById('code-box').classList.toggle('with-value')
     document.getElementById('code-box').classList.toggle('no-value')
     document.getElementById('code-box').classList.toggle('code-generated')
-    setButtonDisabled(true)
     setCode(codePlaceholder)
-    setTestType('')
-    setTestDate('')
     setCodeGenStamp('')
+    setTestDate('')
+    setTestType('')
+    setNeedsReset(false)
+    setDateInvalid(false)
+    updateButtonDisabled()
   }
 
   const codeTimeStamp = () => {
@@ -174,13 +185,13 @@ const CodeValidationsBase = observer((props) => {
             {code.slice(0, 3)}-{code.slice(3, 6)}-{code.slice(6)}
           </div>
 
-          {code !== codePlaceholder && (
+          {needsReset && (
             <div>
               <div id="share-urgently">
                 <img src={Clock}></img>
                 <div>Share the code ASAP. &nbsp;</div>
                 <span>
-                    It will expire in {60 - Math.abs(codeGenStamp - new Date().getMinutes())} min at {expirationTime}
+                  It will expire in {60 - Math.abs(codeGenStamp - new Date().getMinutes())} min at {expirationTime}
                 </span>
               </div>
 
