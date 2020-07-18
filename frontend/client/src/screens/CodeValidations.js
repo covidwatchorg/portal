@@ -18,6 +18,7 @@ const CodeValidationsBase = observer((props) => {
   const [testDate, setTestDate] = useState('')
   const [buttonDisabled, setButtonDisabled] = useState(true)
   const [codeGenStamp, setCodeGenStamp] = useState('')
+  const [expirationTime, setExpirationTime] = useState('')
   const [toastInfo, setToastInfo] = useState({
     success: false,
     msg: '',
@@ -62,7 +63,11 @@ const CodeValidationsBase = observer((props) => {
       setButtonDisabled(true)
     } else {
       setTestDate(e.target.value)
-      if ((testType !== '' && testDate === '') || (testType !== '' && !dateInFuture(e.target.value)) || (testType !== '' && !moreThanFourteenDaysAgo(e.target.value))) {
+      if (
+        (testType !== '' && testDate === '') ||
+        (testType !== '' && !dateInFuture(e.target.value) && testDate === '') ||
+        (testType !== '' && !moreThanFourteenDaysAgo(e.target.value) && testDate === '')
+      ) {
         setButtonDisabled(false)
       }
     }
@@ -89,6 +94,7 @@ const CodeValidationsBase = observer((props) => {
     document.getElementById('code-box').classList.toggle('no-value')
     document.getElementById('code-box').classList.toggle('code-generated')
     setCodeGenStamp(new Date().getMinutes())
+    setExpirationTime(getOneHourAhead())
   }
 
   return !props.store.data.user.isSignedIn ||
@@ -165,7 +171,7 @@ const CodeValidationsBase = observer((props) => {
             Generate Code
           </PendingOperationButton>
           <div id="code-box" className="no-value">
-              {code.slice(0, 3)}-{code.slice(3, 6)}-{code.slice(6)}
+            {code.slice(0, 3)}-{code.slice(3, 6)}-{code.slice(6)}
           </div>
 
           {code !== codePlaceholder && (
@@ -174,7 +180,7 @@ const CodeValidationsBase = observer((props) => {
                 <img src={Clock}></img>
                 <div>Share the code ASAP. &nbsp;</div>
                 <span>
-                  It will expire in {60 - Math.abs(codeGenStamp - new Date().getMinutes())} min at {getOneHourAhead()}
+                    It will expire in {60 - Math.abs(codeGenStamp - new Date().getMinutes())} min at {expirationTime}
                 </span>
               </div>
 

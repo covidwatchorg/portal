@@ -56,7 +56,7 @@ export const getDay = (now = new Date()) => {
   if (day.length === 1) {
     day = '0' + day
   }
-  
+
   return year + '-' + month + '-' + day
 }
 
