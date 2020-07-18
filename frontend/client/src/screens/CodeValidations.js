@@ -17,8 +17,9 @@ const CodeValidationsBase = observer((props) => {
   const [testType, setTestType] = useState('')
   const [testDate, setTestDate] = useState('')
   const [buttonDisabled, setButtonDisabled] = useState(true)
-  const [codeGenStamp, setCodeGenStamp] = useState('')
+  // const [codeGenStamp, setCodeGenStamp] = useState('')
   const [expirationTime, setExpirationTime] = useState('')
+  const [timeLeft, setTimeLeft] = useState(60)
   const [toastInfo, setToastInfo] = useState({
     success: false,
     msg: '',
@@ -85,7 +86,7 @@ const CodeValidationsBase = observer((props) => {
     setCode(codePlaceholder)
     setTestType('')
     setTestDate('')
-    setCodeGenStamp('')
+    // setCodeGenStamp('')
   }
 
   const codeTimeStamp = () => {
@@ -93,8 +94,20 @@ const CodeValidationsBase = observer((props) => {
     document.getElementById('code-box').classList.toggle('with-value')
     document.getElementById('code-box').classList.toggle('no-value')
     document.getElementById('code-box').classList.toggle('code-generated')
-    setCodeGenStamp(new Date().getMinutes())
+    // const timeStampMinutes = new Date().getMinutes()
+    // setCodeGenStamp(timeStampMinutes)
     setExpirationTime(getOneHourAhead())
+    startCountdown()
+  }
+
+  const startCountdown = () => {
+    // this decreases thee value once but doesn't recur yet
+
+    // lots of resources online rely on lifecycle method ComponentDidMount and start the timer immediately from page load
+    // in this case we don't want to start from page load, so perhaps would be better to break timeLeft into its own component to allow for this better
+    setTimeout(() => {
+      setTimeLeft(timeLeft - 1)
+    }, 1000)
   }
 
   return !props.store.data.user.isSignedIn ||
@@ -180,7 +193,7 @@ const CodeValidationsBase = observer((props) => {
                 <img src={Clock}></img>
                 <div>Share the code ASAP. &nbsp;</div>
                 <span>
-                    It will expire in {60 - Math.abs(codeGenStamp - new Date().getMinutes())} min at {expirationTime}
+                  It will expire in {timeLeft} min at {expirationTime}
                 </span>
               </div>
 
