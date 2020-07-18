@@ -55,12 +55,14 @@ const CodeValidationsBase = observer((props) => {
     if (moreThanFourteenDaysAgo(e.target.value)) {
       setToastInfo({ success: false, msg: 'Date cannot be more than 14 days ago' })
       confirmedToast.current.show()
+      setButtonDisabled(true)
     } else if (dateInFuture(e.target.value)) {
       setToastInfo({ success: false, msg: 'Date cannot be in the future' })
       confirmedToast.current.show()
+      setButtonDisabled(true)
     } else {
       setTestDate(e.target.value)
-      if (testType !== '' && testDate === '') {
+      if (testType !== '' && testDate === '' || !dateInFuture(e.target.value) || !moreThanFourteenDaysAgo(e.target.value)) {
         setButtonDisabled(false)
       }
     }
