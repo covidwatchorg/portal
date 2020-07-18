@@ -8,7 +8,7 @@ import { observer } from 'mobx-react'
 import PageTitle from '../components/PageTitle'
 import PendingOperationButton from '../components/PendingOperationButton'
 import Clock from '../../assets/clock.svg'
-import { getOneHourAhead, getDay, getFourteenDaysAgo, moreThanFourteenDaysAgo, dateInFuture } from '../util/time'
+import { getOneHourAhead, getFourteenDaysAgo, moreThanFourteenDaysAgo, dateInFuture, getUTCDate } from '../util/time'
 
 const codePlaceholder = '00000000'
 
@@ -62,7 +62,7 @@ const CodeValidationsBase = observer((props) => {
       setButtonDisabled(true)
     } else {
       setTestDate(e.target.value)
-      if (testType !== '' && testDate === '' || !dateInFuture(e.target.value) || !moreThanFourteenDaysAgo(e.target.value)) {
+      if ((testType !== '' && testDate === '') || (testType !== '' && !dateInFuture(e.target.value)) || (testType !== '' && !moreThanFourteenDaysAgo(e.target.value))) {
         setButtonDisabled(false)
       }
     }
@@ -143,7 +143,7 @@ const CodeValidationsBase = observer((props) => {
               className="no-value"
               type="date"
               min={getFourteenDaysAgo()}
-              max={getDay()}
+              max={getUTCDate()}
               onChange={handleDate}
             ></input>
           </form>

@@ -29,13 +29,19 @@ export const getFourteenDaysAgo = () => {
   var ourDate = new Date()
 
   //Change date picker minimum to be 14 days in the past.
-  var pastDate = ourDate.getDate() - 14
+  var pastDate = ourDate.getDate() - 13
   ourDate.setDate(pastDate)
 
   return getDay(ourDate)
 }
 
-// getDay generates a string formatted date
+// gets a current timestamp of the UTC time as a string:
+// ex: "2020-07-02"
+export const getUTCDate = () => {
+  return new Date().toJSON().substring(0, 10)
+}
+
+// getDay generates a string formatted date based on a date input
 // ex: "2020-07-16"
 export const getDay = (now = new Date()) => {
   const year = now.getFullYear().toString()
@@ -50,16 +56,18 @@ export const getDay = (now = new Date()) => {
   if (day.length === 1) {
     day = '0' + day
   }
-
+  
   return year + '-' + month + '-' + day
 }
 
 // is this date more than 14 days ago?
 export const moreThanFourteenDaysAgo = (strChosenDate) => {
   let chosenDate = new Date(strChosenDate)
-  let fourteenDaysAgo = new Date()
-  fourteenDaysAgo.setDate(fourteenDaysAgo.getDate() - 14)
-  return chosenDate < fourteenDaysAgo
+  // adding + 1 to the chosenDate is necessary bc the way new Date() takes in a string seems to move it one date less on the returned Date
+  chosenDate.setDate(chosenDate.getDate() + 1)
+  let now = new Date()
+  now.setDate(now.getDate() - 14)
+  return chosenDate < now
 }
 
 // is this date in the future?
