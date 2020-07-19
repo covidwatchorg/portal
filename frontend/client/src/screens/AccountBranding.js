@@ -16,7 +16,7 @@ const AccountBrandingBase = observer((props) => {
     <div className="module-container" id="mobile-application-settings">
       <PageTitle title="Mobile Application Settings" />
       <h1>Mobile Application Settings</h1>
-      <p>
+      <p className="small-text">
         The settings on this page are for the Covid Watch mobile application and can only be edited by organization
         administrators. Edits made on this page will modify the content of the app, so please review all changes
         carefully before submitting them to application development review. Visit the{' '}
@@ -28,7 +28,7 @@ const AccountBrandingBase = observer((props) => {
           <span>This page is in progress.</span>
           <div>
             To edit your account settings and customize the messaging mobile app users receive in your region,
-            <br></br> 
+            <br></br>
             get in touch with your Covid Watch point of contact.
           </div>
         </div>

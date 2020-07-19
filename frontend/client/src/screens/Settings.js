@@ -16,12 +16,9 @@ import ResetPasswordModal from '../components/ResetPasswordModal'
 
 const useStyles = makeStyles({
   root: {
-    fontFamily: 'Montserrat',
-    fontSize: 24,
-    fontStyle: 'normal',
-    fontWeight: 'bolder',
-    color: '#383838',
-    marginTop: 20,
+    fontWeight: 500,
+    fontSize: 18,
+    marginTop: 10,
     padding: 40,
     paddingLeft: 8,
   },
@@ -29,15 +26,13 @@ const useStyles = makeStyles({
 
 const inputStyles = makeStyles({
   root: {
-    fontFamily: 'Montserrat',
-    boxShadow: 'inset 0px 2px 10px rgba(0, 0, 0, 0.2)',
-    borderRadius: 5,
+    lineHeight: '16px',
+    borderRadius: 4,
     border: '2px solid #BDBDBD',
+    boxSizing: 'border-box',
     paddingLeft: 10,
     width: '75%',
     height: 40,
-    lineHeight: 30,
-    fontSize: 18,
     marginTop: 25,
     marginBottom: 40,
   },
@@ -45,7 +40,6 @@ const inputStyles = makeStyles({
 
 const secondaryButtonStyles = makeStyles({
   root: {
-    fontFamily: 'Montserrat',
     color: '#2C58B1',
     width: '195px',
     height: 35,
@@ -192,10 +186,10 @@ const SettingsBase = observer((props) => {
                   style={{ width: '212px', height: '217px' }}
                 ></img>
               </div>
-              <div style={{ marginTop: '15px', fontSize: '12px', fontWeight: 'normal', color: '#383838' }}>
+              <div className="xs-text" style={{ marginTop: '15px' }}>
                 Accepted file types: jpg or png
               </div>
-              <div style={{ fontSize: '12px', fontWeight: 'normal', color: '#383838' }}>Maximum file size: 10 MB</div>
+              <div className="xs-text">Maximum file size: 10 MB</div>
               <button onClick={() => setOpen(true)} type="button" className={secondaryButton.root}>
                 Change Image
               </button>
@@ -242,7 +236,7 @@ const SettingsBase = observer((props) => {
                 disabled={true}
                 aria-required="true"
                 className={input.root}
-                style={{ backgroundColor: '#f0f0f0' }}
+                style={{ backgroundColor: '#e0e0e0' }}
                 value={props.store.data.user.email}
               ></input>
             </Grid>
@@ -260,7 +254,7 @@ const SettingsBase = observer((props) => {
                   required
                   aria-required="true"
                   className={input.root}
-                  style={{ backgroundColor: '#f0f0f0' }}
+                  style={{ backgroundColor: '#e0e0e0' }}
                   value={props.store.data.user.isAdmin ? ROLES.ADMIN_LABEL : ROLES.NON_ADMIN_LABEL}
                 >
                   <option value={ROLES.ADMIN_LABEL} defaultValue={props.store.data.user.isAdmin}>
@@ -287,7 +281,7 @@ const SettingsBase = observer((props) => {
                 type="text"
                 id="password"
                 name="password"
-                style={{ backgroundColor: '#f0f0f0', fontSize: '30px' }}
+                style={{ backgroundColor: '#e0e0e0', fontSize: '30px' }}
                 disabled={true}
                 required
                 aria-required="true"
@@ -325,9 +319,9 @@ const SettingsBase = observer((props) => {
     <React.Fragment>
       <PageTitle title="My Settings" />
       <div className="module-container">
-        <div className="header">
+        <div>
           <h1>My Settings</h1>
-          <p>Changes are automatically saved</p>
+          <p className="xs-text">Changes are automatically saved</p>
         </div>
         {settingsForm()}
         <ResetPasswordModal

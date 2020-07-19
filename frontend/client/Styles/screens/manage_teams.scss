@@ -20,10 +20,7 @@ table {
     th {
       padding: 5px 10px;
       background-color: #e0e0e0;
-      font-family: Montserrat;
-      font-style: normal;
       font-weight: 600;
-      font-size: 14px;
       border: 1px solid #828282;
       text-align: left;
     }
@@ -31,10 +28,6 @@ table {
     td {
       padding: 5px 10px;
       background-color: #ffffff;
-      font-family: Montserrat;
-      font-style: normal;
-      font-weight: normal;
-      font-size: 14px;
       border: 1px solid #828282;
       .custom-select {
         width: 100%;
@@ -53,14 +46,10 @@ table {
           -webkit-appearance: none;
           -moz-appearance: none;
           -ms-appearance: none;
-          font-family: Montserrat;
-          font-style: normal;
           font-weight: normal;
-          font-size: 14px;
           line-height: 34px;
           background-color: #ffffff;
           border-radius: 0;
-          color: #383838;
           -webkit-appearance: none;
           -moz-appearance: none;
           -ms-appearance: none;
@@ -79,11 +68,6 @@ table {
         flex-direction: row;
         justify-content: space-between;
         a {
-          font-family: Montserrat;
-          font-style: normal;
-          font-weight: normal;
-          font-size: 12px;
-          line-height: 18px;
           color: #2c58b1;
         }
         a:hover {
@@ -102,7 +86,6 @@ table {
   align-items: center;
   margin: 33px 0;
   font-weight: 600;
-  font-size: 14px;
   line-height: 18px;
   .pages-container {
     display: flex;

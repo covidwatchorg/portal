@@ -1,24 +1,8 @@
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800&display=swap');
 
   #diagnosis-codes {
-    h1 {
-      font-family: Montserrat;
-      font-style: normal;
-      font-weight: 600;
-      font-size: 32px;
-      line-height: 40px;
-      display: flex;
-      align-items: center;
-      color: #383838;
-    }
-
     h2 {
-      font-family: Montserrat;
-      font-style: normal;
-      font-weight: 600;
       font-size: 16px;
-      line-height: 30px;
-      color: #383838;
       margin-bottom: 60px;
     }
 
@@ -31,22 +15,10 @@
         margin-right: 50px;
 
         .sect-header {
-          font-family: Montserrat;
-          font-style: normal;
-          font-weight: 600;
           font-size: 16px;
-          line-height: 20px;
-          color: #383838;
+          font-weight: 600;
         }
   
-        p {
-          font-family: Montserrat;
-          font-style: normal;
-          font-weight: normal;
-          font-size: 14px;
-          line-height: 20px;
-          color: #383838;
-        }
       }
       .col-2 {
         width: 50%;
@@ -67,21 +39,13 @@
           margin-bottom: 20px;
 
           .col-2-header {
-            font-family: Montserrat;
-            font-style: normal;
             font-weight: 600;
             font-size: 16px;
             line-height: 16px;
-            color: #383838;
             margin-bottom: 6px;
           }
   
           .col-2-sub-header {
-            font-family: Montserrat;
-            font-style: normal;
-            font-weight: normal;
-            font-size: 14px;
-            line-height: 20px;
             color: #828282;
           }
         }
@@ -91,7 +55,6 @@
           border: 1px solid #BDBDBD;
           box-sizing: border-box;
           border-radius: 4px;
-          font-family: Montserrat;
           font-size: 28px;
           line-height: 28px;
           padding: 20px;
@@ -107,21 +70,10 @@
 
         .date-desc {
           margin-top: 10px;
-          font-family: Montserrat;
-          font-style: normal;
-          font-weight: normal;
-          font-size: 14px;
-          line-height: 20px;
-          color: #383838;
         }
 
         .date-sub-desc {
-          font-family: Montserrat;
-          font-style: normal;
           font-weight: 600;
-          font-size: 14px;
-          line-height: 20px;
-          color: #383838;
         }
 
         #date-picker {
@@ -131,7 +83,6 @@
           // width is the same as the button
           width: 350px;
           padding: 9px 20px 9px 20px;
-          font-family: Montserrat;
           font-size: 16px;
           line-height: 16px;
         }
@@ -147,14 +98,10 @@
         // no-value and with-value control the Code and Date changing colors
         .no-value {
           color:#BDBDBD;
-          font-weight: normal;
-          font-style: italic;
         }
 
         .with-value {
-          color: #383838;
           font-weight: 600;
-          font-style: normal;
         }
 
         //governs the background change of the Code Box once it has a generated value there
@@ -175,18 +122,6 @@
 
         img {
           margin-right: 10px;
-        }
-
-        div, span {
-          font-family: Montserrat;
-          font-style: normal;
-          font-weight: normal;
-          font-size: 14px;
-          line-height: 20px;
-        }
-        
-        div {
-          color: #383838;
         }
 
         span {

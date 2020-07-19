@@ -41,10 +41,9 @@ class Toast extends React.Component {
         <SnackbarContent
           style={{
             backgroundColor: this.props.isSuccess ? '#43C4D9' : '#F05452',
-            fontFamily: 'Montserrat',
             width: '100vw',
-            fontSize: '24px',
-            lineHeigh: '29px',
+            fontSize: '18px',
+            lineHeight: '22px',
             fontWeight: '600',
             display: 'flex',
             justifyContent: 'center',

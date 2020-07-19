@@ -18,9 +18,9 @@ You can see how our mobile app and permission portal work together in the quick 
 - then `npm run git-info`
 - then `npm run start:dev`
 
-At `http://localhost:8080/` you should now see the Permissions Portal login screen.  
+At `http://localhost:3000/` you should now see the Permissions Portal login screen.  
 
-Ask the other contributors in our Slack for log in information.  If you are not in our Slack group and would like to contribute, fill out our new volunteer form so we understand your experience, background and interests and you will be let into our Slack group.  Go to the #permissions-portal-frontend channel to discuss the Permission Portal.
+Ask the other contributors in our Slack for log in information.  If you are not in our Slack group and would like to contribute, fill out our new volunteer form so we understand your experience, background and interests and you will be let into our Slack group.  Go to the #portal-dev channel to discuss the Permission Portal.
 
 Any inquiries please email contact@covidwatch.org.
 

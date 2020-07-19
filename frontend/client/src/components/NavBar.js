@@ -24,10 +24,7 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 const linkStyles = {
-  textDecoration: 'none',
-  fontFamily: 'Montserrat',
   color: '#2c58b1',
-  fontSize: 20,
 }
 
 const NavBarBase = observer((props) => {
@@ -55,7 +52,7 @@ const NavBarBase = observer((props) => {
 
   const LoggedInIcons = (
     <div id="logged-in-icons-container">
-      <div className="avatar_group avatar_text">
+      <div className="small-text avatar_group avatar_text">
         <div className="name">{props.store.data.user.firstName + ' ' + props.store.data.user.lastName}</div>
         <div className="title">{props.store.data.user.isAdmin ? ROLES.ADMIN_LABEL : ROLES.NON_ADMIN_LABEL}</div>
       </div>
