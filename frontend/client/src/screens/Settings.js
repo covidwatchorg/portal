@@ -183,13 +183,20 @@ const SettingsBase = observer((props) => {
                   backgroundColor: '#E0E0E0',
                   border: '2px dashed #828282',
                   textAlign: 'center',
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
                 }}
               >
                 <img
                   alt={props.store.data.user.imageBlob ? 'Profile photo' : 'Your profile photo would go here.'}
                   src={props.store.data.user.imageBlob ? props.store.data.user.imageBlob : photo_add}
                   className="profile_photo"
-                  style={{ width: '212px', height: '217px' }}
+                  style={
+                    props.store.data.user.imageBlob
+                      ? { width: 212, height: 217, resize: 'cover' }
+                      : { width: 100, height: 102, paddingLeft: 10, paddingTop: 10 }
+                  }
                 ></img>
               </div>
               <div style={{ marginTop: '15px', fontSize: '12px', fontWeight: 'normal', color: '#383838' }}>
