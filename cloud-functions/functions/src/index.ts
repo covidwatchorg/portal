@@ -454,8 +454,6 @@ export const getVerificationCode = functions.https.onCall(async (issueCodeReques
           const response = await axios.post(url, issueCodeRequest, {
             headers: { 'X-API-Key': functions.config().verification_server.key },
           });
-          console.log('It worked!');
-          console.log(response.data);
           resolve(response.data.code);
         } catch (err) {
           reject(err);
