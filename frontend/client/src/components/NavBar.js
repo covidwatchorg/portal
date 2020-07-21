@@ -21,11 +21,16 @@ const useStyles = makeStyles((theme) => ({
   title: {
     flexGrow: 1,
   },
+  link: {
+    marginTop: 20,
+    paddingLeft: 30,
+    paddingRight: 30,
+    fontFamily: 'Montserrat',
+    fontSize: 18,
+    fontWeight: 500,
+    color: '#2c58b1',
+  },
 }))
-
-const linkStyles = {
-  color: '#2c58b1',
-}
 
 const NavBarBase = observer((props) => {
   const classes = useStyles()
@@ -83,23 +88,23 @@ const NavBarBase = observer((props) => {
         open={open}
         onClose={handleClose}
       >
-        <MenuItem style={linkStyles} onClick={() => onClickMenuItem(0)}>
+        <MenuItem className={classes.link} style={{ marginTop: 22 }} onClick={() => onClickMenuItem(0)}>
           Positive Test Validations
         </MenuItem>
         {props.store.data.user.isAdmin && (
-          <MenuItem style={linkStyles} onClick={() => onClickMenuItem(1)}>
+          <MenuItem className={classes.link} onClick={() => onClickMenuItem(1)}>
             Manage Members
           </MenuItem>
         )}
         {props.store.data.user.isAdmin && (
-          <MenuItem style={linkStyles} onClick={() => onClickMenuItem(2)}>
+          <MenuItem className={classes.link} onClick={() => onClickMenuItem(2)}>
             Mobile App Settings
           </MenuItem>
         )}
-        <MenuItem style={linkStyles} onClick={() => onClickMenuItem(3)}>
+        <MenuItem className={classes.link} onClick={() => onClickMenuItem(3)}>
           My Settings
         </MenuItem>
-        <MenuItem style={linkStyles} onClick={() => onClickMenuItem(4)}>
+        <MenuItem className={classes.link} style={{ marginBottom: 22 }} onClick={() => onClickMenuItem(4)}>
           Logout
         </MenuItem>
       </Menu>
