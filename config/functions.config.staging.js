@@ -1,6 +1,6 @@
 var config = {
   client: {
-    url: "http://localhost:3000/",
+    url: "https://staging-permissions.covidwatch.org/",
   },
   sendgrid: {
     key: process.env.SENDGRID_API_KEY,
