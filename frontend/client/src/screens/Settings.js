@@ -16,8 +16,6 @@ import ResetPasswordModal from '../components/ResetPasswordModal'
 
 const useStyles = makeStyles({
   root: {
-    fontWeight: 500,
-    fontSize: 18,
     marginTop: 10,
     padding: 40,
     paddingLeft: 8,
@@ -30,7 +28,6 @@ const inputStyles = makeStyles({
     borderRadius: 4,
     border: '2px solid #BDBDBD',
     boxSizing: 'border-box',
-    paddingLeft: 10,
     width: '75%',
     height: 40,
     marginTop: 25,

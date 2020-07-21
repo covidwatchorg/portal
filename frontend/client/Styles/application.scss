@@ -46,10 +46,17 @@ h3 {
 }
 
 input {
+  width: 390px;
+  height: 40px;
+  border: 1px solid #bdbdbd;
+  border-radius: 4px;
+  box-sizing: border-box;
   font-family: Montserrat;
   font-size: 16px;
   font-weight: normal;
+  line-height: 16px;
   color: #383838;
+  padding-left: 20px;
 }
 
 select {
@@ -57,6 +64,11 @@ select {
   font-size: 14px;
   font-weight: normal;
   color: #383838;
+}
+
+label {
+  font-size: 18px;
+  font-weight: 500;
 }
 
 .small-text{

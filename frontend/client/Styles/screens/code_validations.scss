@@ -26,6 +26,8 @@
         flex-direction: column;
 
         .radio-input {
+          max-width: 16px;
+          max-height: 16px;
           transform: scale(1.23);
           margin-right: 20px;
         }
@@ -77,14 +79,9 @@
         }
 
         #date-picker {
-          border: 1px solid #BDBDBD;
-          box-sizing: border-box;
-          border-radius: 4px;
           // width is the same as the button
           width: 350px;
           padding: 9px 20px 9px 20px;
-          font-size: 16px;
-          line-height: 16px;
         }
 
         // to be refactored later to make buttons more consistent.  See button.scss
