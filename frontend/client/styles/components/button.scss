@@ -1,9 +1,5 @@
 @import '../color.scss';
 
-// Common colors
-$dark-blue: #2c58b1;
-$dark-gray: #727272;
-
 // Common button class
 .button {
   border-radius: 4px;
@@ -55,29 +51,22 @@ $dark-gray: #727272;
 
 // Blue background
 .btn-primary {
-  background: $dark-blue;
+  background: $bluejay;
   color: $white;
-  border-color: $dark-blue;
+  border-color: $bluejay;
 }
 
 // Blue text, blue border
 .btn-secondary {
   background-color: $white;
-  color: $dark-blue;
-  border-color: $dark-blue;
+  color: $bluejay;
+  border-color: $bluejay;
 }
 
 // Blue text, gray border
 .btn-tertiary {
   background-color: $white;
-  color: $dark-blue;
-  border-color: $lightMediumGray;
-}
-
-// Gray text, gray border
-.btn-gray {
-  background-color: $white;
-  color: $dark-gray;
+  color: $bluejay;
   border-color: $lightMediumGray;
 }
 
