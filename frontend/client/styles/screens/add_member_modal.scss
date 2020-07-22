@@ -1,3 +1,5 @@
+@import '../color.scss';
+
 .add-member-modal-container {
   width: 450px;
   height: 600px;
@@ -49,7 +51,7 @@
     margin-left: 48px;
     width: 350px;
     height: 40px;
-    border: 2px solid #bdbdbd;
+    border: 2px solid $lightMediumGray;
     border-radius: 7px;
     font-size: 16px;
     padding-left: 20px;

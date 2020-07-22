@@ -10,7 +10,7 @@
   .row {
     display: flex;
     margin-bottom: 60px;
-    
+
     .col-1 {
       width: 30%;
       margin-right: 50px;
@@ -19,7 +19,6 @@
         font-size: 16px;
         font-weight: 600;
       }
-
     }
     .col-2 {
       width: 50%;
@@ -55,7 +54,7 @@
 
       #code-box {
         margin-top: 40px;
-        border: 1px solid #BDBDBD;
+        border: 1px solid $lightMediumGray;
         box-sizing: border-box;
         border-radius: 4px;
         font-size: 28px;
@@ -95,7 +94,7 @@
 
       // no-value and with-value control the Code and Date changing colors
       .no-value {
-        color:#BDBDBD;
+        color: $lightMediumGray;
       }
 
       .with-value {
@@ -104,8 +103,8 @@
 
       //governs the background change of the Code Box once it has a generated value there
       .code-generated {
-        background: #BBCCEE;
-        opacity: 0.7;   
+        background: #bbccee;
+        opacity: 0.7;
         // the opacity and .with-value color interact in a way that dilutes the color so setting the color to black appears to have the desired effect
         color: black;
       }
@@ -123,9 +122,8 @@
       }
 
       span {
-        color: #F05452;
+        color: #f05452;
       }
-
     }
   }
 }
