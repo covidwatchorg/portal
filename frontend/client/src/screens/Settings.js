@@ -140,7 +140,7 @@ const SettingsBase = observer((props) => {
   const onChangePasswordSuccess = () => {
     setToastInfo({
       success: true,
-      msg: 'Password Succesfully Reset',
+      msg: 'Success: Password Reset',
     })
     toastRef.current.show()
     setShowResetPasswordModal(false)
