@@ -148,9 +148,9 @@ const CodeValidationsBase = observer((props) => {
         </form>
       </div>
 
-      <div className="row" id="test-date-form">
+      <div className="row" id="onset-date-form">
         <div className="col-1">
-          <div className="sect-header">Test Date</div>
+          <div className="sect-header">Symptom Onset Date</div>
           <p>The date must be within the past 14 days</p>
         </div>
         <div className="col-2">
