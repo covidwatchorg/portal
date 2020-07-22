@@ -11,9 +11,15 @@ const Footer = () => {
         </div>
         <div id="footer-text">
           <p id="copyright">© 2020 Covid Watch. All rights reserved.</p>
-          <a href="https://covidwatch.org/covid_watch_privacy_policy.pdf">Privacy Policy</a>
-          <a href="url">Terms of Use</a>
-          <a href="url">Support</a>
+          <a target="_blank" href="https://covidwatch.org/covid_watch_privacy_policy.pdf" rel="noreferrer">
+            Privacy Policy
+          </a>
+          <a target="_blank" href="url" rel="noreferrer">
+            Terms of Use
+          </a>
+          <a target="_blank" href="https://covidwatch.org/get_support" rel="noreferrer">
+            Support
+          </a>
         </div>
       </div>
     </div>
