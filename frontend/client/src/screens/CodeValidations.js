@@ -113,7 +113,7 @@ const CodeValidationsBase = observer((props) => {
     (props.store.data.user.passwordResetRequested && props.store.data.user.signedInWithEmailLink) ? (
     <Redirect to={ROUTES.LANDING} />
   ) : (
-      <div className="module-container module-container-not-login" id="diagnosis-codes">
+    <div className="module-container" id="diagnosis-codes">
       <PageTitle title="Diagnosis Verification Codes" />
       <h1>Diagnosis Verification Codes</h1>
       <h2>Submit this form when you are prepared to generate and immediately share the code with a patient.</h2>

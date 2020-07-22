@@ -96,7 +96,7 @@ const ManageTeamsBase = observer((props) => {
     (props.store.data.user.passwordResetRequested && props.store.data.user.signedInWithEmailLink) ? (
     <Redirect to={ROUTES.LANDING} />
   ) : (
-      <div className="module-container module-container-not-login">
+    <div className="module-container">
       <PageTitle title="Manage Members" />
       <h1>Manage Members</h1>
       <button className="button btn-medium btn-tertiary add-member-button" onClick={() => setShowAddMemberModal(true)}>

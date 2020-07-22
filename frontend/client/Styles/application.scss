@@ -98,8 +98,9 @@ a {
   display: flex;
   flex-direction: column;
   align-items: stretch;
+  padding-right: 101px;
 }
 
-.module-container-not-login {
-  padding-right: 101px;
+.module-container-login{
+    padding-right: 0px;
 }
