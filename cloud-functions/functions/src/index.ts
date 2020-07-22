@@ -177,8 +177,8 @@ function sendNewUserEmail(email: string, password: string, firstName: string, la
     .then((link) => {
       const msg = {
         to: email,
-        from: 'welcome@covid-watch.org',
-        subject: 'Welcome to the Covid Watch Permission Portal',
+        from: 'noreply@covidwatch.org',
+        subject: 'Welcome to the Covid Watch Portal',
         html: `
     <!DOCTYPE html>
     <p ${EMAILSTYLE}>${firstName} ${lastName},</p>
@@ -186,8 +186,8 @@ function sendNewUserEmail(email: string, password: string, firstName: string, la
     <p ${EMAILSTYLE}><b>Your user name:</b> ${email}<br />  <b>Your temporary password:</b> ${password}</p>
     <p ${EMAILSTYLE}>Please click the following link or copy and paste it into your browser to sign in to your new account:</p>
     <p ${EMAILSTYLE}><a href=${link}>Sign In</a></p>
-    <p ${EMAILSTYLE}>If you recieved this message in error, you can safely ignore it.</p>
-    <p ${EMAILSTYLE}>You can reply to this message, or email support@covid-watch.org if you have any questions.</p>
+    <p ${EMAILSTYLE}>If you received this message in error, you can safely ignore it.</p>
+    <p ${EMAILSTYLE}>You can reply to this message, or email support@covidwatch.org if you have any questions.</p>
     <p ${EMAILSTYLE}>Thank you,<br />Covid Watch Team</p> `,
       };
       sgMail
@@ -210,7 +210,7 @@ function sendPasswordRecoveryEmail(email: string) {
     .then((link) => {
       const msg = {
         to: email,
-        from: 'recovery@covid-watch.org',
+        from: 'noreply@covidwatch.org',
         subject: 'Password Recovery Requested',
         html: `
         <!DOCTYPE html>
@@ -245,8 +245,8 @@ function sendPasswordResetEmail(email: string) {
     .then((pwdResetLink) => {
       const msg = {
         to: email,
-        from: 'password-reset@covid-watch.org',
-        subject: 'Covid Watch Permission Portal password reset',
+        from: 'noreply@covidwatch.org',
+        subject: 'Covid Watch Portal password reset',
         html: `
         <p>You are recieving this email because somebody requested a password reset for the account associated with this email address.</p>
         <p>To reset your password, click the link below</p>
