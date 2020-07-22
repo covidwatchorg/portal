@@ -187,7 +187,7 @@ function sendNewUserEmail(email: string, password: string, firstName: string, la
     <p ${EMAILSTYLE}>Please click the following link or copy and paste it into your browser to sign in to your new account:</p>
     <p ${EMAILSTYLE}><a href=${link}>Sign In</a></p>
     <p ${EMAILSTYLE}>If you received this message in error, you can safely ignore it.</p>
-    <p ${EMAILSTYLE}>You can reply to this message, or email support@covidwatch.org if you have any questions.</p>
+    <p ${EMAILSTYLE}>If you have questions, please email support@covidwatch.org.</p>
     <p ${EMAILSTYLE}>Thank you,<br />Covid Watch Team</p> `,
       };
       sgMail
