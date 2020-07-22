@@ -9,6 +9,7 @@ const RoleSelector = observer((props) => {
   return props.store.data.organization.members[props.memberIndex] ? (
     <div className="custom-select">
       <select
+        style={{ WebkitAppearance: 'none', MozAppearance: 'none' }}
         onChange={props.onChange}
         value={
           props.store.data.organization.members[props.memberIndex].isAdmin === true
@@ -24,6 +25,7 @@ const RoleSelector = observer((props) => {
     // Else, programmer should pass isAdmin as a prop, and base the default value of the selector on props.isAdmin
     <div className="custom-select">
       <select
+        style={{ WebkitAppearance: 'none', MozAppearance: 'none' }}
         onChange={props.onChange}
         id={props.id || null}
         aria-labelledby={props.ariaLabelledBy || null}

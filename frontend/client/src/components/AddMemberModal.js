@@ -6,6 +6,7 @@ import * as ROLES from '../constants/roles'
 import { withStore } from '../store'
 import { observer } from 'mobx-react'
 import validateEmail from '../util/validateEmail'
+import '../../styles/screens/add_member_modal.scss' // NOTE: see note in index.scss
 
 const ValidationResult = (succeeded, failureReason) => {
   return {
@@ -147,7 +148,9 @@ const AddMemberModalBase = observer((props) => {
         <label htmlFor="role" style={{ marginTop: state.emailValidationFailed ? '6px' : null }}>
           Role<span>*</span>
         </label>
+        {/* <div className="custom-select"> */}
         <RoleSelector isAdmin={false} id="role" required={true} onChange={handleChange} />
+        {/* </div> */}
         {state.roleValidationFailed && <div className="validationResult">{state.roleValidationMessage}</div>}
         <div className="save-button-container">
           <PendingOperationButton className="save-button" operation={tryCreateUser}>

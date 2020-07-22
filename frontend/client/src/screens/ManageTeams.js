@@ -13,7 +13,7 @@ import PageTitle from '../components/PageTitle'
 import Logging from '../util/logging'
 import ChangeRoleModal from '../components/ChangeRoleModal'
 import ChangeStatusModal from '../components/ChangeStatusModal'
-import '../../styles/screens/manage_teams.scss' // NOTE: only necessary for this file, see note in index.scss
+import '../../styles/screens/manage_teams.scss' // NOTE: see note in index.scss
 
 const ManageTeamsBase = observer((props) => {
   const userEmail = props.store.data.user.email
