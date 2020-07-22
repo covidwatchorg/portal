@@ -60,7 +60,7 @@ const NavBarBase = observer((props) => {
         <div className="title">{props.store.data.user.isAdmin ? ROLES.ADMIN_LABEL : ROLES.NON_ADMIN_LABEL}</div>
       </div>
       <div className="avatar_group avatar_image">
-        <Link to='/settings'>
+        <Link to="/settings">
           <img
             src={props.store.data.user.imageBlob ? props.store.data.user.imageBlob : profile}
             className="profile_photo"
