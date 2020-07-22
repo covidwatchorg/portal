@@ -269,8 +269,6 @@ const SettingsBase = observer((props) => {
                 style={{
                   fontSize: '12px',
                   fontWeight: '500',
-                  color: '#2C58B1',
-                  textDecoration: 'none',
                   textAlign: 'end',
                   marginTop: -25,
                   marginRight: '26%',

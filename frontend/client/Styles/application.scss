@@ -12,6 +12,9 @@
 @import 'components/modal';
 @import 'components/profile_photo';
 
+$gray: #383838;
+$blue: #2C58B1;
+
 .hidden {
   display: none;
 }
@@ -24,7 +27,7 @@ body {
   font-size: 14px;
   font-weight: normal;
   line-height: 20px;
-  color: #383838;
+  color: $gray;
 }
 
 h1 {
@@ -56,7 +59,7 @@ input {
   font-size: 16px;
   font-weight: normal;
   line-height: 16px;
-  color: #383838;
+  color: $gray;
   padding-left: 20px;
 }
 
@@ -64,12 +67,17 @@ select {
   font-family: Montserrat;
   font-size: 14px;
   font-weight: normal;
-  color: #383838;
+  color: $gray;
 }
 
 label {
   font-size: 18px;
   font-weight: 500;
+}
+
+a {
+  color: $blue;
+  text-decoration: none;
 }
 
 .small-text{
