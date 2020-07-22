@@ -1,6 +1,6 @@
 .changeImageModalContainer {
   height: 160px;
-  width: 400px;
+  width: 450px;
   padding: 20px;
 
   .modal-content {
@@ -9,20 +9,10 @@
     align-items: center;
     margin-top: -15px;
 
-    p {
-      font-size: 18px;
-    }
-
     input {
       border-width: 0px;
       margin-top: 15px;
+      margin-bottom: 15px;
     }
-  }
-
-  .save-button {
-    width: 200px;
-    height: 30px;
-    padding: 0;
-    margin-top: 30px;
   }
 }

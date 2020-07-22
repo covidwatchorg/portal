@@ -30,26 +30,8 @@ const inputStyles = makeStyles({
     boxSizing: 'border-box',
     width: '75%',
     height: 40,
-    marginTop: 25,
+    marginTop: 10,
     marginBottom: 40,
-  },
-})
-
-const secondaryButtonStyles = makeStyles({
-  root: {
-    color: '#2C58B1',
-    width: '195px',
-    height: 35,
-    fontSize: '18px',
-    fontWeight: '600',
-    padding: '5px',
-    border: '2px solid #BDBDBD',
-    borderRadius: '7px',
-    backgroundColor: '#ffffff',
-    marginTop: 25,
-    '&:hover': {
-      cursor: 'pointer',
-    },
   },
 })
 
@@ -59,7 +41,6 @@ const SettingsBase = observer((props) => {
   const input = inputStyles()
   const imgUploader = useRef()
 
-  const secondaryButton = secondaryButtonStyles()
   const [open, setOpen] = useState(false)
   const [showResetPasswordModal, setShowResetPasswordModal] = useState(false)
   const [toastInfo, setToastInfo] = useState({
@@ -151,9 +132,9 @@ const SettingsBase = observer((props) => {
 
   const changeImageModal = (
     <div className="modal-content">
-      <p> Please Select a File to Upload </p>
+      <h3> Please Select a File to Upload </h3>
       <input type="file" ref={imgUploader} accepts="image/jpeg, image/png" />
-      <PendingOperationButton operation={saveImage} className="save-button">
+      <PendingOperationButton operation={saveImage} className="btn-medium">
         Upload
       </PendingOperationButton>
     </div>
@@ -165,14 +146,14 @@ const SettingsBase = observer((props) => {
         <Grid container className={classes.root} spacing={2} direction="row" justify="center">
           <Grid item xs={4} xl={2}>
             <Grid container spacing={2} direction="column">
-              Profile Photo
+              <label> Profile Photo </label>
               <div
                 style={{
                   marginTop: '25px',
                   height: '217px',
                   width: '212px',
                   backgroundColor: '#E0E0E0',
-                  border: '2px dashed #828282',
+                  border: '2px dashed #BDBDBD',
                   textAlign: 'center',
                   display: 'flex',
                   justifyContent: 'center',
@@ -188,15 +169,13 @@ const SettingsBase = observer((props) => {
                       ? { width: 212, height: 217, resize: 'cover' }
                       : { width: 100, height: 102, paddingLeft: 10, paddingTop: 10 }
                   }
+                  onClick={() => setOpen(true)}
                 ></img>
               </div>
-              <div className="xs-text" style={{ marginTop: '15px' }}>
-                Accepted file types: jpg or png
+              <div className="xs-text" style={{ marginTop: 10 }}>
+                Accepted file format: jpg or png
               </div>
               <div className="xs-text">Maximum file size: 10 MB</div>
-              <button onClick={() => setOpen(true)} type="button" className={secondaryButton.root}>
-                Change Image
-              </button>
               <Modal
                 hidden={!open}
                 onClose={() => {
@@ -250,7 +229,7 @@ const SettingsBase = observer((props) => {
             <Grid container spacing={2} direction="column">
               <label htmlFor="role">Role</label>
               {props.store.data.user && (
-                <select
+                <input
                   type="text"
                   id="role"
                   name="role"
@@ -260,14 +239,7 @@ const SettingsBase = observer((props) => {
                   className={input.root}
                   style={{ backgroundColor: '#e0e0e0' }}
                   value={props.store.data.user.isAdmin ? ROLES.ADMIN_LABEL : ROLES.NON_ADMIN_LABEL}
-                >
-                  <option value={ROLES.ADMIN_LABEL} defaultValue={props.store.data.user.isAdmin}>
-                    {ROLES.ADMIN_LABEL}
-                  </option>
-                  <option value={ROLES.NON_ADMIN_LABEL} defaultValue={!props.store.data.user.isAdmin}>
-                    {ROLES.NON_ADMIN_LABEL}
-                  </option>
-                </select>
+                ></input>
               )}
               <label htmlFor="lastName">Last Name</label>
               <input
@@ -301,7 +273,7 @@ const SettingsBase = observer((props) => {
                   textDecoration: 'none',
                   textAlign: 'end',
                   marginTop: -25,
-                  marginRight: '21%',
+                  marginRight: '26%',
                 }}
                 onClick={(e) => resetPassword(e)}
               >
@@ -324,7 +296,7 @@ const SettingsBase = observer((props) => {
       <PageTitle title="My Settings" />
       <div className="module-container">
         <div>
-          <h1>My Settings</h1>
+          <h1 style={{ marginBottom: 12 }}>My Settings</h1>
           <p className="xs-text">Changes are automatically saved</p>
         </div>
         {settingsForm()}
