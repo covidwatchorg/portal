@@ -1,5 +1,4 @@
 import React from 'react'
-import '../../Styles/screens/branding.scss'
 import { withStore } from '../store'
 import { Redirect } from 'react-router-dom'
 import * as ROUTES from '../constants/routes'

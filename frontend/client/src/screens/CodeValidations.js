@@ -1,6 +1,5 @@
 import React, { useState, createRef, useEffect } from 'react'
 import Toast from '../components/Toast'
-import '../../Styles/screens/code_validations.scss'
 import * as ROUTES from '../constants/routes'
 import { withStore } from '../store'
 import { Redirect } from 'react-router-dom'

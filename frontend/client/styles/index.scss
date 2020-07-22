@@ -1,15 +1,21 @@
 // Import all other styles here and then import this file in index.js
-@import 'application';
-@import 'screens/login';
-@import 'screens/settings';
-@import 'screens/add_member_modal';
-@import 'screens/forgot_password_modal';
-@import 'screens/change_password_modal';
-@import 'screens/change_role_modal';
-@import 'screens/change_status_modal';
-@import 'components/footer';
-@import 'components/navbar';
-@import 'components/toast';
-@import 'components/button';
-@import 'components/modal';
-@import 'components/profile_photo';
+
+// NOTE: @import './screens/manage_teams.scss is omitted, because it uses a `background: url('*.svg')`, which for some reason
+// is extremely difficult and convoluted to get webpack to handle. It's instead imported directly in ManageTeams.js
+
+@import './application.scss';
+@import './screens/login.scss';
+@import './screens/settings.scss';
+@import './screens/add_member_modal.scss';
+@import './screens/forgot_password_modal.scss';
+@import './screens/change_password_modal.scss';
+@import './screens/change_role_modal.scss';
+@import './screens/change_status_modal.scss';
+@import './screens/code_validations.scss';
+@import './screens/branding.scss';
+@import './components/footer.scss';
+@import './components/navbar.scss';
+@import './components/toast.scss';
+@import './components/button.scss';
+@import './components/modal.scss';
+@import './components/profile_photo.scss';

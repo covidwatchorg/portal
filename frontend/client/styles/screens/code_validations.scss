@@ -1,130 +1,131 @@
+@import '../color.scss';
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800&display=swap');
 
-  #diagnosis-codes {
-    h2 {
-      font-size: 16px;
-      margin-bottom: 60px;
+#diagnosis-codes {
+  h2 {
+    font-size: 16px;
+    margin-bottom: 60px;
+  }
+
+  .row {
+    display: flex;
+    margin-bottom: 60px;
+    
+    .col-1 {
+      width: 30%;
+      margin-right: 50px;
+
+      .sect-header {
+        font-size: 16px;
+        font-weight: 600;
+      }
+
+    }
+    .col-2 {
+      width: 50%;
+      display: flex;
+      flex-direction: column;
+
+      .radio-input {
+        max-width: 16px;
+        max-height: 16px;
+        transform: scale(1.23);
+        margin-right: 20px;
+      }
+
+      .col-2-header-container {
+        margin-top: 2px;
+      }
+
+      .radio {
+        display: flex;
+        margin-bottom: 20px;
+
+        .col-2-header {
+          font-weight: 600;
+          font-size: 16px;
+          line-height: 16px;
+          margin-bottom: 6px;
+        }
+
+        .col-2-sub-header {
+          color: $darkMediumGray;
+        }
+      }
+
+      #code-box {
+        margin-top: 40px;
+        border: 1px solid #BDBDBD;
+        box-sizing: border-box;
+        border-radius: 4px;
+        font-size: 28px;
+        line-height: 28px;
+        padding: 20px;
+        display: flex;
+        align-items: center;
+        width: 350px;
+      }
+
+      // this overrules the .button properties in button.scss
+      .button {
+        margin-top: 0px;
+      }
+
+      .date-desc {
+        margin-top: 10px;
+      }
+
+      .date-sub-desc {
+        font-weight: 600;
+      }
+
+      #date-picker {
+        // width is the same as the button
+        width: 350px;
+        padding: 9px 20px 9px 20px;
+      }
+
+      // to be refactored later to make buttons more consistent.  See button.scss
+      .progress-container {
+        margin-top: 0px;
+        width: 350px;
+        display: flex;
+        justify-content: center;
+      }
+
+      // no-value and with-value control the Code and Date changing colors
+      .no-value {
+        color:#BDBDBD;
+      }
+
+      .with-value {
+        font-weight: 600;
+      }
+
+      //governs the background change of the Code Box once it has a generated value there
+      .code-generated {
+        background: #BBCCEE;
+        opacity: 0.7;   
+        // the opacity and .with-value color interact in a way that dilutes the color so setting the color to black appears to have the desired effect
+        color: black;
+      }
     }
 
-    .row {
+    #share-urgently {
       display: flex;
-      margin-bottom: 60px;
-      
-      .col-1 {
-        width: 30%;
-        margin-right: 50px;
+      margin-top: 10px;
+      margin-bottom: 40px;
+      //arbitrary width to get all text to fit in one line
+      width: 620px;
 
-        .sect-header {
-          font-size: 16px;
-          font-weight: 600;
-        }
-  
-      }
-      .col-2 {
-        width: 50%;
-        display: flex;
-        flex-direction: column;
-
-        .radio-input {
-          max-width: 16px;
-          max-height: 16px;
-          transform: scale(1.23);
-          margin-right: 20px;
-        }
-
-        .col-2-header-container {
-          margin-top: 2px;
-        }
-
-        .radio {
-          display: flex;
-          margin-bottom: 20px;
-
-          .col-2-header {
-            font-weight: 600;
-            font-size: 16px;
-            line-height: 16px;
-            margin-bottom: 6px;
-          }
-  
-          .col-2-sub-header {
-            color: #828282;
-          }
-        }
-
-        #code-box {
-          margin-top: 40px;
-          border: 1px solid #BDBDBD;
-          box-sizing: border-box;
-          border-radius: 4px;
-          font-size: 28px;
-          line-height: 28px;
-          padding: 20px;
-          display: flex;
-          align-items: center;
-          width: 350px;
-        }
-
-        // this overrules the .button properties in button.scss
-        .button {
-          margin-top: 0px;
-        }
-
-        .date-desc {
-          margin-top: 10px;
-        }
-
-        .date-sub-desc {
-          font-weight: 600;
-        }
-
-        #date-picker {
-          // width is the same as the button
-          width: 350px;
-          padding: 9px 20px 9px 20px;
-        }
-
-        // to be refactored later to make buttons more consistent.  See button.scss
-        .progress-container {
-          margin-top: 0px;
-          width: 350px;
-          display: flex;
-          justify-content: center;
-        }
-
-        // no-value and with-value control the Code and Date changing colors
-        .no-value {
-          color:#BDBDBD;
-        }
-
-        .with-value {
-          font-weight: 600;
-        }
-
-        //governs the background change of the Code Box once it has a generated value there
-        .code-generated {
-          background: #BBCCEE;
-          opacity: 0.7;   
-          // the opacity and .with-value color interact in a way that dilutes the color so setting the color to black appears to have the desired effect
-          color: black;
-        }
+      img {
+        margin-right: 10px;
       }
 
-      #share-urgently {
-        display: flex;
-        margin-top: 10px;
-        margin-bottom: 40px;
-        //arbitrary width to get all text to fit in one line
-        width: 620px;
-
-        img {
-          margin-right: 10px;
-        }
-
-        span {
-          color: #F05452;
-        }
-
+      span {
+        color: #F05452;
       }
+
     }
   }
+}
