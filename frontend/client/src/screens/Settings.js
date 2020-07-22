@@ -292,7 +292,7 @@ const SettingsBase = observer((props) => {
   ) : (
     <React.Fragment>
       <PageTitle title="My Settings" />
-      <div className="module-container">
+        <div className="module-container module-container-not-login">
         <div>
           <h1 style={{ marginBottom: 12 }}>My Settings</h1>
           <p className="xs-text">Changes are automatically saved</p>

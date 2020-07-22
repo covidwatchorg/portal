@@ -22,7 +22,7 @@ const useStyles = makeStyles((theme) => ({
     flexGrow: 1,
   },
   link: {
-    marginTop: 20,
+    marginTop: 14,
     paddingLeft: 30,
     paddingRight: 30,
     fontFamily: 'Montserrat',

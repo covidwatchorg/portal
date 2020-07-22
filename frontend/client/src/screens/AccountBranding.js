@@ -13,7 +13,7 @@ const AccountBrandingBase = observer((props) => {
     (props.store.data.user.passwordResetRequested && props.store.data.user.signedInWithEmailLink) ? (
     <Redirect to={ROUTES.LANDING} />
   ) : (
-    <div className="module-container" id="mobile-application-settings">
+      <div className="module-container module-container-not-login" id="mobile-application-settings">
       <PageTitle title="Mobile Application Settings" />
       <h1>Mobile Application Settings</h1>
       <p className="small-text">

@@ -2,4 +2,8 @@
   object-fit: cover;
   display: block;
   margin: auto;
+
+  &:hover {
+    cursor: pointer;
+  }
 }
