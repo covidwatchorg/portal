@@ -35,7 +35,7 @@ const SignInFormBase = observer(
       try {
         await this.props.store.signInWithEmailAndPassword(email, password)
       } catch (err) {
-        this.state.toastMessage = 'Error logging in. Email or password may be invalid.'
+        this.setState({ toastMessage: 'Error logging in. Email or password may be invalid.' })
         this.errorToast.current.show()
       }
     }
