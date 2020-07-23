@@ -35,7 +35,7 @@ const SignInFormBase = observer(
       try {
         await this.props.store.signInWithEmailAndPassword(email, password)
       } catch (err) {
-        this.state.toastMessage = 'Error logging in. Email or password may be invalid.'
+        this.setState({ toastMessage: 'Unable to login. Email or password may be invalid.' })
         this.errorToast.current.show()
       }
     }
@@ -81,13 +81,12 @@ const SignInFormBase = observer(
             // Common errors could be invalid email and invalid or expired OTPs.
             Logging.error(err)
             if (err.code === 'auth/expired-action-code') {
-              this.state.toastMessage =
-                'This magic link has expired. Please sign in with your password or restart the password recovery process.'
+              this.setState({ toastMessage: 'This magic link has expired. Please sign in with your password or restart the password recovery process.' })
             } else {
               // Neither auth/invalid-email nor auth/user-disabled should happen
-              this.state.toastMessage = 'Invalid magic link'
+              this.setState({ toastMessage: 'Invalid magic link' })
             }
-            this.errorToast.show()
+            this.errorToast.current.show()
           })
       }
     }
@@ -138,7 +137,7 @@ const SignInFormBase = observer(
     render() {
       return (
         <Fragment>
-          <div className="module-container">{this.loginForm()}</div>
+          <div className="module-container module-container-login">{this.loginForm()}</div>
           {this.props.store.data.user.isSignedIn ? (
             this.props.store.data.user.isFirstTimeUser ? (
               <ChangePasswordModal

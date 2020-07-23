@@ -5,11 +5,9 @@ var config = {
   sendgrid: {
     key: process.env.SENDGRID_API_KEY,
   },
-  verif_server: {
-    url: "**url**",
-    email: "**email**",
-    key: "**key**",
-    password: process.env.VERIF_SERVER_PASSWORD,
+  verification_server: {
+    url: process.env.VERIFICATION_SERVER_URL,
+    key: process.env.VERIFICATION_SERVER_API_KEY,
   },
 };
 

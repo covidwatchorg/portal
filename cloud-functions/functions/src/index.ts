@@ -3,9 +3,6 @@ import * as functions from 'firebase-functions';
 import * as sgMail from '@sendgrid/mail';
 import { randomBytes } from 'crypto';
 import axios from 'axios';
-import axiosCookieJarSupport from 'axios-cookiejar-support';
-import * as toughCookie from 'tough-cookie';
-import * as queryString from 'query-string';
 
 // Initialize firebse admin and get db instance
 admin.initializeApp(functions.config().firebase);
@@ -177,8 +174,8 @@ function sendNewUserEmail(email: string, password: string, firstName: string, la
     .then((link) => {
       const msg = {
         to: email,
-        from: 'welcome@covid-watch.org',
-        subject: 'Welcome to the Covid Watch Permission Portal',
+        from: 'noreply@covidwatch.org',
+        subject: 'Welcome to the Covid Watch Portal',
         html: `
     <!DOCTYPE html>
     <p ${EMAILSTYLE}>${firstName} ${lastName},</p>
@@ -186,8 +183,8 @@ function sendNewUserEmail(email: string, password: string, firstName: string, la
     <p ${EMAILSTYLE}><b>Your user name:</b> ${email}<br />  <b>Your temporary password:</b> ${password}</p>
     <p ${EMAILSTYLE}>Please click the following link or copy and paste it into your browser to sign in to your new account:</p>
     <p ${EMAILSTYLE}><a href=${link}>Sign In</a></p>
-    <p ${EMAILSTYLE}>If you recieved this message in error, you can safely ignore it.</p>
-    <p ${EMAILSTYLE}>You can reply to this message, or email support@covid-watch.org if you have any questions.</p>
+    <p ${EMAILSTYLE}>If you received this message in error, you can safely ignore it.</p>
+    <p ${EMAILSTYLE}>If you have questions, please email support@covidwatch.org.</p>
     <p ${EMAILSTYLE}>Thank you,<br />Covid Watch Team</p> `,
       };
       sgMail
@@ -210,7 +207,7 @@ function sendPasswordRecoveryEmail(email: string) {
     .then((link) => {
       const msg = {
         to: email,
-        from: 'recovery@covid-watch.org',
+        from: 'noreply@covidwatch.org',
         subject: 'Password Recovery Requested',
         html: `
         <!DOCTYPE html>
@@ -245,8 +242,8 @@ function sendPasswordResetEmail(email: string) {
     .then((pwdResetLink) => {
       const msg = {
         to: email,
-        from: 'password-reset@covid-watch.org',
-        subject: 'Covid Watch Permission Portal password reset',
+        from: 'noreply@covidwatch.org',
+        subject: 'Covid Watch Portal password reset',
         html: `
         <p>You are recieving this email because somebody requested a password reset for the account associated with this email address.</p>
         <p>To reset your password, click the link below</p>
@@ -448,38 +445,14 @@ export const getVerificationCode = functions.https.onCall(async (issueCodeReques
   return new Promise((resolve, reject) => {
     authGuard(context)
       .then(async () => {
-        axiosCookieJarSupport(axios);
-
-        const config = functions.config().verif_server;
-        const url = config.url.slice(-1) === '/' ? config.url : config.url + '/';
-
-        const cookieJar = new toughCookie.CookieJar();
-        const instance = axios.create({
-          jar: cookieJar,
-          withCredentials: true,
-        });
+        const url =
+          functions.config().verification_server.url.slice(-1) === '/'
+            ? functions.config().verification_server.url + 'api/issue'
+            : functions.config().verification_server.url + '/' + 'api/issue';
 
         try {
-          let response = await instance.post(
-            'https://www.googleapis.com/identitytoolkit/v3/relyingparty/verifyPassword?key=' + config.key,
-            { email: config.email, password: config.password, returnSecureToken: true }
-          );
-
-          const form = { idToken: response.data.idToken };
-
-          // Get CSRF token
-          response = await instance.get(url);
-
-          response = await instance.post(url + 'session', queryString.stringify(form), {
-            headers: {
-              'Content-Type': 'application/x-www-form-urlencoded',
-              'X-CSRF-Token': response.headers['x-csrf-token'],
-            },
-          });
-
-          response = await instance.get(url + 'home/csrf');
-          response = await instance.post(url + 'home/issue', issueCodeRequest, {
-            headers: { 'X-CSRF-TOKEN': response.data.csrftoken },
+          const response = await axios.post(url, issueCodeRequest, {
+            headers: { 'X-API-Key': functions.config().verification_server.key },
           });
           resolve(response.data.code);
         } catch (err) {
