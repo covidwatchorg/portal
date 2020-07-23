@@ -93,7 +93,7 @@ class ResetPasswordModalBase extends React.Component {
         onClose={this.props.onClose}
         containerClass="change-password-modal-container reset-modal-container"
       >
-        <h2> Change Password </h2>
+        <h3> Change Password </h3>
         <form className="change-password-form">
           <label className="small-text" htmlFor="current-password">
             Current password<span>*</span>
