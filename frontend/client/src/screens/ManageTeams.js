@@ -33,7 +33,7 @@ const ManageTeamsBase = observer((props) => {
   }
 
   const onAddMemberSuccess = () => {
-    setToastMessage('Member Email Invitation sent')
+    setToastMessage('Success: member email invitation sent')
     setIsSuccess(true)
     setShowAddMemberModal(false)
     confirmationToast.current.show()
@@ -41,7 +41,11 @@ const ManageTeamsBase = observer((props) => {
 
   const onAddMemberFailure = (e) => {
     Logging.error(e)
-    setToastMessage('Member Email Invitation failed to send')
+    if (e.code === 'already-exists') {
+      setToastMessage("The email address is already in use by another account")
+    } else {
+      setToastMessage('Member email invitation failed to send')
+    }
     setIsSuccess(false)
     confirmationToast.current.show()
     setShowAddMemberModal(false)
@@ -79,12 +83,12 @@ const ManageTeamsBase = observer((props) => {
     e.preventDefault()
     try {
       await props.store.sendPasswordRecoveryEmail(email)
-      setToastMessage(`Password Reset Email Sent to ${email}`)
+      setToastMessage(`Password reset email sent to ${email}`)
       setIsSuccess(true)
       confirmationToast.current.show()
     } catch (err) {
       Logging.error(err)
-      setToastMessage('Password Reset Failed. Please try again')
+      setToastMessage('Password reset failed. Please try again')
       setIsSuccess(false)
       confirmationToast.current.show()
     }
