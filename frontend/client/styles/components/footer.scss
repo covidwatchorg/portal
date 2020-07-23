@@ -1,3 +1,5 @@
+@import '../color.scss';
+
 #footer {
   display: 'flex';
 }
@@ -19,7 +21,7 @@
   }
   p {
     text-align: center;
-    color: #828282;
+    color: $darkMediumGray;
     margin: 0px;
     margin-right: 50px;
   }

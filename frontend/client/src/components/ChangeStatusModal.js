@@ -14,7 +14,7 @@ const ChangeStatusModal = withStore((props) => {
 
   return (
     <Modal hidden={props.hidden} onClose={props.onClose} containerClass="change-status-modal-container">
-      <h2>Confirm Change</h2>
+      <h3>Confirm Change</h3>
 
       <p>
         Please confirm that you would like to change the status of <b>{fullName}</b> to <b>{toStatus}</b>.

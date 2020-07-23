@@ -4,7 +4,6 @@ import { Redirect } from 'react-router-dom'
 import addMember from '../../assets/add-member.svg'
 import arrowLeft from '../../assets/arrow-left.svg'
 import arrowRight from '../../assets/arrow-right.svg'
-import '../../Styles/screens/manage_teams.scss'
 import AddMemberModal from '../components/AddMemberModal'
 import Toast from '../components/Toast'
 import RoleSelector from '../components/RoleSelector'
@@ -14,6 +13,7 @@ import PageTitle from '../components/PageTitle'
 import Logging from '../util/logging'
 import ChangeRoleModal from '../components/ChangeRoleModal'
 import ChangeStatusModal from '../components/ChangeStatusModal'
+import '../../styles/screens/manage_teams.scss' // NOTE: only necessary for this file, see note in index.scss
 
 const ManageTeamsBase = observer((props) => {
   const userEmail = props.store.data.user.email

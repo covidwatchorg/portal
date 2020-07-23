@@ -103,7 +103,7 @@ class ChangePasswordModalBase extends React.Component {
           isDismissible={this.state.isDismissible}
           onClose={this.onClose}
         >
-          <h2>{this.state.heading}</h2>
+          <h3>{this.state.heading}</h3>
           <p>{this.state.subHeading}</p>
           {this.state.showNewPasswordInputs && (
             <form className="change-password-form">

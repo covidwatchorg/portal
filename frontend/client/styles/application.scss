@@ -1,19 +1,4 @@
-@import 'screens/login';
-@import 'screens/settings';
-@import 'screens/add_member_modal';
-@import 'screens/forgot_password_modal';
-@import 'screens/change_password_modal';
-@import 'screens/change_role_modal';
-@import 'screens/change_status_modal';
-@import 'components/footer';
-@import 'components/navbar';
-@import 'components/toast';
-@import 'components/button';
-@import 'components/modal';
-@import 'components/profile_photo';
-
-$gray: #383838;
-$blue: #2C58B1;
+@import './color.scss';
 
 .hidden {
   display: none;
@@ -27,7 +12,7 @@ body {
   font-size: 14px;
   font-weight: normal;
   line-height: 20px;
-  color: $gray;
+  color: $darkGray;
 }
 
 h1 {
@@ -52,14 +37,14 @@ h3 {
 input {
   width: 390px;
   height: 40px;
-  border: 1px solid #bdbdbd;
+  border: 1px solid $lightMediumGray;
   border-radius: 4px;
   box-sizing: border-box;
   font-family: Montserrat;
   font-size: 16px;
   font-weight: normal;
   line-height: 16px;
-  color: $gray;
+  color: $darkGray;
   padding-left: 20px;
 }
 
@@ -67,7 +52,7 @@ select {
   font-family: Montserrat;
   font-size: 14px;
   font-weight: normal;
-  color: $gray;
+  color: $darkGray;
 }
 
 label {
@@ -76,7 +61,7 @@ label {
 }
 
 a {
-  color: $blue;
+  color: $bluejay;
   text-decoration: none;
 }
 
