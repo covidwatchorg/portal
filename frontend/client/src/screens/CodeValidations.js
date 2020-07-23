@@ -181,7 +181,7 @@ const CodeValidationsBase = observer((props) => {
             Generate Code
           </PendingOperationButton>
           <div id="code-box" className="no-value">
-            {code.slice(0, 3)}-{code.slice(3, 6)}-{code.slice(6)}
+            {code}
           </div>
 
           {needsReset && (
