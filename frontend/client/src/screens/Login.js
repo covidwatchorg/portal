@@ -104,10 +104,10 @@ const SignInFormBase = observer(
               <br></br>
               Covid Watch Portal
             </h1>
-            <h3>
+            <h3 className="small-text">
               Welcome to the Portal where your team can generate diagnosis verification codes to share with patients who
               test positive for COVID-19. With your help, they can decrease their risk to others by sharing a positive
-              diagnosis, which allows the app to anonymously notify those who were nearby when the patient was llikely
+              diagnosis, which allows the app to anonymously notify those who were nearby when the patient was likely
               infectious. <a href="https://www.covidwatch.org">Learn more</a>.
             </h3>
 
@@ -116,9 +116,13 @@ const SignInFormBase = observer(
             </div>
           </div>
           <div className="loginContainer">
-            <label htmlFor="email">Email Address</label>
+            <label className="small-text" htmlFor="email">
+              Email Address
+            </label>
             <input onChange={this.onChange('email')} type="email" id="email" name="email" />
-            <label htmlFor="password">Password</label>
+            <label className="small-text" htmlFor="password">
+              Password
+            </label>
             <input onChange={this.onChange('password')} type="password" id="password" name="password" />
             <PendingOperationButton operation={this.clickSubmit} className="save-button" style={{ width: '370px' }}>
               Login
@@ -134,7 +138,7 @@ const SignInFormBase = observer(
     render() {
       return (
         <Fragment>
-          <div className="module-container">{this.loginForm()}</div>
+          <div className="module-container module-container-login">{this.loginForm()}</div>
           {this.props.store.data.user.isSignedIn ? (
             this.props.store.data.user.isFirstTimeUser ? (
               <ChangePasswordModal

@@ -1,5 +1,4 @@
 import React from 'react'
-import '../../Styles/screens/404.scss'
 import PageTitle from '../components/PageTitle'
 
 const NotFound = () => {

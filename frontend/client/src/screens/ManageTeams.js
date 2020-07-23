@@ -159,7 +159,7 @@ const ManageTeamsBase = observer((props) => {
                   </div>
                 </td>
                 <td>
-                  <div className="settings-container">
+                  <div className="xs-text settings-container">
                     <a onClick={(e) => resetPassword(e, data.email)}>Reset Password</a>
                   </div>
                 </td>
