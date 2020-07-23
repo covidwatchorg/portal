@@ -81,7 +81,10 @@ const SignInFormBase = observer(
             // Common errors could be invalid email and invalid or expired OTPs.
             Logging.error(err)
             if (err.code === 'auth/expired-action-code') {
-              this.setState({ toastMessage: 'This magic link has expired. Please sign in with your password or restart the password recovery process.' })
+              this.setState({
+                toastMessage:
+                  'This magic link has expired. Please sign in with your password or restart the password recovery process.',
+              })
             } else {
               // Neither auth/invalid-email nor auth/user-disabled should happen
               this.setState({ toastMessage: 'Invalid magic link' })
