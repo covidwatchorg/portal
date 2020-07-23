@@ -62,11 +62,13 @@ const NavBarBase = observer((props) => {
         <div className="xs-text">{props.store.data.user.isAdmin ? ROLES.ADMIN_LABEL : ROLES.NON_ADMIN_LABEL}</div>
       </div>
       <div className="avatar_group avatar_image">
-        <img
-          src={props.store.data.user.imageBlob ? props.store.data.user.imageBlob : profile}
-          className="profile_photo"
-          alt=""
-        ></img>
+        <Link to="/settings">
+          <img
+            src={props.store.data.user.imageBlob ? props.store.data.user.imageBlob : profile}
+            className="profile_photo"
+            alt=""
+          ></img>
+        </Link>
       </div>
       <div className="avatar_group separator" />
 
