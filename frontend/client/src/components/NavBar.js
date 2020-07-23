@@ -22,7 +22,7 @@ const useStyles = makeStyles((theme) => ({
     flexGrow: 1,
   },
   link: {
-    marginTop: 20,
+    marginTop: 14,
     paddingLeft: 30,
     paddingRight: 30,
     fontFamily: 'Montserrat',
@@ -62,11 +62,13 @@ const NavBarBase = observer((props) => {
         <div className="xs-text">{props.store.data.user.isAdmin ? ROLES.ADMIN_LABEL : ROLES.NON_ADMIN_LABEL}</div>
       </div>
       <div className="avatar_group avatar_image">
-        <img
-          src={props.store.data.user.imageBlob ? props.store.data.user.imageBlob : profile}
-          className="profile_photo"
-          alt=""
-        ></img>
+        <Link to="/settings">
+          <img
+            src={props.store.data.user.imageBlob ? props.store.data.user.imageBlob : profile}
+            className="profile_photo"
+            alt=""
+          ></img>
+        </Link>
       </div>
       <div className="avatar_group separator" />
 

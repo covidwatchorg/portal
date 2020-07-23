@@ -35,7 +35,7 @@ const SignInFormBase = observer(
       try {
         await this.props.store.signInWithEmailAndPassword(email, password)
       } catch (err) {
-        this.state.toastMessage = 'Error logging in. Email or password may be invalid.'
+        this.setState({ toastMessage: 'Unable to login. Email or password may be invalid.' })
         this.errorToast.current.show()
       }
     }
@@ -138,7 +138,7 @@ const SignInFormBase = observer(
     render() {
       return (
         <Fragment>
-          <div className="module-container">{this.loginForm()}</div>
+          <div className="module-container module-container-login">{this.loginForm()}</div>
           {this.props.store.data.user.isSignedIn ? (
             this.props.store.data.user.isFirstTimeUser ? (
               <ChangePasswordModal
