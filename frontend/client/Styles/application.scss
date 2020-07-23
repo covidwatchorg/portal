@@ -12,6 +12,9 @@
 @import 'components/modal';
 @import 'components/profile_photo';
 
+$gray: #383838;
+$blue: #2C58B1;
+
 .hidden {
   display: none;
 }
@@ -21,23 +24,83 @@ body {
 
   // Default text style
   font-family: Montserrat;
-  font-style: normal;
-  color: #383838;
+  font-size: 14px;
+  font-weight: normal;
+  line-height: 20px;
+  color: $gray;
 }
 
 h1 {
-  font-family: Montserrat;
-  font-style: normal;
+  margin-top: 52px;
   font-weight: 600;
-  font-size: 2.5em;
-  line-height: 49px;
-  color: #383838;
+  font-size: 32px;
+  line-height: 40px;
 }
 
-.module-container {
+h2 {
+  font-weight: 600;
+  font-size: 28px;
+  line-height: 34px;
+}
+
+h3 {
+  font-weight: 600;
+  font-size: 22px;
+  line-height: 27px;
+}
+
+input {
+  width: 390px;
+  height: 40px;
+  border: 1px solid #bdbdbd;
+  border-radius: 4px;
+  box-sizing: border-box;
+  font-family: Montserrat;
+  font-size: 16px;
+  font-weight: normal;
+  line-height: 16px;
+  color: $gray;
+  padding-left: 20px;
+}
+
+select {
+  font-family: Montserrat;
+  font-size: 14px;
+  font-weight: normal;
+  color: $gray;
+}
+
+label {
+  font-size: 18px;
+  font-weight: 500;
+}
+
+a {
+  color: $blue;
+  text-decoration: none;
+}
+
+.small-text{
+  font-weight: normal;
+  font-size: 16px;
+  line-height: 20px;
+}
+
+.xs-text{
+  font-weight: normal;
+  font-size: 12px;
+  line-height: 15px;
+}
+
+.module-container{
   min-height: 86vh;
   margin: 0 98px;
   display: flex;
   flex-direction: column;
   align-items: stretch;
+  padding-right: 101px;
+}
+
+.module-container-login{
+    padding-right: 0px;
 }

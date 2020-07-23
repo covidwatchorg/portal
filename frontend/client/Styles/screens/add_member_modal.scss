@@ -7,13 +7,10 @@
     overflow: scroll;
   }
 
-  h1 {
+  h3 {
     margin-left: 48px;
     margin-bottom: 10px;
     margin-top: 48px;
-    font-weight: 600;
-    font-size: 28px;
-    line-height: 34px;
   }
 
   .add-member-form {
@@ -33,18 +30,13 @@
   input {
     margin-left: 48px;
     width: 342px;
-    height: 34px;
-    border: 2px solid #bdbdbd;
+    border-width: 2px;
     border-radius: 7px;
-    font-family: 'Montserrat', sans-serif;
-    font-size: 16px;
   }
   label {
     margin-left: 48px;
     width: 350px;
     height: 40px;
-    font-family: 'Montserrat', sans-serif;
-    color: #383838;
     margin-bottom: -15px;
     margin-top: 25px;
   }
@@ -59,8 +51,8 @@
     height: 40px;
     border: 2px solid #bdbdbd;
     border-radius: 7px;
-    font-family: 'Montserrat', sans-serif;
     font-size: 16px;
+    padding-left: 20px;
   }
 
   .save-button-container {

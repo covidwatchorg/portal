@@ -2,6 +2,8 @@
 
 ## Code Style Guide
 
+**Text:** The `frontend/client/Styles/application.scss` file contains defaults for various text styles. Please use these if possible.
+
 **Buttons:** Use the `PendingOperationButton` component whenever a button triggers an action that is 
 asynchronous and may take some time, such as updating data in the store or on the server. 
 `PendingOperationButton`'s `operation` property accepts a function that takes no arguments and 

@@ -107,7 +107,7 @@ class ChangePasswordModalBase extends React.Component {
           <p>{this.state.subHeading}</p>
           {this.state.showNewPasswordInputs && (
             <form className="change-password-form">
-              <label htmlFor="new-password">
+              <label className="small-text" htmlFor="new-password">
                 New password<span>*</span>
               </label>
               <input
