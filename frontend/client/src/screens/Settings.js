@@ -13,6 +13,7 @@ import photo_add from '../../assets/photo-add.svg'
 import Logging from '../util/logging'
 import PendingOperationButton from '../components/PendingOperationButton'
 import ResetPasswordModal from '../components/ResetPasswordModal'
+import CircularProgress from '@material-ui/core/CircularProgress'
 
 const useStyles = makeStyles({
   root: {
@@ -47,6 +48,7 @@ const SettingsBase = observer((props) => {
     success: false,
     msg: '',
   })
+  const [loading, setLoading] = useState(false)
   const toastRef = useRef()
 
   const resetPassword = async (e) => {
@@ -69,10 +71,16 @@ const SettingsBase = observer((props) => {
       Logging.log('no image uploaded')
       return
     }
+
+    setLoading(true)
+
+    const file = imgUploader.current.files[0]
+
     try {
       let size = imgUploader.current.files[0].size
 
       if (size > MAXFILESIZE) {
+        setLoading(false)
         setToastInfo({
           success: false,
           msg: 'Exceeded Max Image file size. Image has to be less than 10MB',
@@ -82,18 +90,20 @@ const SettingsBase = observer((props) => {
       }
       let reader = new FileReader()
       // set up onload trigger to run when data is read
-      reader.onload = async (e) => {
+      reader.onload = async () => {
         return props.store
-          .updateUserImage(e.target.result)
+          .updateUserImage(file)
           .then(() => {
             setToastInfo({
               success: true,
               msg: 'Image Updated',
             })
             toastRef.current.show()
+            setLoading(false)
             setOpen(false)
           })
           .catch(() => {
+            setLoading(false)
             setToastInfo({
               success: false,
               msg: 'Error Updating Image, Please Try Again',
@@ -130,7 +140,12 @@ const SettingsBase = observer((props) => {
     setShowResetPasswordModal(false)
   }
 
-  const changeImageModal = (
+  const changeImageModal = loading ? (
+    <div className="modal-content">
+      <h3>Uploading image...</h3>
+      <CircularProgress />
+    </div>
+  ) : (
     <div className="modal-content">
       <h3> Please Select a File to Upload </h3>
       <input type="file" ref={imgUploader} accepts="image/jpeg, image/png" />
