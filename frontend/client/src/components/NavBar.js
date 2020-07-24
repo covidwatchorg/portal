@@ -91,7 +91,7 @@ const NavBarBase = observer((props) => {
         onClose={handleClose}
       >
         <MenuItem className={classes.link} style={{ marginTop: 22 }} onClick={() => onClickMenuItem(0)}>
-          Positive Test Validations
+          Diagnosis Verification Codes
         </MenuItem>
         {props.store.data.user.isAdmin && (
           <MenuItem className={classes.link} onClick={() => onClickMenuItem(1)}>
