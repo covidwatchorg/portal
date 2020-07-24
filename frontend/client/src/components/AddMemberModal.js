@@ -148,9 +148,7 @@ const AddMemberModalBase = observer((props) => {
         <label htmlFor="role" style={{ marginTop: state.emailValidationFailed ? '6px' : null }}>
           Role<span>*</span>
         </label>
-        {/* <div className="custom-select"> */}
         <RoleSelector isAdmin={false} id="role" required={true} onChange={handleChange} />
-        {/* </div> */}
         {state.roleValidationFailed && <div className="validationResult">{state.roleValidationMessage}</div>}
         <div className="save-button-container">
           <PendingOperationButton className="save-button" operation={tryCreateUser}>
