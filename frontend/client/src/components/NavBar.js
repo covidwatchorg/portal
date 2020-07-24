@@ -21,14 +21,16 @@ const useStyles = makeStyles((theme) => ({
   title: {
     flexGrow: 1,
   },
+  link: {
+    marginTop: 14,
+    paddingLeft: 30,
+    paddingRight: 30,
+    fontFamily: 'Montserrat',
+    fontSize: 18,
+    fontWeight: 500,
+    color: '#2c58b1',
+  },
 }))
-
-const linkStyles = {
-  textDecoration: 'none',
-  fontFamily: 'Montserrat',
-  color: '#2c58b1',
-  fontSize: 20,
-}
 
 const NavBarBase = observer((props) => {
   const classes = useStyles()
@@ -56,15 +58,17 @@ const NavBarBase = observer((props) => {
   const LoggedInIcons = (
     <div id="logged-in-icons-container">
       <div className="avatar_group avatar_text">
-        <div className="name">{props.store.data.user.firstName + ' ' + props.store.data.user.lastName}</div>
-        <div className="title">{props.store.data.user.isAdmin ? ROLES.ADMIN_LABEL : ROLES.NON_ADMIN_LABEL}</div>
+        <div className="small-text name">{props.store.data.user.firstName + ' ' + props.store.data.user.lastName}</div>
+        <div className="xs-text">{props.store.data.user.isAdmin ? ROLES.ADMIN_LABEL : ROLES.NON_ADMIN_LABEL}</div>
       </div>
       <div className="avatar_group avatar_image">
-        <img
-          src={props.store.data.user.imageBlob ? props.store.data.user.imageBlob : profile}
-          className="profile_photo"
-          alt=""
-        ></img>
+        <Link to="/settings">
+          <img
+            src={props.store.data.user.imageBlob ? props.store.data.user.imageBlob : profile}
+            className="profile_photo"
+            alt=""
+          ></img>
+        </Link>
       </div>
       <div className="avatar_group separator" />
 
@@ -86,23 +90,23 @@ const NavBarBase = observer((props) => {
         open={open}
         onClose={handleClose}
       >
-        <MenuItem style={linkStyles} onClick={() => onClickMenuItem(0)}>
+        <MenuItem className={classes.link} style={{ marginTop: 22 }} onClick={() => onClickMenuItem(0)}>
           Positive Test Validations
         </MenuItem>
         {props.store.data.user.isAdmin && (
-          <MenuItem style={linkStyles} onClick={() => onClickMenuItem(1)}>
+          <MenuItem className={classes.link} onClick={() => onClickMenuItem(1)}>
             Manage Members
           </MenuItem>
         )}
         {props.store.data.user.isAdmin && (
-          <MenuItem style={linkStyles} onClick={() => onClickMenuItem(2)}>
+          <MenuItem className={classes.link} onClick={() => onClickMenuItem(2)}>
             Mobile App Settings
           </MenuItem>
         )}
-        <MenuItem style={linkStyles} onClick={() => onClickMenuItem(3)}>
+        <MenuItem className={classes.link} onClick={() => onClickMenuItem(3)}>
           My Settings
         </MenuItem>
-        <MenuItem style={linkStyles} onClick={() => onClickMenuItem(4)}>
+        <MenuItem className={classes.link} style={{ marginBottom: 22 }} onClick={() => onClickMenuItem(4)}>
           Logout
         </MenuItem>
       </Menu>

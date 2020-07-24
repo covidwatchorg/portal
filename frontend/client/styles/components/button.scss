@@ -1,8 +1,4 @@
-// Common colors
-$dark-blue: #2C58B1;
-$dark-gray: #727272;
-$gray: #BDBDBD;
-$white: #FFFFFF;
+@import '../color.scss';
 
 // Common button class
 .button {
@@ -30,9 +26,9 @@ $white: #FFFFFF;
 
 .btn-medium {
   font-weight: 600;
-  font-size: 18px;
+  font-size: 16px;
   height: 35px;
-  line-height: 22px;
+  line-height: 20px;
   border-width: 2px;
   padding: 0px 10px;
 }
@@ -55,36 +51,29 @@ $white: #FFFFFF;
 
 // Blue background
 .btn-primary {
-  background: $dark-blue;
+  background: $bluejay;
   color: $white;
-  border-color:  $dark-blue;
+  border-color: $bluejay;
 }
 
 // Blue text, blue border
 .btn-secondary {
   background-color: $white;
-  color: $dark-blue;
-  border-color:  $dark-blue;
+  color: $bluejay;
+  border-color: $bluejay;
 }
 
 // Blue text, gray border
 .btn-tertiary {
   background-color: $white;
-  color: $dark-blue;
-  border-color: $gray;
-}
-
-// Gray text, gray border
-.btn-gray {
-  background-color: $white;
-  color: $dark-gray;
-  border-color: $gray;
+  color: $bluejay;
+  border-color: $lightMediumGray;
 }
 
 // Disabled button
 .disabled {
   background: $white;
-  color: $gray;
+  color: $lightMediumGray;
 }
 
 .progress-container {

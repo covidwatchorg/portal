@@ -1,3 +1,5 @@
+@import '../color.scss';
+
 #footer {
   display: 'flex';
 }
@@ -14,18 +16,12 @@
   }
   
   a {
-    font-family: Montserrat;
-    font-size: 12px;
     text-align: center;
-    color: #2C58B1;
-    text-decoration: none;
     margin-right: 50px;
   }
   p {
-    font-family: Montserrat;
-    font-size: 12px;
     text-align: center;
-    color: #828282;
+    color: $darkMediumGray;
     margin: 0px;
     margin-right: 50px;
   }

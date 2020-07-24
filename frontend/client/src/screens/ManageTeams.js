@@ -4,7 +4,6 @@ import { Redirect } from 'react-router-dom'
 import addMember from '../../assets/add-member.svg'
 import arrowLeft from '../../assets/arrow-left.svg'
 import arrowRight from '../../assets/arrow-right.svg'
-import '../../Styles/screens/manage_teams.scss'
 import AddMemberModal from '../components/AddMemberModal'
 import Toast from '../components/Toast'
 import RoleSelector from '../components/RoleSelector'
@@ -14,6 +13,7 @@ import PageTitle from '../components/PageTitle'
 import Logging from '../util/logging'
 import ChangeRoleModal from '../components/ChangeRoleModal'
 import ChangeStatusModal from '../components/ChangeStatusModal'
+import '../../styles/screens/manage_teams.scss' // NOTE: only necessary for this file, see note in index.scss
 
 const ManageTeamsBase = observer((props) => {
   const userEmail = props.store.data.user.email
@@ -33,7 +33,7 @@ const ManageTeamsBase = observer((props) => {
   }
 
   const onAddMemberSuccess = () => {
-    setToastMessage('Member Email Invitation sent')
+    setToastMessage('Success: member email invitation sent')
     setIsSuccess(true)
     setShowAddMemberModal(false)
     confirmationToast.current.show()
@@ -41,7 +41,11 @@ const ManageTeamsBase = observer((props) => {
 
   const onAddMemberFailure = (e) => {
     Logging.error(e)
-    setToastMessage('Member Email Invitation failed to send')
+    if (e.code === 'already-exists') {
+      setToastMessage('The email address is already in use by another account')
+    } else {
+      setToastMessage('Member email invitation failed to send')
+    }
     setIsSuccess(false)
     confirmationToast.current.show()
     setShowAddMemberModal(false)
@@ -79,12 +83,12 @@ const ManageTeamsBase = observer((props) => {
     e.preventDefault()
     try {
       await props.store.sendPasswordRecoveryEmail(email)
-      setToastMessage(`Password Reset Email Sent to ${email}`)
+      setToastMessage(`Password reset email sent to ${email}`)
       setIsSuccess(true)
       confirmationToast.current.show()
     } catch (err) {
       Logging.error(err)
-      setToastMessage('Password Reset Failed. Please try again')
+      setToastMessage('Password reset failed. Please try again')
       setIsSuccess(false)
       confirmationToast.current.show()
     }
@@ -155,7 +159,7 @@ const ManageTeamsBase = observer((props) => {
                   </div>
                 </td>
                 <td>
-                  <div className="settings-container">
+                  <div className="xs-text settings-container">
                     <a onClick={(e) => resetPassword(e, data.email)}>Reset Password</a>
                   </div>
                 </td>

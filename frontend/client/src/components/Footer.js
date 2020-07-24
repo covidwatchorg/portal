@@ -9,7 +9,7 @@ const Footer = () => {
         <div id="footer-img">
           <img src={cwImg}></img>
         </div>
-        <div id="footer-text">
+        <div className="xs-text" id="footer-text">
           <p id="copyright">© 2020 Covid Watch. All rights reserved.</p>
           <a href="https://covidwatch.org/covid_watch_privacy_policy.pdf">Privacy Policy</a>
           <a href="url">Terms of Use</a>

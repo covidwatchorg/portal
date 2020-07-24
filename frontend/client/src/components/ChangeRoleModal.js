@@ -16,7 +16,7 @@ const ChangeRoleModal = withStore((props) => {
 
   return (
     <Modal hidden={props.hidden} onClose={props.onClose} containerClass="change-role-modal-container">
-      <h2>Confirm Change</h2>
+      <h3>Confirm Change</h3>
 
       <p>
         Please confirm that you would like to change the role of <b>{fullName}</b>.

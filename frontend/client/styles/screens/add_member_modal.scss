@@ -1,3 +1,5 @@
+@import '../color.scss';
+
 .add-member-modal-container {
   width: 450px;
   height: 600px;
@@ -7,13 +9,10 @@
     overflow: scroll;
   }
 
-  h1 {
+  h3 {
     margin-left: 48px;
     margin-bottom: 10px;
     margin-top: 48px;
-    font-weight: 600;
-    font-size: 28px;
-    line-height: 34px;
   }
 
   .add-member-form {
@@ -25,26 +24,21 @@
 .add-member-form {
   .validationResult {
     margin-left: 48px;
-    color: #f05452;
+    color: $tangerine;
   }
   span {
-    color: #f05452;
+    color: $tangerine;
   }
   input {
     margin-left: 48px;
     width: 342px;
-    height: 34px;
-    border: 2px solid #bdbdbd;
+    border-width: 2px;
     border-radius: 7px;
-    font-family: 'Montserrat', sans-serif;
-    font-size: 16px;
   }
   label {
     margin-left: 48px;
     width: 350px;
     height: 40px;
-    font-family: 'Montserrat', sans-serif;
-    color: #383838;
     margin-bottom: -15px;
     margin-top: 25px;
   }
@@ -57,10 +51,10 @@
     margin-left: 48px;
     width: 350px;
     height: 40px;
-    border: 2px solid #bdbdbd;
+    border: 2px solid $lightMediumGray;
     border-radius: 7px;
-    font-family: 'Montserrat', sans-serif;
     font-size: 16px;
+    padding-left: 20px;
   }
 
   .save-button-container {

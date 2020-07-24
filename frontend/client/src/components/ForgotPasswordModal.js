@@ -40,10 +40,12 @@ class ForgotPasswordModal extends React.Component {
     if (this.state.emailPrompt) {
       return (
         <Modal hidden={this.props.hidden} onClose={this.onClose} containerClass="recover-password-modal-container">
-          <h2>Recover Password</h2>
+          <h3>Recover Password</h3>
           <form onSubmit={this.onSubmit} onChange={this.handleChange}>
-            <label htmlFor="email-or-username">Email or User Name</label>
-            <input type="text" id="email-or-username" required />
+            <label className="small-text" htmlFor="email-or-username">
+              Email or User Name
+            </label>
+            <input className="small-text" type="text" id="email-or-username" required />
             <PendingOperationButton operation={this.onSubmit} className="save-button recovery-button">
               Email Recovery Link
             </PendingOperationButton>

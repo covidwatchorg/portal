@@ -93,9 +93,9 @@ class ResetPasswordModalBase extends React.Component {
         onClose={this.props.onClose}
         containerClass="change-password-modal-container reset-modal-container"
       >
-        <h2> Change Password </h2>
+        <h3> Change Password </h3>
         <form className="change-password-form">
-          <label htmlFor="current-password">
+          <label className="small-text" htmlFor="current-password">
             Current password<span>*</span>
           </label>
           <input
@@ -112,7 +112,7 @@ class ResetPasswordModalBase extends React.Component {
               ? 'Current password cannot be blank'
               : ''}
           </div>
-          <label htmlFor="new-password">
+          <label className="small-text" htmlFor="new-password">
             New password<span>*</span>
           </label>
           <input
@@ -131,7 +131,7 @@ class ResetPasswordModalBase extends React.Component {
                 : 'New password cannot be blank'
               : ''}
           </div>
-          <label htmlFor="confirm-password">
+          <label className="small-text" htmlFor="confirm-password">
             Confirm new password<span>*</span>
           </label>
           <input

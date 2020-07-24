@@ -74,7 +74,8 @@ jobs:
           FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
           SENDGRID_API_KEY: ${{ secrets.SENDGRID_API_KEY }}
           NODE_ENV: staging
-          VERIF_SERVER_PASSWORD: ${{ secrets.VERIF_SERVER_PASSWORD }}
+          VERIFICATION_SERVER_API_KEY: ${{ secrets.VERIFICATION_SERVER_API_KEY }}
+          VERIFICATION_SERVER_URL: ${{ secrets.VERIFICATION_SERVER_URL }}
       - name: Setup functions config
         if: github.ref == 'refs/heads/master'
         working-directory: cloud-functions/functions
@@ -83,7 +84,9 @@ jobs:
           FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
           SENDGRID_API_KEY: ${{ secrets.SENDGRID_API_KEY }}
           NODE_ENV: prod
-          VERIF_SERVER_PASSWORD: ${{ secrets.VERIF_SERVER_PASSWORD }}
+          VERIFICATION_SERVER_API_KEY: ${{ secrets.VERIFICATION_SERVER_API_KEY }}
+          VERIFICATION_SERVER_URL: ${{ secrets.VERIFICATION_SERVER_URL }}
+
       - name: Lint and Build
         working-directory: cloud-functions/functions
         run: |

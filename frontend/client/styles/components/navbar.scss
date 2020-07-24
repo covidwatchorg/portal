@@ -1,10 +1,12 @@
+@import '../color.scss';
+
 .navbarContainer {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
   padding: 10px 98px 10px 101px;
-  border-bottom: 1px solid #e0e0e0;
+  border-bottom: 1px solid $lightGray;
 
   #orgLogo {
     height: 40px;
@@ -17,9 +19,6 @@
 }
 
 .avatar_group {
-  font-weight: normal;
-  font-size: 16px;
-  line-height: 20px;
   text-align: right;
 
   color: #000000;
@@ -34,21 +33,16 @@
   margin-top: -42px;
 
   .name {
-    font-size: 16px;
     margin-bottom: 2px;
     margin-top: 6px;
   }
 
-  .title {
-    font-size: 12px
-  }
-
   &.separator {
     margin-top: 0px;
-    border: 1px solid #e0e0e0;
+    border: 1px solid $lightGray;
     width: 0px;
     height: 50px;
-    border-right: 1px solid #e0e0e0;
+    border-right: 1px solid $lightGray;
   }
   &.avatar_text {
     margin-top: 0px;

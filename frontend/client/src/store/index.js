@@ -9,6 +9,7 @@ import {
   initiatePasswordRecoveryCallable,
   getVerificationCodeCallable,
 } from './firebase'
+import imageCompression from 'browser-image-compression'
 
 const PAGE_SIZE = 15
 
@@ -142,7 +143,10 @@ const createStore = (WrappedComponent) => {
     async updateUserImage(imageBlob) {
       try {
         // .set() with { merge: true } so that if the document dne, it's created, otherwise its updated
-        await db.collection('userImages').doc(this.data.user.email).set({ imageBlob: imageBlob }, { merge: true })
+        const options = { maxSizeMB: 0.6, maxWidthOrHeight: 900 }
+        const compressedFile = await imageCompression(imageBlob, options)
+        const dataURL = await imageCompression.getDataUrlFromFile(compressedFile)
+        await db.collection('userImages').doc(this.data.user.email).set({ imageBlob: dataURL }, { merge: true })
       } catch (err) {
         Logging.error('Error updating image', err)
         throw err
@@ -209,7 +213,7 @@ const createStore = (WrappedComponent) => {
       }
     }
 
-    // issueCodeRequest looks like {testType: "likely", testDate: "2020-07-02"} or {testType: "confirmed", testDate: "2020-07-02"}
+    // issueCodeRequest looks like {testType: "likely", symptomDate: "2020-07-02"} or {testType: "confirmed", symptomDate: "2020-07-02"}
     async getVerificationCode(issueCodeRequest) {
       try {
         return await getVerificationCodeCallable(issueCodeRequest)

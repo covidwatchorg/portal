@@ -1,6 +1,5 @@
 import React, { useState, createRef, useEffect } from 'react'
 import Toast from '../components/Toast'
-import '../../Styles/screens/code_validations.scss'
 import * as ROUTES from '../constants/routes'
 import { withStore } from '../store'
 import { Redirect } from 'react-router-dom'
@@ -14,7 +13,7 @@ const codePlaceholder = '00000000'
 
 const CodeValidationsBase = observer((props) => {
   const [testType, setTestType] = useState('')
-  const [testDate, setTestDate] = useState('')
+  const [symptomDate, setSymptomDate] = useState('')
   const [dateInvalid, setDateInvalid] = useState(false)
   const [needsReset, setNeedsReset] = useState(false)
   const [code, setCode] = useState(codePlaceholder)
@@ -45,7 +44,7 @@ const CodeValidationsBase = observer((props) => {
     try {
       let code = await props.store.getVerificationCode({
         testType: testType,
-        testDate: testDate,
+        symptomDate: symptomDate,
       })
       setCode(code.data.split('').join(''))
       codeTimeStamp()
@@ -66,7 +65,7 @@ const CodeValidationsBase = observer((props) => {
     e.target.classList.add('with-value')
     e.target.classList.remove('no-value')
 
-    // does not allow testDate in state to be set if date selected is more than 14 days ago or in the future
+    // does not allow symptomDate in state to be set if date selected is more than 14 days ago or in the future
     if (moreThanFourteenDaysAgo(e.target.value)) {
       setDateInvalid(true)
       setToastInfo({ success: false, msg: 'Date cannot be more than 14 days ago' })
@@ -77,7 +76,7 @@ const CodeValidationsBase = observer((props) => {
       confirmedToast.current.show()
     } else {
       setDateInvalid(false)
-      setTestDate(e.target.value)
+      setSymptomDate(e.target.value)
     }
     updateButtonDisabled()
   }
@@ -92,7 +91,7 @@ const CodeValidationsBase = observer((props) => {
     document.getElementById('code-box').classList.toggle('code-generated')
     setCode(codePlaceholder)
     setCodeGenStamp('')
-    setTestDate('')
+    setSymptomDate('')
     setTestType('')
     setNeedsReset(false)
     setDateInvalid(false)
@@ -148,9 +147,9 @@ const CodeValidationsBase = observer((props) => {
         </form>
       </div>
 
-      <div className="row" id="test-date-form">
+      <div className="row" id="onset-date-form">
         <div className="col-1">
-          <div className="sect-header">Test Date</div>
+          <div className="sect-header">Symptom Onset Date</div>
           <p>The date must be within the past 14 days</p>
         </div>
         <div className="col-2">
@@ -182,7 +181,7 @@ const CodeValidationsBase = observer((props) => {
             Generate Code
           </PendingOperationButton>
           <div id="code-box" className="no-value">
-            {code.slice(0, 3)}-{code.slice(3, 6)}-{code.slice(6)}
+            {code}
           </div>
 
           {needsReset && (

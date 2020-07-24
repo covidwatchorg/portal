@@ -1,31 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800&display=swap');
 
 #mobile-application-settings {
-  h1, p {
-    font-family: Montserrat;
-    font-style: normal;
-    color: #383838;
-  }
-
-  h1 {
-    font-weight: 600;
-    font-size: 32px;
-    line-height: 39px;
-  }
-
-  p {
-    font-weight: normal;
-    font-size: 16px;
-    line-height: 20px;
-
-  }
-
-  a {
-    text-decoration: none;
-    color: #2C58B1
-  }
-
-
   .center-box-container {
     display: flex;
     justify-content: center;
@@ -39,8 +14,6 @@
       padding: 37px 105px 37px 105px;
 
       span {
-        font-family: Montserrat;
-        font-style: normal;
         font-weight: 600;
         font-size: 22px;
         line-height: 40px;
