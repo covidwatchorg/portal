@@ -46,7 +46,7 @@ class ForgotPasswordModal extends React.Component {
               Email or User Name
             </label>
             <input className="small-text" type="text" id="email-or-username" required />
-            <PendingOperationButton operation={this.onSubmit} className="save-button recovery-button">
+            <PendingOperationButton operation={this.onSubmit} className="save-button">
               Email Recovery Link
             </PendingOperationButton>
             {!this.state.validEmail && <div className="validationResult">Please enter a valid email or user name.</div>}

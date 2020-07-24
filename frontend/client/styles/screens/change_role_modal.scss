@@ -24,7 +24,18 @@
   .button {
     width: 165px;
     height: 40px;
-    margin-top: 32px;
+  }
+
+  .buttons-container {
+    display: flex;
+    align-items: flex-end;
+    padding-top: 20px;
+  }
+
+  .progress-container {
+    margin-top: 0px;
+    display: flex;
+    align-items: flex-end;
   }
   
   .confirm {
