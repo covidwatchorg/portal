@@ -6,6 +6,7 @@ import * as ROLES from '../constants/roles'
 import { withStore } from '../store'
 import { observer } from 'mobx-react'
 import validateEmail from '../util/validateEmail'
+import '../../styles/screens/add_member_modal.scss' // NOTE: see note in index.scss
 
 const ValidationResult = (succeeded, failureReason) => {
   return {
