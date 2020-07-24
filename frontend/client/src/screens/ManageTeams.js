@@ -42,7 +42,7 @@ const ManageTeamsBase = observer((props) => {
   const onAddMemberFailure = (e) => {
     Logging.error(e)
     if (e.code === 'already-exists') {
-      setToastMessage("The email address is already in use by another account")
+      setToastMessage('The email address is already in use by another account')
     } else {
       setToastMessage('Member email invitation failed to send')
     }
