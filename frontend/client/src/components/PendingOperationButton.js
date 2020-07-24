@@ -30,9 +30,11 @@ const PendingOperationButton = (props) => {
 
   if (!isOperationPending) {
     return (
-      <button className={className} disabled={disabled} style={style} onClick={startOperation}>
-        {props.children}
-      </button>
+      <div className="progress-container">
+        <button className={className} disabled={disabled} style={style} onClick={startOperation}>
+          {props.children}
+        </button>
+      </div>
     )
   } else {
     return (
