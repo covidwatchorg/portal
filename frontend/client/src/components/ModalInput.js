@@ -3,13 +3,13 @@ import React from 'react'
 /**
  * A label/input pair in a Modal
  * Props:
- *   label -- title of the label
- *   id -- id of input label corresponds to
- *   required -- is this a required field for the form?
- *   value -- the state variable the input to the label is assigned to
- *   onChange -- the function to call on change of input
- *   validation -- a function to validate if the field is valid
- *   validationMessage -- message to display if field is invalid
+ *   label      text of the label
+ *   id         id and name for the input tag
+ *   required   is this a required field for the form?
+ *   value      state variable to assign the inputted text to
+ *   onChange   function to call on change of input
+ *   validation function to validate if the input is valid
+ *   validationMessage  message to display if field is invalid
  */
 const ModalInput = (props) => {
   return (
