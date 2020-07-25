@@ -66,7 +66,7 @@ class ForgotPasswordModal extends React.Component {
     } else {
       return (
         <Modal
-          name="Recover Password"
+          title="Recover Password"
           hidden={this.props.hidden}
           onClose={this.onClose}
           containerClass="recover-password-modal-container"

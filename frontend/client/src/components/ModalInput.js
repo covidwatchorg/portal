@@ -22,7 +22,7 @@ const ModalInput = (props) => {
         name={props.id}
         id={props.id}
         required={props.required}
-        aria-required={props.required ? 'true' : 'false'}
+        aria-required={props.required}
         value={props.value}
         onChange={props.onChange}
       />
