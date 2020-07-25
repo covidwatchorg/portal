@@ -13,9 +13,9 @@ import React from 'react'
  */
 const ModalInput = (props) => {
   return (
-    <div className="modal_input">
+    <div className="modal-input">
       <label htmlFor={props.id}>
-        {props.name} {props.required ? <span>*</span> : ''}
+        {props.label} {props.required ? <span>*</span> : ''}
       </label>
       <input
         type="text"

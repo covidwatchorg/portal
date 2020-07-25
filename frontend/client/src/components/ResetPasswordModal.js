@@ -1,5 +1,6 @@
 import React, { createRef } from 'react'
 import Modal from '../components/Modal'
+import ModalInput from '../components/ModalInput'
 import PendingOperationButton from '../components/PendingOperationButton'
 import { auth } from '../store/firebase'
 import { withStore } from '../store'
@@ -92,64 +93,18 @@ class ResetPasswordModalBase extends React.Component {
         hidden={this.props.hidden}
         onClose={this.props.onClose}
         containerClass="change-password-modal-container reset-modal-container"
+        title="Change Password"
       >
-        <h3> Change Password </h3>
         <form className="change-password-form">
-          <label className="small-text" htmlFor="current-password">
-            Current password<span>*</span>
-          </label>
-          <input
-            type="password"
-            required
-            aria-required={true}
-            id="current-password"
-            name="current-password"
-            value={this.state.currentPassword}
-            onChange={this.onChange}
-          />
-          <div className="validationResult">
-            {!this.state.currentPassword && this.state.currentPasswordHasBeenEdited
-              ? 'Current password cannot be blank'
-              : ''}
-          </div>
-          <label className="small-text" htmlFor="new-password">
-            New password<span>*</span>
-          </label>
-          <input
-            type="password"
-            required
-            aria-required={true}
-            id="new-password"
-            name="new-password"
-            value={this.state.password}
-            onChange={this.onChange}
-          />
-          <div className="validationResult">
-            {!this.state.passwordIsValid && this.state.newPasswordHasBeenEdited
-              ? this.state.password.length > 0
-                ? 'Password must be at least 6 characters long'
-                : 'New password cannot be blank'
-              : ''}
-          </div>
-          <label className="small-text" htmlFor="confirm-password">
-            Confirm new password<span>*</span>
-          </label>
-          <input
-            type="password"
-            required
-            aria-required={true}
-            id="confirm-password"
-            name="confirm-password"
-            value={this.state.confirmPassword}
-            onChange={this.onChange}
-          />
-          <div className="validationResult">
-            {!this.state.passwordsMatch && this.state.confirmPasswordHasBeenEdited ? 'Passwords must match' : ''}
-          </div>
+           <ModalInput label="Current password" id="current-password" required={true} value={this.state.currentPassword} onChange={this.onChange} validation={!this.state.currentPassword && this.state.currentPasswordHasBeenEdited} validationMessage="Current password cannot be blank"/>
+            
+           <ModalInput label="New password" id="new-password" required={true} value={this.state.password} onChange={this.onChange} validation={!this.state.passwordIsValid && this.state.newPasswordHasBeenEdited} validationMessage={this.state.password.length > 0 ? 'Password must be at least 6 characters long' : 'New password cannot be blank'}/>
+            
+            
+        <ModalInput label="Confirm new password" id="confirm-password" required={true} value={this.state.confirmPassword} onChange={this.onChange} validation={!this.state.passwordsMatch && this.state.confirmPasswordHasBeenEdited} validationMessage='Passwords must match'/>
 
           <PendingOperationButton
             className="save-password btn-fullwidth"
-            disabled={!this.canSubmit()}
             operation={this.onSubmit}
           >
             Change Password

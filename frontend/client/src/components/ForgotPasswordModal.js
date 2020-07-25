@@ -1,5 +1,6 @@
 import React from 'react'
 import Modal from '../components/Modal'
+import ModalInput from '../components/ModalInput'
 import { withStore } from '../store'
 import PendingOperationButton from '../components/PendingOperationButton'
 import validateEmail from '../util/validateEmail'
@@ -39,25 +40,19 @@ class ForgotPasswordModal extends React.Component {
   render() {
     if (this.state.emailPrompt) {
       return (
-        <Modal hidden={this.props.hidden} onClose={this.onClose} containerClass="recover-password-modal-container">
-          <h3>Recover Password</h3>
+        <Modal name="Recover Password" hidden={this.props.hidden} onClose={this.onClose} containerClass="recover-password-modal-container">
           <form onSubmit={this.onSubmit} onChange={this.handleChange}>
-            <label className="small-text" htmlFor="email-or-username">
-              Email or User Name
-            </label>
-            <input className="small-text" type="text" id="email-or-username" required />
-            <PendingOperationButton operation={this.onSubmit} className="save-button recovery-button">
+            <ModalInput label="Email or User Name" id="email-or-username" required={true} value={this.email} onChange={this.handleChange} validation={!this.state.validEmail} validationMessage={"Please enter a valid email or user name."} />
+            <PendingOperationButton operation={this.onSubmit} className="save-button">
               Email Recovery Link
             </PendingOperationButton>
-            {!this.state.validEmail && <div className="validationResult">Please enter a valid email or user name.</div>}
             {this.state.isError && <div className="validationResult">Error sending reset email. Please try again.</div>}
           </form>
         </Modal>
       )
     } else {
       return (
-        <Modal hidden={this.props.hidden} onClose={this.onClose} containerClass="recover-password-modal-container">
-          <h3>Recover Password</h3>
+        <Modal name="Recover Password" hidden={this.props.hidden} onClose={this.onClose} containerClass="recover-password-modal-container">
           <p>
             {this.state.isSuccess
               ? ' A password recovery link has been sent to the email address associated with your account. Please click the' +

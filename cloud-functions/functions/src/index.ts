@@ -170,35 +170,28 @@ const EMAILSTYLE = `style="font-family: Montserrat, Arial, Helvetica, sans-serif
 
 // Send email to new users instructing them to change their password
 function sendNewUserEmail(email: string, password: string, firstName: string, lastName: string) {
-  generateSignInWithEmailLink(email)
-    .then((link) => {
-      const msg = {
-        to: email,
-        from: 'noreply@covidwatch.org',
-        subject: 'Welcome to the Covid Watch Portal',
-        html: `
+  const msg = {
+    to: email,
+    from: 'noreply@covidwatch.org',
+    subject: 'Welcome to the Covid Watch Portal',
+    html: `
     <!DOCTYPE html>
     <p ${EMAILSTYLE}>${firstName} ${lastName},</p>
     <p ${EMAILSTYLE}>You are receiving this email because you were added as a new member of Covid Watch by the Account Administrator.</p>
     <p ${EMAILSTYLE}><b>Your user name:</b> ${email}<br />  <b>Your temporary password:</b> ${password}</p>
     <p ${EMAILSTYLE}>Please click the following link or copy and paste it into your browser to sign in to your new account:</p>
-    <p ${EMAILSTYLE}><a href=${link}>Sign In</a></p>
+    <p ${EMAILSTYLE}><a href=${functions.config().client.url}>Sign In</a></p>
     <p ${EMAILSTYLE}>If you received this message in error, you can safely ignore it.</p>
     <p ${EMAILSTYLE}>If you have questions, please email support@covidwatch.org.</p>
     <p ${EMAILSTYLE}>Thank you,<br />Covid Watch Team</p> `,
-      };
-      sgMail
-        .send(msg)
-        .then(() => {
-          console.log(`New user email sent to ${email}`);
-        })
-        .catch((err) => {
-          console.error(JSON.stringify(err));
-        });
+  };
+  sgMail
+    .send(msg)
+    .then(() => {
+      console.log(`New user email sent to ${email}`);
     })
     .catch((err) => {
-      console.error(err);
-      throw err;
+      console.error(JSON.stringify(err));
     });
 }
 

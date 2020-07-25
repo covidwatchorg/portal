@@ -27,12 +27,14 @@ const ChangeRoleModal = withStore((props) => {
         To: <b>{toRole}</b>
       </p>
 
-      <button className="button btn-medium btn-secondary" onClick={props.onClose}>
-        Cancel
-      </button>
-      <PendingOperationButton className="confirm" operation={onConfirm}>
-        Confirm
-      </PendingOperationButton>
+      <div className="buttons-container">
+        <button className="button btn-medium btn-secondary" onClick={props.onClose}>
+          Cancel
+        </button>
+        <PendingOperationButton className="confirm" operation={onConfirm}>
+          Confirm
+        </PendingOperationButton>
+      </div>
     </Modal>
   )
 })

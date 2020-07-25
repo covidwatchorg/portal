@@ -23,24 +23,17 @@
 .add-member-form {
   .validationResult {
     margin-left: 48px;
-    color: $tangerine;
-  }
-  span {
-    color: $tangerine;
   }
   input {
     margin-left: 48px;
-    width: 342px;
-    border-width: 2px;
-    border-radius: 7px;
   }
+
   label {
     margin-left: 48px;
   }
   .button {
     width: 350px;
     height: 49px !important;
-    margin-top: 30px;
   }
   select {
     margin-left: 48px;
@@ -51,6 +44,14 @@
     border-radius: 7px;
     font-size: 16px;
     padding-left: 20px;
+  }
+  .custom-select:after {
+    content: url('../../assets/arrow-down.svg');
+    position: relative;
+    right: 25px;
+    top: -1px;
+    background-color: transparent;
+    pointer-events: none;
   }
 
   .save-button-container {

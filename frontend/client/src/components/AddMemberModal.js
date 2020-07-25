@@ -7,6 +7,7 @@ import * as ROLES from '../constants/roles'
 import { withStore } from '../store'
 import { observer } from 'mobx-react'
 import validateEmail from '../util/validateEmail'
+import '../../styles/screens/add_member_modal.scss' // NOTE: see note in index.scss
 
 const ValidationResult = (succeeded, failureReason) => {
   return {
@@ -104,9 +105,9 @@ const AddMemberModalBase = observer((props) => {
   // TODO needs to fail but not close on validation failure and high light invalid fields (can do that before touching the store)
   return (
     <Modal title="Add Member" hidden={props.hidden} onClose={props.onClose} containerClass="add-member-modal-container">
-      <div className="add-member-form">
+      <form className="add-member-form">
         <ModalInput
-          name="First Name"
+          label="First Name"
           id="firstName"
           required={true}
           value={state.firstName}
@@ -116,7 +117,7 @@ const AddMemberModalBase = observer((props) => {
         />
 
         <ModalInput
-          name="Last Name"
+          label="Last Name"
           id="lastName"
           required={true}
           value={state.lastName}
@@ -126,7 +127,7 @@ const AddMemberModalBase = observer((props) => {
         />
 
         <ModalInput
-          name="Email"
+          label="Email"
           id="email"
           required={true}
           value={state.email}
@@ -135,7 +136,7 @@ const AddMemberModalBase = observer((props) => {
           validationMessage={state.emailValidationMessage}
         />
 
-        <div className="modal_input">
+        <div className="modal-input">
           <label htmlFor="role" style={{ marginTop: state.emailValidationFailed ? '6px' : null }}>
             Role<span>*</span>
           </label>
@@ -147,7 +148,7 @@ const AddMemberModalBase = observer((props) => {
             Submit
           </PendingOperationButton>
         </div>
-      </div>
+      </form>
     </Modal>
   )
 })

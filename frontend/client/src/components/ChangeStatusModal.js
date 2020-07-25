@@ -20,12 +20,14 @@ const ChangeStatusModal = withStore((props) => {
         Please confirm that you would like to change the status of <b>{fullName}</b> to <b>{toStatus}</b>.
       </p>
 
-      <button className="button btn-medium btn-secondary" onClick={props.onClose}>
-        Cancel
-      </button>
-      <PendingOperationButton className="confirm" operation={onConfirm}>
-        Confirm
-      </PendingOperationButton>
+      <div className="buttons-container">
+        <button className="button btn-medium btn-secondary" onClick={props.onClose}>
+          Cancel
+        </button>
+        <PendingOperationButton className="confirm" operation={onConfirm}>
+          Confirm
+        </PendingOperationButton>
+      </div>
     </Modal>
   )
 })

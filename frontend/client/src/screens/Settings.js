@@ -141,12 +141,12 @@ const SettingsBase = observer((props) => {
   }
 
   const changeImageModal = loading ? (
-    <div className="modal-content">
+    <div className="modal-content image-modal">
       <h3>Uploading image...</h3>
       <CircularProgress />
     </div>
   ) : (
-    <div className="modal-content">
+    <div className="modal-content image-modal">
       <h3> Please Select a File to Upload </h3>
       <input type="file" ref={imgUploader} accepts="image/jpeg, image/png" />
       <PendingOperationButton operation={saveImage} className="btn-medium">
