@@ -102,10 +102,9 @@ const AddMemberModalBase = observer((props) => {
     }
   }
 
-  // TODO needs to fail but not close on validation failure and high light invalid fields (can do that before touching the store)
   return (
     <Modal title="Add Member" hidden={props.hidden} onClose={props.onClose} containerClass="add-member-modal-container">
-      <form className="modal-form">
+      <form className="modal-form add-member-form">
         <ModalInput
           label="First Name"
           id="firstName"

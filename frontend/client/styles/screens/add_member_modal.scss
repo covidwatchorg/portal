@@ -1,24 +1,15 @@
 @import '../color.scss';
 
 .add-member-modal-container {
-  width: 450px;
   height: 600px;
   max-height: 634px;
 
   @media screen and (max-height: 634px) {
     overflow: scroll;
   }
-
-  .add-member-form {
-    display: flex;
-    flex-direction: column;
-  }
 }
 
 .add-member-form {
-  .button {
-    height: 49px !important;
-  }
   select {
     margin-top: 8px;
     width: 350px;
