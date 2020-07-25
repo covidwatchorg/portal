@@ -1,7 +1,12 @@
 import React, { useRef } from 'react'
 import close from '../../assets/close.svg'
 
-// Encapsulates a button driven operation which takes time and may succeed or fail
+/**
+ * Modal component
+ * Props:
+ *  containerClass - a class used by a component that uses this one that wraps the whole modal
+ *  title - The title of the modal
+ */
 const Modal = (props) => {
   const innerNode = useRef()
 
