@@ -48,7 +48,7 @@ class Toast extends React.Component {
             justifyContent: 'center',
             alignItems: 'center',
             marginTop: '46px',
-            fontFamily: 'Montserrat'
+            fontFamily: 'Montserrat',
           }}
           message={
             <span id="msg">

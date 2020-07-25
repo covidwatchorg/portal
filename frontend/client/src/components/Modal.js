@@ -19,6 +19,7 @@ const Modal = (props) => {
             <img src={close} alt="Close" />
           </span>
         )}
+        <h3>{props.title}</h3>
         {props.children}
       </div>
     </div>
