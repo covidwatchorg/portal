@@ -96,17 +96,41 @@ class ResetPasswordModalBase extends React.Component {
         title="Change Password"
       >
         <form className="change-password-form">
-           <ModalInput label="Current password" id="current-password" required={true} value={this.state.currentPassword} onChange={this.onChange} validation={!this.state.currentPassword && this.state.currentPasswordHasBeenEdited} validationMessage="Current password cannot be blank"/>
-            
-           <ModalInput label="New password" id="new-password" required={true} value={this.state.password} onChange={this.onChange} validation={!this.state.passwordIsValid && this.state.newPasswordHasBeenEdited} validationMessage={this.state.password.length > 0 ? 'Password must be at least 6 characters long' : 'New password cannot be blank'}/>
-            
-            
-        <ModalInput label="Confirm new password" id="confirm-password" required={true} value={this.state.confirmPassword} onChange={this.onChange} validation={!this.state.passwordsMatch && this.state.confirmPasswordHasBeenEdited} validationMessage='Passwords must match'/>
+          <ModalInput
+            label="Current password"
+            id="current-password"
+            required={true}
+            value={this.state.currentPassword}
+            onChange={this.onChange}
+            validation={!this.state.currentPassword && this.state.currentPasswordHasBeenEdited}
+            validationMessage="Current password cannot be blank"
+          />
 
-          <PendingOperationButton
-            className="save-password btn-fullwidth"
-            operation={this.onSubmit}
-          >
+          <ModalInput
+            label="New password"
+            id="new-password"
+            required={true}
+            value={this.state.password}
+            onChange={this.onChange}
+            validation={!this.state.passwordIsValid && this.state.newPasswordHasBeenEdited}
+            validationMessage={
+              this.state.password.length > 0
+                ? 'Password must be at least 6 characters long'
+                : 'New password cannot be blank'
+            }
+          />
+
+          <ModalInput
+            label="Confirm new password"
+            id="confirm-password"
+            required={true}
+            value={this.state.confirmPassword}
+            onChange={this.onChange}
+            validation={!this.state.passwordsMatch && this.state.confirmPasswordHasBeenEdited}
+            validationMessage="Passwords must match"
+          />
+
+          <PendingOperationButton className="save-password btn-fullwidth" operation={this.onSubmit}>
             Change Password
           </PendingOperationButton>
         </form>

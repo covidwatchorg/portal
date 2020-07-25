@@ -40,9 +40,22 @@ class ForgotPasswordModal extends React.Component {
   render() {
     if (this.state.emailPrompt) {
       return (
-        <Modal name="Recover Password" hidden={this.props.hidden} onClose={this.onClose} containerClass="recover-password-modal-container">
+        <Modal
+          name="Recover Password"
+          hidden={this.props.hidden}
+          onClose={this.onClose}
+          containerClass="recover-password-modal-container"
+        >
           <form onSubmit={this.onSubmit} onChange={this.handleChange}>
-            <ModalInput label="Email or User Name" id="email-or-username" required={true} value={this.email} onChange={this.handleChange} validation={!this.state.validEmail} validationMessage={"Please enter a valid email or user name."} />
+            <ModalInput
+              label="Email or User Name"
+              id="email-or-username"
+              required={true}
+              value={this.email}
+              onChange={this.handleChange}
+              validation={!this.state.validEmail}
+              validationMessage={'Please enter a valid email or user name.'}
+            />
             <PendingOperationButton operation={this.onSubmit} className="save-button">
               Email Recovery Link
             </PendingOperationButton>
@@ -52,7 +65,12 @@ class ForgotPasswordModal extends React.Component {
       )
     } else {
       return (
-        <Modal name="Recover Password" hidden={this.props.hidden} onClose={this.onClose} containerClass="recover-password-modal-container">
+        <Modal
+          name="Recover Password"
+          hidden={this.props.hidden}
+          onClose={this.onClose}
+          containerClass="recover-password-modal-container"
+        >
           <p>
             {this.state.isSuccess
               ? ' A password recovery link has been sent to the email address associated with your account. Please click the' +
