@@ -1,7 +1,6 @@
 .change-role-modal-container {
-  width: 360px;
   min-height: 230px;
-  padding: 25px 27px 44px 49px;
+  padding-bottom: 27px;
 
   h3 {
     margin-top: 0px;
@@ -19,26 +18,5 @@
 
   b {
     font-weight: 600;
-  }
-
-  .button {
-    width: 165px;
-    height: 40px;
-  }
-
-  .buttons-container {
-    display: flex;
-    align-items: flex-end;
-    padding-top: 20px;
-  }
-
-  .progress-container {
-    margin-top: 0px;
-    display: flex;
-    align-items: flex-end;
-  }
-  
-  .confirm {
-    margin-left: 12px;
   }
 }

@@ -1,7 +1,7 @@
 import React from 'react'
 import Modal from '../components/Modal'
 import { withStore } from '../store'
-import PendingOperationButton from './PendingOperationButton'
+import CancelConfirmButtons from '../components/CancelConfirmButtons'
 
 const ChangeStatusModal = withStore((props) => {
   const fullName = `${props.userProperties.firstName} ${props.userProperties.lastName}`
@@ -13,21 +13,17 @@ const ChangeStatusModal = withStore((props) => {
   }
 
   return (
-    <Modal hidden={props.hidden} onClose={props.onClose} containerClass="change-status-modal-container">
-      <h3>Confirm Change</h3>
-
+    <Modal
+      title="Confirm Change"
+      hidden={props.hidden}
+      onClose={props.onClose}
+      containerClass="change-status-modal-container"
+    >
       <p>
         Please confirm that you would like to change the status of <b>{fullName}</b> to <b>{toStatus}</b>.
       </p>
 
-      <div className="buttons-container">
-        <button className="button btn-medium btn-secondary" onClick={props.onClose}>
-          Cancel
-        </button>
-        <PendingOperationButton className="confirm" operation={onConfirm}>
-          Confirm
-        </PendingOperationButton>
-      </div>
+      <CancelConfirmButtons cancel={props.onClose} confirm={onConfirm} />
     </Modal>
   )
 })

@@ -8,8 +8,8 @@ import React from 'react'
  *   required -- is this a required field for the form?
  *   value -- the state variable the input to the label is assigned to
  *   onChange -- the function to call on change of input
- *   validation --
- *   validationMessage --
+ *   validation -- a function to validate if the field is valid
+ *   validationMessage -- message to display if field is invalid
  */
 const ModalInput = (props) => {
   return (
@@ -18,7 +18,7 @@ const ModalInput = (props) => {
         {props.label} {props.required ? <span>*</span> : ''}
       </label>
       <input
-        type="text"
+        type={props.password ? 'password' : 'text'}
         name={props.id}
         id={props.id}
         required={props.required}

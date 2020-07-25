@@ -1,0 +1,18 @@
+.buttons-container {
+  display: flex;
+
+  padding-top: 20px;
+  .button {
+    width: 165px;
+    height: 40px;
+  }
+  .progress-container {
+    margin-top: 0px;
+    display: flex;
+  }
+  
+  .confirm {
+    margin-left: 12px;
+  }
+}
+

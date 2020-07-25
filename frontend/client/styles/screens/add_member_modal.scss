@@ -9,11 +9,6 @@
     overflow: scroll;
   }
 
-  h3 {
-    margin-left: 48px;
-    margin-top: 48px;
-  }
-
   .add-member-form {
     display: flex;
     flex-direction: column;
@@ -21,22 +16,10 @@
 }
 
 .add-member-form {
-  .validationResult {
-    margin-left: 48px;
-  }
-  input {
-    margin-left: 48px;
-  }
-
-  label {
-    margin-left: 48px;
-  }
   .button {
-    width: 350px;
     height: 49px !important;
   }
   select {
-    margin-left: 48px;
     margin-top: 8px;
     width: 350px;
     height: 40px;
@@ -48,14 +31,9 @@
   .custom-select:after {
     content: url('../../assets/arrow-down.svg');
     position: relative;
-    right: 25px;
-    top: -1px;
+    left: 320px;
+    top: -31px;
     background-color: transparent;
     pointer-events: none;
-  }
-
-  .save-button-container {
-    margin: 10px auto 60px;
-    width: 350px;
   }
 }

@@ -41,12 +41,12 @@ class ForgotPasswordModal extends React.Component {
     if (this.state.emailPrompt) {
       return (
         <Modal
-          name="Recover Password"
+          title="Recover Password"
           hidden={this.props.hidden}
           onClose={this.onClose}
           containerClass="recover-password-modal-container"
         >
-          <form onSubmit={this.onSubmit} onChange={this.handleChange}>
+          <form onSubmit={this.onSubmit} className="modal-form">
             <ModalInput
               label="Email or User Name"
               id="email-or-username"

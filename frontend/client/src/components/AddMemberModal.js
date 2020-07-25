@@ -105,7 +105,7 @@ const AddMemberModalBase = observer((props) => {
   // TODO needs to fail but not close on validation failure and high light invalid fields (can do that before touching the store)
   return (
     <Modal title="Add Member" hidden={props.hidden} onClose={props.onClose} containerClass="add-member-modal-container">
-      <form className="add-member-form">
+      <form className="modal-form">
         <ModalInput
           label="First Name"
           id="firstName"
@@ -143,11 +143,9 @@ const AddMemberModalBase = observer((props) => {
           <RoleSelector isAdmin={false} id="role" required={true} onChange={handleChange} />
           {state.roleValidationFailed && <div className="validationResult">{state.roleValidationMessage}</div>}
         </div>
-        <div className="save-button-container">
-          <PendingOperationButton className="save-button" operation={tryCreateUser}>
-            Submit
-          </PendingOperationButton>
-        </div>
+        <PendingOperationButton className="save-button" operation={tryCreateUser}>
+          Submit
+        </PendingOperationButton>
       </form>
     </Modal>
   )

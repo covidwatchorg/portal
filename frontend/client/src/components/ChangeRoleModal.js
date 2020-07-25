@@ -2,7 +2,7 @@ import React from 'react'
 import Modal from '../components/Modal'
 import { withStore } from '../store'
 import * as ROLES from '../constants/roles'
-import PendingOperationButton from './PendingOperationButton'
+import CancelConfirmButtons from '../components/CancelConfirmButtons'
 
 const ChangeRoleModal = withStore((props) => {
   const fullName = `${props.userProperties.firstName} ${props.userProperties.lastName}`
@@ -15,9 +15,12 @@ const ChangeRoleModal = withStore((props) => {
   }
 
   return (
-    <Modal hidden={props.hidden} onClose={props.onClose} containerClass="change-role-modal-container">
-      <h3>Confirm Change</h3>
-
+    <Modal
+      title="Confirm Change"
+      hidden={props.hidden}
+      onClose={props.onClose}
+      containerClass="change-role-modal-container"
+    >
       <p>
         Please confirm that you would like to change the role of <b>{fullName}</b>.
       </p>
@@ -27,14 +30,7 @@ const ChangeRoleModal = withStore((props) => {
         To: <b>{toRole}</b>
       </p>
 
-      <div className="buttons-container">
-        <button className="button btn-medium btn-secondary" onClick={props.onClose}>
-          Cancel
-        </button>
-        <PendingOperationButton className="confirm" operation={onConfirm}>
-          Confirm
-        </PendingOperationButton>
-      </div>
+      <CancelConfirmButtons cancel={props.onClose} confirm={onConfirm} />
     </Modal>
   )
 })

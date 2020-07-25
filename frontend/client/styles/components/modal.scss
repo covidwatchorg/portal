@@ -20,6 +20,9 @@
   background-color: white;
   z-index: 1;
   border: 2px solid $lightMediumGray;
+  width: 350px;
+  padding-left: 50px;
+  padding-right: 50px;
 
   .close-btn {
     font-size: 18px;
@@ -33,7 +36,20 @@
   }
 
   h3 {
+      margin-top: 48px;
       margin-bottom: 20px;
   }
 
+  .progress-container {
+      margin-top: 25px;
+  }
+
+  .save-button {
+      font-weight: bold;
+  }
+
+  .modal-form {
+      display: flex;
+      flex-direction: column;
+  }
 }

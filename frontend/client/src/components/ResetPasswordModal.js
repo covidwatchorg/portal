@@ -92,10 +92,10 @@ class ResetPasswordModalBase extends React.Component {
       <Modal
         hidden={this.props.hidden}
         onClose={this.props.onClose}
-        containerClass="change-password-modal-container reset-modal-container"
+        containerClass="reset-password-modal-container"
         title="Change Password"
       >
-        <form className="change-password-form">
+        <form className="modal-form">
           <ModalInput
             label="Current password"
             id="current-password"
@@ -110,6 +110,7 @@ class ResetPasswordModalBase extends React.Component {
             label="New password"
             id="new-password"
             required={true}
+            password={true}
             value={this.state.password}
             onChange={this.onChange}
             validation={!this.state.passwordIsValid && this.state.newPasswordHasBeenEdited}
@@ -124,13 +125,14 @@ class ResetPasswordModalBase extends React.Component {
             label="Confirm new password"
             id="confirm-password"
             required={true}
+            password={true}
             value={this.state.confirmPassword}
             onChange={this.onChange}
             validation={!this.state.passwordsMatch && this.state.confirmPasswordHasBeenEdited}
             validationMessage="Passwords must match"
           />
 
-          <PendingOperationButton className="save-password btn-fullwidth" operation={this.onSubmit}>
+          <PendingOperationButton className="save-button" operation={this.onSubmit}>
             Change Password
           </PendingOperationButton>
         </form>
