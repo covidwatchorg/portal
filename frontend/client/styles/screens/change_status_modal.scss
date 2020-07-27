@@ -1,0 +1,36 @@
+.change-status-modal-container {
+  width: 360px;
+  min-height: 240px;
+  padding: 25px 27px 44px 49px;
+
+  h2 {
+    margin-top: 10px;
+    margin-bottom: 35px;
+  }
+
+  p {
+    margin-right: 15px;
+    margin-bottom: 14px;
+  }
+
+  .button {
+    width: 165px;
+    height: 40px;
+  }
+
+    .buttons-container {
+    display: flex;
+    align-items: flex-end;
+    padding-top: 20px;
+  }
+
+  .progress-container {
+    margin-top: 0px;
+    display: flex;
+    align-items: flex-end;
+  }
+  
+  .confirm {
+    margin-left: 12px;
+  }
+}

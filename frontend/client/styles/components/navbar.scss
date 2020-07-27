@@ -1,0 +1,63 @@
+@import '../color.scss';
+
+.navbarContainer {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 98px 10px 101px;
+  border-bottom: 1px solid $lightGray;
+
+  #orgLogo {
+    height: 40px;
+  }
+}
+
+#logged-in-icons-container {
+  display: flex;
+  height: 50px;
+}
+
+.avatar_group {
+  text-align: right;
+
+  color: #000000;
+  width: 100%;
+
+  margin-top: 0px;
+  margin-right: 10px;
+
+  display: inline-block;
+  text-align: center;
+  margin-right: 27px;
+  margin-top: -42px;
+
+  .name {
+    margin-bottom: 2px;
+    margin-top: 6px;
+  }
+
+  &.separator {
+    margin-top: 0px;
+    border: 1px solid $lightGray;
+    width: 0px;
+    height: 50px;
+    border-right: 1px solid $lightGray;
+  }
+  &.avatar_text {
+    margin-top: 0px;
+    margin-top: 0px;
+    text-align: right;
+  }
+  &.avatar_image {
+    margin-top: 0px;
+    text-align: right;
+    width: 50px;
+    height: 50px;
+    img {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+    }
+  }
+}

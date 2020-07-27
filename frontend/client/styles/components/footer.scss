@@ -1,0 +1,28 @@
+@import '../color.scss';
+
+#footer {
+  display: 'flex';
+}
+
+.footerContainer {
+  position: relative;
+  display: flex;
+  width: 100%;
+  justify-content: space-around;
+  align-items: center;
+
+  #footer-text {
+    display: flex;
+  }
+  
+  a {
+    text-align: center;
+    margin-right: 50px;
+  }
+  p {
+    text-align: center;
+    color: $darkMediumGray;
+    margin: 0px;
+    margin-right: 50px;
+  }
+}

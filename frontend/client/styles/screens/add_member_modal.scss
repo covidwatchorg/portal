@@ -1,0 +1,72 @@
+@import '../color.scss';
+
+.add-member-modal-container {
+  width: 450px;
+  height: 600px;
+  max-height: 634px;
+
+  @media screen and (max-height: 634px) {
+    overflow: scroll;
+  }
+
+  h3 {
+    margin-left: 48px;
+    margin-bottom: 10px;
+    margin-top: 48px;
+  }
+
+  .add-member-form {
+    display: flex;
+    flex-direction: column;
+  }
+}
+
+.add-member-form {
+  .validationResult {
+    margin-left: 48px;
+    color: $tangerine;
+  }
+  span {
+    color: $tangerine;
+  }
+  input {
+    margin-left: 48px;
+    width: 342px;
+    border-width: 2px;
+    border-radius: 7px;
+  }
+
+  label {
+    margin-left: 48px;
+    width: 350px;
+    height: 40px;
+    margin-bottom: -15px;
+    margin-top: 25px;
+  }
+  .button {
+    width: 350px;
+    height: 49px !important;
+  }
+  select {
+    margin-left: 48px;
+    width: 350px;
+    height: 40px;
+    border: 2px solid $lightMediumGray;
+    border-radius: 7px;
+    font-size: 16px;
+    padding-left: 20px;
+  }
+  .custom-select:after {
+    content: url('../../assets/arrow-down.svg');
+    position: relative;
+    right: 25px;
+    top: -1px;
+    background-color: transparent;
+    pointer-events: none;
+  }
+
+  .save-button-container {
+    margin: 10px auto 60px;
+    width: 350px;
+  }
+}
