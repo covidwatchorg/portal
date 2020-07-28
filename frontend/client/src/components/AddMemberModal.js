@@ -88,7 +88,10 @@ const AddMemberModalBase = observer((props) => {
         lastName: state.lastName,
         isAdmin: state.role === ROLES.ADMIN_LABEL,
       })
-      .then(props.onSuccess, props.onFailure)
+      .then(() => {
+        props.onSuccess()
+        setState(defaultState)
+      }, props.onFailure)
   }
 
   function handleChange(e) {
