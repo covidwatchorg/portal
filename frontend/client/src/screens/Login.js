@@ -117,7 +117,7 @@ const SignInFormBase = observer(
               <img src={Students}></img>
             </div>
           </div>
-          <div className="loginContainer">
+          <form className="loginContainer">
             <label className="small-text" htmlFor="email">
               Email Address
             </label>
@@ -130,7 +130,7 @@ const SignInFormBase = observer(
               Login
             </PendingOperationButton>
             <a onClick={this.showModal}>Forgot password?</a>
-          </div>
+          </form>
           <ForgotPasswordModal hidden={!this.state.showPassModal} onClose={this.hideModal} />
         </div>
         <Toast ref={this.errorToast} isSuccess={false} message={this.state.toastMessage} />
