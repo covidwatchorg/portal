@@ -97,54 +97,52 @@ class ChangePasswordModalBase extends React.Component {
 
   render() {
     return (
-      <>
-        <Modal
-          title={this.state.heading}
-          hidden={!this.state.visible}
-          containerClass="change-password-modal-container"
-          isDismissible={this.state.isDismissible}
-          onClose={this.onClose}
-        >
-          <p>{this.state.subHeading}</p>
-          {this.state.showNewPasswordInputs && (
-            <form className="change-password-form">
-              <ModalInput
-                label="New Password"
-                id="new-password"
-                required={true}
-                password={true}
-                value={this.state.password}
-                onChange={this.onChange}
-                validation={!this.state.passwordIsValid && this.state.formHasBeenEdited}
-                validationMessage={
-                  this.state.password.length > 0
-                    ? 'Password must be at least 6 characters long'
-                    : 'New password cannot be blank'
-                }
-              />
+      <Modal
+        title={this.state.heading}
+        hidden={!this.state.visible}
+        containerClass="change-password-modal-container"
+        isDismissible={this.state.isDismissible}
+        onClose={this.onClose}
+      >
+        <p>{this.state.subHeading}</p>
+        {this.state.showNewPasswordInputs && (
+          <form className="change-password-form">
+            <ModalInput
+              label="New Password"
+              id="new-password"
+              required={true}
+              password={true}
+              value={this.state.password}
+              onChange={this.onChange}
+              validation={!this.state.passwordIsValid && this.state.formHasBeenEdited}
+              validationMessage={
+                this.state.password.length > 0
+                  ? 'Password must be at least 6 characters long'
+                  : 'New password cannot be blank'
+              }
+            />
 
-              <ModalInput
-                label="Confirm new password"
-                id="confirm-password"
-                required={true}
-                password={true}
-                value={this.state.confirmPassword}
-                onChange={this.onChange}
-                validation={!this.state.passwordsMatch && this.state.confirmPasswordHasBeenEdited}
-                validationMessage="Passwords must match"
-              />
+            <ModalInput
+              label="Confirm new password"
+              id="confirm-password"
+              required={true}
+              password={true}
+              value={this.state.confirmPassword}
+              onChange={this.onChange}
+              validation={!this.state.passwordsMatch && this.state.confirmPasswordHasBeenEdited}
+              validationMessage="Passwords must match"
+            />
 
-              <PendingOperationButton
-                className={'save-password btn-fullwidth'}
-                disabled={!this.canSubmit()}
-                operation={this.tryUpdatePassword}
-              >
-                Save
-              </PendingOperationButton>
-            </form>
-          )}
-        </Modal>
-      </>
+            <PendingOperationButton
+              className={'btn-fullwidth'}
+              disabled={!this.canSubmit()}
+              operation={this.tryUpdatePassword}
+            >
+              Save
+            </PendingOperationButton>
+          </form>
+        )}
+      </Modal>
     )
   }
 }

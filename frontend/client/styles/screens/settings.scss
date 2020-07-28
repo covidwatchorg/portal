@@ -1,18 +1,9 @@
 .changeImageModalContainer {
-  height: 160px;
-  width: 450px;
-  padding: 20px;
-
-  .modal-content {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin-top: -15px;
+  height: 280px;
 
     input {
-      border-width: 0px;
-      margin-top: 15px;
+      margin-top: 25px;
       margin-bottom: 15px;
+      border-width: 0px;
     }
-  }
 }

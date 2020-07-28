@@ -26,7 +26,7 @@ const ModalInput = (props) => {
         value={props.value}
         onChange={props.onChange}
       />
-      {props.validation && <div className="validationResult">{props.validationMessage}</div>}
+      <div className="validationResult">{props.validation && props.validationMessage}</div>
     </div>
   )
 }

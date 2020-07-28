@@ -141,15 +141,14 @@ const SettingsBase = observer((props) => {
   }
 
   const changeImageModal = loading ? (
-    <div className="modal-content image-modal">
+    <div className="modal-content">
       <h3>Uploading image...</h3>
       <CircularProgress />
     </div>
   ) : (
-    <div className="modal-content image-modal">
-      <h3> Please Select a File to Upload </h3>
+    <div>
       <input type="file" ref={imgUploader} accepts="image/jpeg, image/png" />
-      <PendingOperationButton operation={saveImage} className="btn-medium">
+      <PendingOperationButton operation={saveImage} className="save-button">
         Upload
       </PendingOperationButton>
     </div>
@@ -192,6 +191,7 @@ const SettingsBase = observer((props) => {
               </div>
               <div className="xs-text">Maximum file size: 10 MB</div>
               <Modal
+                title={'Please Select a File to Upload'}
                 hidden={!open}
                 onClose={() => {
                   setOpen(false)
