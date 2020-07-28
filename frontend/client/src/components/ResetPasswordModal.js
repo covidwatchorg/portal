@@ -36,24 +36,24 @@ class ResetPasswordModalBase extends React.Component {
     this.setState((state) => {
       let newState = {}
 
-      switch(fieldName) {
+      switch (fieldName) {
         case 'current-password':
           newState.currentPassword = fieldContent
           newState.currentPasswordHasBeenEdited = true
-          break;
+          break
         case 'new-password':
           newState.newPasswordHasBeenEdited = true
           newState.password = fieldContent
           newState.passwordIsValid = newState.password && newState.password.length >= 6
           newState.passwordsMatch = newState.password === state.confirmPassword
-          break;
+          break
         case 'confirm-password':
           newState.confirmPasswordHasBeenEdited = true
           newState.confirmPassword = fieldContent
           newState.passwordsMatch = state.password === newState.confirmPassword
-          break;
+          break
         default:
-          return;
+          return
       }
 
       return newState
@@ -79,7 +79,8 @@ class ResetPasswordModalBase extends React.Component {
     user
       .reauthenticateWithCredential(credential)
       .then(() => {
-        if (currentPassword === password) return this.props.onFailure('New password must be different than your current password. Please try again.')
+        if (currentPassword === password)
+          return this.props.onFailure('New password must be different than your current password. Please try again.')
         user
           .updatePassword(password)
           .then(this.props.onSuccess())
