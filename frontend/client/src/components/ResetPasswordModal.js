@@ -35,21 +35,27 @@ class ResetPasswordModalBase extends React.Component {
     // Serialize updates
     this.setState((state) => {
       let newState = {}
-      if (fieldName === 'current-password') {
-        newState.currentPassword = fieldContent
-        newState.currentPasswordHasBeenEdited = true
+
+      switch(fieldName) {
+        case 'current-password':
+          newState.currentPassword = fieldContent
+          newState.currentPasswordHasBeenEdited = true
+          break;
+        case 'new-password':
+          newState.newPasswordHasBeenEdited = true
+          newState.password = fieldContent
+          newState.passwordIsValid = newState.password && newState.password.length >= 6
+          newState.passwordsMatch = newState.password === state.confirmPassword
+          break;
+        case 'confirm-password':
+          newState.confirmPasswordHasBeenEdited = true
+          newState.confirmPassword = fieldContent
+          newState.passwordsMatch = state.password === newState.confirmPassword
+          break;
+        default:
+          return;
       }
-      if (fieldName === 'new-password') {
-        newState.newPasswordHasBeenEdited = true
-        newState.password = fieldContent
-        newState.passwordIsValid = newState.password && newState.password.length >= 6
-        newState.passwordsMatch = newState.password === state.confirmPassword
-      }
-      if (fieldName === 'confirm-password') {
-        newState.confirmPasswordHasBeenEdited = true
-        newState.confirmPassword = fieldContent
-        newState.passwordsMatch = state.password === newState.confirmPassword
-      }
+
       return newState
     })
   }
@@ -68,12 +74,14 @@ class ResetPasswordModalBase extends React.Component {
 
   onSubmit() {
     const user = auth.currentUser
-    const credential = firebase.auth.EmailAuthProvider.credential(user.email, this.state.currentPassword)
+    const { currentPassword, password } = this.state
+    const credential = firebase.auth.EmailAuthProvider.credential(user.email, currentPassword)
     user
       .reauthenticateWithCredential(credential)
       .then(() => {
+        if (currentPassword === password) return this.props.onFailure('New password must be different than your current password. Please try again.')
         user
-          .updatePassword(this.state.password)
+          .updatePassword(password)
           .then(this.props.onSuccess())
           .catch((e) => this.handleFirebaseError(e))
       })
