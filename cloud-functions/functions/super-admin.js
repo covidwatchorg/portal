@@ -18,7 +18,6 @@ const admin = require('firebase-admin');
 const fs = require('fs');
 
 const setLogo = () => {
-  console.log(process.argv)
   const environment = process.argv[2]
   const organizationID = process.argv[3]
   const logoPath = process.argv[4]
