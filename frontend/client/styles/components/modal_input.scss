@@ -1,0 +1,22 @@
+ .modal-input{
+    margin-top: 15px;
+
+    label{
+        font-size: 16px;
+    }
+
+    input {
+        width: 350px;
+        margin-top: 8px;
+        border-radius: 7px;
+    }
+
+    span {
+        color: $tangerine;
+    }
+
+    .validationResult {
+        height: 15px;
+        color: $tangerine;
+    }
+}
