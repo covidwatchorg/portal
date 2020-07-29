@@ -127,7 +127,11 @@ const NavBarBase = observer((props) => {
   return (
     <div className="navbarContainer">
       <Link to="/code_validations">
-        <img src={props.store.data.organization.logoBlob ? props.store.data.organization.logoBlob : cwLogo} id="orgLogo" alt={props.store.data.organization.name} />
+        <img
+          src={props.store.data.organization.logoBlob ? props.store.data.organization.logoBlob : cwLogo}
+          id="orgLogo"
+          alt={props.store.data.organization.name}
+        />
       </Link>
       {props.store.data.user.firstName ? LoggedInIcons : <div id="logged-in-icons-container" />}
     </div>
