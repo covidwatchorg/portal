@@ -30,11 +30,13 @@
     "firebase": "^7.14.2",
     "firebase-admin": "^8.10.0",
     "firebase-functions": "^3.6.1",
+    "fs": "0.0.1-security",
     "jest-environment-uint8array": "^1.0.0",
     "query-string": "^6.13.1",
     "querystring": "^0.2.0",
     "reflect-metadata": "^0.1.13",
-    "tough-cookie": "^4.0.0"
+    "tough-cookie": "^4.0.0",
+    "xmlhttprequest": "^1.8.0"
   },
   "devDependencies": {
     "@types/jest": "^24.9.1",
