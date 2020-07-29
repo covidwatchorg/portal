@@ -26,7 +26,7 @@ const setLogo = () => {
     throw new Error("Invalid environment argument. Use 'dev', 'staging', or 'production' as the first argument in the format: node super-admin.js dev nN4h53UanIdvjMcf3gPm ../../../../pepsi-logo.png");
   }
 
-  const serviceAccount = require(`../../permission-portal-cloud-functions/functions/permission-portal-${environment}-firebase-admin-key.json`);
+  const serviceAccount = require(`./permission-portal-${environment}-firebase-admin-key.json`);
   admin.initializeApp({
     credential: admin.credential.cert(serviceAccount),
     databaseURL: `https://permission-portal-${environment}.firebaseio.com`,
@@ -42,9 +42,16 @@ const setLogo = () => {
     }
     const logo = data.toString('base64');
 
-    organization.update({
-      logoBlob: "data:image/png;base64," + logo,
-    });
+    organization
+      .update({
+        logoBlob: 'data:image/png;base64,' + logo,
+      })
+      .then(() => {
+        console.log('Successfully updated logo');
+      })
+      .catch((err) => {
+        console.error(err);
+      });
   });
 };
 
