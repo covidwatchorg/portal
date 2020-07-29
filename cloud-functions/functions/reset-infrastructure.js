@@ -19,17 +19,23 @@ const db = admin.firestore();
 const auth = admin.auth();
 var soylentGreenID = '';
 var initechID = '';
+var covidwatchID = '';
 
 async function addMinimalSampleData() {
   const soylentGreenRef = db.collection('organizations').doc();
   const initechRef = db.collection('organizations').doc();
+  const covidwatchRef = db.collection('organizations').doc();
   soylentGreenID = soylentGreenRef.id;
   initechID = initechRef.id;
+  covidwatchID = covidwatchRef.id;
   await soylentGreenRef.set({
     name: 'Soylent Green',
   });
   await initechRef.set({
     name: 'Initech',
+  });
+  await covidwatchRef.set({
+    name: 'Covid Watch',
   });
   await createUser({
     email: 'admin@soylentgreen.com',
@@ -84,6 +90,24 @@ async function addMinimalSampleData() {
     firstName: uniqueNamesGenerator({ dictionaries: [names], length: 1 }),
     lastName: uniqueNamesGenerator({ dictionaries: [names], length: 1 }),
     isFirstTimeUser: false,
+  });
+  await createUser({
+    email: 'isaiah@covidwatch.org',
+    isAdmin: true,
+    organizationID: covidwatchID,
+    disabled: false,
+    firstName: 'Isaiah',
+    lastName: 'Becker-Mayer',
+    isFirstTimeUser: true,
+  });
+  await createUser({
+    email: 'jesse.colligan@covidwatch.org',
+    isAdmin: true,
+    organizationID: covidwatchID,
+    disabled: false,
+    firstName: 'Jesse',
+    lastName: 'Colligan',
+    isFirstTimeUser: true,
   });
 }
 
