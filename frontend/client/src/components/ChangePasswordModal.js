@@ -134,7 +134,7 @@ class ChangePasswordModalBase extends React.Component {
             />
 
             <PendingOperationButton
-              className={'btn-fullwidth'}
+              className={'save-button btn-fullwidth'}
               disabled={!this.canSubmit()}
               operation={this.tryUpdatePassword}
             >
