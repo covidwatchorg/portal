@@ -81,7 +81,7 @@
     "eslint-plugin-react": "^7.20.0",
     "husky": "^4.2.5",
     "isomorphic-fetch": "^2.2.1",
-    "nodemon": "^1.18.9",
+    "nodemon": "^2.0.4",
     "pg": "^8.2.0",
     "prettier": "^2.0.5",
     "prettier-eslint-cli": "^5.0.0",

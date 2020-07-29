@@ -35,21 +35,23 @@ const ValidationRules = [
   },
 ]
 
+const defaultState = {
+  firstName: '',
+  firstNameValidationFailed: false,
+  firstNameValidationMessage: '',
+  lastName: '',
+  lastNameValidationFailed: false,
+  lastNameValidationMessage: '',
+  email: '',
+  emailValidationFailed: false,
+  emailValidationMessage: '',
+  role: ROLES.NON_ADMIN_LABEL,
+  roleValidationFailed: false,
+  roleValidationMessage: '',
+}
+
 const AddMemberModalBase = observer((props) => {
-  const [state, setState] = useState({
-    firstName: '',
-    firstNameValidationFailed: false,
-    firstNameValidationMessage: '',
-    lastName: '',
-    lastNameValidationFailed: false,
-    lastNameValidationMessage: '',
-    email: '',
-    emailValidationFailed: false,
-    emailValidationMessage: '',
-    role: ROLES.NON_ADMIN_LABEL,
-    roleValidationFailed: false,
-    roleValidationMessage: '',
-  })
+  const [state, setState] = useState(defaultState)
 
   const tryCreateUser = () => {
     let newState = {}
@@ -87,7 +89,10 @@ const AddMemberModalBase = observer((props) => {
         lastName: state.lastName,
         isAdmin: state.role === ROLES.ADMIN_LABEL,
       })
-      .then(props.onSuccess, props.onFailure)
+      .then(() => {
+        props.onSuccess()
+        setState(defaultState)
+      }, props.onFailure)
   }
 
   function handleChange(e) {
@@ -102,8 +107,13 @@ const AddMemberModalBase = observer((props) => {
     }
   }
 
+  const resetAndClose = () => {
+    props.onClose()
+    setState(defaultState)
+  }
+
   return (
-    <Modal title="Add Member" hidden={props.hidden} onClose={props.onClose} containerClass="add-member-modal-container">
+    <Modal title="Add Member" hidden={props.hidden} onClose={resetAndClose} containerClass="add-member-modal-container">
       <form className="modal-form add-member-form">
         <ModalInput
           label="First Name"
