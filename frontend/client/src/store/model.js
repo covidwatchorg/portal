@@ -54,7 +54,7 @@ const Organization = types
     exposureText: types.string,
     members: types.array(User),
     membersPage: types.number,
-    logoBlob: types.maybeNull(types.string)
+    logoBlob: types.maybeNull(types.string),
   })
   .actions((self) => {
     const __update = (updates) => {
@@ -127,7 +127,7 @@ const defaultOrganization = {
   exposureText: '',
   members: [],
   membersPage: 1,
-  logoBlob: null
+  logoBlob: null,
 }
 
 const defaultStore = {
