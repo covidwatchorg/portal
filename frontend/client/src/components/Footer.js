@@ -14,9 +14,9 @@ const Footer = () => {
           <a target="_blank" href="https://docs.google.com/document/d/1pcnFidqiebgQpxxVoi0VCoiRsSndCl5VF_7kZMtnZOA/edit?usp=sharing" rel="noreferrer">
             Privacy Policy
           </a>
-          <a target="_blank" rel="noreferrer">
+          {/* <a target="_blank" rel="noreferrer">
             Terms of Use
-          </a>
+          </a> */}
           <a target="_blank" href="https://covidwatch.org/get_support" rel="noreferrer">
             Support
           </a>
