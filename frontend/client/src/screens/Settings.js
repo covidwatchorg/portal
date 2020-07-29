@@ -112,7 +112,7 @@ const SettingsBase = observer((props) => {
           })
       }
       // read data
-      //return reader.readAsDataURL(imgUploader.current.files[0])
+      return reader.readAsDataURL(imgUploader.current.files[0])
     } catch (err) {
       Logging.log(err)
       return false
