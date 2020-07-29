@@ -4,7 +4,7 @@ Functions here are for "super admin" functions - such as setting a custom logo f
 
 To run this script in the console, use a command formatted in the following way:
 
-node super- admin.js dev nNYhr3UnnIPvjHcf3gDm ../../../../pepsi-logo.png
+node super-admin.js dev nNYhr3UnnIPvjHcf3gDm ../../../../pepsi-logo.png
 
 This example command passes in three arguments: 
 
