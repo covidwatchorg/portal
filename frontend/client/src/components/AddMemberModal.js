@@ -34,21 +34,23 @@ const ValidationRules = [
   },
 ]
 
+const defaultState = {
+  firstName: '',
+  firstNameValidationFailed: false,
+  firstNameValidationMessage: '',
+  lastName: '',
+  lastNameValidationFailed: false,
+  lastNameValidationMessage: '',
+  email: '',
+  emailValidationFailed: false,
+  emailValidationMessage: '',
+  role: ROLES.NON_ADMIN_LABEL,
+  roleValidationFailed: false,
+  roleValidationMessage: '',
+}
+
 const AddMemberModalBase = observer((props) => {
-  const [state, setState] = useState({
-    firstName: '',
-    firstNameValidationFailed: false,
-    firstNameValidationMessage: '',
-    lastName: '',
-    lastNameValidationFailed: false,
-    lastNameValidationMessage: '',
-    email: '',
-    emailValidationFailed: false,
-    emailValidationMessage: '',
-    role: ROLES.NON_ADMIN_LABEL,
-    roleValidationFailed: false,
-    roleValidationMessage: '',
-  })
+  const [state, setState] = useState(defaultState)
 
   const tryCreateUser = () => {
     let newState = {}
@@ -86,7 +88,10 @@ const AddMemberModalBase = observer((props) => {
         lastName: state.lastName,
         isAdmin: state.role === ROLES.ADMIN_LABEL,
       })
-      .then(props.onSuccess, props.onFailure)
+      .then(() => {
+        props.onSuccess()
+        setState(defaultState)
+      }, props.onFailure)
   }
 
   function handleChange(e) {
@@ -101,9 +106,14 @@ const AddMemberModalBase = observer((props) => {
     }
   }
 
+  const resetAndClose = () => {
+    props.onClose()
+    setState(defaultState)
+  }
+
   // TODO needs to fail but not close on validation failure and high light invalid fields (can do that before touching the store)
   return (
-    <Modal hidden={props.hidden} onClose={props.onClose} containerClass="add-member-modal-container">
+    <Modal hidden={props.hidden} onClose={resetAndClose} containerClass="add-member-modal-container">
       <h3>Add Member</h3>
       <div className="add-member-form">
         <label htmlFor="firstName">
