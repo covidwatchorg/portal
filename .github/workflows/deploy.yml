@@ -28,7 +28,6 @@ jobs:
         run: |
           npm ci
           npm run init
-          npm run git-info
           npm run build:staging
 
       - name: Build node app for prod
@@ -39,7 +38,6 @@ jobs:
         run: |
           npm ci
           npm run init
-          npm run git-info
           npm run build
 
       - name: Configure AWS Credentials
