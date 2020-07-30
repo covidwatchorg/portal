@@ -99,10 +99,12 @@ const SignInFormBase = observer(
         <PageTitle title="Welcome" />
         <div className="mainContainer">
           <div className="welcome">
-            <h1>PROD BREAKS - round 2</h1>
+            <h1>Covid Watch Portal</h1>
             <h3 className="small-text">
-              Prod breaks w this commit. Branch is fake-commit-breaks-prod.{' '}
-              <a href="https://www.covidwatch.org">Learn more</a>.
+              Welcome to the Portal where your team can generate diagnosis verification codes to share with patients who
+              test positive for COVID-19. With your help, they can decrease their risk to others by sharing a positive
+              diagnosis, which allows the app to anonymously notify those who were nearby when the patient was likely
+              infectious. <a href="https://www.covidwatch.org">Learn more</a>.
             </h3>
 
             <div id="students-container">
