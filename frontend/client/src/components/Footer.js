@@ -11,9 +11,19 @@ const Footer = () => {
         </div>
         <div className="xs-text" id="footer-text">
           <p id="copyright">© 2020 Covid Watch. All rights reserved.</p>
-          <a href="https://covidwatch.org/covid_watch_privacy_policy.pdf">Privacy Policy</a>
-          <a href="url">Terms of Use</a>
-          <a href="url">Support</a>
+          <a
+            target="_blank"
+            href="https://docs.google.com/document/d/1pcnFidqiebgQpxxVoi0VCoiRsSndCl5VF_7kZMtnZOA/edit?usp=sharing"
+            rel="noreferrer"
+          >
+            Privacy Policy
+          </a>
+          {/* <a target="_blank" rel="noreferrer">
+            Terms of Use
+          </a> */}
+          <a target="_blank" href="https://covidwatch.org/get_support" rel="noreferrer">
+            Support
+          </a>
         </div>
       </div>
     </div>
