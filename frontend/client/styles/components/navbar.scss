@@ -11,6 +11,22 @@
   #orgLogo {
     height: 40px;
   }
+
+  .menu-btn {
+    margin-right: 88px;
+  }
+}
+
+#menu-appbar {
+  .menu-link {
+    font-family: 'Montserrat';
+    font-size: 18px;
+    font-weight: 500;
+    margin-top: 14px;
+    padding-left: 30px;
+    padding-right: 30px;
+    color: #2c58b1;
+  }
 }
 
 #logged-in-icons-container {
