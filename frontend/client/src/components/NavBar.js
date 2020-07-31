@@ -126,7 +126,7 @@ const NavBarBase = observer((props) => {
 
   return (
     <div className="navbarContainer">
-      <Link to="/code_validations">
+      <Link to="/code_validations" className="logo-link">
         <img
           src={props.store.data.organization.logoBlob ? props.store.data.organization.logoBlob : cwLogo}
           id="orgLogo"
