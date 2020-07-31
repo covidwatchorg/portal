@@ -11,7 +11,6 @@ import { observer } from 'mobx-react'
 import menu from '../../assets/menu.svg'
 
 const NavBarBase = observer((props) => {
-
   const [redirect, setRedirect] = useState(-1)
   const [anchorEl, setAnchorEl] = useState(null)
   const open = Boolean(anchorEl)
@@ -49,7 +48,7 @@ const NavBarBase = observer((props) => {
       </div>
       <div className="avatar_group separator" />
 
-      <IconButton edge="start" className='menu-btn' color="inherit" aria-label="menu" onClick={handleMenu}>
+      <IconButton edge="start" className="menu-btn" color="inherit" aria-label="menu" onClick={handleMenu}>
         <img src={menu} alt="Menu" />
       </IconButton>
       <Menu
@@ -67,23 +66,23 @@ const NavBarBase = observer((props) => {
         open={open}
         onClose={handleClose}
       >
-        <MenuItem className='menu-link' style={{ marginTop: 22 }} onClick={() => onClickMenuItem(0)}>
+        <MenuItem className="menu-link" style={{ marginTop: 22 }} onClick={() => onClickMenuItem(0)}>
           Diagnosis Verification Codes
         </MenuItem>
         {props.store.data.user.isAdmin && (
-          <MenuItem className='menu-link' onClick={() => onClickMenuItem(1)}>
+          <MenuItem className="menu-link" onClick={() => onClickMenuItem(1)}>
             Manage Members
           </MenuItem>
         )}
         {props.store.data.user.isAdmin && (
-          <MenuItem className='menu-link' onClick={() => onClickMenuItem(2)}>
+          <MenuItem className="menu-link" onClick={() => onClickMenuItem(2)}>
             Mobile App Settings
           </MenuItem>
         )}
-        <MenuItem className='menu-link' onClick={() => onClickMenuItem(3)}>
+        <MenuItem className="menu-link" onClick={() => onClickMenuItem(3)}>
           My Settings
         </MenuItem>
-        <MenuItem className='menu-link' style={{ marginBottom: 22 }} onClick={() => onClickMenuItem(4)}>
+        <MenuItem className="menu-link" style={{ marginBottom: 22 }} onClick={() => onClickMenuItem(4)}>
           Logout
         </MenuItem>
       </Menu>

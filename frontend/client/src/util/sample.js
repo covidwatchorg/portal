@@ -26,18 +26,17 @@ function Copyright() {
 }
 
 export default function SignIn() {
-
   return (
-    <Container component="main" maxWidth="xs" id='sample-main'>
+    <Container component="main" maxWidth="xs" id="sample-main">
       <CssBaseline />
-      <div className='sample-paper'>
-        <Avatar className='sample-avatar'>
+      <div className="sample-paper">
+        <Avatar className="sample-avatar">
           <LockOutlinedIcon />
         </Avatar>
         <Typography component="h1" variant="h5">
           Sign in
         </Typography>
-        <form className='form' noValidate>
+        <form className="form" noValidate>
           <TextField
             variant="outlined"
             margin="normal"
@@ -61,7 +60,7 @@ export default function SignIn() {
             autoComplete="current-password"
           />
           <FormControlLabel control={<Checkbox value="remember" color="primary" />} label="Remember me" />
-          <Button type="submit" fullWidth variant="contained" color="primary" className='sample-submit-btn'>
+          <Button type="submit" fullWidth variant="contained" color="primary" className="sample-submit-btn">
             Sign In
           </Button>
           <Grid container>

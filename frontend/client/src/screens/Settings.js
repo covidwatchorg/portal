@@ -150,7 +150,7 @@ const SettingsBase = observer((props) => {
   const settingsForm = () => (
     <Fragment>
       <form>
-        <Grid container id='settings-grid' spacing={2} direction="row" justify="center">
+        <Grid container id="settings-grid" spacing={2} direction="row" justify="center">
           <Grid item xs={4} xl={2}>
             <Grid container spacing={2} direction="column">
               <label> Profile Photo </label>
