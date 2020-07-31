@@ -3,9 +3,11 @@ import React from 'react'
 const Footer = () => {
   const cwImg = require('../../assets/powered-by-cw.svg')
 
+  const footerMargin = window.location.pathname === '/' ? 'footerContainer' : 'footerContainer footer-not-login'
+
   return (
     <div id="footer">
-      <div className="footerContainer">
+      <div className={footerMargin}>
         <div id="footer-img">
           <img src={cwImg}></img>
         </div>

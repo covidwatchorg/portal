@@ -4,6 +4,10 @@
   display: flex;
 }
 
+.footer-not-login {
+  padding-right: 101px;
+}
+
 .footerContainer {
   position: relative;
   display: flex;
@@ -12,6 +16,8 @@
   align-items: center;
   margin-left: 98px;
   margin-right: 98px;
+
+
 
   #footer-text {
     display: flex;

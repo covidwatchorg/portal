@@ -10,6 +10,7 @@ import ChangePasswordModal from '../components/ChangePasswordModal'
 import Logging from '../util/logging'
 import PendingOperationButton from '../components/PendingOperationButton'
 import Students from '../../assets/students.svg'
+import Footer from '../components/Footer'
 
 const INITIAL_STATE = {
   email: '',
@@ -152,6 +153,7 @@ const SignInFormBase = observer(
               <Redirect to={ROUTES.CODE_VALIDATIONS} />
             )
           ) : null}
+          <Footer/>
         </Fragment>
       )
     }
