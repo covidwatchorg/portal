@@ -1,13 +1,13 @@
 import React from 'react'
+import { withStore } from '../store'
+import { observer } from 'mobx-react'
 
-const Footer = () => {
+const FooterBase = observer((props) => {
   const cwImg = require('../../assets/powered-by-cw.svg')
-
-  const footerMargin = window.location.pathname === '/' ? 'footerContainer' : 'footerContainer footer-not-login'
 
   return (
     <div id="footer">
-      <div className={footerMargin}>
+      <div className={props.store.data.user.isSignedIn ? 'footerContainer footer-not-login' : 'footerContainer'}>
         <div id="footer-img">
           <img src={cwImg}></img>
         </div>
@@ -30,6 +30,8 @@ const Footer = () => {
       </div>
     </div>
   )
-}
+})
+
+const Footer = withStore(FooterBase)
 
 export default Footer

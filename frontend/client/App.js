@@ -20,35 +20,31 @@ const App = () => {
         <Route path={ROUTES.NOT_FOUND}>
           <Fragment>
             <NotFound />
-            <Footer />
           </Fragment>
         </Route>
         <Route path={ROUTES.SETTINGS}>
           <Fragment>
             <Settings />
-            <Footer />
           </Fragment>
         </Route>
         <Route path={ROUTES.CODE_VALIDATIONS}>
           <Fragment>
             <CodeValidations />
-            <Footer />
           </Fragment>
         </Route>
         <Route path={ROUTES.BRANDING}>
           <Fragment>
             <AccountBranding />
-            <Footer />
           </Fragment>
         </Route>
         <Route path={ROUTES.MANAGE_MEMBERS}>
           <Fragment>
             <ManageTeams />
-            <Footer />
           </Fragment>
         </Route>
         <Redirect to="/404" />
       </Switch>
+      <Footer />
     </BrowserRouter>
   )
 }
