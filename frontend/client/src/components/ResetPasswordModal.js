@@ -1,5 +1,6 @@
 import React, { createRef } from 'react'
 import Modal from '../components/Modal'
+import ModalInput from '../components/ModalInput'
 import PendingOperationButton from '../components/PendingOperationButton'
 import { auth } from '../store/firebase'
 import { withStore } from '../store'
@@ -35,21 +36,27 @@ class ResetPasswordModalBase extends React.Component {
     // Serialize updates
     this.setState((state) => {
       let newState = {}
-      if (fieldName === 'current-password') {
-        newState.currentPassword = fieldContent
-        newState.currentPasswordHasBeenEdited = true
+
+      switch (fieldName) {
+        case 'current-password':
+          newState.currentPassword = fieldContent
+          newState.currentPasswordHasBeenEdited = true
+          break
+        case 'new-password':
+          newState.newPasswordHasBeenEdited = true
+          newState.password = fieldContent
+          newState.passwordIsValid = newState.password && newState.password.length >= 6
+          newState.passwordsMatch = newState.password === state.confirmPassword
+          break
+        case 'confirm-password':
+          newState.confirmPasswordHasBeenEdited = true
+          newState.confirmPassword = fieldContent
+          newState.passwordsMatch = state.password === newState.confirmPassword
+          break
+        default:
+          return
       }
-      if (fieldName === 'new-password') {
-        newState.newPasswordHasBeenEdited = true
-        newState.password = fieldContent
-        newState.passwordIsValid = newState.password && newState.password.length >= 6
-        newState.passwordsMatch = newState.password === state.confirmPassword
-      }
-      if (fieldName === 'confirm-password') {
-        newState.confirmPasswordHasBeenEdited = true
-        newState.confirmPassword = fieldContent
-        newState.passwordsMatch = state.password === newState.confirmPassword
-      }
+
       return newState
     })
   }
@@ -68,12 +75,15 @@ class ResetPasswordModalBase extends React.Component {
 
   onSubmit() {
     const user = auth.currentUser
-    const credential = firebase.auth.EmailAuthProvider.credential(user.email, this.state.currentPassword)
+    const { currentPassword, password } = this.state
+    const credential = firebase.auth.EmailAuthProvider.credential(user.email, currentPassword)
     user
       .reauthenticateWithCredential(credential)
       .then(() => {
+        if (currentPassword === password)
+          return this.props.onFailure('New password must be different than your current password. Please try again.')
         user
-          .updatePassword(this.state.password)
+          .updatePassword(password)
           .then(this.props.onSuccess())
           .catch((e) => this.handleFirebaseError(e))
       })
@@ -91,66 +101,48 @@ class ResetPasswordModalBase extends React.Component {
       <Modal
         hidden={this.props.hidden}
         onClose={this.props.onClose}
-        containerClass="change-password-modal-container reset-modal-container"
+        containerClass="reset-password-modal-container"
+        title="Change Password"
       >
-        <h2> Change Password </h2>
-        <form className="change-password-form">
-          <label htmlFor="current-password">
-            Current password<span>*</span>
-          </label>
-          <input
-            type="password"
-            required
-            aria-required={true}
+        <form className="change-password-form modal-form">
+          <ModalInput
+            label="Current password"
             id="current-password"
-            name="current-password"
+            password={true}
+            required={true}
             value={this.state.currentPassword}
             onChange={this.onChange}
+            validation={!this.state.currentPassword && this.state.currentPasswordHasBeenEdited}
+            validationMessage="Current password cannot be blank"
           />
-          <div className="validationResult">
-            {!this.state.currentPassword && this.state.currentPasswordHasBeenEdited
-              ? 'Current password cannot be blank'
-              : ''}
-          </div>
-          <label htmlFor="new-password">
-            New password<span>*</span>
-          </label>
-          <input
-            type="password"
-            required
-            aria-required={true}
+
+          <ModalInput
+            label="New password"
             id="new-password"
-            name="new-password"
+            required={true}
+            password={true}
             value={this.state.password}
             onChange={this.onChange}
-          />
-          <div className="validationResult">
-            {!this.state.passwordIsValid && this.state.newPasswordHasBeenEdited
-              ? this.state.password.length > 0
+            validation={!this.state.passwordIsValid && this.state.newPasswordHasBeenEdited}
+            validationMessage={
+              this.state.password.length > 0
                 ? 'Password must be at least 6 characters long'
                 : 'New password cannot be blank'
-              : ''}
-          </div>
-          <label htmlFor="confirm-password">
-            Confirm new password<span>*</span>
-          </label>
-          <input
-            type="password"
-            required
-            aria-required={true}
+            }
+          />
+
+          <ModalInput
+            label="Confirm new password"
             id="confirm-password"
-            name="confirm-password"
+            required={true}
+            password={true}
             value={this.state.confirmPassword}
             onChange={this.onChange}
+            validation={!this.state.passwordsMatch && this.state.confirmPasswordHasBeenEdited}
+            validationMessage="Passwords must match"
           />
-          <div className="validationResult">
-            {!this.state.passwordsMatch && this.state.confirmPasswordHasBeenEdited ? 'Passwords must match' : ''}
-          </div>
 
-          <PendingOperationButton
-            className={`save-password${this.canSubmit() ? '' : '-disabled'}`}
-            operation={this.onSubmit}
-          >
+          <PendingOperationButton className="save-button" operation={this.onSubmit} disabled={!this.canSubmit()}>
             Change Password
           </PendingOperationButton>
         </form>

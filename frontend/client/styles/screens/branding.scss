@@ -1,0 +1,28 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800&display=swap');
+
+#mobile-application-settings {
+  .center-box-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 80px;
+
+    .center-box {
+      background: rgba(187, 204, 238, 0.2);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 37px 105px 37px 105px;
+
+      span {
+        font-weight: 600;
+        font-size: 22px;
+        line-height: 40px;
+        color: #000000;
+      }
+
+      div {
+        text-align: center;
+      }
+    }
+  }
+}

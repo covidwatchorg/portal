@@ -1,0 +1,16 @@
+.profile_photo {
+  object-fit: cover;
+  display: block;
+  margin: auto;
+
+  &:hover {
+    cursor: pointer;
+  }
+}
+
+.image-modal {
+  .progress-container {
+    margin-top: 0px;
+    display: block;
+  }
+}

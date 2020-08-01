@@ -1,0 +1,70 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat');
+
+.topNav {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: stretch;
+  margin: 32px 32px 0 0px;
+  #orgLogo {
+    height: 35px;
+  }
+  #poweredByCWLogo {
+    height: 32px;
+  }
+}
+
+.mainContainer {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  h1 {
+    font-size: 40px;
+    line-height: 50px;
+    margin-top: 20px;
+    text-transform: capitalize;
+    margin-bottom: 10px;
+  }
+  h3 {
+    line-height: 23px;
+    color: #333333;
+  }
+}
+
+.loginContainer {
+  display: flex;
+  flex-direction: column;
+  background-color: #efefef;
+  margin-top: 5%;
+  padding: 50px 73px 32px 73px;
+  box-sizing: border-box;
+  border-radius: 5px;
+  input {
+    border-width: 2px;
+    width: 370px;
+  }
+  label {
+    margin-bottom: 10px;
+    margin-top: 25px;
+  }
+  a {
+    text-align: center;
+    margin-top: 30px;
+  }
+  a:hover {
+    cursor: pointer;
+    text-decoration: underline;
+  }
+}
+
+.welcome {
+  display: flex;
+  flex-direction: column;
+  width: 50%;
+  height: 88px;
+  margin-top: 5%;
+
+  #students-container {
+    margin-top: 20px;
+  }
+}

@@ -1,0 +1,30 @@
+@import '../color.scss';
+
+.add-member-modal-container {
+  height: 600px;
+  max-height: 634px;
+
+  @media screen and (max-height: 634px) {
+    overflow: scroll;
+  }
+}
+
+.add-member-form {
+  select {
+    margin-top: 8px;
+    width: 350px;
+    height: 40px;
+    border: 2px solid $lightMediumGray;
+    border-radius: 7px;
+    font-size: 16px;
+    padding-left: 20px;
+  }
+  .custom-select:after {
+    content: url('../../assets/arrow-down.svg');
+    position: relative;
+    left: 320px;
+    top: -31px;
+    background-color: transparent;
+    pointer-events: none;
+  }
+}

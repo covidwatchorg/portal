@@ -4,16 +4,16 @@ import { Redirect } from 'react-router-dom'
 import addMember from '../../assets/add-member.svg'
 import arrowLeft from '../../assets/arrow-left.svg'
 import arrowRight from '../../assets/arrow-right.svg'
-import '../../Styles/screens/manage_teams.scss'
 import AddMemberModal from '../components/AddMemberModal'
 import Toast from '../components/Toast'
 import RoleSelector from '../components/RoleSelector'
-import * as ROLES from '../constants/roles'
-import { withStore } from '../store'
+import { withStore, PAGE_SIZE } from '../store'
 import { observer } from 'mobx-react'
 import PageTitle from '../components/PageTitle'
 import Logging from '../util/logging'
-import ChangePasswordModal from '../components/ChangePasswordModal'
+import ChangeRoleModal from '../components/ChangeRoleModal'
+import ChangeStatusModal from '../components/ChangeStatusModal'
+import '../../styles/screens/manage_teams.scss' // NOTE: see note in index.scss
 
 const ManageTeamsBase = observer((props) => {
   const userEmail = props.store.data.user.email
@@ -24,13 +24,16 @@ const ManageTeamsBase = observer((props) => {
   const confirmationToast = useRef()
 
   const [showAddMemberModal, setShowAddMemberModal] = useState(false)
+  const [showChangeRoleModal, setShowChangeRoleModal] = useState(false)
+  const [showChangeStatusModal, setShowChangeStatusModal] = useState(false)
+  const [modalUserProperties, setModalUserProperties] = useState({})
 
   const onAddMemberCancel = () => {
     setShowAddMemberModal(false)
   }
 
   const onAddMemberSuccess = () => {
-    setToastMessage('Member Email Invitation sent')
+    setToastMessage('Success: member email invitation sent')
     setIsSuccess(true)
     setShowAddMemberModal(false)
     confirmationToast.current.show()
@@ -38,86 +41,117 @@ const ManageTeamsBase = observer((props) => {
 
   const onAddMemberFailure = (e) => {
     Logging.error(e)
-    setToastMessage('Member Email Invitation failed to send')
+    if (e.code === 'already-exists') {
+      setToastMessage('The email address is already in use by another account')
+    } else {
+      setToastMessage('Member email invitation failed to send')
+    }
     setIsSuccess(false)
     confirmationToast.current.show()
     setShowAddMemberModal(false)
   }
 
-  const handleRoleChange = (e, isAdmin, firstName, lastName, email) => {
-    if (
-      confirm(
-        `Are you sure you want swicth ${firstName} ${lastName} from ${
-          isAdmin ? ROLES.ADMIN_LABEL : ROLES.NON_ADMIN_LABEL
-        } to ${isAdmin ? ROLES.NON_ADMIN_LABEL : ROLES.ADMIN_LABEL}`
-      )
-    ) {
-      props.store.updateUserByEmail(email, { isAdmin: e.target.value == ROLES.ADMIN_LABEL })
-    }
+  const handleRoleChange = (isAdmin, firstName, lastName, email) => {
+    setModalUserProperties({
+      isAdmin,
+      firstName,
+      lastName,
+      email,
+    })
+    setShowChangeRoleModal(true)
+  }
+
+  const onChangeRoleModalClose = () => {
+    setShowChangeRoleModal(false)
+  }
+
+  const handleStatusChange = (email, toStatus, firstName, lastName) => {
+    setModalUserProperties({
+      email,
+      toStatus,
+      firstName,
+      lastName,
+    })
+    setShowChangeStatusModal(true)
+  }
+
+  const onChangeStatusModalClose = () => {
+    setShowChangeStatusModal(false)
   }
 
   const resetPassword = async (e, email) => {
     e.preventDefault()
     try {
-      await props.store.sendPasswordResetEmail(email)
-      setToastMessage(`Password Reset Email Sent to ${email}`)
+      await props.store.sendPasswordRecoveryEmail(email)
+      setToastMessage(`Password reset email sent to ${email}`)
       setIsSuccess(true)
       confirmationToast.current.show()
     } catch (err) {
       Logging.error(err)
-      setToastMessage('Password Reset Failed. Please try again')
+      setToastMessage('Password reset failed. Please try again')
       setIsSuccess(false)
       confirmationToast.current.show()
     }
   }
 
-  return props.store.data.user.isSignedIn && props.store.data.user.isAdmin ? (
+  return !props.store.data.user.isSignedIn ||
+    !props.store.data.user.isAdmin ||
+    props.store.data.user.isFirstTimeUser ||
+    (props.store.data.user.passwordResetRequested && props.store.data.user.signedInWithEmailLink) ? (
+    <Redirect to={ROUTES.LANDING} />
+  ) : (
     <div className="module-container">
       <PageTitle title="Manage Members" />
       <h1>Manage Members</h1>
-      <div className="add-member-button" onClick={() => setShowAddMemberModal(true)}>
+      <button className="button btn-medium btn-tertiary add-member-button" onClick={() => setShowAddMemberModal(true)}>
         <img src={addMember} alt="" />
         <span className="add-button-text">Add Member</span>
-      </div>
+      </button>
       <AddMemberModal
         hidden={!showAddMemberModal}
         onClose={onAddMemberCancel}
         onSuccess={onAddMemberSuccess}
         onFailure={onAddMemberFailure}
       />
+      <ChangeRoleModal
+        hidden={!showChangeRoleModal}
+        onClose={onChangeRoleModalClose}
+        userProperties={modalUserProperties}
+      />
+      <ChangeStatusModal
+        hidden={!showChangeStatusModal}
+        onClose={onChangeStatusModalClose}
+        userProperties={modalUserProperties}
+      />
       <table>
         <thead>
           <tr>
-            <th style={{ borderTopLeftRadius: 5 }}>Name</th>
+            <th>Name</th>
             <th>Email Address</th>
-            <th id="role-header">Role</th>
-            <th id="status-header">Status</th>
-            <th style={{ borderTopRightRadius: 5 }}>Settings</th>
+            <th>Role</th>
+            <th>Status</th>
+            <th>Settings</th>
           </tr>
         </thead>
         <tbody>
-          {props.store.data.organization.currentPageOfMembers &&
+          {props.store.data.organization.members &&
             props.store.data.organization.currentPageOfMembers.map((data, index) => (
               <tr key={index}>
                 <td>{data.lastName + ', ' + data.firstName}</td>
                 <td>{data.email}</td>
                 <td style={{ padding: 0 }}>
                   <RoleSelector
-                    memberIndex={index}
-                    onChange={(e) => handleRoleChange(e, data.isAdmin, data.firstName, data.lastName, data.email)}
-                    ariaLabelledBy="role-header"
+                    memberIndex={index + (props.store.data.organization.membersPage - 1) * PAGE_SIZE}
+                    onChange={() => handleRoleChange(data.isAdmin, data.firstName, data.lastName, data.email)}
                   />
                 </td>
                 <td style={{ padding: 0 }}>
                   <div className="custom-select">
                     <select
-                      disabled={data.email == userEmail}
+                      disabled={data.email === userEmail}
                       className={!data.disabled ? 'active' : 'inactive'}
                       value={!data.disabled ? 'active' : 'deactivated'}
-                      onChange={(e) => {
-                        props.store.updateUserByEmail(data.email, { disabled: e.target.value == 'deactivated' })
-                      }}
-                      aria-labelledby="status-header"
+                      onChange={(e) => handleStatusChange(data.email, e.target.value, data.firstName, data.lastName)}
                     >
                       <option value="active">Active</option>
                       <option value="deactivated">Deactivated</option>
@@ -125,7 +159,7 @@ const ManageTeamsBase = observer((props) => {
                   </div>
                 </td>
                 <td>
-                  <div className="settings-container">
+                  <div className="xs-text settings-container">
                     <a onClick={(e) => resetPassword(e, data.email)}>Reset Password</a>
                   </div>
                 </td>
@@ -139,29 +173,39 @@ const ManageTeamsBase = observer((props) => {
             className="arrow"
             onClick={(e) => {
               e.preventDefault()
-              props.store.previousPageOfMembers()
+              if (props.store.data.organization.membersPage - 1 > 0) {
+                props.store.data.organization.setMembersPage(props.store.data.organization.membersPage - 1)
+              }
             }}
           >
-            <img src={arrowLeft} alt="Previous" />
+            <img style={{ marginRight: 4 }} src={arrowLeft} alt="Previous" />
           </div>
+          {[...Array(props.store.data.organization.totalPagesOfMembers).keys()].map((pageNumber) => (
+            <div
+              className={pageNumber + 1 === props.store.data.organization.membersPage ? 'current-page' : 'page'}
+              key={pageNumber.toString()}
+              onClick={() => {
+                props.store.data.organization.setMembersPage(pageNumber + 1)
+              }}
+            >
+              {pageNumber + 1}
+            </div>
+          ))}
           <div
             className="arrow"
             onClick={(e) => {
               e.preventDefault()
-              props.store.nextPageOfMembers()
+              if (props.store.data.organization.membersPage + 1 <= props.store.data.organization.totalPagesOfMembers) {
+                props.store.data.organization.setMembersPage(props.store.data.organization.membersPage + 1)
+              }
             }}
           >
-            <img src={arrowRight} alt="Next" />
+            <img style={{ marginLeft: 4 }} src={arrowRight} alt="Next" />
           </div>
         </div>
       </div>
       <Toast ref={confirmationToast} isSuccess={isSuccess} message={toastMessage} />
-      <ChangePasswordModal />
     </div>
-  ) : props.store.data.user.isSignedIn ? (
-    <Redirect to={ROUTES.CODE_VALIDATIONS} />
-  ) : (
-    <Redirect to={ROUTES.LANDING} />
   )
 })
 

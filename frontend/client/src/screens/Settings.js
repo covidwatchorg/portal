@@ -13,16 +13,11 @@ import photo_add from '../../assets/photo-add.svg'
 import Logging from '../util/logging'
 import PendingOperationButton from '../components/PendingOperationButton'
 import ResetPasswordModal from '../components/ResetPasswordModal'
-import ChangePasswordModal from '../components/ChangePasswordModal'
+import CircularProgress from '@material-ui/core/CircularProgress'
 
 const useStyles = makeStyles({
   root: {
-    fontFamily: 'Montserrat',
-    fontSize: 24,
-    fontStyle: 'normal',
-    fontWeight: 'bolder',
-    color: '#585858',
-    marginTop: 20,
+    marginTop: 10,
     padding: 40,
     paddingLeft: 8,
   },
@@ -30,35 +25,14 @@ const useStyles = makeStyles({
 
 const inputStyles = makeStyles({
   root: {
-    fontFamily: 'Montserrat',
-    boxShadow: 'inset 0px 2px 10px rgba(0, 0, 0, 0.2)',
-    borderRadius: 5,
+    lineHeight: '16px',
+    borderRadius: 4,
     border: '2px solid #BDBDBD',
-    paddingLeft: 10,
+    boxSizing: 'border-box',
     width: '75%',
     height: 40,
-    lineHeight: 30,
-    fontSize: 18,
-    marginTop: 25,
+    marginTop: 10,
     marginBottom: 40,
-  },
-})
-
-const secondaryButtonStyles = makeStyles({
-  root: {
-    color: '#2C58B1',
-    width: '195px',
-    height: 35,
-    fontSize: '18px',
-    fontWeight: 'bold',
-    padding: '5px',
-    border: '2px solid #BDBDBD',
-    borderRadius: '7px',
-    backgroundColor: '#ffffff',
-    marginTop: 25,
-    '&:hover': {
-      cursor: 'pointer',
-    },
   },
 })
 
@@ -68,13 +42,13 @@ const SettingsBase = observer((props) => {
   const input = inputStyles()
   const imgUploader = useRef()
 
-  const secondaryButton = secondaryButtonStyles()
   const [open, setOpen] = useState(false)
   const [showResetPasswordModal, setShowResetPasswordModal] = useState(false)
   const [toastInfo, setToastInfo] = useState({
     success: false,
     msg: '',
   })
+  const [loading, setLoading] = useState(false)
   const toastRef = useRef()
 
   const resetPassword = async (e) => {
@@ -97,10 +71,16 @@ const SettingsBase = observer((props) => {
       Logging.log('no image uploaded')
       return
     }
+
+    setLoading(true)
+
+    const file = imgUploader.current.files[0]
+
     try {
       let size = imgUploader.current.files[0].size
 
       if (size > MAXFILESIZE) {
+        setLoading(false)
         setToastInfo({
           success: false,
           msg: 'Exceeded Max Image file size. Image has to be less than 10MB',
@@ -110,18 +90,20 @@ const SettingsBase = observer((props) => {
       }
       let reader = new FileReader()
       // set up onload trigger to run when data is read
-      reader.onload = async (e) => {
+      reader.onload = async () => {
         return props.store
-          .updateUserImage(e.target.result)
+          .updateUserImage(file)
           .then(() => {
             setToastInfo({
               success: true,
               msg: 'Image Updated',
             })
             toastRef.current.show()
+            setLoading(false)
             setOpen(false)
           })
           .catch(() => {
+            setLoading(false)
             setToastInfo({
               success: false,
               msg: 'Error Updating Image, Please Try Again',
@@ -140,7 +122,7 @@ const SettingsBase = observer((props) => {
   const onChangePasswordSuccess = () => {
     setToastInfo({
       success: true,
-      msg: 'Password Succesfully Reset',
+      msg: 'Success: Password Reset',
     })
     toastRef.current.show()
     setShowResetPasswordModal(false)
@@ -158,14 +140,35 @@ const SettingsBase = observer((props) => {
     setShowResetPasswordModal(false)
   }
 
-  const changeImageModal = (
-    <div className="modal-content">
-      <p> Please Select a File to Upload </p>
-      <input type="file" ref={imgUploader} accepts="image/jpeg, image/png" />
-      <PendingOperationButton operation={saveImage} className="save-button">
-        Upload
-      </PendingOperationButton>
-    </div>
+  const changeImageModal = loading ? (
+    <Modal
+      title={'Uploading image...'}
+      hidden={!open}
+      onClose={() => {
+        setOpen(false)
+      }}
+      containerClass="changeImageModalContainer"
+    >
+      <div className="save-image">
+        <CircularProgress />
+      </div>
+    </Modal>
+  ) : (
+    <Modal
+      title={'Please Select a File to Upload'}
+      hidden={!open}
+      onClose={() => {
+        setOpen(false)
+      }}
+      containerClass="changeImageModalContainer"
+    >
+      <div>
+        <input type="file" ref={imgUploader} accepts="image/jpeg, image/png" />
+        <PendingOperationButton operation={saveImage} className="save-button">
+          Upload
+        </PendingOperationButton>
+      </div>
+    </Modal>
   )
 
   const settingsForm = () => (
@@ -174,39 +177,37 @@ const SettingsBase = observer((props) => {
         <Grid container className={classes.root} spacing={2} direction="row" justify="center">
           <Grid item xs={4} xl={2}>
             <Grid container spacing={2} direction="column">
-              Profile Photo
+              <label> Profile Photo </label>
               <div
                 style={{
                   marginTop: '25px',
                   height: '217px',
                   width: '212px',
                   backgroundColor: '#E0E0E0',
-                  border: '2px dashed #828282',
+                  border: '2px dashed #BDBDBD',
                   textAlign: 'center',
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
                 }}
               >
                 <img
                   alt={props.store.data.user.imageBlob ? 'Profile photo' : 'Your profile photo would go here.'}
                   src={props.store.data.user.imageBlob ? props.store.data.user.imageBlob : photo_add}
-                  style={{ width: '212px', height: '217px', objectFit: 'none', display: 'block', margin: 'auto' }}
+                  className="profile_photo"
+                  style={
+                    props.store.data.user.imageBlob
+                      ? { width: 212, height: 217, resize: 'cover' }
+                      : { width: 100, height: 102, paddingLeft: 10, paddingTop: 10 }
+                  }
+                  onClick={() => setOpen(true)}
                 ></img>
               </div>
-              <div style={{ marginTop: '15px', fontSize: '12px', fontWeight: 'normal', color: '#585858' }}>
-                Accepted file types: jpg or png
+              <div className="xs-text" style={{ marginTop: 10 }}>
+                Accepted file format: jpg or png
               </div>
-              <div style={{ fontSize: '12px', fontWeight: 'normal', color: '#585858' }}>Maximum file size: 10 MB</div>
-              <button onClick={() => setOpen(true)} type="button" className={secondaryButton.root}>
-                Change Image
-              </button>
-              <Modal
-                hidden={!open}
-                onClose={() => {
-                  setOpen(false)
-                }}
-                containerClass="changeImageModalContainer"
-              >
-                {changeImageModal}
-              </Modal>
+              <div className="xs-text">Maximum file size: 10 MB</div>
+              {changeImageModal}
             </Grid>
           </Grid>
 
@@ -241,7 +242,7 @@ const SettingsBase = observer((props) => {
                 disabled={true}
                 aria-required="true"
                 className={input.root}
-                style={{ backgroundColor: '#f0f0f0' }}
+                style={{ backgroundColor: '#e0e0e0' }}
                 value={props.store.data.user.email}
               ></input>
             </Grid>
@@ -251,7 +252,7 @@ const SettingsBase = observer((props) => {
             <Grid container spacing={2} direction="column">
               <label htmlFor="role">Role</label>
               {props.store.data.user && (
-                <select
+                <input
                   type="text"
                   id="role"
                   name="role"
@@ -259,16 +260,9 @@ const SettingsBase = observer((props) => {
                   required
                   aria-required="true"
                   className={input.root}
-                  style={{ backgroundColor: '#f0f0f0' }}
+                  style={{ backgroundColor: '#e0e0e0' }}
                   value={props.store.data.user.isAdmin ? ROLES.ADMIN_LABEL : ROLES.NON_ADMIN_LABEL}
-                >
-                  <option value={ROLES.ADMIN_LABEL} defaultValue={props.store.data.user.isAdmin}>
-                    {ROLES.ADMIN_LABEL}
-                  </option>
-                  <option value={ROLES.NON_ADMIN_LABEL} defaultValue={!props.store.data.user.isAdmin}>
-                    {ROLES.NON_ADMIN_LABEL}
-                  </option>
-                </select>
+                ></input>
               )}
               <label htmlFor="lastName">Last Name</label>
               <input
@@ -286,7 +280,7 @@ const SettingsBase = observer((props) => {
                 type="text"
                 id="password"
                 name="password"
-                style={{ backgroundColor: '#f0f0f0', fontSize: '30px' }}
+                style={{ backgroundColor: '#e0e0e0', fontSize: '30px' }}
                 disabled={true}
                 required
                 aria-required="true"
@@ -298,11 +292,9 @@ const SettingsBase = observer((props) => {
                 style={{
                   fontSize: '12px',
                   fontWeight: '500',
-                  color: '#2C58B1',
-                  textDecoration: 'none',
                   textAlign: 'end',
                   marginTop: -25,
-                  marginRight: '21%',
+                  marginRight: '26%',
                 }}
                 onClick={(e) => resetPassword(e)}
               >
@@ -316,16 +308,19 @@ const SettingsBase = observer((props) => {
     </Fragment>
   )
 
-  return props.store.data.user.isSignedIn ? (
+  return !props.store.data.user.isSignedIn ||
+    props.store.data.user.isFirstTimeUser ||
+    (props.store.data.user.passwordResetRequested && props.store.data.user.signedInWithEmailLink) ? (
+    <Redirect to={ROUTES.LANDING} />
+  ) : (
     <React.Fragment>
       <PageTitle title="My Settings" />
       <div className="module-container">
-        <div className="header">
-          <h1>My Settings</h1>
-          <p>Changes are automatically saved</p>
+        <div>
+          <h1 style={{ marginBottom: 12 }}>My Settings</h1>
+          <p className="xs-text">Changes are automatically saved</p>
         </div>
         {settingsForm()}
-        <ChangePasswordModal />
         <ResetPasswordModal
           hidden={!showResetPasswordModal}
           onClose={onChangePasswordClose}
@@ -334,8 +329,6 @@ const SettingsBase = observer((props) => {
         />
       </div>
     </React.Fragment>
-  ) : (
-    <Redirect to={ROUTES.LANDING} />
   )
 })
 

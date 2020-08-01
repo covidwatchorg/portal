@@ -1,10 +1,11 @@
 import { types, cast, onSnapshot } from 'mobx-state-tree'
 import 'mobx-react-lite/batchingForReactDom'
 import Logging from '../util/logging'
+import { PAGE_SIZE } from '.'
 
 const User = types
   .model({
-    isSignedIn: types.maybe(types.boolean),
+    isSignedIn: types.maybe(types.boolean), // frontend-only field
     email: types.string,
     isAdmin: types.boolean,
     disabled: types.boolean,
@@ -13,7 +14,10 @@ const User = types
     firstName: types.string,
     lastName: types.string,
     organizationID: types.string,
-    isFirstTimeUser: types.maybe(types.boolean),
+    isFirstTimeUser: types.boolean,
+    passwordResetRequested: types.maybe(types.boolean),
+    passwordResetCompletedInCurrentSession: types.maybe(types.boolean), // frontend-only field
+    signedInWithEmailLink: types.maybe(types.boolean), // frontend-only field
   })
   .actions((self) => {
     const __update = (updates) => {
@@ -48,7 +52,9 @@ const Organization = types
     verificationNotSharedText: types.string,
     diagnosisText: types.string,
     exposureText: types.string,
-    currentPageOfMembers: types.array(User),
+    members: types.array(User),
+    membersPage: types.number,
+    logoBlob: types.maybeNull(types.string),
   })
   .actions((self) => {
     const __update = (updates) => {
@@ -59,12 +65,24 @@ const Organization = types
       Logging.log(self)
     }
 
-    const __setCurrentPageOfMembers = (pageOfMembers) => {
-      self.currentPageOfMembers = cast(pageOfMembers)
+    const __setMembers = (members) => {
+      self.members = cast(members)
     }
 
-    return { __update, __setCurrentPageOfMembers }
+    const setMembersPage = (page) => {
+      self.membersPage = page
+    }
+
+    return { __update, __setMembers, setMembersPage }
   })
+  .views((self) => ({
+    get currentPageOfMembers() {
+      return self.members.slice((self.membersPage - 1) * PAGE_SIZE, (self.membersPage - 1) * PAGE_SIZE + PAGE_SIZE)
+    },
+    get totalPagesOfMembers() {
+      return Math.ceil(self.members.length / PAGE_SIZE)
+    },
+  }))
 
 const Store = types.model({
   user: User,
@@ -81,6 +99,10 @@ const defaultUser = {
   lastName: '',
   organizationID: '',
   imageBlob: null,
+  isFirstTimeUser: true,
+  passwordResetRequested: false,
+  passwordResetCompletedInCurrentSession: false,
+  signedInWithEmailLink: false,
 }
 
 const defaultOrganization = {
@@ -103,7 +125,9 @@ const defaultOrganization = {
   verificationNotSharedText: '',
   diagnosisText: '',
   exposureText: '',
-  currentPageOfMembers: [],
+  members: [],
+  membersPage: 1,
+  logoBlob: null,
 }
 
 const defaultStore = {
@@ -114,8 +138,8 @@ const defaultStore = {
 let initialStore = defaultStore
 
 // Based on https://egghead.io/lessons/react-store-store-in-local-storage
-if (localStorage.getItem('store')) {
-  initialStore = JSON.parse(localStorage.getItem('store'))
+if (sessionStorage.getItem('store')) {
+  initialStore = JSON.parse(sessionStorage.getItem('store'))
 }
 
 const rootStore = Store.create({
@@ -124,7 +148,7 @@ const rootStore = Store.create({
 
 // Based on https://egghead.io/lessons/react-store-store-in-local-storage
 onSnapshot(rootStore, (snapshot) => {
-  localStorage.setItem('store', JSON.stringify(snapshot))
+  sessionStorage.setItem('store', JSON.stringify(snapshot))
 })
 
 export { rootStore, defaultUser, defaultOrganization }

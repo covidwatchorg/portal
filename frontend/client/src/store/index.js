@@ -1,7 +1,15 @@
 import React from 'react'
 import { rootStore, defaultUser, defaultOrganization } from './model'
 import Logging from '../util/logging'
-import { auth, db, createUserCallable, SESSION } from './firebase'
+import {
+  auth,
+  db,
+  SESSION,
+  createUserCallable,
+  initiatePasswordRecoveryCallable,
+  getVerificationCodeCallable,
+} from './firebase'
+import imageCompression from 'browser-image-compression'
 
 const PAGE_SIZE = 15
 
@@ -11,13 +19,15 @@ const createStore = (WrappedComponent) => {
   return class extends React.Component {
     constructor(props) {
       super(props)
+      auth.setPersistence(SESSION)
       this.data = rootStore
       this.__userDocumentListener = null
       this.__userImageListener = null
       this.__organizationDocumentListener = null
-      this.__pageOfMembersListener = null
+      this.__membersListener = null
       this.__lastVisibleMember = null // pagination helper
       this.__firstVisibleMember = null // pagination helper
+      this.__signedInWithEmailLink = false // firebase doesn't tell us this so we need to track it ourself
       this.__authStateListener = auth.onAuthStateChanged(async (user) => {
         if (user) {
           Logging.log('User signed in')
@@ -32,6 +42,7 @@ const createStore = (WrappedComponent) => {
                   ...updatedUserDocumentSnapshot.data(),
                   email: updatedUserDocumentSnapshot.id,
                   isSignedIn: true,
+                  signedInWithEmailLink: this.__signedInWithEmailLink,
                 })
                 // If DNE, set up organization listener within this callback,
                 // since it relies on this.data.user.organizationID being set
@@ -41,20 +52,19 @@ const createStore = (WrappedComponent) => {
                     .doc(this.data.user.organizationID)
                     .onSnapshot((updatedOrganizationDocumentSnapshot) => {
                       Logging.log('Remote organization document changed')
-                      rootStore.organization.__update({
+                      this.data.organization.__update({
                         ...updatedOrganizationDocumentSnapshot.data(),
                         id: updatedOrganizationDocumentSnapshot.id,
                         currentPage: this.data.organization.currentPage,
                       })
-                      if (this.data.user.isAdmin && this.__pageOfMembersListener === null) {
+                      if (this.data.user.isAdmin && this.__membersListener === null) {
                         var newListener = db
                           .collection('users')
                           .where('organizationID', '==', this.data.organization.id)
                           .orderBy('lastName')
                           .orderBy('firstName')
-                          .limit(PAGE_SIZE)
-                          .onSnapshot((pageOfMembersSnapshot) => {
-                            this.__updatePageOfMembersOnSnapshot(pageOfMembersSnapshot.docs, newListener)
+                          .onSnapshot((membersSnapshot) => {
+                            this.__updateMembersOnSnapshot(membersSnapshot.docs, newListener)
                           })
                       }
                     })
@@ -69,7 +79,7 @@ const createStore = (WrappedComponent) => {
               .onSnapshot((updatedUserImageDocumentSnapshot) => {
                 if (updatedUserImageDocumentSnapshot.exists) {
                   this.data.user.__update({
-                    imageBlob: updatedUserImageDocumentSnapshot.data().blob,
+                    imageBlob: updatedUserImageDocumentSnapshot.data().imageBlob,
                   })
                 }
               })
@@ -94,25 +104,25 @@ const createStore = (WrappedComponent) => {
             this.__organizationDocumentListener()
             this.__organizationDocumentListener = null
           }
-          if (this.__pageOfMembersListener !== null) {
-            this.__pageOfMembersListener()
-            this.__pageOfMembersListener = null
+          if (this.__membersListener !== null) {
+            this.__membersListener()
+            this.__membersListener = null
           }
         }
       })
     }
 
-    __updatePageOfMembersOnSnapshot(pageOfMembersSnapshotDocs, newListener) {
-      if (pageOfMembersSnapshotDocs.length > 0) {
-        if (this.__pageOfMembersListener != newListener) {
-          this.__pageOfMembersListener = newListener
+    __updateMembersOnSnapshot(membersSnapshotDocs, newListener) {
+      if (membersSnapshotDocs.length > 0) {
+        if (this.__membersListener != newListener) {
+          this.__membersListener = newListener
         }
         // Based on https://firebase.google.com/docs/firestore/query-data/query-cursors#paginate_a_query
-        this.__firstVisibleMember = pageOfMembersSnapshotDocs[0]
-        this.__lastVisibleMember = pageOfMembersSnapshotDocs[pageOfMembersSnapshotDocs.length - 1]
-        this.data.organization.__setCurrentPageOfMembers(
+        this.__firstVisibleMember = membersSnapshotDocs[0]
+        this.__lastVisibleMember = membersSnapshotDocs[membersSnapshotDocs.length - 1]
+        this.data.organization.__setMembers(
           // See https://stackoverflow.com/a/24806827
-          pageOfMembersSnapshotDocs.reduce((result, userDoc) => {
+          membersSnapshotDocs.reduce((result, userDoc) => {
             if (userDoc.id !== this.data.user.email) {
               result.push({ ...userDoc.data(), email: userDoc.id })
             }
@@ -120,32 +130,6 @@ const createStore = (WrappedComponent) => {
           }, [])
         )
       }
-    }
-
-    nextPageOfMembers() {
-      var newListener = db
-        .collection('users')
-        .where('organizationID', '==', this.data.organization.id)
-        .orderBy('lastName')
-        .orderBy('firstName')
-        .startAfter(this.__lastVisibleMember)
-        .limit(PAGE_SIZE)
-        .onSnapshot((pageOfMembersSnapshot) => {
-          this.__updatePageOfMembersOnSnapshot(pageOfMembersSnapshot.docs, newListener)
-        })
-    }
-
-    previousPageOfMembers() {
-      var newListener = db
-        .collection('users')
-        .where('organizationID', '==', this.data.organization.id)
-        .orderBy('lastName', 'desc')
-        .orderBy('firstName', 'desc')
-        .startAfter(this.__firstVisibleMember)
-        .limit(PAGE_SIZE)
-        .onSnapshot((pageOfMembersSnapshot) => {
-          this.__updatePageOfMembersOnSnapshot(pageOfMembersSnapshot.docs.reverse(), newListener)
-        })
     }
 
     async updateUser(updates) {
@@ -156,10 +140,13 @@ const createStore = (WrappedComponent) => {
       }
     }
 
-    async updateUserImage(blob) {
+    async updateUserImage(imageBlob) {
       try {
         // .set() with { merge: true } so that if the document dne, it's created, otherwise its updated
-        await db.collection('userImages').doc(this.data.user.email).set({ blob: blob }, { merge: true })
+        const options = { maxSizeMB: 0.6, maxWidthOrHeight: 900 }
+        const compressedFile = await imageCompression(imageBlob, options)
+        const dataURL = await imageCompression.getDataUrlFromFile(compressedFile)
+        await db.collection('userImages').doc(this.data.user.email).set({ imageBlob: dataURL }, { merge: true })
       } catch (err) {
         Logging.error('Error updating image', err)
         throw err
@@ -176,12 +163,21 @@ const createStore = (WrappedComponent) => {
     }
 
     async signInWithEmailAndPassword(email, password) {
-      await auth.setPersistence(SESSION)
+      this.__signedInWithEmailLink = false
       await auth.signInWithEmailAndPassword(email, password)
+    }
+
+    async signInWithEmailLink(email, link) {
+      this.__signedInWithEmailLink = true
+      return auth.signInWithEmailLink(email, link)
     }
 
     async signOut() {
       await auth.signOut()
+    }
+
+    async updatePassword(password) {
+      await auth.currentUser.updatePassword(password)
     }
 
     async createUser(newUser) {
@@ -195,9 +191,12 @@ const createStore = (WrappedComponent) => {
       }
     }
 
-    async sendPasswordResetEmail(email) {
+    async sendPasswordRecoveryEmail(email) {
       try {
-        await auth.sendPasswordResetEmail(email)
+        await initiatePasswordRecoveryCallable({ email: email })
+        // Save the email locally so you don't need to ask the user for it again if they open the link on the same device.
+        // See https://firebase.google.com/docs/auth/web/email-link-auth#send_an_authentication_link_to_the_users_email_address
+        window.localStorage.setItem('emailForSignIn', email)
         return true
       } catch (err) {
         Logging.error(err)
@@ -212,6 +211,24 @@ const createStore = (WrappedComponent) => {
         Logging.error(`Error updating user: ${email}`, err)
         throw err
       }
+    }
+
+    // issueCodeRequest looks like {testType: "likely", symptomDate: "2020-07-02"} or {testType: "confirmed", symptomDate: "2020-07-02"}
+    async getVerificationCode(issueCodeRequest) {
+      try {
+        return await getVerificationCodeCallable(issueCodeRequest)
+      } catch (err) {
+        Logging.error(err)
+        throw err
+      }
+    }
+
+    isSignInWithEmailLink(link) {
+      return auth.isSignInWithEmailLink(link)
+    }
+
+    setPasswordResetCompletedInCurrentSession(val) {
+      this.data.user.__update({ passwordResetCompletedInCurrentSession: val })
     }
 
     displayName = 'storeProvider'

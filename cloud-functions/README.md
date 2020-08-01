@@ -15,13 +15,17 @@ In depth discussion of app and data model can be found in [Notion](https://www.n
 
 ## Setup your own local environment
 2. `npm run init` to initialize common firebase files 
-3. Local mode runs in your personal firebase account. Create your own firebase project
-    a. create your personal firebase account ,
-    b. update your firebase configuration ( Firebase Console => Project => Settings => Website Settings ) in 
-        $ROOT/cloud-functions/functions/config/firebase.config.dev.js
+3. Local mode runs in your personal firebase account. Create your own firebase project and add a web app to it (Firebase Console => Project => Project Settings => Your Apps => Add app)
+    a. create your personal firebase account
+    b. update your firebase configuration ( Firebase Console => Project => Project Settings  => Your Apps => Firebase Sdk snippet => config ) in config/firebase.config.local.js
+    c. Update the `local` field in cloud-functions/.firebaserc to the name of your project
+    d. Run `firebase use local` from the cloud-functions directory
+    e. Deploy indexes with `firebase deploy --only firestore:indexes --project local` from the cloud-functions directory
 3. a. create a firebase private key under (Firebase Console => Project => Settings => Service Account ) 
    b. save the json under $ROOT/cloud-functions/functions/permission-portal-local-firebase-admin-key.json. 
    NOTE: It is important to have this specific file name because this is how the environment is tied to the firebase secret.
+4. Enable email and password sign in (Firebase Console => Project => Sign-in method => Email/Password)
+5. 
 
 4. In all the below steps , your local environment can be used with environment parameter="local"
 

@@ -1,0 +1,35 @@
+@import '../color.scss';
+
+#footer {
+  display: flex;
+}
+
+.footer-not-login {
+  padding-right: 101px;
+}
+
+.footerContainer {
+  position: relative;
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  align-items: center;
+  margin-left: 98px;
+  margin-right: 98px;
+
+
+
+  #footer-text {
+    display: flex;
+  }
+  
+  a {
+    text-align: center;
+    margin-left: 50px;
+  }
+  p {
+    text-align: center;
+    color: $darkMediumGray;
+    margin: 0px;
+  }
+}

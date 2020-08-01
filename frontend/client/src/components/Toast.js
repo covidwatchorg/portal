@@ -1,7 +1,6 @@
 import React from 'react'
 import Snackbar from '@material-ui/core/Snackbar'
 import SnackbarContent from '@material-ui/core/SnackbarContent'
-import white_check_success_icon from '../../assets/white_check_success_icon.svg'
 
 /**
  * Encapsulates a button driven operation which takes time and may succeed or fail
@@ -41,20 +40,19 @@ class Toast extends React.Component {
         <SnackbarContent
           style={{
             backgroundColor: this.props.isSuccess ? '#43C4D9' : '#F05452',
-            fontFamily: 'Montserrat',
             width: '100vw',
-            fontSize: '24px',
-            lineHeigh: '29px',
+            fontSize: '18px',
+            lineHeight: '22px',
             fontWeight: '600',
             display: 'flex',
             justifyContent: 'center',
             alignItems: 'center',
-            marginTop: '57px',
+            marginTop: '46px',
+            fontFamily: 'Montserrat',
           }}
           message={
             <span id="msg">
               <div className="toastMessage">{this.props.message}</div>
-              {this.props.isSuccess && <img className="toastCheck" src={white_check_success_icon} alt="check" />}
             </span>
           }
         />

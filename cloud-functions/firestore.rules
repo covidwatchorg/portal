@@ -33,14 +33,16 @@ service cloud.firestore {
     function isNotEscalatingPrivileges() {
       return ( resource.data.isAdmin == request.resource.data.isAdmin )
     }
+
+    // Checks that the caller is not trying to change the organizationID in the request
     function isModifyingOrg() {
       return ( resource.data.organizationID != request.resource.data.organizationID )
     }
 
     match /users/{email} {
       allow write: if isSignedIn() && isAdmin() && isInOrganization(resource.data.organizationID) && !isModifyingOrg();
-      allow read : if isSelf() || (isAdmin() && isInOrganization(resource.data.organizationID));
-      allow update : if isSelf() && isNotEscalatingPrivileges() && !isModifyingOrg();
+      allow read: if isSelf() || (isAdmin() && isInOrganization(resource.data.organizationID));
+      allow update: if isSelf() && isNotEscalatingPrivileges() && !isModifyingOrg();
     }
 
     match /organizations/{organizationID} {

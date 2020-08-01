@@ -7,12 +7,12 @@
     "serve": "npm run build && firebase emulators:start --only functions",
     "shell": "npm run build && firebase functions:shell",
     "start": "npm run shell",
-    "deploy": "firebase deploy --only functions",
+    "deploy:dev": "firebase deploy -P dev",
+    "deploy:test": "firebase deploy -P test",
+    "deploy:local": "firebase deploy -P local",
     "logs": "firebase functions:log",
     "test": "jest --forceExit",
-    "test:dev": "NODE_ENV=dev npm run test",
     "test:local": "NODE_ENV=local npm run test",
-    "test:test": "NODE_ENV=test npm run test",
     "test_ci": "npm run init && NODE_ENV=ci npm run test",
     "config:set": "node set-config.js"
   },
@@ -21,14 +21,21 @@
   },
   "main": "lib/src/index.js",
   "dependencies": {
+    "@sendgrid/mail": "^7.1.0",
+    "@types/tough-cookie": "^4.0.0",
+    "axios": "^0.19.2",
+    "axios-cookiejar-support": "^1.0.0",
     "cpy-cli": "^3.1.1",
     "dotenv": "^8.2.0",
-    "@sendgrid/mail": "^7.1.0",
     "firebase": "^7.14.2",
     "firebase-admin": "^8.10.0",
     "firebase-functions": "^3.6.1",
+    "fs": "0.0.1-security",
     "jest-environment-uint8array": "^1.0.0",
-    "reflect-metadata": "^0.1.13"
+    "query-string": "^6.13.1",
+    "querystring": "^0.2.0",
+    "reflect-metadata": "^0.1.13",
+    "tough-cookie": "^4.0.0"
   },
   "devDependencies": {
     "@types/jest": "^24.9.1",
@@ -37,7 +44,7 @@
     "firebase-tools": "^8.2.0",
     "jest": "^24.0.0",
     "node-env-run": "^3.0.2",
-    "ts-jest": "^24.0.0",
+    "ts-jest": "^26.1.3",
     "tslint": "^5.12.0",
     "typescript": "^3.8.3",
     "unique-names-generator": "^4.2.0"
