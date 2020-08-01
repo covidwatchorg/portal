@@ -1,5 +1,6 @@
 import React from 'react'
 import Modal from '../components/Modal'
+import ModalInput from '../components/ModalInput'
 import PendingOperationButton from '../components/PendingOperationButton'
 import { withStore } from '../store'
 import Logging from '../util/logging'
@@ -96,63 +97,52 @@ class ChangePasswordModalBase extends React.Component {
 
   render() {
     return (
-      <>
-        <Modal
-          hidden={!this.state.visible}
-          containerClass="change-password-modal-container"
-          isDismissible={this.state.isDismissible}
-          onClose={this.onClose}
-        >
-          <h3>{this.state.heading}</h3>
-          <p>{this.state.subHeading}</p>
-          {this.state.showNewPasswordInputs && (
-            <form className="change-password-form">
-              <label className="small-text" htmlFor="new-password">
-                New password<span>*</span>
-              </label>
-              <input
-                type="password"
-                required
-                aria-required={true}
-                id="new-password"
-                name="new-password"
-                value={this.state.password}
-                onChange={this.onChange}
-              />
-              <div className="validationResult">
-                {!this.state.passwordIsValid && this.state.formHasBeenEdited
-                  ? this.state.password.length > 0
-                    ? 'Password must be at least 6 characters long'
-                    : 'New password cannot be blank'
-                  : ''}
-              </div>
-              <label htmlFor="confirm-password">
-                Confirm new password<span>*</span>
-              </label>
-              <input
-                type="password"
-                required
-                aria-required={true}
-                id="confirm-password"
-                name="confirm-password"
-                value={this.state.confirmPassword}
-                onChange={this.onChange}
-              />
-              <div className="validationResult">
-                {!this.state.passwordsMatch && this.state.confirmPasswordHasBeenEdited ? 'Passwords must match' : ''}
-              </div>
+      <Modal
+        title={this.state.heading}
+        hidden={!this.state.visible}
+        containerClass="change-password-modal-container"
+        isDismissible={this.state.isDismissible}
+        onClose={this.onClose}
+      >
+        <p>{this.state.subHeading}</p>
+        {this.state.showNewPasswordInputs && (
+          <form className="change-password-form">
+            <ModalInput
+              label="New Password"
+              id="new-password"
+              required={true}
+              password={true}
+              value={this.state.password}
+              onChange={this.onChange}
+              validation={!this.state.passwordIsValid && this.state.formHasBeenEdited}
+              validationMessage={
+                this.state.password.length > 0
+                  ? 'Password must be at least 6 characters long'
+                  : 'New password cannot be blank'
+              }
+            />
 
-              <PendingOperationButton
-                className={'save-password btn-fullwidth'}
-                disabled={!this.canSubmit()}
-                operation={this.tryUpdatePassword}
-              >
-                Save
-              </PendingOperationButton>
-            </form>
-          )}
-        </Modal>
-      </>
+            <ModalInput
+              label="Confirm new password"
+              id="confirm-password"
+              required={true}
+              password={true}
+              value={this.state.confirmPassword}
+              onChange={this.onChange}
+              validation={!this.state.passwordsMatch && this.state.confirmPasswordHasBeenEdited}
+              validationMessage="Passwords must match"
+            />
+
+            <PendingOperationButton
+              className={'save-button btn-fullwidth'}
+              disabled={!this.canSubmit()}
+              operation={this.tryUpdatePassword}
+            >
+              Save
+            </PendingOperationButton>
+          </form>
+        )}
+      </Modal>
     )
   }
 }

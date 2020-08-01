@@ -141,18 +141,34 @@ const SettingsBase = observer((props) => {
   }
 
   const changeImageModal = loading ? (
-    <div className="modal-content image-modal">
-      <h3>Uploading image...</h3>
-      <CircularProgress />
-    </div>
+    <Modal
+      title={'Uploading image...'}
+      hidden={!open}
+      onClose={() => {
+        setOpen(false)
+      }}
+      containerClass="changeImageModalContainer"
+    >
+      <div className="save-image">
+        <CircularProgress />
+      </div>
+    </Modal>
   ) : (
-    <div className="modal-content image-modal">
-      <h3> Please Select a File to Upload </h3>
-      <input type="file" ref={imgUploader} accepts="image/jpeg, image/png" />
-      <PendingOperationButton operation={saveImage} className="btn-medium">
-        Upload
-      </PendingOperationButton>
-    </div>
+    <Modal
+      title={'Please Select a File to Upload'}
+      hidden={!open}
+      onClose={() => {
+        setOpen(false)
+      }}
+      containerClass="changeImageModalContainer"
+    >
+      <div>
+        <input type="file" ref={imgUploader} accepts="image/jpeg, image/png" />
+        <PendingOperationButton operation={saveImage} className="save-button">
+          Upload
+        </PendingOperationButton>
+      </div>
+    </Modal>
   )
 
   const settingsForm = () => (
@@ -191,15 +207,7 @@ const SettingsBase = observer((props) => {
                 Accepted file format: jpg or png
               </div>
               <div className="xs-text">Maximum file size: 10 MB</div>
-              <Modal
-                hidden={!open}
-                onClose={() => {
-                  setOpen(false)
-                }}
-                containerClass="changeImageModalContainer"
-              >
-                {changeImageModal}
-              </Modal>
+              {changeImageModal}
             </Grid>
           </Grid>
 

@@ -4,8 +4,8 @@ import { makeStyles } from '@material-ui/core/styles'
 import IconButton from '@material-ui/core/IconButton'
 import MenuItem from '@material-ui/core/MenuItem'
 import Menu from '@material-ui/core/Menu'
-import UofA from '../../assets/uofa-logo.svg'
-import profile from '../../assets/placeholder/profile.png'
+import cwLogo from '../../assets/covid-watch-logo-blue.svg'
+import profile from '../../assets/user.png' // user.png icon made by www.flaticon.com
 import * as ROLES from '../constants/roles'
 import { withStore } from '../store'
 import { observer } from 'mobx-react'
@@ -126,8 +126,12 @@ const NavBarBase = observer((props) => {
 
   return (
     <div className="navbarContainer">
-      <Link to="/code_validations">
-        <img src={UofA} id="orgLogo" alt={props.store.data.organization.name || 'University of Arizona'} />
+      <Link to="/code_validations" className="logo-link">
+        <img
+          src={props.store.data.organization.logoBlob ? props.store.data.organization.logoBlob : cwLogo}
+          id="orgLogo"
+          alt={props.store.data.organization.name}
+        />
       </Link>
       {props.store.data.user.firstName ? LoggedInIcons : <div id="logged-in-icons-container" />}
     </div>

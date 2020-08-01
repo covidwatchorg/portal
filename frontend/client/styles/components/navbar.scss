@@ -8,6 +8,10 @@
   padding: 10px 98px 10px 101px;
   border-bottom: 1px solid $lightGray;
 
+  .logo-link {
+    display: flex;
+  }
+
   #orgLogo {
     height: 40px;
   }
@@ -55,6 +59,7 @@
     width: 50px;
     height: 50px;
     img {
+      border: $lightGray 1px solid;
       width: 50px;
       height: 50px;
       border-radius: 50%;

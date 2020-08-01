@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import PendingOperationButton from '../components/PendingOperationButton'
 import RoleSelector from '../components/RoleSelector'
 import Modal from '../components/Modal'
+import ModalInput from '../components/ModalInput'
 import * as ROLES from '../constants/roles'
 import { withStore } from '../store'
 import { observer } from 'mobx-react'
@@ -34,21 +35,23 @@ const ValidationRules = [
   },
 ]
 
+const defaultState = {
+  firstName: '',
+  firstNameValidationFailed: false,
+  firstNameValidationMessage: '',
+  lastName: '',
+  lastNameValidationFailed: false,
+  lastNameValidationMessage: '',
+  email: '',
+  emailValidationFailed: false,
+  emailValidationMessage: '',
+  role: ROLES.NON_ADMIN_LABEL,
+  roleValidationFailed: false,
+  roleValidationMessage: '',
+}
+
 const AddMemberModalBase = observer((props) => {
-  const [state, setState] = useState({
-    firstName: '',
-    firstNameValidationFailed: false,
-    firstNameValidationMessage: '',
-    lastName: '',
-    lastNameValidationFailed: false,
-    lastNameValidationMessage: '',
-    email: '',
-    emailValidationFailed: false,
-    emailValidationMessage: '',
-    role: ROLES.NON_ADMIN_LABEL,
-    roleValidationFailed: false,
-    roleValidationMessage: '',
-  })
+  const [state, setState] = useState(defaultState)
 
   const tryCreateUser = () => {
     let newState = {}
@@ -86,7 +89,10 @@ const AddMemberModalBase = observer((props) => {
         lastName: state.lastName,
         isAdmin: state.role === ROLES.ADMIN_LABEL,
       })
-      .then(props.onSuccess, props.onFailure)
+      .then(() => {
+        props.onSuccess()
+        setState(defaultState)
+      }, props.onFailure)
   }
 
   function handleChange(e) {
@@ -101,61 +107,55 @@ const AddMemberModalBase = observer((props) => {
     }
   }
 
-  // TODO needs to fail but not close on validation failure and high light invalid fields (can do that before touching the store)
+  const resetAndClose = () => {
+    props.onClose()
+    setState(defaultState)
+  }
+
   return (
-    <Modal hidden={props.hidden} onClose={props.onClose} containerClass="add-member-modal-container">
-      <h3>Add Member</h3>
-      <div className="add-member-form">
-        <label htmlFor="firstName">
-          First Name<span>*</span>
-        </label>
-        <input
-          type="text"
-          name="firstName"
+    <Modal title="Add Member" hidden={props.hidden} onClose={resetAndClose} containerClass="add-member-modal-container">
+      <form className="modal-form add-member-form">
+        <ModalInput
+          label="First Name"
           id="firstName"
-          required
-          aria-required="true"
+          required={true}
           value={state.firstName}
           onChange={handleChange}
+          validation={state.firstNameValidationFailed}
+          validationMessage={state.firstNameValidationMessage}
         />
-        {state.firstNameValidationFailed && <div className="validationResult">{state.firstNameValidationMessage}</div>}
-        <label htmlFor="lastName" style={{ marginTop: state.firstNameValidationFailed ? '6px' : null }}>
-          Last Name<span>*</span>
-        </label>
-        <input
-          type="text"
-          name="lastName"
+
+        <ModalInput
+          label="Last Name"
           id="lastName"
-          required
-          aria-required="true"
+          required={true}
           value={state.lastName}
           onChange={handleChange}
+          validation={state.lastNameValidationFailed}
+          validationMessage={state.lastNameValidationMessage}
         />
-        {state.lastNameValidationFailed && <div className="validationResult">{state.lastNameValidationMessage}</div>}
-        <label htmlFor="email" style={{ marginTop: state.lastNameValidationFailed ? '6px' : null }}>
-          Email<span>*</span>
-        </label>
-        <input
-          type="text"
-          name="email"
+
+        <ModalInput
+          label="Email"
           id="email"
-          required
-          aria-required="true"
+          required={true}
           value={state.email}
           onChange={handleChange}
+          validation={state.emailValidationFailed}
+          validationMessage={state.emailValidationMessage}
         />
-        {state.emailValidationFailed && <div className="validationResult">{state.emailValidationMessage}</div>}
-        <label htmlFor="role" style={{ marginTop: state.emailValidationFailed ? '6px' : null }}>
-          Role<span>*</span>
-        </label>
-        <RoleSelector isAdmin={false} id="role" required={true} onChange={handleChange} />
-        {state.roleValidationFailed && <div className="validationResult">{state.roleValidationMessage}</div>}
-        <div className="save-button-container">
-          <PendingOperationButton className="save-button" operation={tryCreateUser}>
-            Submit
-          </PendingOperationButton>
+
+        <div className="modal-input">
+          <label htmlFor="role" style={{ marginTop: state.emailValidationFailed ? '6px' : null }}>
+            Role<span>*</span>
+          </label>
+          <RoleSelector isAdmin={false} id="role" required={true} onChange={handleChange} />
+          {state.roleValidationFailed && <div className="validationResult">{state.roleValidationMessage}</div>}
         </div>
-      </div>
+        <PendingOperationButton className="save-button" operation={tryCreateUser}>
+          Submit
+        </PendingOperationButton>
+      </form>
     </Modal>
   )
 })
