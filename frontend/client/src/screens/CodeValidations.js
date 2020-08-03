@@ -7,7 +7,15 @@ import { observer } from 'mobx-react'
 import PageTitle from '../components/PageTitle'
 import PendingOperationButton from '../components/PendingOperationButton'
 import Clock from '../../assets/clock.svg'
-import { getOneHourAhead, getFourteenDaysAgo, moreThanFourteenDaysAgo, dateInFuture, getUTCDate } from '../util/time'
+import {
+  getOneHourAheadDisplayString,
+  getFourteenDaysAgoString,
+  moreThanFourteenDaysAgo,
+  dateInFuture,
+  getTodayString,
+  getDefaultTimezoneString,
+  localStringToZeroUTCOffsetString,
+} from '../util/time'
 
 const codePlaceholder = '00000000'
 
@@ -44,7 +52,7 @@ const CodeValidationsBase = observer((props) => {
     try {
       let code = await props.store.getVerificationCode({
         testType: testType,
-        symptomDate: symptomDate,
+        symptomDate: symptomDate === '' ? symptomDate : localStringToZeroUTCOffsetString(symptomDate),
       })
       setCode(code.data.split('').join(''))
       codeTimeStamp()
@@ -104,7 +112,7 @@ const CodeValidationsBase = observer((props) => {
     document.getElementById('code-box').classList.toggle('no-value')
     document.getElementById('code-box').classList.toggle('code-generated')
     setCodeGenStamp(new Date().getMinutes())
-    setExpirationTime(getOneHourAhead())
+    setExpirationTime(getOneHourAheadDisplayString())
   }
 
   return !props.store.data.user.isSignedIn ||
@@ -158,13 +166,12 @@ const CodeValidationsBase = observer((props) => {
               id="date-picker"
               className="no-value"
               type="date"
-              min={getFourteenDaysAgo()}
-              max={getUTCDate()}
+              min={getFourteenDaysAgoString()}
+              max={getTodayString()}
               onChange={handleDate}
             ></input>
           </form>
-          <div className="date-desc">This system is based on UTC dates, so you may need to adjust accordingly.</div>
-          <div className="date-sub-desc">The current UTC date is {new Date().toJSON().substring(0, 10)}</div>
+          <div className="date-desc">Timezone set to {getDefaultTimezoneString()}</div>
         </div>
       </div>
 
