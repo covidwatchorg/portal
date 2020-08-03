@@ -7,6 +7,7 @@ const https = require('https')
 const wrapper = mount(<Footer store={{ data: rootStore }} />)
 
 test('privacy policy link is valid', (done) => {
+  // See https://jestjs.io/docs/en/asynchronous
   function callback(res) {
     expect(res.statusCode).toBe(200)
     done()
