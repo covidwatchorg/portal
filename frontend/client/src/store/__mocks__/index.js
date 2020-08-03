@@ -4,11 +4,14 @@ import React from 'react'
 const RootStoreContext = React.createContext()
 
 const createStore = (WrappedComponent) => {
+  rootStore.user.__update({ isSignedIn: true, isAdmin: false, isFirstTimeUser: false })
   return class extends React.Component {
+    displayName = 'newStore'
     constructor(props) {
       super(props)
       this.data = rootStore
     }
+    isSignInWithEmailLink = () => {}
     render() {
       return (
         <RootStoreContext.Provider value={this}>
@@ -25,7 +28,9 @@ const withStore = (WrappedComponent) => {
     render() {
       return (
         <RootStoreContext.Consumer>
-          {(store) => <WrappedComponent store={store} {...this.props} />}
+          {(store) => {
+            return <WrappedComponent store={store} {...this.props} />
+          }}
         </RootStoreContext.Consumer>
       )
     }

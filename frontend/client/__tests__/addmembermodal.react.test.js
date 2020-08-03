@@ -13,6 +13,7 @@ import AddMemberModal from '../src/components/AddMemberModal'
 
 configure({ adapter: new Adapter() })
 
+jest.mock('../src/store')
 const AddMemberModalWrapper = createStore(AddMemberModal)
 
 test('renders correctly', () => {

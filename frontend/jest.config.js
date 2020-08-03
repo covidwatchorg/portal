@@ -77,7 +77,7 @@ module.exports = {
   moduleNameMapper: {
     '\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$':
       '<rootDir>/__mocks__/fileMock.js',
-    '\\.(css|less)$': '<rootDir>/__mocks__/styleMock.js',
+    '\\.(css|less|scss)$': '<rootDir>/__mocks__/styleMock.js',
   },
 
   // An array of regexp pattern strings, matched against all module paths before considered 'visible' to the module loader
@@ -125,7 +125,7 @@ module.exports = {
   setupFiles: ['jest-localstorage-mock'],
 
   // A list of paths to modules that run some code to configure or set up the testing framework before each test
-  // setupFilesAfterEnv: [],
+  setupFilesAfterEnv: ['./test-setup.js'],
 
   // A list of paths to snapshot serializer modules Jest should use for snapshot testing
   // snapshotSerializers: [],
@@ -146,9 +146,7 @@ module.exports = {
   // ],
 
   // An array of regexp pattern strings that are matched against all test paths, matched tests are skipped
-  testPathIgnorePatterns: [
-      "client/src/config/.*", "client/__tests__/addmembermodal.react.test"
-  ],
+  testPathIgnorePatterns: ['client/src/config/.*'],
 
   // The regexp pattern or array of patterns that Jest uses to detect test files
   // testRegex: [],
