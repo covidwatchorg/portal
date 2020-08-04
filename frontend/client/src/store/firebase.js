@@ -28,9 +28,10 @@ window.env = process.env.NODE_ENV
 app.initializeApp(config)
 const auth = app.auth()
 const SESSION = app.auth.Auth.Persistence.SESSION
+const NONE = app.auth.Auth.Persistence.NONE
 const db = app.firestore()
 const createUserCallable = app.functions().httpsCallable('createUser')
 const initiatePasswordRecoveryCallable = app.functions().httpsCallable('initiatePasswordRecovery')
 const getVerificationCodeCallable = app.functions().httpsCallable('getVerificationCode')
 
-export { auth, db, SESSION, createUserCallable, initiatePasswordRecoveryCallable, getVerificationCodeCallable }
+export { auth, db, SESSION, NONE, createUserCallable, initiatePasswordRecoveryCallable, getVerificationCodeCallable }

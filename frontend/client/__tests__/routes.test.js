@@ -2,12 +2,13 @@ import React from 'react'
 import { mount } from 'enzyme'
 import App from '../App'
 import { MemoryRouter } from 'react-router'
+import { rootStore } from '../src/store/model'
 import NotFound from '../src/screens/404'
 import CodeValidations from '../src/screens/CodeValidations'
 import reactRouter from 'react-router-dom'
 
-// Uses mock at client/src/store/__mocks__/index.js
-jest.mock('../src/store')
+// Make sure we don't call any Firebase functions
+jest.mock('../src/store/firebase')
 
 beforeAll(() => {
   // Mock BrowserRouter as it overrides MemoryRouter used in test
@@ -26,6 +27,8 @@ test('404 for invalid link', () => {
 })
 
 test('non-auth routes', () => {
+  rootStore.user.__update({ isSignedIn: true, isAdmin: false, isFirstTimeUser: false })
+
   let wrapper = mount(
     <MemoryRouter initialEntries={['/branding']}>
       <App />

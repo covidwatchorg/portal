@@ -8,13 +8,12 @@ import React from 'react'
 import Adapter from 'enzyme-adapter-react-16'
 import { configure, shallow, mount } from 'enzyme'
 import toJson from 'enzyme-to-json'
-import { createStore } from '../src/store'
+import { rootStore } from '../src/store/model'
 import AddMemberModal from '../src/components/AddMemberModal'
 
 configure({ adapter: new Adapter() })
 
 jest.mock('../src/store')
-const AddMemberModalWrapper = createStore(AddMemberModal)
 
 test('renders correctly', () => {
   var showAddMemberModal = true
@@ -23,11 +22,12 @@ test('renders correctly', () => {
   const onAddMemberFailure = jest.fn()
 
   const wrapper = shallow(
-    <AddMemberModalWrapper
+    <AddMemberModal
       hidden={!showAddMemberModal}
       onClose={onAddMemberCancel}
       onSuccess={onAddMemberSuccess}
       onFailure={onAddMemberFailure}
+      store={rootStore}
     />
   )
 
@@ -41,11 +41,12 @@ test('clicking close button hides modal', () => {
   const onAddMemberFailure = jest.fn()
 
   const wrapper = mount(
-    <AddMemberModalWrapper
+    <AddMemberModal
       hidden={!showAddMemberModal}
       onClose={onAddMemberCancel}
       onSuccess={onAddMemberSuccess}
       onFailure={onAddMemberFailure}
+      store={rootStore}
     />
   )
 
@@ -63,11 +64,12 @@ test('clicking modal background hides modal', () => {
   const onAddMemberFailure = jest.fn()
 
   const wrapper = mount(
-    <AddMemberModalWrapper
+    <AddMemberModal
       hidden={!showAddMemberModal}
       onClose={onAddMemberCancel}
       onSuccess={onAddMemberSuccess}
       onFailure={onAddMemberFailure}
+      store={rootStore}
     />
   )
 
@@ -85,11 +87,12 @@ test('successfully create new user', () => {
   const onAddMemberFailure = jest.fn()
 
   const wrapper = mount(
-    <AddMemberModalWrapper
+    <AddMemberModal
       hidden={!showAddMemberModal}
       onClose={onAddMemberCancel}
       onSuccess={onAddMemberSuccess}
       onFailure={onAddMemberFailure}
+      store={rootStore}
     />
   )
 
