@@ -5,6 +5,7 @@ import { MemoryRouter } from 'react-router'
 import { rootStore } from '../src/store/model'
 import NotFound from '../src/screens/404'
 import CodeValidations from '../src/screens/CodeValidations'
+import Login from '../src/screens/Login'
 import reactRouter from 'react-router-dom'
 
 // Make sure we don't call any Firebase functions
@@ -24,6 +25,16 @@ test('404 for invalid link', () => {
     </MemoryRouter>
   )
   expect(wrapper.find(NotFound)).toHaveLength(1)
+})
+
+test('/ leads to /code_validations', () => {
+  const wrapper = mount(
+    <MemoryRouter initialEntries={['/']}>
+      <App />
+    </MemoryRouter>
+  )
+
+  expect(wrapper.find(Login)).toHaveLength(1)
 })
 
 test('non-auth routes', () => {
