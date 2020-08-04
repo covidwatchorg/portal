@@ -1,15 +1,17 @@
-import React, { Fragment, createRef } from 'react'
+import React, { createRef } from 'react'
 import { Redirect } from 'react-router-dom'
 import * as ROUTES from '../constants/routes'
 import { withStore } from '../store'
 import { observer } from 'mobx-react'
 import ForgotPasswordModal from '../components/ForgotPasswordModal'
-import PageTitle from '../components/PageTitle'
 import Toast from '../components/Toast'
 import ChangePasswordModal from '../components/ChangePasswordModal'
 import Logging from '../util/logging'
 import PendingOperationButton from '../components/PendingOperationButton'
 import Students from '../../assets/students.svg'
+import Container from 'react-bootstrap/Container'
+import Row from 'react-bootstrap/Row'
+import Col from 'react-bootstrap/Col'
 
 const INITIAL_STATE = {
   email: '',
@@ -95,10 +97,9 @@ const SignInFormBase = observer(
     }
 
     loginForm = () => (
-      <Fragment>
-        <PageTitle title="Welcome" />
-        <div className="mainContainer">
-          <div className="welcome">
+      <>
+        <Row className="justify-content-between mx-5">
+          <Col xs={12} md={6}>
             <h1>Covid Watch Portal</h1>
             <h3 className="small-text">
               Welcome to the Portal where your team can generate diagnosis verification codes to share with patients who
@@ -110,7 +111,7 @@ const SignInFormBase = observer(
             <div id="students-container">
               <img src={Students}></img>
             </div>
-          </div>
+          </Col>
           <form className="loginContainer">
             <label className="small-text" htmlFor="email">
               Email Address
@@ -126,15 +127,15 @@ const SignInFormBase = observer(
             <a onClick={this.showModal}>Forgot password?</a>
           </form>
           <ForgotPasswordModal hidden={!this.state.showPassModal} onClose={this.hideModal} />
-        </div>
+        </Row>
         <Toast ref={this.errorToast} isSuccess={false} message={this.state.toastMessage} />
-      </Fragment>
+      </>
     )
 
     render() {
       return (
-        <Fragment>
-          <div className="module-container module-container-login">{this.loginForm()}</div>
+        <Container fluid>
+          {this.loginForm()}
           {this.props.store.data.user.isSignedIn ? (
             this.props.store.data.user.isFirstTimeUser ? (
               <ChangePasswordModal
@@ -152,7 +153,7 @@ const SignInFormBase = observer(
               <Redirect to={ROUTES.CODE_VALIDATIONS} />
             )
           ) : null}
-        </Fragment>
+        </Container>
       )
     }
   }

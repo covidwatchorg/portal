@@ -3,6 +3,8 @@
 // NOTE: @import './screens/manage_teams.scss is omitted, because it uses a `background: url('*.svg')`, which for some reason
 // is extremely difficult and convoluted to get webpack to handle. It's instead imported directly in ManageTeams.js
 
+@import "~bootstrap/scss/bootstrap";
+
 @import './application.scss';
 @import './screens/login.scss';
 @import './screens/settings.scss';
