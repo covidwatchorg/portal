@@ -55,6 +55,17 @@ const NavBarBase = observer((props) => {
     setRedirect(num)
   }
 
+  // Determines whether to display the navbar as if the user is logged in.
+  // Used to handle the complex cases where the user is technically logged in but we don't want it to seem
+  // that way to them, i.e. for password resets.
+  const displayAsIfLoggedIn = () => {
+    return (
+      props.store.data.user.isSignedIn &&
+      !(props.store.data.user.passwordResetRequested && props.store.data.user.signedInWithEmailLink) &&
+      !props.store.data.user.passwordResetCompletedInCurrentSession
+    )
+  }
+
   const LoggedInIcons = (
     <div id="logged-in-icons-container">
       <div className="avatar_group avatar_text">
@@ -128,12 +139,16 @@ const NavBarBase = observer((props) => {
     <div className="navbarContainer">
       <Link to="/code_validations" className="logo-link">
         <img
-          src={props.store.data.organization.logoBlob ? props.store.data.organization.logoBlob : cwLogo}
+          src={
+            props.store.data.organization.logoBlob && displayAsIfLoggedIn()
+              ? props.store.data.organization.logoBlob
+              : cwLogo
+          }
           id="orgLogo"
           alt={props.store.data.organization.name}
         />
       </Link>
-      {props.store.data.user.firstName ? LoggedInIcons : <div id="logged-in-icons-container" />}
+      {displayAsIfLoggedIn() ? LoggedInIcons : <div id="logged-in-icons-container" />}
     </div>
   )
 })
