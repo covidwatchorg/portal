@@ -171,7 +171,7 @@ const CodeValidationsBase = observer((props) => {
               onChange={handleDate}
             ></input>
           </form>
-          <div className="date-desc">Timezone set to {getDefaultTimezoneString()}</div>
+          <div className="date-desc">Time zone set to {getDefaultTimezoneString()}</div>
         </div>
       </div>
 
