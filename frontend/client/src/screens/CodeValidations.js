@@ -1,4 +1,4 @@
-import React, { useState, createRef, useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import Toast from '../components/Toast'
 import * as ROUTES from '../constants/routes'
 import { withStore } from '../store'
@@ -25,7 +25,7 @@ const CodeValidationsBase = observer((props) => {
     msg: '',
   })
 
-  let confirmedToast = createRef()
+  let confirmedToast = React.createRef()
 
   useEffect(() => {
     updateButtonDisabled()
