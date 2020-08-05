@@ -20,7 +20,7 @@ const createStore = (WrappedComponent) => {
   return class extends React.Component {
     constructor(props) {
       super(props)
-      auth.setPersistence(process.env.NODE_ENV == 'TEST' ? NONE : SESSION)
+      auth.setPersistence(process.env.NODE_ENV == 'test' ? NONE : SESSION)
       this.data = rootStore
       this.__userDocumentListener = null
       this.__userImageListener = null
