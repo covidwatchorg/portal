@@ -1,70 +1,105 @@
 @import url('https://fonts.googleapis.com/css2?family=Montserrat');
-
-.topNav {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: stretch;
-  margin: 32px 32px 0 0px;
-  #orgLogo {
-    height: 35px;
-  }
-  #poweredByCWLogo {
-    height: 32px;
-  }
-}
+@import '../include-media';
 
 .mainContainer {
   display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  h1 {
-    font-size: 40px;
-    line-height: 50px;
-    margin-top: 20px;
-    text-transform: capitalize;
-    margin-bottom: 10px;
+
+  @include media('>phone') {
+    // `margin-top: 52px;` mirrors the hardcoded margin-top for h1 in application.scss
+    margin-top: 52px;
+    flex-direction: row;
   }
+  @include media('<=phone') {
+    // `margin-top: 26px;` mirrors the hardcoded margin-top for h1 in application.scss
+    margin-top: 26px;
+    flex-direction: column;
+  }
+  justify-content: space-between;
+
+  h1 {
+    @include media('>phone') {
+      margin-top: 20px;
+      margin-bottom: 10px;
+      font-size: 40px;
+      line-height: 50px;
+    }
+    @include media('<=phone') {
+      margin-top: 0;
+      margin-bottom: 0;
+      font-size: 30px;
+    }
+    text-transform: capitalize;
+  }
+
   h3 {
     line-height: 23px;
     color: #333333;
+    @include media('<=phone') {
+      // Don't display the "Welcome to the Portal where your team ..." blurb on mobile
+      display: none;
+    }
   }
-}
 
-.loginContainer {
-  display: flex;
-  flex-direction: column;
-  background-color: #efefef;
-  margin-top: 5%;
-  padding: 50px 73px 32px 73px;
-  box-sizing: border-box;
-  border-radius: 5px;
-  input {
-    border-width: 2px;
-    width: 370px;
+  .loginContainer {
+    display: flex;
+    flex-direction: column;
+    background-color: #efefef;
+    max-width: 100%;
+    @include media('>phone') {
+      padding: 50px 73px 32px 73px;
+    }
+    @include media('<=phone') {
+      padding: 10px 12px 4px 12px;
+    }
+    box-sizing: border-box;
+    border-radius: 5px;
+    input {
+      border-width: 2px;
+      @include media('>phone') {
+        width: 370px;
+      }
+      @include media('<=phone') {
+        width: 100%;
+      }
+    }
+    label {
+      margin-bottom: 10px;
+      margin-top: 25px;
+    }
+    a {
+      text-align: center;
+      @include media('>phone') {
+        margin-top: 30px;
+      }
+      @include media('<=phone') {
+        margin-top: 30px;
+        margin-bottom: 30px;
+      }
+    }
+    a:hover {
+      cursor: pointer;
+      text-decoration: underline;
+    }
   }
-  label {
-    margin-bottom: 10px;
-    margin-top: 25px;
-  }
-  a {
-    text-align: center;
-    margin-top: 30px;
-  }
-  a:hover {
-    cursor: pointer;
-    text-decoration: underline;
-  }
-}
 
-.welcome {
-  display: flex;
-  flex-direction: column;
-  width: 50%;
-  height: 88px;
-  margin-top: 5%;
+  .welcome {
+    display: flex;
+    flex-direction: column;
+    @include media('>phone') {
+      width: 50%;
+    }
+    @include media('<=phone') {
+      width: 100%;
+    }
 
-  #students-container {
-    margin-top: 20px;
+    height: 88px;
+
+    #students-container {
+      @include media('<=phone') {
+        // Don't display the students graphic on mobile
+        display: none;
+      }
+      margin-top: 20px;
+    }
   }
 }
