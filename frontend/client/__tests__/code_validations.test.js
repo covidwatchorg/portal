@@ -23,7 +23,6 @@ jest.mock('react-router-dom', () => {
 jest.mock('../src/store/firebase', () => {
   return {
     ...jest.requireActual('../src/store/firebase'),
-    __esModule: true,
     getVerificationCodeCallable: jest.fn(() => Promise.resolve('123456')),
   }
 })
