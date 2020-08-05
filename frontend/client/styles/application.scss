@@ -106,4 +106,7 @@ a {
 
 .module-container-login {
   padding-right: 0px;
+  @include media('<=phone') {
+    margin-bottom: 26px;
+  }
 }

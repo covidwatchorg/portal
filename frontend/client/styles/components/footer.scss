@@ -7,28 +7,56 @@
 }
 
 .footer-not-login {
-  padding-right: 101px;
+  @include media('>phone') {
+    padding-right: 101px;
+  }
 }
 
 .footerContainer {
   display: flex;
-  width: 100%;
-  justify-content: space-between;
   align-items: center;
-  margin-left: 98px;
-  margin-right: 98px;
+  justify-content: space-between;
+  width: 100%;
+  @include media('>phone') {
+    flex-direction: row;
+    justify-content: space-between !important;
+    margin-left: 98px;
+    margin-right: 98px;
+  }
+  @include media('<=phone') {
+    flex-direction: column;
+  }
 
   #footer-text {
     display: flex;
+    align-items: center;
+    @include media('>phone') {
+      flex-direction: row;
+    }
+    @include media('<=phone') {
+      flex-direction: column;
+      width: 100%;
+    }
   }
 
+  p,
   a {
     text-align: center;
-    margin-left: 50px;
+    @include media('>phone') {
+      margin-left: 50px !important;
+    }
+    @include media('<=phone') {
+      margin-top: 3px;
+      margin-bottom: 5px;
+    }
   }
   p {
-    text-align: center;
     color: $darkMediumGray;
-    margin: 0px;
+    @include media('>phone') {
+      margin: 0px;
+    }
+    @include media('<=phone') {
+      margin-top: 5px;
+    }
   }
 }
