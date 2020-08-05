@@ -3,13 +3,13 @@ import React from 'react'
 import ManageMembers from '../src/screens/ManageTeams'
 import { createStore } from '../src/store'
 import { rootStore, defaultUser } from '../src/store/model'
-import sendPasswordRecoveryEmail from '../src/store'
+import initiatePasswordRecoveryCallable from '../src/store/firebase'
 
 // Mock getVerificationCodeCallable
 jest.mock('../src/store/firebase', () => {
   return {
     ...jest.requireActual('../src/store/firebase'),
-    sendPasswordRecoveryEmail: jest.fn(() => {}),
+    initiatePasswordRecoveryCallable: jest.fn(() => {}),
   }
 })
 
@@ -28,17 +28,20 @@ jest.mock('react-router-dom', () => {
 
 describe('manage members', () => {
   test('password reset email', () => {
+    rootStore.user.__update({ isSignedIn: true, isAdmin: true, isFirstTimeUser: false, signedInWithEmailLink: false })
+    let defaultUserClone = Object.assign({}, defaultUser)
     // Put a fake user in the store
-    defaultUser.firstName = 'foo'
-    defaultUser.lastName = 'bar'
-    defaultUser.lastName = 'baz@test.com'
-    defaultUser.isAdmin = false
-    rootStore.organization.__setMembers([{ defaultUser }])
+    defaultUserClone.firstName = 'foo'
+    defaultUserClone.lastName = 'bar'
+    defaultUserClone.email = 'baz@test.com'
+    defaultUserClone.isAdmin = false
+
+    rootStore.organization.__setMembers([defaultUserClone])
     const ManageMembersWrapped = createStore(ManageMembers)
     const wrapped = mount(<ManageMembersWrapped />)
 
     wrapped.find('a').at(0).simulate('click')
 
-    expect(sendPasswordRecoveryEmail).toHaveBeenCalled()
+    expect(initiatePasswordRecoveryCallable).toHaveBeenCalled()
   })
 })

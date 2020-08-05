@@ -146,7 +146,13 @@ module.exports = {
   // ],
 
   // An array of regexp pattern strings that are matched against all test paths, matched tests are skipped
-  testPathIgnorePatterns: ['client/src/config/.*', 'client/__tests__/addmembermodal.react.test'],
+  testPathIgnorePatterns: [
+    'client/src/config/.*',
+    'client/__tests__/addmembermodal.react.test',
+    'client/__tests__/footer.test',
+    'client/__tests__/navbar.test',
+    'client/__tests__/routes.test',
+  ],
 
   // The regexp pattern or array of patterns that Jest uses to detect test files
   // testRegex: [],
