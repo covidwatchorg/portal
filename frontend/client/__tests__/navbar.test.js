@@ -13,12 +13,10 @@ beforeAll(() => {
 // Mock Redirect to avoid router error
 jest.mock('react-router-dom', () => {
   return {
-    __esModuleRedirect: true,
     // eslint-disable-next-line react/display-name
     Redirect: () => {
       return <div></div>
     },
-    __esModuleLink: true,
     // eslint-disable-next-line react/display-name
     Link: () => {
       return <div></div>

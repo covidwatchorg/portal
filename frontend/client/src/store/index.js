@@ -1,6 +1,5 @@
 import React from 'react'
 import { rootStore, defaultUser, defaultOrganization } from './model'
-import Logging from '../util/logging'
 import {
   auth,
   db,
@@ -11,6 +10,7 @@ import {
   getVerificationCodeCallable,
 } from './firebase'
 import imageCompression from 'browser-image-compression'
+import Logging from '../components/Logging'
 
 const PAGE_SIZE = 15
 
@@ -31,7 +31,6 @@ const createStore = (WrappedComponent) => {
       this.__signedInWithEmailLink = false // firebase doesn't tell us this so we need to track it ourself
       this.__authStateListener = auth.onAuthStateChanged(async (user) => {
         if (user) {
-          Logging.log('User signed in')
           // get user's document from the db and at the same time set up a listener to respond to document changes
           if (this.__userDocumentListener === null) {
             this.__userDocumentListener = db
@@ -52,7 +51,6 @@ const createStore = (WrappedComponent) => {
                     .collection('organizations')
                     .doc(this.data.user.organizationID)
                     .onSnapshot((updatedOrganizationDocumentSnapshot) => {
-                      Logging.log('Remote organization document changed')
                       this.data.organization.__update({
                         ...updatedOrganizationDocumentSnapshot.data(),
                         id: updatedOrganizationDocumentSnapshot.id,
@@ -86,7 +84,6 @@ const createStore = (WrappedComponent) => {
               })
           }
         } else {
-          Logging.log('User signed out')
           // signed out
           // reset to default state
           this.data.user.__update(defaultUser)
