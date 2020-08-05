@@ -2,6 +2,8 @@
 
 #footer {
   display: flex;
+  // `margin-top: auto;` pins the footer to the bottom of the app, see https://stackoverflow.com/a/33924704
+  margin-top: auto;
 }
 
 .footer-not-login {
