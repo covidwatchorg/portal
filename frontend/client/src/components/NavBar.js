@@ -1,6 +1,5 @@
 import React, { useState } from 'react'
 import { Redirect, Link } from 'react-router-dom'
-import { makeStyles } from '@material-ui/core/styles'
 import IconButton from '@material-ui/core/IconButton'
 import MenuItem from '@material-ui/core/MenuItem'
 import Menu from '@material-ui/core/Menu'
@@ -11,30 +10,7 @@ import { withStore } from '../store'
 import { observer } from 'mobx-react'
 import menu from '../../assets/menu.svg'
 
-const useStyles = makeStyles((theme) => ({
-  root: {
-    flexGrow: 1,
-  },
-  menuButton: {
-    marginRight: theme.spacing(11),
-  },
-  title: {
-    flexGrow: 1,
-  },
-  link: {
-    marginTop: 14,
-    paddingLeft: 30,
-    paddingRight: 30,
-    fontFamily: 'Montserrat',
-    fontSize: 18,
-    fontWeight: 500,
-    color: '#2c58b1',
-  },
-}))
-
 const NavBarBase = observer((props) => {
-  const classes = useStyles()
-
   const [redirect, setRedirect] = useState(-1)
   const [anchorEl, setAnchorEl] = useState(null)
   const open = Boolean(anchorEl)
@@ -83,7 +59,7 @@ const NavBarBase = observer((props) => {
       </div>
       <div className="avatar_group separator" />
 
-      <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu" onClick={handleMenu}>
+      <IconButton edge="start" className="menu-btn" color="inherit" aria-label="menu" onClick={handleMenu}>
         <img src={menu} alt="Menu" />
       </IconButton>
       <Menu
@@ -101,23 +77,23 @@ const NavBarBase = observer((props) => {
         open={open}
         onClose={handleClose}
       >
-        <MenuItem className={classes.link} style={{ marginTop: 22 }} onClick={() => onClickMenuItem(0)}>
+        <MenuItem className="menu-link" style={{ marginTop: 22 }} onClick={() => onClickMenuItem(0)}>
           Diagnosis Verification Codes
         </MenuItem>
         {props.store.data.user.isAdmin && (
-          <MenuItem className={classes.link} onClick={() => onClickMenuItem(1)}>
+          <MenuItem className="menu-link" onClick={() => onClickMenuItem(1)}>
             Manage Members
           </MenuItem>
         )}
         {props.store.data.user.isAdmin && (
-          <MenuItem className={classes.link} onClick={() => onClickMenuItem(2)}>
+          <MenuItem className="menu-link" onClick={() => onClickMenuItem(2)}>
             Mobile App Settings
           </MenuItem>
         )}
-        <MenuItem className={classes.link} onClick={() => onClickMenuItem(3)}>
+        <MenuItem className="menu-link" onClick={() => onClickMenuItem(3)}>
           My Settings
         </MenuItem>
-        <MenuItem className={classes.link} style={{ marginBottom: 22 }} onClick={() => onClickMenuItem(4)}>
+        <MenuItem className="menu-link" style={{ marginBottom: 22 }} onClick={() => onClickMenuItem(4)}>
           Logout
         </MenuItem>
       </Menu>
