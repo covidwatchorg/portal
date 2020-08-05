@@ -1,6 +1,5 @@
 import { types, cast, onSnapshot } from 'mobx-state-tree'
 import 'mobx-react-lite/batchingForReactDom'
-import Logging from '../util/logging'
 import { PAGE_SIZE } from '.'
 
 const User = types
@@ -24,8 +23,6 @@ const User = types
       Object.keys(updates).forEach((key) => {
         if (self.hasOwnProperty(key)) self[key] = updates[key] // eslint-disable-line no-prototype-builtins
       })
-      Logging.log('Updated User:')
-      Logging.log(self)
     }
 
     return { __update }
@@ -61,8 +58,6 @@ const Organization = types
       Object.keys(updates).forEach((key) => {
         if (self.hasOwnProperty(key)) self[key] = updates[key] // eslint-disable-line no-prototype-builtins
       })
-      Logging.log('Updated Organization:')
-      Logging.log(self)
     }
 
     const __setMembers = (members) => {
