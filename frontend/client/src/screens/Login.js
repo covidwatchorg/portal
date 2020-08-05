@@ -9,7 +9,6 @@ import ChangePasswordModal from '../components/ChangePasswordModal'
 import Logging from '../util/logging'
 import PendingOperationButton from '../components/PendingOperationButton'
 import Students from '../../assets/students.svg'
-import Container from 'react-bootstrap/Container'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 
@@ -134,7 +133,7 @@ const SignInFormBase = observer(
 
     render() {
       return (
-        <Container fluid>
+        <div className="login">
           {this.loginForm()}
           {this.props.store.data.user.isSignedIn ? (
             this.props.store.data.user.isFirstTimeUser ? (
@@ -153,7 +152,7 @@ const SignInFormBase = observer(
               <Redirect to={ROUTES.CODE_VALIDATIONS} />
             )
           ) : null}
-        </Container>
+        </div>
       )
     }
   }

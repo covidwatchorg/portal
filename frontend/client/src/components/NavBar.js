@@ -10,6 +10,8 @@ import * as ROLES from '../constants/roles'
 import { withStore } from '../store'
 import { observer } from 'mobx-react'
 import menu from '../../assets/menu.svg'
+import Col from 'react-bootstrap/Col'
+import Image from 'react-bootstrap/Image'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -125,16 +127,26 @@ const NavBarBase = observer((props) => {
   )
 
   return (
-    <div className="navbarContainer">
-      <Link to="/code_validations" className="logo-link">
-        <img
+    // Reference - will adjust more after login
+    // <div className="navbarContainer">
+    //   <Link to="/code_validations" className="logo-link">
+    //     <img
+    //       src={props.store.data.organization.logoBlob ? props.store.data.organization.logoBlob : cwLogo}
+    //       id="orgLogo"
+    //       alt={props.store.data.organization.name}
+    //     />
+    //   </Link>
+    //   {props.store.data.user.firstName ? LoggedInIcons : <div id="logged-in-icons-container" />}
+    // </div>
+    <Col md={12} className="navbar d-flex pl-0 pl-md-5 py-3 justify-content-center justify-content-md-start">
+      <Link to="/code_validations">
+        <Image
           src={props.store.data.organization.logoBlob ? props.store.data.organization.logoBlob : cwLogo}
-          id="orgLogo"
-          alt={props.store.data.organization.name}
+          height={40}
         />
       </Link>
       {props.store.data.user.firstName ? LoggedInIcons : <div id="logged-in-icons-container" />}
-    </div>
+    </Col>
   )
 })
 

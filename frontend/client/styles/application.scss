@@ -4,15 +4,25 @@
   display: none;
 }
 
-body {
-  margin: 0px;
+html, #root {
+  height: 100%;
+}
 
+body {
+  height: 100%;
+  margin: 0;
   // Default text style
   font-family: Montserrat;
   font-size: 14px;
   font-weight: normal;
   line-height: 20px;
   color: $darkGray;
+}
+
+.main-content {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
 }
 
 h1 {
