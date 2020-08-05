@@ -1,18 +1,26 @@
 @import './color.scss';
 
-.hidden {
-  display: none;
-}
-
-body {
-  margin: 0px;
-
+html,
+body,
+#app,
+#app > div,
+#root {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-width: 99vw;
+  min-height: 99vh;
   // Default text style
   font-family: Montserrat;
   font-size: 14px;
   font-weight: normal;
   line-height: 20px;
   color: $darkGray;
+  margin: 0;
+}
+
+.hidden {
+  display: none;
 }
 
 h1 {
@@ -65,20 +73,19 @@ a {
   text-decoration: none;
 }
 
-.small-text{
+.small-text {
   font-weight: normal;
   font-size: 16px;
   line-height: 20px;
 }
 
-.xs-text{
+.xs-text {
   font-weight: normal;
   font-size: 12px;
   line-height: 15px;
 }
 
-.module-container{
-  min-height: 86vh;
+.module-container {
   margin: 0 98px;
   display: flex;
   flex-direction: column;
@@ -86,6 +93,6 @@ a {
   padding-right: 101px;
 }
 
-.module-container-login{
-    padding-right: 0px;
+.module-container-login {
+  padding-right: 0px;
 }
