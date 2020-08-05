@@ -139,7 +139,12 @@ const SettingsBase = observer((props) => {
       containerClass="changeImageModalContainer"
     >
       <div>
-        <input type="file" ref={imgUploader} accepts="image/jpeg, image/png" />
+        <input
+          type="file"
+          ref={imgUploader}
+          accepts="image/jpeg, image/png"
+          style={{ border: 'none', marginTop: '25px', marginBottom: '15px' }}
+        />
         <PendingOperationButton operation={saveImage} className="save-button">
           Upload
         </PendingOperationButton>
