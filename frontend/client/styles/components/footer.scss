@@ -9,7 +9,6 @@
 }
 
 .footerContainer {
-  position: relative;
   display: flex;
   width: 100%;
   justify-content: space-between;
@@ -17,12 +16,10 @@
   margin-left: 98px;
   margin-right: 98px;
 
-
-
   #footer-text {
     display: flex;
   }
-  
+
   a {
     text-align: center;
     margin-left: 50px;
