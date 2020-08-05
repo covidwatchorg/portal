@@ -1,5 +1,6 @@
 import React from 'react'
 import { rootStore, defaultUser, defaultOrganization } from './model'
+import Logging from '../util/logging'
 import {
   auth,
   db,
@@ -10,7 +11,6 @@ import {
   getVerificationCodeCallable,
 } from './firebase'
 import imageCompression from 'browser-image-compression'
-import Logging from '../components/Logging'
 
 const PAGE_SIZE = 15
 
