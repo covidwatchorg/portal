@@ -1,7 +1,6 @@
 import React, { useRef, Fragment, useState } from 'react'
 import Grid from '@material-ui/core/Grid'
 import Modal from '../components/Modal'
-import { makeStyles } from '@material-ui/core/styles'
 import * as ROLES from '../constants/roles'
 import Toast from '../components/Toast'
 import { Redirect } from 'react-router-dom'
@@ -15,31 +14,8 @@ import PendingOperationButton from '../components/PendingOperationButton'
 import ResetPasswordModal from '../components/ResetPasswordModal'
 import CircularProgress from '@material-ui/core/CircularProgress'
 
-const useStyles = makeStyles({
-  root: {
-    marginTop: 10,
-    padding: 40,
-    paddingLeft: 8,
-  },
-})
-
-const inputStyles = makeStyles({
-  root: {
-    lineHeight: '16px',
-    borderRadius: 4,
-    border: '2px solid #BDBDBD',
-    boxSizing: 'border-box',
-    width: '75%',
-    height: 40,
-    marginTop: 10,
-    marginBottom: 40,
-  },
-})
-
 const MAXFILESIZE = 10 * 1024 * 1024
 const SettingsBase = observer((props) => {
-  const classes = useStyles()
-  const input = inputStyles()
   const imgUploader = useRef()
 
   const [open, setOpen] = useState(false)
@@ -163,7 +139,12 @@ const SettingsBase = observer((props) => {
       containerClass="changeImageModalContainer"
     >
       <div>
-        <input type="file" ref={imgUploader} accepts="image/jpeg, image/png" />
+        <input
+          type="file"
+          ref={imgUploader}
+          accepts="image/jpeg, image/png"
+          style={{ border: 'none', marginTop: '25px', marginBottom: '15px' }}
+        />
         <PendingOperationButton operation={saveImage} className="save-button">
           Upload
         </PendingOperationButton>
@@ -174,7 +155,7 @@ const SettingsBase = observer((props) => {
   const settingsForm = () => (
     <Fragment>
       <form>
-        <Grid container className={classes.root} spacing={2} direction="row" justify="center">
+        <Grid container id="settings-grid" spacing={2} direction="row" justify="center">
           <Grid item xs={4} xl={2}>
             <Grid container spacing={2} direction="column">
               <label> Profile Photo </label>
@@ -218,7 +199,6 @@ const SettingsBase = observer((props) => {
                 type="text"
                 id="prefix"
                 name="prefix"
-                className={input.root}
                 onChange={onChange}
                 value={props.store.data.user.prefix}
               ></input>
@@ -229,7 +209,6 @@ const SettingsBase = observer((props) => {
                 name="firstName"
                 required
                 aria-required="true"
-                className={input.root}
                 onChange={onChange}
                 value={props.store.data.user.firstName}
               ></input>
@@ -241,7 +220,6 @@ const SettingsBase = observer((props) => {
                 required
                 disabled={true}
                 aria-required="true"
-                className={input.root}
                 style={{ backgroundColor: '#e0e0e0' }}
                 value={props.store.data.user.email}
               ></input>
@@ -259,7 +237,6 @@ const SettingsBase = observer((props) => {
                   disabled={true}
                   required
                   aria-required="true"
-                  className={input.root}
                   style={{ backgroundColor: '#e0e0e0' }}
                   value={props.store.data.user.isAdmin ? ROLES.ADMIN_LABEL : ROLES.NON_ADMIN_LABEL}
                 ></input>
@@ -272,7 +249,6 @@ const SettingsBase = observer((props) => {
                 required
                 aria-required="true"
                 onChange={onChange}
-                className={input.root}
                 defaultValue={props.store.data.user.lastName}
               ></input>
               <label htmlFor="password">Password</label>
@@ -284,7 +260,6 @@ const SettingsBase = observer((props) => {
                 disabled={true}
                 required
                 aria-required="true"
-                className={input.root}
                 defaultValue=" • • • • • • • •"
               ></input>
               <a
