@@ -7,6 +7,7 @@ import NotFound from '../src/screens/404'
 import CodeValidations from '../src/screens/CodeValidations'
 import Login from '../src/screens/Login'
 import reactRouter from 'react-router-dom'
+import ChangePasswordModal from '../src/components/ChangePasswordModal'
 
 // Make sure we don't call any Firebase functions
 jest.mock('../src/store/firebase')
@@ -53,4 +54,19 @@ test('non-auth routes', () => {
     </MemoryRouter>
   )
   expect(wrapper.find(CodeValidations)).toHaveLength(1)
+})
+
+test('first time user', () => {
+  rootStore.user.__update({ isSignedIn: true, isAdmin: false, isFirstTimeUser: true })
+
+  const wrapper = mount(
+    <MemoryRouter initialEntries={['/']}>
+      <App />
+    </MemoryRouter>
+  )
+  expect(wrapper.find(ChangePasswordModal)).toHaveLength(1)
+
+  // Ensure we can't dismiss the change password modal
+  wrapper.find('.modal-background').at(0).simulate('click')
+  expect(wrapper.find(ChangePasswordModal)).toHaveLength(1)
 })
