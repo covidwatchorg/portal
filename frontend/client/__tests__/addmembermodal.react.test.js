@@ -69,6 +69,70 @@ test('clicking modal background hides modal', () => {
   wrapper.unmount()
 })
 
+test.each([
+  ['', 'test', '', ''],
+  ['test', 'test', 'invalidemail', 'Test Validator'],
+])('test invalid input', async (firstName, lastName, email, role) => {
+  var showAddMemberModal = true
+  const onAddMemberCancel = jest.fn()
+  const onAddMemberSuccess = jest.fn()
+  const onAddMemberFailure = jest.fn()
+
+  const wrapper = mount(
+    <AddMemberModalWrapped
+      hidden={!showAddMemberModal}
+      onClose={onAddMemberCancel}
+      onSuccess={onAddMemberSuccess}
+      onFailure={onAddMemberFailure}
+    />
+  )
+
+  wrapper
+    .find('#firstName')
+    .at(1)
+    .simulate('change', {
+      target: {
+        name: 'firstName',
+        value: firstName,
+      },
+    })
+  wrapper
+    .find('#lastName')
+    .at(1)
+    .simulate('change', {
+      target: {
+        name: 'lastName',
+        value: lastName,
+      },
+    })
+  wrapper
+    .find('#email')
+    .at(1)
+    .simulate('change', {
+      target: {
+        name: 'email',
+        value: email,
+      },
+    })
+  wrapper
+    .find('#role')
+    .at(1)
+    .simulate('change', {
+      target: {
+        name: 'role',
+        value: role,
+      },
+    })
+
+  wrapper.find('.button').at(0).simulate('click')
+
+  await waitForComponentToPaint(wrapper)
+
+  expect(createUserCallable).toHaveBeenCalledTimes(0)
+
+  wrapper.unmount()
+})
+
 test('successfully create new user', async () => {
   var showAddMemberModal = true
   const onAddMemberCancel = jest.fn()
