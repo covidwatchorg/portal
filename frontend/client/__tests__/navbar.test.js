@@ -10,7 +10,7 @@ beforeAll(() => {
   rootStore.user.__update({ isSignedIn: true, isFirstTimeUser: false, firstName: 'testUser' })
 })
 
-// Mock Redirect to avoid router error
+// Mock Redirect and Link to avoid router error
 jest.mock('react-router-dom', () => {
   return {
     __esModuleRedirect: true,

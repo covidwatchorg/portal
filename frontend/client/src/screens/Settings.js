@@ -88,31 +88,34 @@ const SettingsBase = observer((props) => {
         toastRef.current.show()
         imgUploader.current.value = null
       }
-      let reader = new FileReader()
-      // set up onload trigger to run when data is read
-      reader.onload = async () => {
-        return props.store
-          .updateUserImage(file)
-          .then(() => {
-            setToastInfo({
-              success: true,
-              msg: 'Image Updated',
+
+      if (imgUploader.current.value) {
+        let reader = new FileReader()
+        // set up onload trigger to run when data is read
+        reader.onload = async () => {
+          return props.store
+            .updateUserImage(file)
+            .then(() => {
+              setToastInfo({
+                success: true,
+                msg: 'Image Updated',
+              })
+              toastRef.current.show()
+              setLoading(false)
+              setOpen(false)
             })
-            toastRef.current.show()
-            setLoading(false)
-            setOpen(false)
-          })
-          .catch(() => {
-            setLoading(false)
-            setToastInfo({
-              success: false,
-              msg: 'Error Updating Image, Please Try Again',
+            .catch(() => {
+              setLoading(false)
+              setToastInfo({
+                success: false,
+                msg: 'Error Updating Image, Please Try Again',
+              })
+              toastRef.current.show()
             })
-            toastRef.current.show()
-          })
+        }
+        // read data
+        return reader.readAsDataURL(imgUploader.current.files[0])
       }
-      // read data
-      return reader.readAsDataURL(imgUploader.current.files[0])
     } catch (err) {
       Logging.log(err)
       return false
@@ -163,8 +166,8 @@ const SettingsBase = observer((props) => {
       containerClass="changeImageModalContainer"
     >
       <div>
-        <input type="file" ref={imgUploader} accepts="image/jpeg, image/png" />
-        <PendingOperationButton operation={saveImage} className="save-button">
+        <input id="photo-upload-input" type="file" ref={imgUploader} accepts="image/jpeg, image/png" />
+        <PendingOperationButton operation={saveImage} id="photo-upload-btn" className="save-button">
           Upload
         </PendingOperationButton>
       </div>
