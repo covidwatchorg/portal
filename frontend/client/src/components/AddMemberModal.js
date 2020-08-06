@@ -53,7 +53,7 @@ const defaultState = {
 const AddMemberModalBase = observer((props) => {
   const [state, setState] = useState(defaultState)
 
-  const tryCreateUser = () => {
+  const tryCreateUser = async () => {
     let newState = {}
     let validationSucceeded = true
     const values = [state.firstName, state.lastName, state.email, state.role]

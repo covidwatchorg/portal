@@ -1,37 +1,28 @@
-import { JSDOM } from 'jsdom'
-
-const dom = new JSDOM('<!doctype html><html><body></body></html>')
-global.window = dom
-global.document = dom.document
-
+import { mount } from 'enzyme'
 import React from 'react'
-import Adapter from 'enzyme-adapter-react-16'
-import { configure, shallow, mount } from 'enzyme'
-import toJson from 'enzyme-to-json'
-import { rootStore } from '../src/store/model'
+import { act } from 'react-dom/test-utils'
 import AddMemberModal from '../src/components/AddMemberModal'
+import { createStore } from '../src/store'
+import { createUserCallable } from '../src/store/firebase'
 
-configure({ adapter: new Adapter() })
+jest.mock('../src/store/firebase', () => {
+  return {
+    ...jest.requireActual('../src/store/firebase'),
+    createUserCallable: jest.fn(async (newUser) => newUser),
+  }
+})
 
-jest.mock('../src/store')
+const waitForComponentToPaint = async (wrapper) => {
+  await act(async () => {
+    await new Promise((resolve) => setTimeout(resolve, 0))
+    wrapper.update()
+  })
+}
 
-test('renders correctly', () => {
-  var showAddMemberModal = true
-  const onAddMemberCancel = jest.fn()
-  const onAddMemberSuccess = jest.fn()
-  const onAddMemberFailure = jest.fn()
+let AddMemberModalWrapped
 
-  const wrapper = shallow(
-    <AddMemberModal
-      hidden={!showAddMemberModal}
-      onClose={onAddMemberCancel}
-      onSuccess={onAddMemberSuccess}
-      onFailure={onAddMemberFailure}
-      store={rootStore}
-    />
-  )
-
-  expect(toJson(wrapper)).toMatchSnapshot()
+beforeEach(() => {
+  AddMemberModalWrapped = createStore(AddMemberModal)
 })
 
 test('clicking close button hides modal', () => {
@@ -41,12 +32,11 @@ test('clicking close button hides modal', () => {
   const onAddMemberFailure = jest.fn()
 
   const wrapper = mount(
-    <AddMemberModal
+    <AddMemberModalWrapped
       hidden={!showAddMemberModal}
       onClose={onAddMemberCancel}
       onSuccess={onAddMemberSuccess}
       onFailure={onAddMemberFailure}
-      store={rootStore}
     />
   )
 
@@ -64,12 +54,11 @@ test('clicking modal background hides modal', () => {
   const onAddMemberFailure = jest.fn()
 
   const wrapper = mount(
-    <AddMemberModal
+    <AddMemberModalWrapped
       hidden={!showAddMemberModal}
       onClose={onAddMemberCancel}
       onSuccess={onAddMemberSuccess}
       onFailure={onAddMemberFailure}
-      store={rootStore}
     />
   )
 
@@ -80,23 +69,20 @@ test('clicking modal background hides modal', () => {
   wrapper.unmount()
 })
 
-test('successfully create new user', () => {
+test('successfully create new user', async () => {
   var showAddMemberModal = true
   const onAddMemberCancel = jest.fn()
   const onAddMemberSuccess = jest.fn()
   const onAddMemberFailure = jest.fn()
 
   const wrapper = mount(
-    <AddMemberModal
+    <AddMemberModalWrapped
       hidden={!showAddMemberModal}
       onClose={onAddMemberCancel}
       onSuccess={onAddMemberSuccess}
       onFailure={onAddMemberFailure}
-      store={rootStore}
     />
   )
-
-  wrapper.instance().createUser = jest.fn(() => Promise.resolve())
 
   const firstName = 'Test'
   const lastName = 'Test'
@@ -105,7 +91,7 @@ test('successfully create new user', () => {
 
   wrapper
     .find('#firstName')
-    .at(0)
+    .at(1)
     .simulate('change', {
       target: {
         name: 'firstName',
@@ -114,7 +100,7 @@ test('successfully create new user', () => {
     })
   wrapper
     .find('#lastName')
-    .at(0)
+    .at(1)
     .simulate('change', {
       target: {
         name: 'lastName',
@@ -123,7 +109,7 @@ test('successfully create new user', () => {
     })
   wrapper
     .find('#email')
-    .at(0)
+    .at(1)
     .simulate('change', {
       target: {
         name: 'email',
@@ -132,22 +118,24 @@ test('successfully create new user', () => {
     })
   wrapper
     .find('#role')
-    .at(0)
+    .at(1)
     .simulate('change', {
       target: {
         name: 'role',
         value: role,
       },
     })
-  wrapper.find('.save-button').at(0).simulate('click')
 
-  expect(wrapper.instance().createUser).toBeCalledWith({
+  wrapper.find('.button').at(0).simulate('click')
+
+  await waitForComponentToPaint(wrapper)
+
+  expect(createUserCallable).toBeCalledWith({
     email: email,
     firstName: firstName,
     lastName: lastName,
     isAdmin: false,
   })
 
-  // expect(onAddMemberSuccess).toBeCalled()
   wrapper.unmount()
 })
