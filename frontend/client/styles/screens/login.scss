@@ -27,6 +27,7 @@
       margin-top: 0;
       margin-bottom: 0;
       font-size: 30px;
+      text-align: center;
     }
     text-transform: capitalize;
   }
@@ -34,8 +35,17 @@
   h3 {
     line-height: 23px;
     color: #333333;
+  }
+
+  .welcome-blurb-desktop {
     @include media('<=phone') {
-      // Don't display the "Welcome to the Portal where your team ..." blurb on mobile
+      display: none;
+    }
+  }
+
+  .welcome-blurb-mobile {
+    text-align: center;
+    @include media('>phone') {
       display: none;
     }
   }
@@ -49,7 +59,7 @@
       padding: 50px 73px 32px 73px;
     }
     @include media('<=phone') {
-      padding: 10px 12px 4px 12px;
+      padding: 10px 12px 0px 12px;
     }
     box-sizing: border-box;
     border-radius: 5px;
@@ -87,12 +97,12 @@
     flex-direction: column;
     @include media('>phone') {
       width: 50%;
+      height: 88px;
     }
     @include media('<=phone') {
       width: 100%;
+      margin-bottom: 23px;
     }
-
-    height: 88px;
 
     #students-container {
       @include media('<=phone') {
