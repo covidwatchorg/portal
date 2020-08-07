@@ -3,25 +3,67 @@
 
 #diagnosis-codes {
   h2 {
-    font-size: 16px;
-    margin-bottom: 60px;
+    @include media('>phone') {
+      font-size: 16px;
+      margin-bottom: 60px;
+    }
+    @include media('<=phone') {
+      font-size: 14px;
+      margin-bottom: 4.5vh;
+    }
+  }
+
+  p {
+    @include media('<=phone') {
+      margin-top: 0;
+      text-align: center;
+    }
   }
 
   .row {
     display: flex;
-    margin-bottom: 60px;
 
+    @include media('>phone') {
+      flex-direction: row;
+      margin-bottom: 60px;
+    }
+    @include media('<=phone') {
+      flex-direction: column;
+      margin-bottom: 4vh;
+    }
     .col-1 {
-      width: 30%;
-      margin-right: 50px;
+      @include media('>phone') {
+        width: 30%;
+        margin-right: 50px;
+      }
+      @include media('<=phone') {
+        width: 100%;
+      }
 
       .sect-header {
-        font-size: 16px;
+        @include media('>phone') {
+          font-size: 16px;
+        }
+        @include media('<=phone') {
+          font-size: 20px;
+          text-align: center;
+          margin-bottom: 5vw;
+        }
         font-weight: 600;
       }
     }
     .col-2 {
-      width: 50%;
+      @include media('>phone') {
+        width: 50%;
+      }
+      @include media('<=phone') {
+        width: 100%;
+        #date-form {
+          // Centers the date input box
+          width: 100%;
+          text-align: center;
+        }
+      }
       display: flex;
       flex-direction: column;
 
@@ -39,7 +81,7 @@
       .radio {
         display: flex;
         margin-bottom: 20px;
-
+        
         .col-2-header {
           font-weight: 600;
           font-size: 16px;
@@ -50,19 +92,6 @@
         .col-2-sub-header {
           color: $darkMediumGray;
         }
-      }
-
-      #code-box {
-        margin-top: 40px;
-        border: 1px solid $lightMediumGray;
-        box-sizing: border-box;
-        border-radius: 4px;
-        font-size: 28px;
-        line-height: 28px;
-        padding: 20px;
-        display: flex;
-        align-items: center;
-        width: 350px;
       }
 
       // this overrules the .button properties in button.scss
@@ -82,10 +111,27 @@
 
       // to be refactored later to make buttons more consistent.  See button.scss
       .progress-container {
+        @include media('>phone') {
+          width: 350px;
+        }
         margin-top: 0px;
-        width: 350px;
         display: flex;
         justify-content: center;
+      }
+
+      #code-box {
+        margin-top: 40px;
+        border: 1px solid $lightMediumGray;
+        box-sizing: border-box;
+        border-radius: 4px;
+        font-size: 28px;
+        line-height: 28px;
+        padding: 20px;
+        display: flex;
+        align-items: center;
+        @include media('>phone') {
+          width: 350px;
+        }
       }
 
       // no-value and with-value control the Code and Date changing colors
