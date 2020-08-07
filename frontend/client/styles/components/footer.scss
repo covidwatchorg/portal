@@ -19,7 +19,7 @@
   width: 100%;
   @include media('>phone') {
     flex-direction: row;
-    justify-content: space-between !important;
+    justify-content: space-between;
     margin-left: 98px;
     margin-right: 98px;
   }
@@ -43,7 +43,7 @@
   a {
     text-align: center;
     @include media('>phone') {
-      margin-left: 50px !important;
+      margin-left: 50px;
     }
     @include media('<=phone') {
       margin-top: 3px;
