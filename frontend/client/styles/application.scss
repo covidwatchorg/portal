@@ -103,11 +103,18 @@ a {
 .module-container {
   @include media('>phone') {
     margin: 0 98px;
+<<<<<<< HEAD
     padding-right: 101px;
+=======
+>>>>>>> dev
   }
   @include media('<=phone') {
     margin: 0 5px;
   }
+<<<<<<< HEAD
+=======
+
+>>>>>>> dev
   display: flex;
   flex-direction: column;
   align-items: stretch;
