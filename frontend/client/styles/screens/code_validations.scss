@@ -26,9 +26,8 @@
       flex-direction: column;
 
       .radio-input {
-        max-width: 16px;
-        max-height: 16px;
-        transform: scale(1.23);
+        max-width: 20px;
+        max-height: 20px;
         margin-right: 20px;
       }
 
@@ -72,10 +71,6 @@
 
       .date-desc {
         margin-top: 10px;
-      }
-
-      .date-sub-desc {
-        font-weight: 600;
       }
 
       #date-picker {
