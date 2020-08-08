@@ -161,11 +161,22 @@
       display: flex;
       margin-top: 10px;
       margin-bottom: 40px;
-      //arbitrary width to get all text to fit in one line
-      width: 620px;
+
+      @include media('>phone') {
+      // ensures all the text fits in one line
+        width: 620px;
+        flex-direction: row;
+      }
+      @include media('<=phone') {
+        flex-direction: column;
+        text-align: center;
+      }
 
       img {
         margin-right: 10px;
+        @include media('<=phone') {
+          display: none;
+        }
       }
 
       span {
