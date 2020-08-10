@@ -28,6 +28,7 @@ const CodeValidationsBase = observer((props) => {
   const [codeGenStamp, setCodeGenStamp] = useState('')
   const [buttonDisabled, setButtonDisabled] = useState(true)
   const [expirationTime, setExpirationTime] = useState('')
+  const [timeLeft, setTimeLeft] = useState(60)
   const [toastInfo, setToastInfo] = useState({
     success: false,
     msg: '',
@@ -48,6 +49,26 @@ const CodeValidationsBase = observer((props) => {
     }
   }
 
+  // console.logs are just for testing
+  const countdown = () => {
+    // console.log('countdown ran')
+    // console.log(timeLeft, 'timeLeft outside If')
+    if (codeGenStamp) {
+            // do nothing -- this is just a placeholder to be able to commit quickly a first draft
+    }
+    if (timeLeft > 0) {
+      setTimeout(() => {
+        // console.log('inside setTimeout')
+        // console.log(timeLeft, 'timeLeft inside If')
+        setTimeLeft(timeLeft - 1)
+        // console.log(timeLeft, 'timeLeft inside If after setting')
+
+        // repeat countdown()
+        countdown()
+      }, 2000)
+    }
+  }
+
   const genNewCode = async () => {
     try {
       let code = await props.store.getVerificationCode({
@@ -58,6 +79,7 @@ const CodeValidationsBase = observer((props) => {
       codeTimeStamp()
       setNeedsReset(true)
       updateButtonDisabled()
+      countdown()
     } catch (err) {
       setToastInfo({ success: false, msg: 'Could not generate new code, please try again' })
       confirmedToast.current.show()
@@ -101,6 +123,7 @@ const CodeValidationsBase = observer((props) => {
     setCodeGenStamp('')
     setSymptomDate('')
     setTestType('')
+    setTimeLeft(60)
     setNeedsReset(false)
     setDateInvalid(false)
     updateButtonDisabled()
@@ -197,7 +220,7 @@ const CodeValidationsBase = observer((props) => {
                 <img src={Clock}></img>
                 <div>Share the code ASAP. &nbsp;</div>
                 <span>
-                  It will expire in {60 - Math.abs(codeGenStamp - new Date().getMinutes())} min at {expirationTime}
+                  It will expire in {timeLeft} min at {expirationTime}
                 </span>
               </div>
 
