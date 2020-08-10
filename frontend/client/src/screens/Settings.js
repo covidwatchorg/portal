@@ -157,7 +157,7 @@ const SettingsBase = observer((props) => {
       <form>
         <Grid container id="settings-grid" spacing={2} direction="row" justify="center">
           <Grid item xs={12} md={4} xl={2}>
-            <Grid container spacing={2} direction="column" className='profile-photo-container'>
+            <Grid container spacing={2} direction="column" className="profile-photo-container">
               <label> Profile Photo </label>
               <div
                 style={{
@@ -262,11 +262,7 @@ const SettingsBase = observer((props) => {
                 aria-required="true"
                 defaultValue=" • • • • • • • •"
               ></input>
-              <a
-                href=""
-                className='change-password-link'
-                onClick={(e) => resetPassword(e)}
-              >
+              <a href="" className="change-password-link" onClick={(e) => resetPassword(e)}>
                 Change Password
               </a>
             </Grid>
@@ -285,7 +281,7 @@ const SettingsBase = observer((props) => {
     <React.Fragment>
       <PageTitle title="My Settings" />
       <div className="module-container">
-        <div className='settings-header'>
+        <div className="settings-header">
           <h1 style={{ marginBottom: 12 }}>My Settings</h1>
           <p className="xs-text">Changes are automatically saved</p>
         </div>
