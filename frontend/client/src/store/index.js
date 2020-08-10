@@ -20,6 +20,8 @@ const createStore = (WrappedComponent) => {
   return class extends React.Component {
     constructor(props) {
       super(props)
+      // Set auth persistence to SESSION for development so that every change registered by the hot-reload dev server doesn't log you out
+      auth.setPersistence(process.env.NODE_ENV == 'development' ? SESSION : NONE)
       this.data = rootStore
       this.__userDocumentListener = null
       this.__userImageListener = null
@@ -44,13 +46,6 @@ const createStore = (WrappedComponent) => {
                   isSignedIn: true,
                   signedInWithEmailLink: this.__signedInWithEmailLink,
                 })
-                // If this is a login triggered by a reset password email that the user clicked, set auth persistence to NONE
-                // so that they cannot escape the non-dismissable dialog and log in by refreshing the page
-                if (updatedUserDocumentSnapshot.data().passwordResetRequested && this.__signedInWithEmailLink) {
-                  auth.setPersistence(NONE)
-                } else {
-                  auth.setPersistence(SESSION)
-                }
                 // If DNE, set up organization listener within this callback,
                 // since it relies on this.data.user.organizationID being set
                 if (this.__organizationDocumentListener === null) {
