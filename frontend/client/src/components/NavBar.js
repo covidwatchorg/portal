@@ -77,23 +77,28 @@ const NavBarBase = observer((props) => {
         open={open}
         onClose={handleClose}
       >
-        <MenuItem className="menu-link" style={{ marginTop: 22 }} onClick={() => onClickMenuItem(0)}>
+        <MenuItem
+          id="diagnosis-verification-codes"
+          className="menu-link"
+          style={{ marginTop: 22 }}
+          onClick={() => onClickMenuItem(0)}
+        >
           Diagnosis Verification Codes
         </MenuItem>
         {props.store.data.user.isAdmin && (
-          <MenuItem className="menu-link" onClick={() => onClickMenuItem(1)}>
+          <MenuItem id="manage-members" className="menu-link" onClick={() => onClickMenuItem(1)}>
             Manage Members
           </MenuItem>
         )}
         {props.store.data.user.isAdmin && (
-          <MenuItem className="menu-link" onClick={() => onClickMenuItem(2)}>
+          <MenuItem id="mobile-app-settings" className="menu-link" onClick={() => onClickMenuItem(2)}>
             Mobile App Settings
           </MenuItem>
         )}
-        <MenuItem className="menu-link" onClick={() => onClickMenuItem(3)}>
+        <MenuItem id="my-settings" className="menu-link" onClick={() => onClickMenuItem(3)}>
           My Settings
         </MenuItem>
-        <MenuItem className="menu-link" style={{ marginBottom: 22 }} onClick={() => onClickMenuItem(4)}>
+        <MenuItem id="logout" className="menu-link" style={{ marginBottom: 22 }} onClick={() => onClickMenuItem(4)}>
           Logout
         </MenuItem>
       </Menu>

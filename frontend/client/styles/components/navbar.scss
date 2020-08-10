@@ -47,6 +47,12 @@
     padding-right: 30px;
     color: #2c58b1;
   }
+
+  @include media('<=phone') {
+    #manage-members, #mobile-app-settings, #my-settings {
+      display: none;
+    }
+  }
 }
 
 #logged-in-icons-container {
