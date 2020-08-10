@@ -79,9 +79,12 @@
       }
 
       .radio {
+        :hover {
+          cursor: pointer;
+        }
         display: flex;
         margin-bottom: 20px;
-        
+
         .col-2-header {
           font-weight: 600;
           font-size: 16px;
@@ -91,6 +94,10 @@
 
         .col-2-sub-header {
           color: $darkMediumGray;
+          font-family: Montserrat;
+          font-size: 14px;
+          font-weight: normal;
+          line-height: 20px;
         }
       }
 
@@ -163,7 +170,7 @@
       margin-bottom: 40px;
 
       @include media('>phone') {
-      // ensures all the text fits in one line
+        // ensures all the text fits in one line
         width: 620px;
         flex-direction: row;
       }
