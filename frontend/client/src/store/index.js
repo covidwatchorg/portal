@@ -20,7 +20,7 @@ const createStore = (WrappedComponent) => {
   return class extends React.Component {
     constructor(props) {
       super(props)
-      auth.setPersistence(process.env.NODE_ENV == 'test' ? NONE : SESSION)
+      auth.setPersistence(process.env.NODE_ENV === 'test' ? NONE : SESSION)
       this.data = rootStore
       this.__userDocumentListener = null
       this.__userImageListener = null
@@ -31,7 +31,6 @@ const createStore = (WrappedComponent) => {
       this.__signedInWithEmailLink = false // firebase doesn't tell us this so we need to track it ourself
       this.__authStateListener = auth.onAuthStateChanged(async (user) => {
         if (user) {
-          Logging.log('User signed in')
           // get user's document from the db and at the same time set up a listener to respond to document changes
           if (this.__userDocumentListener === null) {
             this.__userDocumentListener = db
@@ -45,6 +44,13 @@ const createStore = (WrappedComponent) => {
                   isSignedIn: true,
                   signedInWithEmailLink: this.__signedInWithEmailLink,
                 })
+                // If this is a login triggered by a reset password email that the user clicked, set auth persistence to NONE
+                // so that they cannot escape the non-dismissable dialog and log in by refreshing the page
+                if (updatedUserDocumentSnapshot.data().passwordResetRequested && this.__signedInWithEmailLink) {
+                  auth.setPersistence(NONE)
+                } else {
+                  auth.setPersistence(process.env.NODE_ENV === 'test' ? NONE : SESSION)
+                }
                 // If DNE, set up organization listener within this callback,
                 // since it relies on this.data.user.organizationID being set
                 if (this.__organizationDocumentListener === null) {
@@ -52,7 +58,6 @@ const createStore = (WrappedComponent) => {
                     .collection('organizations')
                     .doc(this.data.user.organizationID)
                     .onSnapshot((updatedOrganizationDocumentSnapshot) => {
-                      Logging.log('Remote organization document changed')
                       this.data.organization.__update({
                         ...updatedOrganizationDocumentSnapshot.data(),
                         id: updatedOrganizationDocumentSnapshot.id,
@@ -86,7 +91,6 @@ const createStore = (WrappedComponent) => {
               })
           }
         } else {
-          Logging.log('User signed out')
           // signed out
           // reset to default state
           this.data.user.__update(defaultUser)
