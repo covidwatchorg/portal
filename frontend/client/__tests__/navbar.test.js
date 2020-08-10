@@ -5,10 +5,7 @@ import MenuItem from '@material-ui/core/MenuItem'
 import NavBar from '../src/components/NavBar'
 import { auth } from '../src/store/firebase'
 import { createStore } from '../src/store'
-
-beforeAll(() => {
-  rootStore.user.__update({ isSignedIn: true, isFirstTimeUser: false, firstName: 'testUser' })
-})
+import toJson from 'enzyme-to-json'
 
 // Mock Redirect to avoid router error
 jest.mock('react-router-dom', () => {
@@ -37,20 +34,36 @@ jest.mock('../src/store/firebase', () => {
   }
 })
 
-test('Non-admin user has 3 MenuItems', () => {
-  const wrapper = mount(<NavBar store={{ data: rootStore }} />)
-  expect(wrapper.find(MenuItem)).toHaveLength(3)
-})
+describe('NavBar', () => {
+  let wrapper
 
-test('Admin user has 5 MenuItems', () => {
-  rootStore.user.__update({ isAdmin: true })
-  const wrapper = mount(<NavBar store={{ data: rootStore }} />)
-  expect(wrapper.find(MenuItem)).toHaveLength(5)
-})
+  beforeEach(() => {
+    rootStore.user.__update({ isSignedIn: true, isFirstTimeUser: false, firstName: 'itUser' })
+    wrapper = mount(<NavBar store={{ data: rootStore }} />)
+  })
 
-test('When user clicks Log Out, user is logged out', () => {
-  const NavBarWrapped = createStore(NavBar)
-  const wrapped = mount(<NavBarWrapped />)
-  wrapped.find('#logout').at(0).simulate('click')
-  expect(auth.signOut).toHaveBeenCalled()
+  afterEach(() => {
+    wrapper.unmount()
+  })
+
+  it('renders correctly', () => {
+    expect(toJson(wrapper)).toMatchSnapshot()
+  })
+
+  it('has 3 MenuItems for a non-admin', () => {
+    expect(wrapper.find(MenuItem)).toHaveLength(3)
+  })
+
+  it('has 5 MenuItems for an admin', () => {
+    rootStore.user.__update({ isAdmin: true })
+    wrapper = mount(<NavBar store={{ data: rootStore }} />)
+    expect(wrapper.find(MenuItem)).toHaveLength(5)
+  })
+
+  it('logs out a user when they click Log Out', () => {
+    const NavBarWrapped = createStore(NavBar)
+    wrapper = mount(<NavBarWrapped />)
+    wrapper.find('#logout').at(0).simulate('click')
+    expect(auth.signOut).toHaveBeenCalled()
+  })
 })
