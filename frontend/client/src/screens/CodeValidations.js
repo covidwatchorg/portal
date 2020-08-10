@@ -54,7 +54,7 @@ const CodeValidationsBase = observer((props) => {
     // console.log('countdown ran')
     // console.log(timeLeft, 'timeLeft outside If')
     if (codeGenStamp) {
-            // do nothing -- this is just a placeholder to be able to commit quickly a first draft
+      // do nothing -- this is just a placeholder to be able to commit quickly a first draft
     }
     if (timeLeft > 0) {
       setTimeout(() => {
