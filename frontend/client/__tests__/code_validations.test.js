@@ -6,7 +6,7 @@ import CodeValidations from '../src/screens/CodeValidations'
 import PendingOperationButton from '../src/components/PendingOperationButton'
 import Toast from '../src/components/Toast'
 import { getVerificationCodeCallable } from '../src/store/firebase'
-import { getDay } from '../src/util/time'
+import { toDashSeperatedYYYYMMDDString, getTodayString } from '../src/util/time'
 
 // Mock Redirect to avoid router error
 jest.mock('react-router-dom', () => {
@@ -23,11 +23,11 @@ jest.mock('react-router-dom', () => {
 jest.mock('../src/store/firebase', () => {
   return {
     ...jest.requireActual('../src/store/firebase'),
-    getVerificationCodeCallable: jest.fn(() => Promise.resolve('123456')),
+    getVerificationCodeCallable: jest.fn(() => Promise.resolve({ data: '123456' })),
   }
 })
 
-describe('test code validations', () => {
+describe('Code Validations', () => {
   let CodeVWrapped
 
   beforeEach(() => {
@@ -40,7 +40,7 @@ describe('test code validations', () => {
     CodeVWrapped = createStore(CodeValidations)
   })
 
-  test('generate code is disabled by default', () => {
+  it('cannote generate a code when no options are selected', () => {
     const wrapped = mount(<CodeVWrapped />)
     expect(wrapped.find(PendingOperationButton).at(0).props().disabled).toBe(true)
   })
@@ -49,7 +49,7 @@ describe('test code validations', () => {
   test.each([
     [-16, 'Date cannot be more than 14 days ago'],
     [5, 'Date cannot be in the future'],
-  ])('dates %i days away are invalid', (numDaysAway, expectedMessage) => {
+  ])('does not allow dates %i days away', (numDaysAway, expectedMessage) => {
     const wrapped = mount(<CodeVWrapped />)
 
     var date = new Date()
@@ -57,7 +57,7 @@ describe('test code validations', () => {
 
     wrapped.find('#date-picker').simulate('change', {
       target: {
-        value: getDay(date),
+        value: toDashSeperatedYYYYMMDDString(date),
         classList: {
           add: () => {},
           remove: () => {},
@@ -70,13 +70,21 @@ describe('test code validations', () => {
     expect(wrapped.find(Toast).at(0).props().message).toBe(expectedMessage)
   })
 
-  test('can generate code', async () => {
+  it('can generate code with correct options', async () => {
+    // Mock document.getElementById used by the CodeValidations component.
+    // JsDOM doesn't handle this well and document.getElementById returns null in the tests without this mock
+    Object.defineProperty(document, 'getElementById', {
+      value: () => {
+        return { classList: { toggle: () => {} } }
+      },
+    })
+
     var wrapped = mount(<CodeVWrapped />)
 
     // Pick valid date
     wrapped.find('#date-picker').simulate('change', {
       target: {
-        value: getDay(new Date()),
+        value: getTodayString(),
         classList: {
           add: () => {},
           remove: () => {},
@@ -92,6 +100,8 @@ describe('test code validations', () => {
     // Ensure "Generate Code" button is enabled and click it
     expect(wrapped.find(PendingOperationButton).at(0).props().disabled).toBe(false)
     wrapped.find('.button').at(0).simulate('click')
+
+    await global.waitForComponentToPaint(wrapped)
 
     expect(getVerificationCodeCallable).toHaveBeenCalled()
   })
