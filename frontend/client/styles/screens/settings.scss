@@ -1,3 +1,5 @@
+@import '../include-media';
+
 .changeImageModalContainer {
   height: 280px;
 
@@ -13,10 +15,24 @@
   }
 }
 
+.settings-header p {
+  @include media('<=phone') {
+    text-align: center;
+  }
+}
+
 #settings-grid {
   margin: 10px -8px -8px -8px;
   padding: 40px;
   padding-left: 8px;
+
+  .change-password-link {
+    font-size: 12px;
+    font-weight: 500;
+    text-align: end;
+    margin-top: -25px;
+    margin-right: 26%;
+  }
 
   input {
     line-height: 16px;
@@ -27,5 +43,28 @@
     height: 40px;
     margin-top: 10px;
     margin-bottom: 40px;
+  }
+
+  @include media('<=phone') {
+    padding: 0 8px 16px 8px;
+
+    .MuiGrid-direction-xs-column {
+      align-items: center;
+    }
+
+    .profile-photo-container {
+      margin-bottom: 8px;
+    }
+
+    .change-password-link {
+      margin-top: -30px;
+      margin-right: 25%;
+    }
+
+    input {
+      width: 85%;
+      padding-left: 10px;
+      border: 1px solid #bdbdbd;
+    }
   }
 }

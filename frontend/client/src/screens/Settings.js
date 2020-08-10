@@ -156,8 +156,8 @@ const SettingsBase = observer((props) => {
     <Fragment>
       <form>
         <Grid container id="settings-grid" spacing={2} direction="row" justify="center">
-          <Grid item xs={4} xl={2}>
-            <Grid container spacing={2} direction="column">
+          <Grid item xs={12} md={4} xl={2}>
+            <Grid container spacing={2} direction="column" className='profile-photo-container'>
               <label> Profile Photo </label>
               <div
                 style={{
@@ -192,7 +192,7 @@ const SettingsBase = observer((props) => {
             </Grid>
           </Grid>
 
-          <Grid item xs={4} xl={5}>
+          <Grid item xs={6} md={4} xl={5}>
             <Grid container spacing={2} direction="column">
               <label htmlFor="prefix">Prefix</label>
               <input
@@ -226,7 +226,7 @@ const SettingsBase = observer((props) => {
             </Grid>
           </Grid>
 
-          <Grid item xs={4} xl={5}>
+          <Grid item xs={6} md={4} xl={5}>
             <Grid container spacing={2} direction="column">
               <label htmlFor="role">Role</label>
               {props.store.data.user && (
@@ -264,13 +264,7 @@ const SettingsBase = observer((props) => {
               ></input>
               <a
                 href=""
-                style={{
-                  fontSize: '12px',
-                  fontWeight: '500',
-                  textAlign: 'end',
-                  marginTop: -25,
-                  marginRight: '26%',
-                }}
+                className='change-password-link'
                 onClick={(e) => resetPassword(e)}
               >
                 Change Password
@@ -291,7 +285,7 @@ const SettingsBase = observer((props) => {
     <React.Fragment>
       <PageTitle title="My Settings" />
       <div className="module-container">
-        <div>
+        <div className='settings-header'>
           <h1 style={{ marginBottom: 12 }}>My Settings</h1>
           <p className="xs-text">Changes are automatically saved</p>
         </div>
