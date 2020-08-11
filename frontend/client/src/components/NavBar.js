@@ -93,7 +93,7 @@ const NavBarBase = observer((props) => {
         <MenuItem className="menu-link" onClick={() => onClickMenuItem(3)}>
           My Settings
         </MenuItem>
-        <MenuItem className="menu-link" style={{ marginBottom: 22 }} onClick={() => onClickMenuItem(4)}>
+        <MenuItem id="logout" className="menu-link" style={{ marginBottom: 22 }} onClick={() => onClickMenuItem(4)}>
           Logout
         </MenuItem>
       </Menu>
