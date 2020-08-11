@@ -14,9 +14,14 @@ const User = types
     lastName: types.string,
     organizationID: types.string,
     isFirstTimeUser: types.boolean,
+    // NOTE: passwordResetRequested should typically be checked along with signedInWithEmailLink when used in conditionals
+    // e.g. `if (passwordResetRequested && signedInWithEmailLink) ...`
+    // Such conditionals are only met when the user requested a password reset AND they themselves clicked on the
+    // magic link in the email. This protects against attacks where a malicious third party locks a user out of the portal
+    // (or makes it exceedingly difficult to use) by repeatedly entering a legitimate user's email into the `Forgot password?` dialog.
     passwordResetRequested: types.maybe(types.boolean),
-    passwordResetCompletedInCurrentSession: types.maybe(types.boolean), // frontend-only field
     signedInWithEmailLink: types.maybe(types.boolean), // frontend-only field
+    passwordResetCompletedInCurrentSession: types.maybe(types.boolean), // frontend-only field
   })
   .actions((self) => {
     const __update = (updates) => {
