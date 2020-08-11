@@ -3,6 +3,7 @@ module.exports = {
     node: true,
     browser: true,
     es6: true,
+    jest: true,
   },
   parser: 'babel-eslint',
   parserOptions: {
@@ -13,7 +14,7 @@ module.exports = {
       modules: true,
     },
   },
-  plugins: ['prettier', 'react'],
+  plugins: ['prettier', 'react', 'jest'],
   extends: ['prettier', 'eslint:recommended', 'plugin:react/recommended'],
   rules: {
     'prettier/prettier': 'error',
