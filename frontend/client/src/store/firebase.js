@@ -31,18 +31,11 @@ const auth = app.auth()
 const SESSION = app.auth.Auth.Persistence.SESSION
 const NONE = app.auth.Auth.Persistence.NONE
 const db = app.firestore()
-const analytics = app.analytics()
+if (process.env.NODE_ENV === 'production') {
+  app.analytics()
+}
 const createUserCallable = app.functions().httpsCallable('createUser')
 const initiatePasswordRecoveryCallable = app.functions().httpsCallable('initiatePasswordRecovery')
 const getVerificationCodeCallable = app.functions().httpsCallable('getVerificationCode')
 
-export {
-  auth,
-  db,
-  SESSION,
-  NONE,
-  createUserCallable,
-  initiatePasswordRecoveryCallable,
-  getVerificationCodeCallable,
-  analytics,
-}
+export { auth, db, SESSION, NONE, createUserCallable, initiatePasswordRecoveryCallable, getVerificationCodeCallable }
