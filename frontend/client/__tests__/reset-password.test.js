@@ -1,6 +1,5 @@
 import { mount } from 'enzyme'
 import React from 'react'
-import { act } from 'react-dom/test-utils'
 import ChangePasswordModal from '../src/components/ChangePasswordModal'
 import ResetPasswordModal from '../src/components/ResetPasswordModal'
 import { createStore } from '../src/store'
@@ -33,18 +32,23 @@ jest.mock('../src/store/firebase', () => {
 })
 
 describe('reset password', () => {
-  const waitForComponentToPaint = async (wrapper) => {
-    await act(async () => {
-      await new Promise((resolve) => setTimeout(resolve, 0))
-      wrapper.update()
-    })
-  }
+  let wrapper
 
-  test.each([
-    ['Reset Password Modal success', ResetPasswordModal, 'password1', 'password1'],
-    ['Reset Password Modal invalid input', ResetPasswordModal, 'password1', 'password2'],
-    ['Change Password Modal success', ChangePasswordModal, 'password1', 'password1'],
-    ['Change Password Modal invalid input', ChangePasswordModal, 'password1', 'password2'],
+  it.each([
+    ['Changes password succesfully (ResetPasswordModal)', ResetPasswordModal, 'password1', 'password1'],
+    [
+      'Does not change password when confirmation does not match (ResetPasswordModal)',
+      ResetPasswordModal,
+      'password1',
+      'password2',
+    ],
+    ['Changes password succesfully (ChangePasswordModal)', ChangePasswordModal, 'password1', 'password1'],
+    [
+      'Does not change password when confirmation does not match (ChangePasswordModal)',
+      ChangePasswordModal,
+      'password1',
+      'password2',
+    ],
   ])('Test %s', async (title, modal, newPassword, confirmPassword) => {
     const ModalWrapped = createStore(modal)
     const onSuccess = jest.fn()
@@ -85,7 +89,7 @@ describe('reset password', () => {
 
     // Click "Change Password" button
     wrapper.find('.button').at(0).simulate('click')
-    await waitForComponentToPaint(wrapper)
+    await global.waitForComponentToPaint(wrapper)
 
     if (confirmPassword == newPassword) {
       expect(auth.currentUser.updatePassword).toHaveBeenCalledWith(newPassword)
@@ -94,18 +98,18 @@ describe('reset password', () => {
     }
   })
 
-  test('Reset password modal: changing to current password is invalid', async () => {
+  it('does not allow new password to be current password (ResetPasswordModal only)', async () => {
     const ModalWrapped = createStore(ResetPasswordModal)
     const onSuccess = jest.fn()
     const onFailure = jest.fn()
     const wrapper = mount(<ModalWrapped onSuccess={onSuccess} onFailure={onFailure} />)
 
-    // Mock current password == new password error from firebase
-    auth.currentUser.reauthenticateWithCredential.mockImplementation(() => Promise.reject('expected error'))
+    // Mock reauthenticateWithCredential
+    auth.currentUser.reauthenticateWithCredential.mockImplementation(() => {})
 
     const currentPassword = 'password'
-    const newPassword = 'password1'
-    const confirmPassword = 'password1'
+    const newPassword = 'password'
+    const confirmPassword = 'password'
 
     wrapper
       .find('#current-password')
@@ -136,7 +140,8 @@ describe('reset password', () => {
       })
 
     wrapper.find('.button').at(0).simulate('click')
-    await waitForComponentToPaint(wrapper)
+
+    await global.waitForComponentToPaint(wrapper)
 
     expect(auth.currentUser.updatePassword).toHaveBeenCalledTimes(0)
   })
