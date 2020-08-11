@@ -25,7 +25,6 @@ const CodeValidationsBase = observer((props) => {
   const [dateInvalid, setDateInvalid] = useState(false)
   const [needsReset, setNeedsReset] = useState(false)
   const [code, setCode] = useState(codePlaceholder)
-  const [codeGenStamp, setCodeGenStamp] = useState('')
   const [buttonDisabled, setButtonDisabled] = useState(true)
   const [expirationTime, setExpirationTime] = useState('')
   const [timeLeft, setTimeLeft] = useState(60)
@@ -49,24 +48,13 @@ const CodeValidationsBase = observer((props) => {
     }
   }
 
-  // console.logs are just for testing
-  const countdown = () => {
-    // console.log('countdown ran')
-    // console.log(timeLeft, 'timeLeft outside If')
-    if (codeGenStamp) {
-      // do nothing -- this is just a placeholder to be able to commit quickly a first draft
-    }
-    if (timeLeft > 0) {
-      setTimeout(() => {
-        // console.log('inside setTimeout')
-        // console.log(timeLeft, 'timeLeft inside If')
-        setTimeLeft(timeLeft - 1)
-        // console.log(timeLeft, 'timeLeft inside If after setting')
-
-        // repeat countdown()
-        countdown()
-      }, 2000)
-    }
+  const countdown = (num = 60) => {
+    setTimeout(() => {
+      if (num > 0 && document.getElementById('code-box').classList.contains('code-generated')) {
+        setTimeLeft(num - 1)
+        countdown(num - 1)
+      }
+    }, 60000)
   }
 
   const genNewCode = async () => {
@@ -120,7 +108,6 @@ const CodeValidationsBase = observer((props) => {
     document.getElementById('code-box').classList.toggle('no-value')
     document.getElementById('code-box').classList.toggle('code-generated')
     setCode(codePlaceholder)
-    setCodeGenStamp('')
     setSymptomDate('')
     setTestType('')
     setTimeLeft(60)
@@ -134,7 +121,6 @@ const CodeValidationsBase = observer((props) => {
     document.getElementById('code-box').classList.toggle('with-value')
     document.getElementById('code-box').classList.toggle('no-value')
     document.getElementById('code-box').classList.toggle('code-generated')
-    setCodeGenStamp(new Date().getMinutes())
     setExpirationTime(getOneHourAheadDisplayString())
   }
 
@@ -219,9 +205,15 @@ const CodeValidationsBase = observer((props) => {
               <div id="share-urgently">
                 <img src={Clock}></img>
                 <div>Share the code ASAP. &nbsp;</div>
-                <span>
-                  It will expire in {timeLeft} min at {expirationTime}
-                </span>
+                  {timeLeft > 0 ?
+                    <span>  
+                      It will expire in {timeLeft} min at {expirationTime}
+                    </span>
+                    :
+                    <span>
+                      Code expired after 60 minutes - generate new code.
+                    </span>
+                  }
               </div>
 
               <PendingOperationButton operation={resetState} className="save-button">
