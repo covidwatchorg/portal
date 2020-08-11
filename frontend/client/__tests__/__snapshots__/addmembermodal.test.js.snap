@@ -1,0 +1,126 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`AddMemberModal renders correctly 1`] = `
+<ContextProvider
+  value={
+    Component {
+      "__authStateListener": [Function],
+      "__firstVisibleMember": null,
+      "__lastVisibleMember": null,
+      "__membersListener": null,
+      "__organizationDocumentListener": null,
+      "__signedInWithEmailLink": false,
+      "__userDocumentListener": null,
+      "__userImageListener": null,
+      "context": Object {},
+      "data": Object {
+        "organization": Object {
+          "diagnosisText": "",
+          "enableExposureText": "",
+          "exposureAboutText": "",
+          "exposureDetailsLearnText": "",
+          "exposureDetailsText": "",
+          "exposureInfoText": "",
+          "exposureText": "",
+          "id": "",
+          "logoBlob": null,
+          "members": Array [],
+          "membersPage": 1,
+          "name": "",
+          "notifyingOthersText": "",
+          "recommendExposureText": "",
+          "verificationAdministrationDateText": "",
+          "verificationIdentifierAboutText": "",
+          "verificationIdentifierText": "",
+          "verificationNotSharedText": "",
+          "verificationReviewText": "",
+          "verificationSharedText": "",
+          "verificationStartText": "",
+          "welcomeText": "",
+        },
+        "user": Object {
+          "disabled": false,
+          "email": "",
+          "firstName": "",
+          "imageBlob": null,
+          "isAdmin": false,
+          "isFirstTimeUser": true,
+          "isSignedIn": false,
+          "lastName": "",
+          "organizationID": "",
+          "passwordResetCompletedInCurrentSession": false,
+          "passwordResetRequested": false,
+          "prefix": "",
+          "signedInWithEmailLink": false,
+        },
+      },
+      "displayName": "storeProvider",
+      "props": Object {
+        "hidden": false,
+        "onClose": [MockFunction],
+        "onFailure": [MockFunction],
+        "onSuccess": [MockFunction],
+      },
+      "refs": Object {},
+      "setState": [Function],
+      "state": null,
+      "updater": Updater {
+        "_callbacks": Array [],
+        "_renderer": ReactShallowRenderer {
+          "_context": Object {},
+          "_didScheduleRenderPhaseUpdate": false,
+          "_dispatcher": Object {
+            "readContext": [Function],
+            "useCallback": [Function],
+            "useContext": [Function],
+            "useDebugValue": [Function],
+            "useDeferredValue": [Function],
+            "useEffect": [Function],
+            "useImperativeHandle": [Function],
+            "useLayoutEffect": [Function],
+            "useMemo": [Function],
+            "useReducer": [Function],
+            "useRef": [Function],
+            "useResponder": [Function],
+            "useState": [Function],
+            "useTransition": [Function],
+          },
+          "_element": <Component
+            hidden={false}
+            onClose={[MockFunction]}
+            onFailure={[MockFunction]}
+            onSuccess={[MockFunction]}
+          />,
+          "_firstWorkInProgressHook": null,
+          "_forcedUpdate": false,
+          "_instance": [Circular],
+          "_isReRender": false,
+          "_newState": null,
+          "_numberOfReRenders": 0,
+          "_renderPhaseUpdates": null,
+          "_rendered": <Context.Provider
+            value={[Circular]}
+          >
+            <Component
+              hidden={false}
+              onClose={[MockFunction]}
+              onFailure={[MockFunction]}
+              onSuccess={[MockFunction]}
+            />
+          </Context.Provider>,
+          "_rendering": false,
+          "_updater": [Circular],
+          "_workInProgressHook": null,
+        },
+      },
+    }
+  }
+>
+  <Component
+    hidden={false}
+    onClose={[MockFunction]}
+    onFailure={[MockFunction]}
+    onSuccess={[MockFunction]}
+  />
+</ContextProvider>
+`;

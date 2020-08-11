@@ -4,7 +4,6 @@ import ManageMembers from '../src/screens/ManageTeams'
 import { createStore } from '../src/store'
 import { rootStore, defaultUser } from '../src/store/model'
 import { initiatePasswordRecoveryCallable } from '../src/store/firebase'
-import { act } from 'react-dom/test-utils'
 
 // Mock getVerificationCodeCallable
 jest.mock('../src/store/firebase', () => {
@@ -30,14 +29,6 @@ jest.mock('react-router-dom', () => {
 })
 
 describe('manage members', () => {
-  // Without this, a warning is thrown, see https://github.com/enzymejs/enzyme/issues/2073
-  const waitForComponentToPaint = async (wrapper) => {
-    await act(async () => {
-      await new Promise((resolve) => setTimeout(resolve, 0))
-      wrapper.update()
-    })
-  }
-
   test('password reset email', async () => {
     rootStore.user.__update({ isSignedIn: true, isAdmin: true, isFirstTimeUser: false, signedInWithEmailLink: false })
     let defaultUserClone = Object.assign({}, defaultUser)
@@ -53,7 +44,7 @@ describe('manage members', () => {
 
     wrapped.find('a').at(0).simulate('click')
 
-    await waitForComponentToPaint(wrapped)
+    await global.waitForComponentToPaint(wrapped)
 
     expect(initiatePasswordRecoveryCallable).toHaveBeenCalled()
   })
