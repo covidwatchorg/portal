@@ -3,32 +3,74 @@
 
 #diagnosis-codes {
   h2 {
-    font-size: 16px;
-    margin-bottom: 60px;
+    @include media('>phone') {
+      font-size: 16px;
+      margin-bottom: 60px;
+    }
+    @include media('<=phone') {
+      font-size: 14px;
+      margin-bottom: 4.5vh;
+    }
+  }
+
+  p {
+    @include media('<=phone') {
+      margin-top: 0;
+      text-align: center;
+    }
   }
 
   .row {
     display: flex;
-    margin-bottom: 60px;
 
+    @include media('>phone') {
+      flex-direction: row;
+      margin-bottom: 60px;
+    }
+    @include media('<=phone') {
+      flex-direction: column;
+      margin-bottom: 4vh;
+    }
     .col-1 {
-      width: 30%;
-      margin-right: 50px;
+      @include media('>phone') {
+        width: 30%;
+        margin-right: 50px;
+      }
+      @include media('<=phone') {
+        width: 100%;
+      }
 
       .sect-header {
-        font-size: 16px;
+        @include media('>phone') {
+          font-size: 16px;
+        }
+        @include media('<=phone') {
+          font-size: 20px;
+          text-align: center;
+          margin-bottom: 5vw;
+        }
         font-weight: 600;
       }
     }
     .col-2 {
-      width: 50%;
+      @include media('>phone') {
+        width: 50%;
+      }
+      @include media('<=phone') {
+        width: 100%;
+        #date-form {
+          // Centers the date input box
+          width: 100%;
+          text-align: center;
+        }
+      }
       display: flex;
       flex-direction: column;
 
       .radio-input {
-        max-width: 16px;
-        max-height: 16px;
-        transform: scale(1.23);
+        max-width: 20px;
+        max-height: 20px;
+        margin-left: 0px;
         margin-right: 20px;
       }
 
@@ -39,7 +81,7 @@
       .radio {
         display: flex;
         margin-bottom: 20px;
-
+        
         .col-2-header {
           font-weight: 600;
           font-size: 16px;
@@ -50,19 +92,6 @@
         .col-2-sub-header {
           color: $darkMediumGray;
         }
-      }
-
-      #code-box {
-        margin-top: 40px;
-        border: 1px solid $lightMediumGray;
-        box-sizing: border-box;
-        border-radius: 4px;
-        font-size: 28px;
-        line-height: 28px;
-        padding: 20px;
-        display: flex;
-        align-items: center;
-        width: 350px;
       }
 
       // this overrules the .button properties in button.scss
@@ -76,16 +105,38 @@
 
       #date-picker {
         // width is the same as the button
-        width: 350px;
+        @include media('>phone') {
+          width: 350px;
+        }
+        @include media('<=phone') {
+          max-width: 100%;
+        }
         padding: 9px 20px 9px 20px;
       }
 
       // to be refactored later to make buttons more consistent.  See button.scss
       .progress-container {
+        @include media('>phone') {
+          width: 350px;
+        }
         margin-top: 0px;
-        width: 350px;
         display: flex;
         justify-content: center;
+      }
+
+      #code-box {
+        margin-top: 40px;
+        border: 1px solid $lightMediumGray;
+        box-sizing: border-box;
+        border-radius: 4px;
+        font-size: 28px;
+        line-height: 28px;
+        padding: 20px;
+        display: flex;
+        align-items: center;
+        @include media('>phone') {
+          width: 350px;
+        }
       }
 
       // no-value and with-value control the Code and Date changing colors
@@ -110,11 +161,22 @@
       display: flex;
       margin-top: 10px;
       margin-bottom: 40px;
-      //arbitrary width to get all text to fit in one line
-      width: 620px;
+
+      @include media('>phone') {
+      // ensures all the text fits in one line
+        width: 620px;
+        flex-direction: row;
+      }
+      @include media('<=phone') {
+        flex-direction: column;
+        text-align: center;
+      }
 
       img {
         margin-right: 10px;
+        @include media('<=phone') {
+          display: none;
+        }
       }
 
       span {
