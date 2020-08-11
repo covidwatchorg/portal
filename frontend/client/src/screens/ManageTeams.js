@@ -85,7 +85,7 @@ const ManageTeamsBase = observer((props) => {
       await props.store.sendPasswordRecoveryEmail(email)
       setToastMessage(`Password reset email sent to ${email}`)
       setIsSuccess(true)
-      confirmationToast.current.show()
+      confirmationToast.current && confirmationToast.current.show()
     } catch (err) {
       Logging.error(err)
       setToastMessage('Password reset failed. Please try again')

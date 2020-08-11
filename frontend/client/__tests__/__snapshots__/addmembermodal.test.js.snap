@@ -1,20 +1,20 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`renders correctly 1`] = `
+exports[`AddMemberModal renders correctly 1`] = `
 <ContextProvider
   value={
-    Component {
+    Object {
       "__authStateListener": [Function],
       "__firstVisibleMember": null,
       "__lastVisibleMember": null,
+      "__membersListener": null,
       "__organizationDocumentListener": null,
-      "__pageOfMembersListener": null,
+      "__signedInWithEmailLink": false,
       "__userDocumentListener": null,
       "__userImageListener": null,
       "context": Object {},
       "data": Object {
         "organization": Object {
-          "currentPageOfMembers": Array [],
           "diagnosisText": "",
           "enableExposureText": "",
           "exposureAboutText": "",
@@ -23,6 +23,9 @@ exports[`renders correctly 1`] = `
           "exposureInfoText": "",
           "exposureText": "",
           "id": "",
+          "logoBlob": null,
+          "members": Array [],
+          "membersPage": 1,
           "name": "",
           "notifyingOthersText": "",
           "recommendExposureText": "",
@@ -41,11 +44,14 @@ exports[`renders correctly 1`] = `
           "firstName": "",
           "imageBlob": null,
           "isAdmin": false,
-          "isFirstTimeUser": undefined,
+          "isFirstTimeUser": true,
           "isSignedIn": false,
           "lastName": "",
           "organizationID": "",
+          "passwordResetCompletedInCurrentSession": false,
+          "passwordResetRequested": false,
           "prefix": "",
+          "signedInWithEmailLink": false,
         },
       },
       "displayName": "storeProvider",
@@ -79,7 +85,7 @@ exports[`renders correctly 1`] = `
             "useState": [Function],
             "useTransition": [Function],
           },
-          "_element": <Component
+          "_element": <Unknown
             hidden={false}
             onClose={[MockFunction]}
             onFailure={[MockFunction]}
@@ -95,7 +101,7 @@ exports[`renders correctly 1`] = `
           "_rendered": <Context.Provider
             value={[Circular]}
           >
-            <Component
+            <Unknown
               hidden={false}
               onClose={[MockFunction]}
               onFailure={[MockFunction]}
