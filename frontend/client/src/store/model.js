@@ -1,6 +1,5 @@
 import { types, cast, onSnapshot } from 'mobx-state-tree'
 import 'mobx-react-lite/batchingForReactDom'
-import Logging from '../util/logging'
 import { PAGE_SIZE } from '.'
 
 const User = types
@@ -29,8 +28,6 @@ const User = types
       Object.keys(updates).forEach((key) => {
         if (self.hasOwnProperty(key)) self[key] = updates[key] // eslint-disable-line no-prototype-builtins
       })
-      Logging.log('Updated User:')
-      Logging.log(self)
     }
 
     return { __update }
@@ -66,8 +63,6 @@ const Organization = types
       Object.keys(updates).forEach((key) => {
         if (self.hasOwnProperty(key)) self[key] = updates[key] // eslint-disable-line no-prototype-builtins
       })
-      Logging.log('Updated Organization:')
-      Logging.log(self)
     }
 
     const __setMembers = (members) => {
@@ -142,18 +137,24 @@ const defaultStore = {
 
 let initialStore = defaultStore
 
-// Based on https://egghead.io/lessons/react-store-store-in-local-storage
-if (sessionStorage.getItem('store')) {
-  initialStore = JSON.parse(sessionStorage.getItem('store'))
+// This prevents every change registered by the hot-reload dev server from resetting the store, which aids in development.
+if (process.env.NODE_ENV == 'development') {
+  // Based on https://egghead.io/lessons/react-store-store-in-local-storage
+  if (sessionStorage.getItem('store')) {
+    initialStore = JSON.parse(sessionStorage.getItem('store'))
+  }
 }
 
 const rootStore = Store.create({
   ...initialStore,
 })
 
-// Based on https://egghead.io/lessons/react-store-store-in-local-storage
-onSnapshot(rootStore, (snapshot) => {
-  sessionStorage.setItem('store', JSON.stringify(snapshot))
-})
+// This prevents every change registered by the hot-reload dev server from resetting the store, which aids in development.
+if (process.env.NODE_ENV == 'development') {
+  // Based on https://egghead.io/lessons/react-store-store-in-local-storage
+  onSnapshot(rootStore, (snapshot) => {
+    sessionStorage.setItem('store', JSON.stringify(snapshot))
+  })
+}
 
 export { rootStore, defaultUser, defaultOrganization }
