@@ -100,7 +100,7 @@ const SignInFormBase = observer(
         <div className="mainContainer">
           <div className="welcome">
             <h1>Covid Watch Portal</h1>
-            <h3 className="small-text">
+            <h3 className="small-text welcome-blurb-desktop">
               Welcome to the Portal where your team can generate diagnosis verification codes to share with patients who
               test positive for COVID-19. With your help, they can decrease their risk to others by sharing a positive
               diagnosis, which allows the app to anonymously notify those who were nearby when the patient was likely
@@ -125,6 +125,9 @@ const SignInFormBase = observer(
             </PendingOperationButton>
             <a onClick={this.showModal}>Forgot password?</a>
           </form>
+          <h3 className="small-text welcome-blurb-mobile">
+            <a href="https://www.covidwatch.org">Learn more</a>.
+          </h3>
           <ForgotPasswordModal hidden={!this.state.showPassModal} onClose={this.hideModal} />
         </div>
         <Toast ref={this.errorToast} isSuccess={false} message={this.state.toastMessage} />

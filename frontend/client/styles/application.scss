@@ -1,31 +1,54 @@
 @import './color.scss';
+@import './include-media';
 
-.hidden {
-  display: none;
-}
-
-body {
-  margin: 0px;
-
+html,
+body,
+#app,
+#app > div,
+#root {
+  display: flex;
+  flex-direction: column;
+  min-width: 99vw;
+  min-height: 99vh;
   // Default text style
   font-family: Montserrat;
   font-size: 14px;
   font-weight: normal;
   line-height: 20px;
   color: $darkGray;
+  margin: 0;
+}
+
+.hidden {
+  display: none;
 }
 
 h1 {
-  margin-top: 52px;
+  @include media('>phone') {
+    margin-top: 52px;
+    font-size: 32px;
+    line-height: 40px;
+  }
+  @include media('<=phone') {
+    margin-top: 26px;
+    font-size: 24px; // 0.75 * >phone
+    line-height: 30px; // 0.75 * >phone
+    text-align: center;
+  }
   font-weight: 600;
-  font-size: 32px;
-  line-height: 40px;
 }
 
 h2 {
-  font-weight: 600;
-  font-size: 28px;
-  line-height: 34px;
+  @include media('>phone') {
+    font-weight: 600;
+    font-size: 28px;
+    line-height: 34px;
+  }
+  @include media('<=phone') {
+    font-weight: 600;
+    font-size: 21px; // 0.75 * >phone
+    line-height: 26px; // 0.75 * >phone
+  }
 }
 
 h3 {
@@ -65,27 +88,34 @@ a {
   text-decoration: none;
 }
 
-.small-text{
+.small-text {
   font-weight: normal;
   font-size: 16px;
   line-height: 20px;
 }
 
-.xs-text{
+.xs-text {
   font-weight: normal;
   font-size: 12px;
   line-height: 15px;
 }
 
-.module-container{
-  min-height: 86vh;
-  margin: 0 98px;
+.module-container {
+  @include media('>phone') {
+    margin: 0 98px;
+    padding-right: 101px;
+  }
+  @include media('<=phone') {
+    margin: 0 5px;
+  }
   display: flex;
   flex-direction: column;
   align-items: stretch;
-  padding-right: 101px;
 }
 
-.module-container-login{
-    padding-right: 0px;
+.module-container-login {
+  padding-right: 0px;
+  @include media('<=phone') {
+    margin-bottom: 26px;
+  }
 }
