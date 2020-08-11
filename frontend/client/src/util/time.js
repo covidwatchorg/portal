@@ -1,6 +1,17 @@
-export const getOneHourAhead = () => {
-  // this function generates a string of time one hour ahead of the current time
-  // ex: "1:29 AM Pacific Daylight Time"
+// Takes a javascript date object and converts it to a string in the form of yyyy-mm-dd
+export const toDashSeperatedYYYYMMDDString = (date) => {
+  return date.toJSON().substring(0, 10)
+}
+
+// Returns string of the browser's current default timezone
+// ex: "Mountain Daylight Time"
+export const getDefaultTimezoneString = () => {
+  return /\((.*)\)/.exec(new Date().toString())[1]
+}
+
+// Generates a string formatted to be displayed to the user one hour ahead of the current time
+// ex: "1:29 AM Pacific Daylight Time"
+export const getOneHourAheadDisplayString = () => {
   // declaring new Date() here instead of passing in the code generation time stamp as they should be within 60 seconds of each other and second precision here is not necessary
   const now = new Date()
   const ahead = new Date(now.setHours(now.getHours() + 1))
@@ -18,46 +29,26 @@ export const getOneHourAhead = () => {
   if (mins.length === 1) {
     mins = '0' + mins
   }
-  const timezone = /\((.*)\)/.exec(ahead.toString())[1]
+  const timezone = getDefaultTimezoneString()
 
   return hours + ':' + mins + ' ' + amPM + ' ' + timezone
 }
 
 // getFourteenDaysAgo generates a string formatted date fourteen days ago from present day
 // ex: "2020-07-02"
-export const getFourteenDaysAgo = () => {
+export const getFourteenDaysAgoString = () => {
   var ourDate = new Date()
 
   //Change date picker minimum to be 14 days in the past.
   var pastDate = ourDate.getDate() - 13
   ourDate.setDate(pastDate)
 
-  return getDay(ourDate)
+  return toDashSeperatedYYYYMMDDString(ourDate)
 }
 
-// gets a current timestamp of the UTC time as a string:
-// ex: "2020-07-02"
-export const getUTCDate = () => {
-  return new Date().toJSON().substring(0, 10)
-}
-
-// getDay generates a string formatted date based on a date input
-// ex: "2020-07-16"
-export const getDay = (now = new Date()) => {
-  const year = now.getFullYear().toString()
-  let month = (now.getMonth() + 1).toString()
-
-  if (month.length === 1) {
-    month = '0' + month
-  }
-
-  let day = now.getDate().toString()
-
-  if (day.length === 1) {
-    day = '0' + day
-  }
-
-  return year + '-' + month + '-' + day
+// gets today's date as a string formatted as yyyy-mm-dd
+export const getTodayString = () => {
+  return toDashSeperatedYYYYMMDDString(new Date())
 }
 
 // is this date more than 14 days ago?
@@ -75,4 +66,11 @@ export const dateInFuture = (strChosenDate) => {
   let chosenDate = new Date(strChosenDate)
   let today = new Date()
   return chosenDate > today
+}
+
+// Converts a local yyyy-mm-dd date string to zero UTC offset yyyy-mm-dd date string
+export const localStringToZeroUTCOffsetString = (localDateString) => {
+  const localDate = new Date(localDateString)
+  // toISOString returns date string with zero UTC offset
+  return localDate.toISOString().substring(0, 10)
 }

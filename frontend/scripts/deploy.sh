@@ -17,8 +17,22 @@ echo
 FOLDERNAME=dist
 S3_BUCKET_URI="s3://$BUCKETNAME"
 
-aws s3 cp index.html $S3_BUCKET_URI  --acl public-read --cache-control max-age=31557600,public --metadata-directive REPLACE --expires 2034-01-01T00:00:00Z --only-show-errors
+# Upload index.html and favicon if they've changed
+diff=$(git diff --name-only HEAD HEAD~1)
 
+if echo $diff | grep -q index.html; then  
+    echo Uploading index.html
+    aws s3 cp index.html $S3_BUCKET_URI  --acl public-read --cache-control max-age=31557600,public --metadata-directive REPLACE --expires 2034-01-01T00:00:00Z --only-show-errors
+fi
+
+
+if echo $diff | grep -q favicon.ico; then  
+    echo Uploading favicon.ico
+    aws s3 cp favicon.ico $S3_BUCKET_URI  --acl public-read --cache-control max-age=31557600,public --metadata-directive REPLACE --expires 2034-01-01T00:00:00Z --only-show-errors
+fi
+
+
+# Upload /dist (bundled web app)
 aws s3 sync $FOLDERNAME "$S3_BUCKET_URI/$FOLDERNAME" --acl public-read --cache-control max-age=31557600,public --metadata-directive REPLACE --expires 2034-01-01T00:00:00Z --only-show-errors
 
 
