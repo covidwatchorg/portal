@@ -32,8 +32,6 @@ jest.mock('../src/store/firebase', () => {
 })
 
 describe('reset password', () => {
-  let wrapper
-
   it.each([
     ['Changes password succesfully (ResetPasswordModal)', ResetPasswordModal, 'password1', 'password1'],
     [
