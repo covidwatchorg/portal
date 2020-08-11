@@ -6,6 +6,7 @@
   "scripts": {
     "init": "cpy ../config/firebase* client/src/config/",
     "test": "jest",
+    "test_ci": "npm run init && NODE_ENV=test npm run test",
     "start": "webpack-dev-server --open --hot --config webpack.dev.js",
     "start:local": "webpack-dev-server --open --hot --config webpack.dev.js --define process.env.NODE_ENV='\"local\"'",
     "start:dev": "webpack-dev-server --open --hot --config webpack.dev.js --define process.env.NODE_ENV='\"development\"'",
