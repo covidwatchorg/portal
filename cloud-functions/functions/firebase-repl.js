@@ -13,6 +13,9 @@ const firebaseConfig = require(`./config/firebase.config.${process.env.NODE_ENV}
 firebase.initializeApp(firebaseConfig);
 admin.initializeApp(firebaseConfig);
 
+// initialize firebase analytics
+firebase.analytics();
+
 var db = admin.firestore();
 
 var repl = require('repl');
