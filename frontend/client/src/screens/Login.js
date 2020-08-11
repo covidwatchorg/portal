@@ -30,6 +30,10 @@ const SignInFormBase = observer(
       this.trySignInWithEmailLink()
     }
 
+    componentDidMount() {
+      document.getElementById('email').select()
+    }
+
     clickSubmit = async () => {
       const { email, password } = this.state
       try {
