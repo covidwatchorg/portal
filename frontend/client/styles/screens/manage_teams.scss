@@ -1,8 +1,14 @@
 @import '../color.scss';
+@import '../include-media';
 
 .add-member-button {
   align-self: flex-start;
   margin: 22px 0px 12px 0px;
+
+  @include media('<=phone') {
+    align-self: center;
+    margin: 0 0 22px 0;
+  }
 
   .add-button-text {
     margin-left: 12px;
@@ -17,20 +23,55 @@ table {
   width: 100%;
   border: 1px solid $darkMediumGray;
   border-collapse: collapse;
+
+  @include media('<=phone') {
+    table-layout: fixed;
+    font-size: 16px;
+
+    tr {
+      text-align: center;
+    }
+
+    tr td {
+      overflow: hidden;
+    }
+
+    tr td:nth-of-type(2) {
+      max-width: 70px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    th:last-of-type {
+      display: none;
+    }
+
+    td:last-of-type {
+      display: none;
+    }
+  }
+
   tr {
     height: 45px;
+
     th {
       padding: 5px 10px;
       background-color: $lightGray;
       font-weight: 600;
       border: 1px solid $darkMediumGray;
       text-align: left;
+
+      @include media('<=phone') {
+        text-align: center;
+      }
     }
 
     td {
       padding: 5px 10px;
       background-color: $white;
       border: 1px solid $darkMediumGray;
+
       .custom-select {
         width: 100%;
         height: 100%;
@@ -39,6 +80,11 @@ table {
         bottom: 0;
         background-color: $white;
         border-radius: 0;
+
+        @include media('<=phone') {
+          height: 80px;
+        }
+        
         select {
           padding: 5px 10px;
           border: none;
@@ -52,6 +98,12 @@ table {
           -webkit-appearance: none;
           -moz-appearance: none;
           -ms-appearance: none;
+
+          @include media('<=phone') {
+            font-size: 16px;
+            text-align-last: center;
+            padding: 5px 4px;
+          }
         }
       }
       .custom-select:after {
@@ -62,6 +114,11 @@ table {
         border-radius: 0;
         background-color: transparent;
         pointer-events: none;
+
+        @include media('<=phone') {
+          top: 50px;
+          right: 40px;
+        }
       }
       .settings-container {
         display: flex;
@@ -84,6 +141,11 @@ table {
   margin: 33px 0;
   font-weight: 600;
   line-height: 18px;
+
+  @include media('<=phone') {
+    justify-content: center;
+  }
+
   .pages-container {
     display: flex;
     flex-direction: row;
