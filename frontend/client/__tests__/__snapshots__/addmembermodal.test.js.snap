@@ -3,7 +3,7 @@
 exports[`AddMemberModal renders correctly 1`] = `
 <ContextProvider
   value={
-    Component {
+    Object {
       "__authStateListener": [Function],
       "__firstVisibleMember": null,
       "__lastVisibleMember": null,
@@ -85,7 +85,7 @@ exports[`AddMemberModal renders correctly 1`] = `
             "useState": [Function],
             "useTransition": [Function],
           },
-          "_element": <Component
+          "_element": <Unknown
             hidden={false}
             onClose={[MockFunction]}
             onFailure={[MockFunction]}
@@ -101,7 +101,7 @@ exports[`AddMemberModal renders correctly 1`] = `
           "_rendered": <Context.Provider
             value={[Circular]}
           >
-            <Component
+            <Unknown
               hidden={false}
               onClose={[MockFunction]}
               onFailure={[MockFunction]}
