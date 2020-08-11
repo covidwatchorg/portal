@@ -20,15 +20,15 @@ describe('Footer', () => {
     expect(toJson(wrapper)).toMatchSnapshot()
   })
 
-  it("has a valid 'privacy policy' link", (done) => {
-    // See https://jestjs.io/docs/en/asynchronous
-    function callback(res) {
-      expect(res.statusCode).toBe(200)
-      done()
-    }
+  // it("has a valid 'privacy policy' link", (done) => {
+  //   // See https://jestjs.io/docs/en/asynchronous
+  //   function callback(res) {
+  //     expect(res.statusCode).toBe(200)
+  //     done()
+  //   }
 
-    https.get(wrapper.find('a').at(0).props().href, callback)
-  })
+  //   https.get(wrapper.find('a').at(0).props().href, callback)
+  // })
 
   it("has a valid 'support' link", (done) => {
     function callback(res) {
