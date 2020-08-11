@@ -398,6 +398,7 @@ exports[`NavBar renders correctly 1`] = `
                                 <li
                                   aria-disabled="false"
                                   class="MuiButtonBase-root MuiListItem-root MuiMenuItem-root menu-link MuiMenuItem-gutters MuiListItem-gutters MuiListItem-button"
+                                  id="diagnosis-verification-codes"
                                   role="menuitem"
                                   style="margin-top: 22px;"
                                   tabindex="0"
@@ -410,6 +411,7 @@ exports[`NavBar renders correctly 1`] = `
                                 <li
                                   aria-disabled="false"
                                   class="MuiButtonBase-root MuiListItem-root MuiMenuItem-root menu-link MuiMenuItem-gutters MuiListItem-gutters MuiListItem-button"
+                                  id="my-settings"
                                   role="menuitem"
                                   tabindex="-1"
                                 >
@@ -615,6 +617,7 @@ exports[`NavBar renders correctly 1`] = `
                                           >
                                             <WithStyles(ForwardRef(MenuItem))
                                               className="menu-link"
+                                              id="diagnosis-verification-codes"
                                               key=".$.0"
                                               onClick={[Function]}
                                               style={
@@ -634,6 +637,7 @@ exports[`NavBar renders correctly 1`] = `
                                                     "selected": "Mui-selected",
                                                   }
                                                 }
+                                                id="diagnosis-verification-codes"
                                                 onClick={[Function]}
                                                 style={
                                                   Object {
@@ -652,6 +656,7 @@ exports[`NavBar renders correctly 1`] = `
                                                   }
                                                   component="li"
                                                   disableGutters={false}
+                                                  id="diagnosis-verification-codes"
                                                   onClick={[Function]}
                                                   role="menuitem"
                                                   style={
@@ -681,6 +686,7 @@ exports[`NavBar renders correctly 1`] = `
                                                     }
                                                     component="li"
                                                     disableGutters={false}
+                                                    id="diagnosis-verification-codes"
                                                     onClick={[Function]}
                                                     role="menuitem"
                                                     style={
@@ -695,6 +701,7 @@ exports[`NavBar renders correctly 1`] = `
                                                       component="li"
                                                       disabled={false}
                                                       focusVisibleClassName="Mui-focusVisible"
+                                                      id="diagnosis-verification-codes"
                                                       onClick={[Function]}
                                                       role="menuitem"
                                                       style={
@@ -716,6 +723,7 @@ exports[`NavBar renders correctly 1`] = `
                                                         component="li"
                                                         disabled={false}
                                                         focusVisibleClassName="Mui-focusVisible"
+                                                        id="diagnosis-verification-codes"
                                                         onClick={[Function]}
                                                         role="menuitem"
                                                         style={
@@ -728,6 +736,7 @@ exports[`NavBar renders correctly 1`] = `
                                                         <li
                                                           aria-disabled={false}
                                                           className="MuiButtonBase-root MuiListItem-root MuiMenuItem-root menu-link MuiMenuItem-gutters MuiListItem-gutters MuiListItem-button"
+                                                          id="diagnosis-verification-codes"
                                                           onBlur={[Function]}
                                                           onClick={[Function]}
                                                           onDragLeave={[Function]}
@@ -786,6 +795,7 @@ exports[`NavBar renders correctly 1`] = `
                                             </WithStyles(ForwardRef(MenuItem))>
                                             <WithStyles(ForwardRef(MenuItem))
                                               className="menu-link"
+                                              id="my-settings"
                                               key=".$.3"
                                               onClick={[Function]}
                                             >
@@ -799,6 +809,7 @@ exports[`NavBar renders correctly 1`] = `
                                                     "selected": "Mui-selected",
                                                   }
                                                 }
+                                                id="my-settings"
                                                 onClick={[Function]}
                                               >
                                                 <WithStyles(ForwardRef(ListItem))
@@ -811,6 +822,7 @@ exports[`NavBar renders correctly 1`] = `
                                                   }
                                                   component="li"
                                                   disableGutters={false}
+                                                  id="my-settings"
                                                   onClick={[Function]}
                                                   role="menuitem"
                                                   tabIndex={-1}
@@ -835,6 +847,7 @@ exports[`NavBar renders correctly 1`] = `
                                                     }
                                                     component="li"
                                                     disableGutters={false}
+                                                    id="my-settings"
                                                     onClick={[Function]}
                                                     role="menuitem"
                                                     tabIndex={-1}
@@ -844,6 +857,7 @@ exports[`NavBar renders correctly 1`] = `
                                                       component="li"
                                                       disabled={false}
                                                       focusVisibleClassName="Mui-focusVisible"
+                                                      id="my-settings"
                                                       onClick={[Function]}
                                                       role="menuitem"
                                                       tabIndex={-1}
@@ -860,6 +874,7 @@ exports[`NavBar renders correctly 1`] = `
                                                         component="li"
                                                         disabled={false}
                                                         focusVisibleClassName="Mui-focusVisible"
+                                                        id="my-settings"
                                                         onClick={[Function]}
                                                         role="menuitem"
                                                         tabIndex={-1}
@@ -867,6 +882,7 @@ exports[`NavBar renders correctly 1`] = `
                                                         <li
                                                           aria-disabled={false}
                                                           className="MuiButtonBase-root MuiListItem-root MuiMenuItem-root menu-link MuiMenuItem-gutters MuiListItem-gutters MuiListItem-button"
+                                                          id="my-settings"
                                                           onBlur={[Function]}
                                                           onClick={[Function]}
                                                           onDragLeave={[Function]}
