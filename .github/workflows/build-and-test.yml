@@ -110,4 +110,6 @@ jobs:
         run: npm install
       - name: Run Tests
         working-directory: frontend
+        env:
+          CI: true
         run: npm run test_ci
