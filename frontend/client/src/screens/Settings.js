@@ -44,7 +44,7 @@ const SettingsBase = observer((props) => {
 
   const saveImage = async () => {
     if (imgUploader.current.files.length == 0) {
-      Logging.log('no image uploaded')
+      // No image uploaded
       return
     }
 

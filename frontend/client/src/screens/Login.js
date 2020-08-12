@@ -55,7 +55,6 @@ const SignInFormBase = observer(
     trySignInWithEmailLink = async () => {
       // Based on https://firebase.google.com/docs/auth/web/email-link-auth
       if (this.props.store.isSignInWithEmailLink(window.location.href)) {
-        Logging.log('signInWithEmailLink detected')
         // Get the email if available. This should be available if the user completes
         // the flow on the same device where they started it.
         var email = window.localStorage.getItem('emailForSignIn')
@@ -74,7 +73,6 @@ const SignInFormBase = observer(
             // result.additionalUserInfo.profile == null
             // You can check if the user is new or existing:
             // result.additionalUserInfo.isNewUser
-            Logging.log('Logged in via signInWithEmailLink')
           })
           .catch((err) => {
             // Some error occurred, you can inspect the code: error.code
