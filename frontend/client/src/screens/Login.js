@@ -27,11 +27,12 @@ const SignInFormBase = observer(
       this.state = { ...INITIAL_STATE }
       this.onChange = this.onChange.bind(this)
       this.errorToast = createRef()
+      this.emailInput = createRef()
       this.trySignInWithEmailLink()
     }
 
     componentDidMount() {
-      document.getElementById('email').select()
+      this.emailInput.current.select()
     }
 
     clickSubmit = async () => {
@@ -119,7 +120,7 @@ const SignInFormBase = observer(
             <label className="small-text" htmlFor="email">
               Email Address
             </label>
-            <input onChange={this.onChange('email')} type="email" id="email" name="email" />
+            <input onChange={this.onChange('email')} type="email" id="email" name="email" ref={this.emailInput}/>
             <label className="small-text" htmlFor="password">
               Password
             </label>
