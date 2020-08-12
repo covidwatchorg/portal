@@ -16,6 +16,8 @@ import ResetPasswordModal from '../components/ResetPasswordModal'
 import CircularProgress from '@material-ui/core/CircularProgress'
 
 const MAXFILESIZE = 10 * 1024 * 1024
+
+// Breakpoints customized to match those of _include-media.scss
 const theme = createMuiTheme({
   breakpoints: {
     values: {
