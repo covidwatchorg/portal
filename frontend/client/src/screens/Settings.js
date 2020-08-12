@@ -1,5 +1,5 @@
 import React, { useRef, Fragment, useState } from 'react'
-import { createMuiTheme, MuiThemeProvider } from "@material-ui/core/styles";
+import { createMuiTheme, MuiThemeProvider } from '@material-ui/core/styles'
 import Grid from '@material-ui/core/Grid'
 import Modal from '../components/Modal'
 import * as ROLES from '../constants/roles'
