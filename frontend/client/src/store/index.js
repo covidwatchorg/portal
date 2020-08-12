@@ -182,7 +182,6 @@ const createStore = (WrappedComponent) => {
     async createUser(newUser) {
       try {
         const result = await createUserCallable(newUser)
-        Logging.log(`Created new user: ${JSON.stringify(result.data)}`)
         return result.data
       } catch (err) {
         Logging.log(err)
