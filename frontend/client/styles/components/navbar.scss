@@ -49,7 +49,7 @@
   }
 
   @include media('<=phone') {
-    #manage-members, #mobile-app-settings, #my-settings {
+    #manage-members, #mobile-app-settings {
       display: none;
     }
   }
