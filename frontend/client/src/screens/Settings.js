@@ -1,4 +1,5 @@
 import React, { useRef, Fragment, useState } from 'react'
+import { createMuiTheme, MuiThemeProvider } from "@material-ui/core/styles";
 import Grid from '@material-ui/core/Grid'
 import Modal from '../components/Modal'
 import * as ROLES from '../constants/roles'
@@ -15,6 +16,17 @@ import ResetPasswordModal from '../components/ResetPasswordModal'
 import CircularProgress from '@material-ui/core/CircularProgress'
 
 const MAXFILESIZE = 10 * 1024 * 1024
+const theme = createMuiTheme({
+  breakpoints: {
+    values: {
+      xs: 0,
+      sm: 420,
+      md: 768,
+      lg: 1024,
+      xl: 1920,
+    },
+  },
+})
 const SettingsBase = observer((props) => {
   const imgUploader = useRef()
 
@@ -192,7 +204,7 @@ const SettingsBase = observer((props) => {
             </Grid>
           </Grid>
 
-          <Grid item xs={6} md={4} xl={5}>
+          <Grid item xs={12} md={4} xl={5}>
             <Grid container spacing={2} direction="column">
               <label htmlFor="prefix">Prefix</label>
               <input
@@ -226,7 +238,7 @@ const SettingsBase = observer((props) => {
             </Grid>
           </Grid>
 
-          <Grid item xs={6} md={4} xl={5}>
+          <Grid item xs={12} md={4} xl={5}>
             <Grid container spacing={2} direction="column">
               <label htmlFor="role">Role</label>
               {props.store.data.user && (
@@ -278,7 +290,7 @@ const SettingsBase = observer((props) => {
     (props.store.data.user.passwordResetRequested && props.store.data.user.signedInWithEmailLink) ? (
     <Redirect to={ROUTES.LANDING} />
   ) : (
-    <React.Fragment>
+    <MuiThemeProvider theme={theme}>
       <PageTitle title="My Settings" />
       <div className="module-container">
         <div className="settings-header">
@@ -293,7 +305,7 @@ const SettingsBase = observer((props) => {
           onFailure={onChangePasswordFailure}
         />
       </div>
-    </React.Fragment>
+    </MuiThemeProvider>
   )
 })
 
