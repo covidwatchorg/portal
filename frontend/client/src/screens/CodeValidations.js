@@ -1,4 +1,4 @@
-import React, { useState, createRef, useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import Toast from '../components/Toast'
 import * as ROUTES from '../constants/routes'
 import { withStore } from '../store'
@@ -25,15 +25,15 @@ const CodeValidationsBase = observer((props) => {
   const [dateInvalid, setDateInvalid] = useState(false)
   const [needsReset, setNeedsReset] = useState(false)
   const [code, setCode] = useState(codePlaceholder)
-  const [codeGenStamp, setCodeGenStamp] = useState('')
   const [buttonDisabled, setButtonDisabled] = useState(true)
   const [expirationTime, setExpirationTime] = useState('')
+  const [timeLeft, setTimeLeft] = useState(60)
   const [toastInfo, setToastInfo] = useState({
     success: false,
     msg: '',
   })
 
-  let confirmedToast = createRef()
+  let confirmedToast = React.createRef()
 
   useEffect(() => {
     updateButtonDisabled()
@@ -48,6 +48,15 @@ const CodeValidationsBase = observer((props) => {
     }
   }
 
+  const countdown = (num = 60) => {
+    setTimeout(() => {
+      if (num > 0 && document.getElementById('code-box').classList.contains('code-generated')) {
+        setTimeLeft(num - 1)
+        countdown(num - 1)
+      }
+    }, 60000)
+  }
+
   const genNewCode = async () => {
     try {
       let code = await props.store.getVerificationCode({
@@ -58,6 +67,7 @@ const CodeValidationsBase = observer((props) => {
       codeTimeStamp()
       setNeedsReset(true)
       updateButtonDisabled()
+      countdown()
     } catch (err) {
       setToastInfo({ success: false, msg: 'Could not generate new code, please try again' })
       confirmedToast.current.show()
@@ -98,9 +108,9 @@ const CodeValidationsBase = observer((props) => {
     document.getElementById('code-box').classList.toggle('no-value')
     document.getElementById('code-box').classList.toggle('code-generated')
     setCode(codePlaceholder)
-    setCodeGenStamp('')
     setSymptomDate('')
     setTestType('')
+    setTimeLeft(60)
     setNeedsReset(false)
     setDateInvalid(false)
     updateButtonDisabled()
@@ -111,7 +121,6 @@ const CodeValidationsBase = observer((props) => {
     document.getElementById('code-box').classList.toggle('with-value')
     document.getElementById('code-box').classList.toggle('no-value')
     document.getElementById('code-box').classList.toggle('code-generated')
-    setCodeGenStamp(new Date().getMinutes())
     setExpirationTime(getOneHourAheadDisplayString())
   }
 
@@ -130,27 +139,48 @@ const CodeValidationsBase = observer((props) => {
         </div>
         <form id="radio-form" className="col-2">
           <div className="radio">
-            <input className="radio-input" name="testType" type="radio" onClick={handleRadio} value="confirmed"></input>
-            <div className="col-2-header-container">
+            <input
+              className="radio-input"
+              name="testType"
+              type="radio"
+              onClick={handleRadio}
+              id="confirmed"
+              value="confirmed"
+            ></input>
+            <label htmlFor="confirmed" className="col-2-header-container">
               <div className="col-2-header">Confirmed Positive Test</div>
               <div className="col-2-sub-header">Confirmed positive result from an official testing source.</div>
-            </div>
+            </label>
           </div>
 
           <div className="radio">
-            <input className="radio-input" name="testType" type="radio" onClick={handleRadio} value="likely"></input>
-            <div className="col-2-header-container">
+            <input
+              className="radio-input"
+              name="testType"
+              type="radio"
+              onClick={handleRadio}
+              id="likely"
+              value="likely"
+            ></input>
+            <label htmlFor="likely" className="col-2-header-container">
               <div className="col-2-header">Likely Positive Diagnosis</div>
               <div className="col-2-sub-header">Clincial diagnosis without a test.</div>
-            </div>
+            </label>
           </div>
 
           <div className="radio">
-            <input className="radio-input" name="testType" type="radio" onClick={handleRadio} value="negative"></input>
-            <div className="col-2-header-container">
+            <input
+              className="radio-input"
+              name="testType"
+              type="radio"
+              onClick={handleRadio}
+              id="negative"
+              value="negative"
+            ></input>
+            <label htmlFor="negative" className="col-2-header-container">
               <div className="col-2-header">Confirmed Negative Test</div>
               <div className="col-2-sub-header">Confirmed negative result from an official testing source.</div>
-            </div>
+            </label>
           </div>
         </form>
       </div>
@@ -196,9 +226,13 @@ const CodeValidationsBase = observer((props) => {
               <div id="share-urgently">
                 <img src={Clock}></img>
                 <div>Share the code ASAP. &nbsp;</div>
-                <span>
-                  It will expire in {60 - Math.abs(codeGenStamp - new Date().getMinutes())} min at {expirationTime}
-                </span>
+                {timeLeft > 0 ? (
+                  <span>
+                    It will expire in {timeLeft} min at {expirationTime}
+                  </span>
+                ) : (
+                  <span>Code expired after 60 minutes - generate new code.</span>
+                )}
               </div>
 
               <PendingOperationButton operation={resetState} className="save-button">

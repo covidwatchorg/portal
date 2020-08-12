@@ -1,22 +1,30 @@
- .modal-input{
-    margin-top: 15px;
+@import '../include-media';
 
-    label{
-        font-size: 16px;
-    }
+.modal-input {
+  margin-top: 15px;
+  width: 100%;
 
-    input {
-        width: 350px;
-        margin-top: 8px;
-        border-radius: 7px;
-    }
+  label {
+    font-size: 16px;
+  }
 
-    span {
-        color: $tangerine;
+  input {
+    @include media('>phone') {
+      width: 350px;
     }
+    @include media('<=phone') {
+      width: 100%;
+    }
+    margin-top: 8px;
+    border-radius: 7px;
+  }
 
-    .validationResult {
-        height: 15px;
-        color: $tangerine;
-    }
+  span {
+    color: $tangerine;
+  }
+
+  .validationResult {
+    height: 15px;
+    color: $tangerine;
+  }
 }
