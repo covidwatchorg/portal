@@ -1,4 +1,4 @@
-import React, { useState, createRef, useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import Toast from '../components/Toast'
 import * as ROUTES from '../constants/routes'
 import { withStore } from '../store'
@@ -33,7 +33,7 @@ const CodeValidationsBase = observer((props) => {
     msg: '',
   })
 
-  let confirmedToast = createRef()
+  let confirmedToast = React.createRef()
 
   useEffect(() => {
     updateButtonDisabled()
@@ -130,27 +130,48 @@ const CodeValidationsBase = observer((props) => {
         </div>
         <form id="radio-form" className="col-2">
           <div className="radio">
-            <input className="radio-input" name="testType" type="radio" onClick={handleRadio} value="confirmed"></input>
-            <div className="col-2-header-container">
+            <input
+              className="radio-input"
+              name="testType"
+              type="radio"
+              onClick={handleRadio}
+              id="confirmed"
+              value="confirmed"
+            ></input>
+            <label htmlFor="confirmed" className="col-2-header-container">
               <div className="col-2-header">Confirmed Positive Test</div>
               <div className="col-2-sub-header">Confirmed positive result from an official testing source.</div>
-            </div>
+            </label>
           </div>
 
           <div className="radio">
-            <input className="radio-input" name="testType" type="radio" onClick={handleRadio} value="likely"></input>
-            <div className="col-2-header-container">
+            <input
+              className="radio-input"
+              name="testType"
+              type="radio"
+              onClick={handleRadio}
+              id="likely"
+              value="likely"
+            ></input>
+            <label htmlFor="likely" className="col-2-header-container">
               <div className="col-2-header">Likely Positive Diagnosis</div>
               <div className="col-2-sub-header">Clincial diagnosis without a test.</div>
-            </div>
+            </label>
           </div>
 
           <div className="radio">
-            <input className="radio-input" name="testType" type="radio" onClick={handleRadio} value="negative"></input>
-            <div className="col-2-header-container">
+            <input
+              className="radio-input"
+              name="testType"
+              type="radio"
+              onClick={handleRadio}
+              id="negative"
+              value="negative"
+            ></input>
+            <label htmlFor="negative" className="col-2-header-container">
               <div className="col-2-header">Confirmed Negative Test</div>
               <div className="col-2-sub-header">Confirmed negative result from an official testing source.</div>
-            </div>
+            </label>
           </div>
         </form>
       </div>
