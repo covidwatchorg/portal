@@ -1,4 +1,5 @@
 import React, { useRef, Fragment, useState } from 'react'
+import { createMuiTheme, MuiThemeProvider } from '@material-ui/core/styles'
 import Grid from '@material-ui/core/Grid'
 import Modal from '../components/Modal'
 import * as ROLES from '../constants/roles'
@@ -15,6 +16,19 @@ import ResetPasswordModal from '../components/ResetPasswordModal'
 import CircularProgress from '@material-ui/core/CircularProgress'
 
 const MAXFILESIZE = 10 * 1024 * 1024
+
+// Breakpoints customized to match those of _include-media.scss
+const theme = createMuiTheme({
+  breakpoints: {
+    values: {
+      xs: 0,
+      sm: 420,
+      md: 768,
+      lg: 1024,
+      xl: 1920,
+    },
+  },
+})
 const SettingsBase = observer((props) => {
   const imgUploader = useRef()
 
@@ -156,8 +170,8 @@ const SettingsBase = observer((props) => {
     <Fragment>
       <form>
         <Grid container id="settings-grid" spacing={2} direction="row" justify="center">
-          <Grid item xs={4} xl={2}>
-            <Grid container spacing={2} direction="column">
+          <Grid item xs={12} md={4} xl={2}>
+            <Grid container spacing={2} direction="column" className="profile-photo-container">
               <label> Profile Photo </label>
               <div
                 style={{
@@ -192,7 +206,7 @@ const SettingsBase = observer((props) => {
             </Grid>
           </Grid>
 
-          <Grid item xs={4} xl={5}>
+          <Grid item xs={12} md={4} xl={5}>
             <Grid container spacing={2} direction="column">
               <label htmlFor="prefix">Prefix</label>
               <input
@@ -226,7 +240,7 @@ const SettingsBase = observer((props) => {
             </Grid>
           </Grid>
 
-          <Grid item xs={4} xl={5}>
+          <Grid item xs={12} md={4} xl={5}>
             <Grid container spacing={2} direction="column">
               <label htmlFor="role">Role</label>
               {props.store.data.user && (
@@ -262,17 +276,7 @@ const SettingsBase = observer((props) => {
                 aria-required="true"
                 defaultValue=" • • • • • • • •"
               ></input>
-              <a
-                href=""
-                style={{
-                  fontSize: '12px',
-                  fontWeight: '500',
-                  textAlign: 'end',
-                  marginTop: -25,
-                  marginRight: '26%',
-                }}
-                onClick={(e) => resetPassword(e)}
-              >
+              <a href="" className="change-password-link" onClick={(e) => resetPassword(e)}>
                 Change Password
               </a>
             </Grid>
@@ -288,10 +292,10 @@ const SettingsBase = observer((props) => {
     (props.store.data.user.passwordResetRequested && props.store.data.user.signedInWithEmailLink) ? (
     <Redirect to={ROUTES.LANDING} />
   ) : (
-    <React.Fragment>
+    <MuiThemeProvider theme={theme}>
       <PageTitle title="My Settings" />
       <div className="module-container">
-        <div>
+        <div className="settings-header">
           <h1 style={{ marginBottom: 12 }}>My Settings</h1>
           <p className="xs-text">Changes are automatically saved</p>
         </div>
@@ -303,7 +307,7 @@ const SettingsBase = observer((props) => {
           onFailure={onChangePasswordFailure}
         />
       </div>
-    </React.Fragment>
+    </MuiThemeProvider>
   )
 })
 
