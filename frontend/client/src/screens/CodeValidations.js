@@ -226,15 +226,13 @@ const CodeValidationsBase = observer((props) => {
               <div id="share-urgently">
                 <img src={Clock}></img>
                 <div>Share the code ASAP. &nbsp;</div>
-                  {timeLeft > 0 ?
-                    <span>  
-                      It will expire in {timeLeft} min at {expirationTime}
-                    </span>
-                    :
-                    <span>
-                      Code expired after 60 minutes - generate new code.
-                    </span>
-                  }
+                {timeLeft > 0 ? (
+                  <span>
+                    It will expire in {timeLeft} min at {expirationTime}
+                  </span>
+                ) : (
+                  <span>Code expired after 60 minutes - generate new code.</span>
+                )}
               </div>
 
               <PendingOperationButton operation={resetState} className="save-button">
