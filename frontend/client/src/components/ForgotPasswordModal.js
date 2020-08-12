@@ -44,7 +44,7 @@ class ForgotPasswordModal extends React.Component {
           title="Recover Password"
           hidden={this.props.hidden}
           onClose={this.onClose}
-          containerClass="recover-password-modal-container"
+          containerClass="forgot-password-modal-container"
         >
           <form onSubmit={this.onSubmit} className="modal-form">
             <ModalInput
@@ -69,7 +69,7 @@ class ForgotPasswordModal extends React.Component {
           title="Recover Password"
           hidden={this.props.hidden}
           onClose={this.onClose}
-          containerClass="recover-password-modal-container"
+          containerClass="forgot-password-modal-container"
         >
           <p>
             {this.state.isSuccess
