@@ -41,7 +41,7 @@
     "@types/jest": "^24.9.1",
     "@types/node": "^13.13.4",
     "firebase-functions-test": "^0.2.0",
-    "firebase-tools": "^8.2.0",
+    "firebase-tools": "^8.7.0",
     "jest": "^24.0.0",
     "node-env-run": "^4.0.1",
     "ts-jest": "^26.1.3",
