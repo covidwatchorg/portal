@@ -18,11 +18,10 @@
 }
 
 .mobile-msg {
-  display: none;
+  align-self: center;
 
-  @include media('<=phone') {
-    display: block;
-    align-self: center;
+  @include media('>phone') {
+    display: none;
   }
 }
 
