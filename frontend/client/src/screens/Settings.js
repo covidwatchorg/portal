@@ -50,9 +50,25 @@ const SettingsBase = observer((props) => {
     if (event.target.name == 'prefix') {
       props.store.updateUser({ prefix: event.target.value })
     } else if (event.target.name == 'firstName') {
-      props.store.updateUser({ firstName: event.target.value })
+      if (event.target.value.length < 1) {
+        setToastInfo({
+          success: false,
+          msg: 'First name must be at least one character',
+        })
+        toastRef.current.show()
+      } else  {
+        props.store.updateUser({ firstName: event.target.value })
+      }
     } else if (event.target.name == 'lastName') {
-      props.store.updateUser({ lastName: event.target.value })
+      if (event.target.value.length < 1) {
+        setToastInfo({
+          success: false,
+          msg: 'Last name must be at least one character',
+        })
+        toastRef.current.show()
+      } else {
+        props.store.updateUser({ lastName: event.target.value })
+      }
     }
   }
 
@@ -224,7 +240,7 @@ const SettingsBase = observer((props) => {
                 required
                 aria-required="true"
                 onChange={onChange}
-                value={props.store.data.user.firstName}
+                defaultValue={props.store.data.user.firstName}
               ></input>
               <label htmlFor="email">Email Address</label>
               <input
