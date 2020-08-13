@@ -8,9 +8,33 @@ on:
     branches: [dev, master]
 
 jobs:
+  check-diff:
+    runs-on: ubuntu-latest
+    # Map a step output to a job output
+    outputs:
+      frontend: ${{ steps.check-diff.outputs.frontend }}
+      cloud-functions: ${{ steps.check-diff.outputs.cloud-functions }}
+
+    steps:
+      - name: Checkout master
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 2
+
+      - id: check-diff
+        run : |
+           diff=$(git diff --name-only HEAD HEAD~1)
+           for dir in frontend cloud-functions; do
+              if echo $diff | grep -q "$dir\|config"; then
+                echo "::set-output name=$dir::true"
+              fi 
+           done
+
   deploy-frontend:
     name: Build and Deploy Frontend App
+    needs: check-diff
     runs-on: ubuntu-latest
+    if: needs.check-diff.outputs.frontend == 'true'
 
     steps:
       - uses: actions/checkout@v2
@@ -57,7 +81,10 @@ jobs:
 
   build-firebase:
     name: Build Firebase
+    needs: check-diff
     runs-on: ubuntu-latest
+    if: needs.check-diff.outputs.cloud-functions == 'true'
+
     steps:
       - uses: actions/checkout@v2
       - name: Install
