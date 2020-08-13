@@ -107,7 +107,7 @@ const ManageTeamsBase = observer((props) => {
         <img src={addMember} alt="" />
         <span className="add-button-text">Add Member</span>
       </button>
-      <p className='mobile-msg'>Use desktop to view members.</p>
+      <p className="mobile-msg">Use desktop to view members.</p>
       <AddMemberModal
         hidden={!showAddMemberModal}
         onClose={onAddMemberCancel}
