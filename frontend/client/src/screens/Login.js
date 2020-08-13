@@ -118,7 +118,7 @@ const SignInFormBase = observer(
             <label className="small-text" htmlFor="email">
               Email Address
             </label>
-            <input onChange={this.onChange('email')} type="email" id="email" name="email" ref={this.emailInput}/>
+            <input onChange={this.onChange('email')} type="email" id="email" name="email" ref={this.emailInput} />
             <label className="small-text" htmlFor="password">
               Password
             </label>

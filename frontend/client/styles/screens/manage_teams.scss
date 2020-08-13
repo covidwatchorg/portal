@@ -1,8 +1,13 @@
 @import '../color.scss';
+@import '../include-media';
 
 .add-member-button {
   align-self: flex-start;
   margin: 22px 0px 12px 0px;
+
+  @include media('<=phone') {
+    align-self: center;
+  }
 
   .add-button-text {
     margin-left: 12px;
@@ -12,11 +17,24 @@
   cursor: pointer;
 }
 
+.mobile-msg {
+  align-self: center;
+
+  @include media('>phone') {
+    display: none;
+  }
+}
+
 table {
   border-spacing: 0;
   width: 100%;
   border: 1px solid $darkMediumGray;
   border-collapse: collapse;
+
+  @include media('<=phone') {
+    display: none;
+  }
+
   tr {
     height: 45px;
     th {
@@ -84,6 +102,11 @@ table {
   margin: 33px 0;
   font-weight: 600;
   line-height: 18px;
+
+  @include media('<=phone') {
+    display: none;
+  }
+
   .pages-container {
     display: flex;
     flex-direction: row;
