@@ -226,7 +226,7 @@ const SettingsBase = observer((props) => {
                 onChange={onChange}
                 value={props.store.data.user.firstName}
               ></input>
-              <div className='email-container'>
+              <div className="email-container">
                 <label htmlFor="email">Email Address</label>
                 <input
                   type="text"
@@ -257,7 +257,7 @@ const SettingsBase = observer((props) => {
                   value={props.store.data.user.isAdmin ? ROLES.ADMIN_LABEL : ROLES.NON_ADMIN_LABEL}
                 ></input>
               )}
-              <div className='lastName-container'>
+              <div className="lastName-container">
                 <label htmlFor="lastName">Last Name</label>
                 <input
                   type="text"
