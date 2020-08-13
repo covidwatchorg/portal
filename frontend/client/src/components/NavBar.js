@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
-import { Redirect, Link } from 'react-router-dom'
+import { Link, useHistory } from 'react-router-dom'
+import * as ROUTES from '../constants/routes'
 import IconButton from '@material-ui/core/IconButton'
 import MenuItem from '@material-ui/core/MenuItem'
 import Menu from '@material-ui/core/Menu'
@@ -11,7 +12,7 @@ import { observer } from 'mobx-react'
 import menu from '../../assets/menu.svg'
 
 const NavBarBase = observer((props) => {
-  const [redirect, setRedirect] = useState(-1)
+  const history = useHistory()
   const [anchorEl, setAnchorEl] = useState(null)
   const open = Boolean(anchorEl)
 
@@ -25,10 +26,18 @@ const NavBarBase = observer((props) => {
 
   const onClickMenuItem = (num) => {
     setAnchorEl(null)
-    if (num === 4) {
+    if (num === 0) {
+      history.push(ROUTES.CODE_VALIDATIONS)
+    } else if (num === 1) {
+      history.push(ROUTES.MANAGE_MEMBERS)
+    } else if (num === 2) {
+      history.push(ROUTES.BRANDING)
+    } else if (num === 3) {
+      history.push(ROUTES.SETTINGS)
+    } else {
+      // Sign out, and route protection system will automatically push user to ROUTES.LANDING
       props.store.signOut()
     }
-    setRedirect(num)
   }
 
   // Determines whether to display the navbar as if the user is logged in.
@@ -102,17 +111,6 @@ const NavBarBase = observer((props) => {
           Logout
         </MenuItem>
       </Menu>
-      {redirect === 0 ? (
-        <Redirect to="/code_validations" />
-      ) : redirect === 1 ? (
-        <Redirect to="/manage_members" />
-      ) : redirect === 2 ? (
-        <Redirect to="/branding" />
-      ) : redirect === 3 ? (
-        <Redirect to="/settings" />
-      ) : (
-        redirect === 4 && <Redirect to="/" />
-      )}
     </div>
   )
 
