@@ -145,7 +145,7 @@ jobs:
         env:
           FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
           PROJECT_PATH: cloud-functions/
-          NODE_ENV: staging
+          NODE_ENV: dev
 
       - name: Deploy to Firebase Prod Infra
         if: github.ref == 'refs/heads/master'
