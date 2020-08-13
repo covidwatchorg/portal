@@ -11,12 +11,11 @@ import toJson from 'enzyme-to-json'
 jest.mock('react-router-dom', () => {
   return {
     // eslint-disable-next-line react/display-name
-    Redirect: () => {
-      return <div></div>
-    },
-    // eslint-disable-next-line react/display-name
     Link: () => {
       return <div></div>
+    },
+    useHistory: () => {
+      return Object()
     },
   }
 })
