@@ -199,6 +199,7 @@ const CodeValidationsBase = observer((props) => {
               min={getFourteenDaysAgoString()}
               max={getTodayString()}
               onChange={handleDate}
+              placeholder="mm-dd-yyyy"
             ></input>
           </form>
           <p className="date-desc">Time zone set to {getDefaultTimezoneString()}</p>
