@@ -129,6 +129,7 @@ jobs:
   frontend-tests:
     name: Run Frontend Tests
     runs-on: ubuntu-latest
+    if: needs.check-diff.outputs.frontend == 'true'
     steps:
       - uses: actions/checkout@v2
       - name: Use Node.js 12.x
