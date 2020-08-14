@@ -8,14 +8,15 @@ import PageTitle from '../components/PageTitle'
 import PendingOperationButton from '../components/PendingOperationButton'
 import Clock from '../../assets/clock.svg'
 import DatePicker from 'react-datepicker'
+
 import {
   getOneHourAheadDisplayString,
-  getFourteenDaysAgoString,
   moreThanFourteenDaysAgo,
   dateInFuture,
-  getTodayString,
   getDefaultTimezoneString,
   localStringToZeroUTCOffsetString,
+  toDashSeperatedYYYYMMDDString,
+  getFourteenDaysAgoDate,
 } from '../util/time'
 
 const codePlaceholder = '00000000'
@@ -23,13 +24,13 @@ const codePlaceholder = '00000000'
 const CodeValidationsBase = observer((props) => {
   const [testType, setTestType] = useState('')
   const [symptomDate, setSymptomDate] = useState('')
+  const [symptomDateObject, setSymptomDateObject] = useState()
   const [dateInvalid, setDateInvalid] = useState(false)
   const [needsReset, setNeedsReset] = useState(false)
   const [code, setCode] = useState(codePlaceholder)
   const [buttonDisabled, setButtonDisabled] = useState(true)
   const [expirationTime, setExpirationTime] = useState('')
   const [timeLeft, setTimeLeft] = useState(60)
-  const [startDate, setStartDate] = useState(new Date())
   const [toastInfo, setToastInfo] = useState({
     success: false,
     msg: '',
@@ -84,19 +85,21 @@ const CodeValidationsBase = observer((props) => {
     updateButtonDisabled()
   }
 
-  const handleDate = (e) => {
-    e.target.classList.add('with-value')
-    e.target.classList.remove('no-value')
+  const handleDate = (date) => {
+    setSymptomDateObject(date)
+    const selectedDate = toDashSeperatedYYYYMMDDString(date)
+    document.getElementById('date-picker').classList.add('with-value')
+    document.getElementById('date-picker').classList.remove('no-value')
 
     // does not allow symptomDate in state to be set if date selected is more than 14 days ago or in the future
-    if (moreThanFourteenDaysAgo(e.target.value)) {
+    if (moreThanFourteenDaysAgo(selectedDate)) {
       setDateInvalid(true)
       setToastInfo({
         success: false,
         msg: 'Date cannot be more than 14 days ago',
       })
       confirmedToast.current.show()
-    } else if (dateInFuture(e.target.value)) {
+    } else if (dateInFuture(selectedDate)) {
       setDateInvalid(true)
       setToastInfo({
         success: false,
@@ -105,7 +108,7 @@ const CodeValidationsBase = observer((props) => {
       confirmedToast.current.show()
     } else {
       setDateInvalid(false)
-      setSymptomDate(e.target.value)
+      setSymptomDate(selectedDate)
     }
     updateButtonDisabled()
   }
@@ -135,8 +138,16 @@ const CodeValidationsBase = observer((props) => {
     setExpirationTime(getOneHourAheadDisplayString())
   }
 
-  // simply using basic example from ReactDatePicker docs for now: https://reactdatepicker.com/
-  let datePicker = <DatePicker selected={startDate} onChange={(date) => setStartDate(date)} />
+  let datePicker = (
+    <DatePicker
+      id="date-picker"
+      className={symptomDate ? 'with-value' : 'no-value'}
+      selected={symptomDateObject}
+      minDate={getFourteenDaysAgoDate()}
+      maxDate={new Date()}
+      onChange={(date) => handleDate(date)}
+    />
+  )
 
   return !props.store.data.user.isSignedIn ||
     props.store.data.user.isFirstTimeUser ||
@@ -199,13 +210,20 @@ const CodeValidationsBase = observer((props) => {
         </form>
       </div>
 
+      <div>
+        Symptom Date
+        {symptomDate}
+      </div>
+
       <div className="row" id="onset-date-form">
         <div className="col-1">
           <div className="sect-header">Symptom Onset Date</div>
           <p>The date must be within the past 14 days</p>
         </div>
         <div className="col-2">
-          <form id="date-form">
+          {datePicker}
+
+          {/* <form id="date-form">
             <input
               id="date-picker"
               className="no-value"
@@ -215,15 +233,9 @@ const CodeValidationsBase = observer((props) => {
               onChange={handleDate}
               placeholder="mm-dd-yyyy"
             ></input>
-          </form>
+          </form> */}
           <p className="date-desc">Time zone set to {getDefaultTimezoneString()}</p>
         </div>
-      </div>
-
-      {/* does this render a calendar picker upon clicking?  or a bunch of numbers vertically? */}
-      <div>
-        <p>TESTING NEW DATEPICKER</p>
-        {datePicker}
       </div>
 
       <div className="row" id="code-form">

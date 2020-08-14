@@ -46,6 +46,15 @@ export const getFourteenDaysAgoString = () => {
   return toDashSeperatedYYYYMMDDString(ourDate)
 }
 
+export const getFourteenDaysAgoDate = () => {
+  var ourDate = new Date()
+
+  //Change date picker minimum to be 14 days in the past.
+  var pastDate = ourDate.getDate() - 13
+  ourDate.setDate(pastDate)
+  return ourDate
+}
+
 // gets today's date as a string formatted as yyyy-mm-dd
 export const getTodayString = () => {
   return toDashSeperatedYYYYMMDDString(new Date())
