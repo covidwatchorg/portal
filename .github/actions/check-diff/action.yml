@@ -1,11 +1,11 @@
 name: 'check-diff'
-description: "Determines if which directories were changed in the previous commit / PR "
+description: "Determines which directories were changed in the previous commit / PR "
 outputs:
   frontend: 
-    description: "set only if frontend/ or config/ changed in previous commit"
+    description: "Set only if frontend/ or config/ changed in previous commit"
     value: ${{ steps.check-diff.outputs.frontend }}
   cloud-functions:
-    description: "set only if cloud-functions/ or config/ changed in previous commit"
+    description: "Set only if cloud-functions/ or config/ changed in previous commit"
     value: ${{ steps.check-diff.outputs.cloud-functions }}
 
 runs:
