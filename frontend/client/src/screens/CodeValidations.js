@@ -11,8 +11,6 @@ import DatePicker from 'react-datepicker'
 
 import {
   getOneHourAheadDisplayString,
-  moreThanFourteenDaysAgo,
-  dateInFuture,
   getDefaultTimezoneString,
   localStringToZeroUTCOffsetString,
   toDashSeperatedYYYYMMDDString,
@@ -64,7 +62,8 @@ const CodeValidationsBase = observer((props) => {
     try {
       let code = await props.store.getVerificationCode({
         testType: testType,
-        symptomDate: symptomDateYYYYMMDD === '' ? symptomDateYYYYMMDD : localStringToZeroUTCOffsetString(symptomDateYYYYMMDD),
+        symptomDate:
+          symptomDateYYYYMMDD === '' ? symptomDateYYYYMMDD : localStringToZeroUTCOffsetString(symptomDateYYYYMMDD),
       })
       setCode(code.data.split('').join(''))
       codeTimeStamp()
@@ -90,26 +89,8 @@ const CodeValidationsBase = observer((props) => {
     const selectedDate = toDashSeperatedYYYYMMDDString(date)
     document.getElementById('date-picker').classList.add('with-value')
     document.getElementById('date-picker').classList.remove('no-value')
-
-    // does not allow symptomDate in state to be set if date selected is more than 14 days ago or in the future
-    if (moreThanFourteenDaysAgo(selectedDate)) {
-      setDateInvalid(true)
-      setToastInfo({
-        success: false,
-        msg: 'Date cannot be more than 14 days ago',
-      })
-      confirmedToast.current.show()
-    } else if (dateInFuture(selectedDate)) {
-      setDateInvalid(true)
-      setToastInfo({
-        success: false,
-        msg: 'Date cannot be in the future',
-      })
-      confirmedToast.current.show()
-    } else {
-      setDateInvalid(false)
-      setSymptomDateYYYYMMDD(selectedDate)
-    }
+    setDateInvalid(false)
+    setSymptomDateYYYYMMDD(selectedDate)
     updateButtonDisabled()
   }
 
@@ -143,7 +124,7 @@ const CodeValidationsBase = observer((props) => {
       selected={symptomDateObject}
       minDate={getFourteenDaysAgoDate()}
       maxDate={new Date()}
-      onChange={(date) => handleDate(date)}
+      onChange={handleDate}
       placeholderText="Choose a date in last 14 days"
     />
   )
