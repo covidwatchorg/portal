@@ -6,7 +6,7 @@ var config = {
     key: process.env.SENDGRID_API_KEY,
   },
   verification_server: {
-    url: "**url**",
+    url: "https://dev.adminapi.verification.covidwatch.org",
     key: "**key**",
   },
 };
