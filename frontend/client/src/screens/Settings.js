@@ -56,7 +56,7 @@ const SettingsBase = observer((props) => {
           msg: 'First name must be at least one character',
         })
         toastRef.current.show()
-      } else  {
+      } else {
         props.store.updateUser({ firstName: event.target.value })
       }
     } else if (event.target.name == 'lastName') {
