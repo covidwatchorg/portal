@@ -23,7 +23,7 @@ const codePlaceholder = '00000000'
 
 const CodeValidationsBase = observer((props) => {
   const [testType, setTestType] = useState('')
-  const [symptomDate, setSymptomDate] = useState('')
+  const [symptomDateYYYYMMDD, setSymptomDateYYYYMMDD] = useState('')
   const [symptomDateObject, setSymptomDateObject] = useState()
   const [dateInvalid, setDateInvalid] = useState(false)
   const [needsReset, setNeedsReset] = useState(false)
@@ -64,7 +64,7 @@ const CodeValidationsBase = observer((props) => {
     try {
       let code = await props.store.getVerificationCode({
         testType: testType,
-        symptomDate: symptomDate === '' ? symptomDate : localStringToZeroUTCOffsetString(symptomDate),
+        symptomDate: symptomDateYYYYMMDD === '' ? symptomDateYYYYMMDD : localStringToZeroUTCOffsetString(symptomDateYYYYMMDD),
       })
       setCode(code.data.split('').join(''))
       codeTimeStamp()
@@ -108,21 +108,19 @@ const CodeValidationsBase = observer((props) => {
       confirmedToast.current.show()
     } else {
       setDateInvalid(false)
-      setSymptomDate(selectedDate)
+      setSymptomDateYYYYMMDD(selectedDate)
     }
     updateButtonDisabled()
   }
 
   const resetState = () => {
     document.getElementById('radio-form').reset()
-    document.getElementById('date-form').reset()
-    document.getElementById('date-picker').classList.remove('with-value')
-    document.getElementById('date-picker').classList.add('no-value')
     document.getElementById('code-box').classList.toggle('with-value')
     document.getElementById('code-box').classList.toggle('no-value')
     document.getElementById('code-box').classList.toggle('code-generated')
     setCode(codePlaceholder)
-    setSymptomDate('')
+    setSymptomDateYYYYMMDD('')
+    setSymptomDateObject('')
     setTestType('')
     setTimeLeft(60)
     setNeedsReset(false)
@@ -141,11 +139,12 @@ const CodeValidationsBase = observer((props) => {
   let datePicker = (
     <DatePicker
       id="date-picker"
-      className={symptomDate ? 'with-value' : 'no-value'}
+      className={symptomDateYYYYMMDD ? 'with-value' : 'no-value'}
       selected={symptomDateObject}
       minDate={getFourteenDaysAgoDate()}
       maxDate={new Date()}
       onChange={(date) => handleDate(date)}
+      placeholderText="Choose a date in last 14 days"
     />
   )
 
@@ -210,11 +209,6 @@ const CodeValidationsBase = observer((props) => {
         </form>
       </div>
 
-      <div>
-        Symptom Date
-        {symptomDate}
-      </div>
-
       <div className="row" id="onset-date-form">
         <div className="col-1">
           <div className="sect-header">Symptom Onset Date</div>
@@ -222,18 +216,6 @@ const CodeValidationsBase = observer((props) => {
         </div>
         <div className="col-2">
           {datePicker}
-
-          {/* <form id="date-form">
-            <input
-              id="date-picker"
-              className="no-value"
-              type="date"
-              min={getFourteenDaysAgoString()}
-              max={getTodayString()}
-              onChange={handleDate}
-              placeholder="mm-dd-yyyy"
-            ></input>
-          </form> */}
           <p className="date-desc">Time zone set to {getDefaultTimezoneString()}</p>
         </div>
       </div>
