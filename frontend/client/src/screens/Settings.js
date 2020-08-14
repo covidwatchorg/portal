@@ -242,17 +242,19 @@ const SettingsBase = observer((props) => {
                 onChange={onChange}
                 defaultValue={props.store.data.user.firstName}
               ></input>
-              <label htmlFor="email">Email Address</label>
-              <input
-                type="text"
-                id="email"
-                name="email"
-                required
-                disabled={true}
-                aria-required="true"
-                style={{ backgroundColor: '#e0e0e0' }}
-                value={props.store.data.user.email}
-              ></input>
+              <div className="email-container">
+                <label htmlFor="email">Email Address</label>
+                <input
+                  type="text"
+                  id="email"
+                  name="email"
+                  required
+                  disabled={true}
+                  aria-required="true"
+                  style={{ backgroundColor: '#e0e0e0' }}
+                  value={props.store.data.user.email}
+                ></input>
+              </div>
             </Grid>
           </Grid>
 
@@ -271,16 +273,18 @@ const SettingsBase = observer((props) => {
                   value={props.store.data.user.isAdmin ? ROLES.ADMIN_LABEL : ROLES.NON_ADMIN_LABEL}
                 ></input>
               )}
-              <label htmlFor="lastName">Last Name</label>
-              <input
-                type="text"
-                id="lastName"
-                name="lastName"
-                required
-                aria-required="true"
-                onChange={onChange}
-                defaultValue={props.store.data.user.lastName}
-              ></input>
+              <div className="lastName-container">
+                <label htmlFor="lastName">Last Name</label>
+                <input
+                  type="text"
+                  id="lastName"
+                  name="lastName"
+                  required
+                  aria-required="true"
+                  onChange={onChange}
+                  defaultValue={props.store.data.user.lastName}
+                ></input>
+              </div>
               <label htmlFor="password">Password</label>
               <input
                 type="text"

@@ -26,6 +26,12 @@
   padding: 40px;
   padding-left: 8px;
 
+  .email-container, .lastName-container {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+  }
+
   .change-password-link {
     font-size: 12px;
     font-weight: 500;
@@ -50,6 +56,11 @@
 
     .MuiGrid-direction-xs-column {
       align-items: center;
+    }
+
+    .email-container, .lastName-container {
+      align-items: center;
+      order: -1;
     }
 
     .profile-photo-container {
