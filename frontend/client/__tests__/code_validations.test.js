@@ -44,33 +44,6 @@ describe('Code Validations', () => {
     expect(wrapped.find(PendingOperationButton).at(0).props().disabled).toBe(true)
   })
 
-  // Dates more than 14 days in the past or in the future are invalid
-  test.each([
-    [-16, 'Date cannot be more than 14 days ago'],
-    [5, 'Date cannot be in the future'],
-  ])('does not allow dates %i days away', (numDaysAway) => {
-    const wrapped = mount(<CodeVWrapped />)
-
-    var date = new Date()
-    date.setDate(date.getDate() + numDaysAway)
-
-    wrapped
-      .find('#date-picker')
-      .at(1)
-      .simulate('change', {
-        target: {
-          value: date,
-          classList: {
-            add: () => {},
-            remove: () => {},
-          },
-        },
-      })
-
-    // Ensure Generate Code button is disabled and Toast has the correct error message
-    expect(wrapped.find(PendingOperationButton).at(0).props().disabled).toBe(true)
-  })
-
   it('can generate code with correct options', async () => {
     // Mock document.getElementById used by the CodeValidations component.
     // JsDOM doesn't handle this well and document.getElementById returns null in the tests without this mock
