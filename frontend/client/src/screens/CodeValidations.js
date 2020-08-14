@@ -100,6 +100,7 @@ const CodeValidationsBase = observer((props) => {
   }
 
   const resetState = () => {
+    document.getElementById('date-picker').value = ''
     document.getElementById('radio-form').reset()
     document.getElementById('date-form').reset()
     document.getElementById('date-picker').classList.remove('with-value')
