@@ -7,7 +7,7 @@ var config = {
   },
   verification_server: {
     url: "https://dev.adminapi.verification.covidwatch.org",
-    key: "**key**",
+    key: process.env.VERIFICATION_SERVER_API_KEY,
   },
 };
 
