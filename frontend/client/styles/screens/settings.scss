@@ -45,12 +45,14 @@
     margin-bottom: 40px;
   }
 
-  @include media('<=phone') {
-    padding: 0 8px 40px 8px;
-
+  @include media('<desktop') {
     .MuiGrid-direction-xs-column {
       align-items: center;
     }
+  }
+
+  @include media('<=phone') {
+    padding: 0 8px 40px 8px;
 
     .profile-photo-container {
       margin-bottom: 8px;

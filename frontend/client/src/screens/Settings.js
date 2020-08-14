@@ -186,7 +186,7 @@ const SettingsBase = observer((props) => {
     <Fragment>
       <form>
         <Grid container id="settings-grid" spacing={2} direction="row" justify="center">
-          <Grid item xs={12} md={4} xl={2}>
+          <Grid item xs={12} md={12} lg={4} xl={2}>
             <Grid container spacing={2} direction="column" className="profile-photo-container">
               <label> Profile Photo </label>
               <div
@@ -222,7 +222,7 @@ const SettingsBase = observer((props) => {
             </Grid>
           </Grid>
 
-          <Grid item xs={12} md={4} xl={5}>
+          <Grid item xs={12} md={6} lg={4} xl={5}>
             <Grid container spacing={2} direction="column">
               <label htmlFor="prefix">Prefix</label>
               <input
@@ -256,7 +256,7 @@ const SettingsBase = observer((props) => {
             </Grid>
           </Grid>
 
-          <Grid item xs={12} md={4} xl={5}>
+          <Grid item xs={12} md={6} lg={4} xl={5}>
             <Grid container spacing={2} direction="column">
               <label htmlFor="role">Role</label>
               {props.store.data.user && (
