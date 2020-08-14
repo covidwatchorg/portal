@@ -9,25 +9,17 @@ on:
 jobs:
   check-diff:
     runs-on: ubuntu-latest
-    # Map a step output to a job output
+    # Map outputs from check-diff step to job outputs
     outputs:
       frontend: ${{ steps.check-diff.outputs.frontend }}
       cloud-functions: ${{ steps.check-diff.outputs.cloud-functions }}
-
     steps:
-      - name: Checkout master
+      - name: Checkout branch
         uses: actions/checkout@v2
         with:
           fetch-depth: 2
-
       - id: check-diff
-        run : |
-           diff=$(git diff --name-only HEAD HEAD~1)
-           for dir in frontend cloud-functions; do
-              if echo $diff | grep -q "$dir\|config"; then
-                echo "::set-output name=$dir::true"
-              fi 
-           done
+        uses: ./.github/actions/check-diff
 
   build-frontend:
     name: Build Frontend App
@@ -129,7 +121,7 @@ jobs:
   frontend-tests:
     name: Run Frontend Tests
     runs-on: ubuntu-latest
-    if: needs.check-diff.outputs.frontend == 'true'
+    needs: build-frontend
     steps:
       - uses: actions/checkout@v2
       - name: Use Node.js 12.x

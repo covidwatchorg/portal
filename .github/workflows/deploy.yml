@@ -10,42 +10,31 @@ on:
 jobs:
   check-diff:
     runs-on: ubuntu-latest
-    # Map a step output to a job output
+    # Map outputs from check-diff step to job outputs
     outputs:
       frontend: ${{ steps.check-diff.outputs.frontend }}
       cloud-functions: ${{ steps.check-diff.outputs.cloud-functions }}
-
     steps:
-      - name: Checkout master
+      - name: Checkout branch
         uses: actions/checkout@v2
         with:
           fetch-depth: 2
-
       - id: check-diff
-        run : |
-           diff=$(git diff --name-only HEAD HEAD~1)
-           for dir in frontend cloud-functions; do
-              if echo $diff | grep -q "$dir\|config"; then
-                echo "::set-output name=$dir::true"
-              fi 
-           done
+        uses: ./.github/actions/check-diff
 
   deploy-frontend:
     name: Build and Deploy Frontend App
     needs: check-diff
     runs-on: ubuntu-latest
     if: needs.check-diff.outputs.frontend == 'true'
-
     steps:
       - uses: actions/checkout@v2
         with:
           fetch-depth: 2
-
       - name: Use Node.js 12.x
         uses: actions/setup-node@v1
         with:
           node-version: "12.x"
-
       - name: Build node app for staging
         if: github.ref == 'refs/heads/dev'
         working-directory: frontend
@@ -55,7 +44,6 @@ jobs:
           npm ci
           npm run init
           npm run build:staging
-
       - name: Build node app for prod
         if: github.ref == 'refs/heads/master'
         working-directory: frontend
@@ -65,14 +53,12 @@ jobs:
           npm ci
           npm run init
           npm run build
-
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-2
-
       - name: Deploy to S3
         working-directory: frontend
         run: |
@@ -84,7 +70,6 @@ jobs:
     needs: check-diff
     runs-on: ubuntu-latest
     if: needs.check-diff.outputs.cloud-functions == 'true'
-
     steps:
       - uses: actions/checkout@v2
       - name: Install
