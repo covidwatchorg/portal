@@ -84,14 +84,17 @@ const CodeValidationsBase = observer((props) => {
     updateButtonDisabled()
   }
 
-  const handleDate = (date) => {
-    setSymptomDateObject(date)
-    const selectedDate = toDashSeperatedYYYYMMDDString(date)
-    document.getElementById('date-picker').classList.add('with-value')
-    document.getElementById('date-picker').classList.remove('no-value')
-    setDateInvalid(false)
-    setSymptomDateYYYYMMDD(selectedDate)
-    updateButtonDisabled()
+  const handleDate = (date) => {    
+    if(date) {
+      setSymptomDateObject(date)
+      const selectedDate = toDashSeperatedYYYYMMDDString(date)
+      setDateInvalid(false)
+      setSymptomDateYYYYMMDD(selectedDate)
+      updateButtonDisabled()
+    } else {
+      setSymptomDateObject(undefined)
+      setSymptomDateYYYYMMDD(null)
+    }
   }
 
   const resetState = () => {
