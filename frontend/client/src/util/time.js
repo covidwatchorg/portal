@@ -3,14 +3,14 @@ export const toDashSeperatedYYYYMMDDString = (date) => {
   return date.toJSON().substring(0, 10)
 }
 
-// // Returns string of the browser's current default timezone
-// // ex: "Mountain Daylight Time"
+// Returns string of the browser's current default timezone
+// ex: "Mountain Daylight Time"
 export const getDefaultTimezoneString = () => {
   return /\((.*)\)/.exec(new Date().toString())[1]
 }
 
-// // Generates a string formatted to be displayed to the user one hour ahead of the current time
-// // ex: "1:29 AM Pacific Daylight Time"
+// Generates a string formatted to be displayed to the user one hour ahead of the current time
+// ex: "1:29 AM Pacific Daylight Time"
 export const getOneHourAheadDisplayString = () => {
   // declaring new Date() here instead of passing in the code generation time stamp as they should be within 60 seconds of each other and second precision here is not necessary
   const now = new Date()
