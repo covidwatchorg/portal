@@ -84,8 +84,8 @@ const CodeValidationsBase = observer((props) => {
     updateButtonDisabled()
   }
 
-  const handleDate = (date) => {    
-    if(date) {
+  const handleDate = (date) => {
+    if (date) {
       setSymptomDateObject(date)
       const selectedDate = toDashSeperatedYYYYMMDDString(date)
       setDateInvalid(false)
