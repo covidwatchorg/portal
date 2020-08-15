@@ -39,11 +39,6 @@ describe('Code Validations', () => {
     CodeVWrapped = createStore(CodeValidations)
   })
 
-  it('cannote generate a code when no options are selected', () => {
-    const wrapped = mount(<CodeVWrapped />)
-    expect(wrapped.find(PendingOperationButton).at(0).props().disabled).toBe(true)
-  })
-
   it('can generate code with correct options', async () => {
     // Mock document.getElementById used by the CodeValidations component.
     // JsDOM doesn't handle this well and document.getElementById returns null in the tests without this mock
@@ -64,11 +59,6 @@ describe('Code Validations', () => {
           value: getTodayString(),
         },
       })
-    // Can't generate a code with a date, even if it's valid
-    expect(wrapped.find(PendingOperationButton).at(0).props().disabled).toBe(true)
-
-    // Click diagnosis button
-    wrapped.find('.radio-input').at(0).simulate('click')
 
     // Ensure "Generate Code" button is enabled and click it
     expect(wrapped.find(PendingOperationButton).at(0).props().disabled).toBe(false)

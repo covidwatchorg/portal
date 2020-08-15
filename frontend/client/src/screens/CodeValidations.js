@@ -20,13 +20,13 @@ import {
 const codePlaceholder = '00000000'
 
 const CodeValidationsBase = observer((props) => {
-  const [testType, setTestType] = useState('')
+  const [testType] = useState('confirmed')
   const [symptomDateYYYYMMDD, setSymptomDateYYYYMMDD] = useState('')
   const [symptomDateObject, setSymptomDateObject] = useState()
   const [dateInvalid, setDateInvalid] = useState(false)
   const [needsReset, setNeedsReset] = useState(false)
   const [code, setCode] = useState(codePlaceholder)
-  const [buttonDisabled, setButtonDisabled] = useState(true)
+  const [buttonDisabled, setButtonDisabled] = useState(false)
   const [expirationTime, setExpirationTime] = useState('')
   const [timeLeft, setTimeLeft] = useState(60)
   const [toastInfo, setToastInfo] = useState({
@@ -42,7 +42,7 @@ const CodeValidationsBase = observer((props) => {
 
   // Updates the buttonDisabled variable state based on other state variables
   const updateButtonDisabled = () => {
-    if (needsReset || testType === '' || dateInvalid) {
+    if (needsReset || dateInvalid) {
       setButtonDisabled(true)
     } else {
       setButtonDisabled(false)
@@ -79,11 +79,6 @@ const CodeValidationsBase = observer((props) => {
     }
   }
 
-  const handleRadio = (e) => {
-    setTestType(e.target.value)
-    updateButtonDisabled()
-  }
-
   const handleDate = (date) => {
     if (date) {
       setSymptomDateObject(date)
@@ -106,7 +101,6 @@ const CodeValidationsBase = observer((props) => {
     setCode(codePlaceholder)
     setSymptomDateYYYYMMDD('')
     setSymptomDateObject('')
-    setTestType('')
     setTimeLeft(60)
     setNeedsReset(false)
     setDateInvalid(false)
@@ -149,46 +143,16 @@ const CodeValidationsBase = observer((props) => {
         <form id="radio-form" className="col-2">
           <div className="radio">
             <input
+              defaultChecked
               className="radio-input"
               name="testType"
               type="radio"
-              onClick={handleRadio}
               id="confirmed"
               value="confirmed"
             ></input>
             <label htmlFor="confirmed" className="col-2-header-container">
               <div className="col-2-header">Confirmed Positive Test</div>
               <div className="col-2-sub-header">Confirmed positive result from an official testing source.</div>
-            </label>
-          </div>
-
-          <div className="radio">
-            <input
-              className="radio-input"
-              name="testType"
-              type="radio"
-              onClick={handleRadio}
-              id="likely"
-              value="likely"
-            ></input>
-            <label htmlFor="likely" className="col-2-header-container">
-              <div className="col-2-header">Likely Positive Diagnosis</div>
-              <div className="col-2-sub-header">Clincial diagnosis without a test.</div>
-            </label>
-          </div>
-
-          <div className="radio">
-            <input
-              className="radio-input"
-              name="testType"
-              type="radio"
-              onClick={handleRadio}
-              id="negative"
-              value="negative"
-            ></input>
-            <label htmlFor="negative" className="col-2-header-container">
-              <div className="col-2-header">Confirmed Negative Test</div>
-              <div className="col-2-sub-header">Confirmed negative result from an official testing source.</div>
             </label>
           </div>
         </form>
