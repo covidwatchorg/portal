@@ -46,26 +46,18 @@ export const getFourteenDaysAgoString = () => {
   return toDashSeperatedYYYYMMDDString(ourDate)
 }
 
+export const getFourteenDaysAgoDate = () => {
+  var ourDate = new Date()
+
+  //Change date picker minimum to be 14 days in the past.
+  var pastDate = ourDate.getDate() - 13
+  ourDate.setDate(pastDate)
+  return ourDate
+}
+
 // gets today's date as a string formatted as yyyy-mm-dd
 export const getTodayString = () => {
   return toDashSeperatedYYYYMMDDString(new Date())
-}
-
-// is this date more than 14 days ago?
-export const moreThanFourteenDaysAgo = (strChosenDate) => {
-  let chosenDate = new Date(strChosenDate)
-  // adding + 1 to the chosenDate is necessary bc the way new Date() takes in a string seems to move it one date less on the returned Date
-  chosenDate.setDate(chosenDate.getDate() + 1)
-  let now = new Date()
-  now.setDate(now.getDate() - 14)
-  return chosenDate < now
-}
-
-// is this date in the future?
-export const dateInFuture = (strChosenDate) => {
-  let chosenDate = new Date(strChosenDate)
-  let today = new Date()
-  return chosenDate > today
 }
 
 // Converts a local yyyy-mm-dd date string to zero UTC offset yyyy-mm-dd date string

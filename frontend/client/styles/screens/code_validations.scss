@@ -1,6 +1,8 @@
 @import '../color.scss';
 @import '../include-media';
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800&display=swap');
+@import 'react-datepicker/dist/react-datepicker';
+
 
 #diagnosis-codes {
   h2 {

@@ -4,9 +4,8 @@ import { rootStore } from '../src/store/model'
 import { createStore } from '../src/store'
 import CodeValidations from '../src/screens/CodeValidations'
 import PendingOperationButton from '../src/components/PendingOperationButton'
-import Toast from '../src/components/Toast'
 import { getVerificationCodeCallable } from '../src/store/firebase'
-import { toDashSeperatedYYYYMMDDString, getTodayString } from '../src/util/time'
+import { getTodayString } from '../src/util/time'
 
 // Mock Redirect to avoid router error
 jest.mock('react-router-dom', () => {
@@ -45,52 +44,26 @@ describe('Code Validations', () => {
     expect(wrapped.find(PendingOperationButton).at(0).props().disabled).toBe(true)
   })
 
-  // Dates more than 14 days in the past or in the future are invalid
-  test.each([
-    [-16, 'Date cannot be more than 14 days ago'],
-    [5, 'Date cannot be in the future'],
-  ])('does not allow dates %i days away', (numDaysAway, expectedMessage) => {
-    const wrapped = mount(<CodeVWrapped />)
-
-    var date = new Date()
-    date.setDate(date.getDate() + numDaysAway)
-
-    wrapped.find('#date-picker').simulate('change', {
-      target: {
-        value: toDashSeperatedYYYYMMDDString(date),
-        classList: {
-          add: () => {},
-          remove: () => {},
-        },
-      },
-    })
-
-    // Ensure Generate Code button is disabled and Toast has the correct error message
-    expect(wrapped.find(PendingOperationButton).at(0).props().disabled).toBe(true)
-    expect(wrapped.find(Toast).at(0).props().message).toBe(expectedMessage)
-  })
-
   it('can generate code with correct options', async () => {
     // Mock document.getElementById used by the CodeValidations component.
     // JsDOM doesn't handle this well and document.getElementById returns null in the tests without this mock
     Object.defineProperty(document, 'getElementById', {
       value: () => {
-        return { classList: { toggle: () => {} } }
+        return { classList: { toggle: () => {}, add: () => {}, remove: () => {} } }
       },
     })
 
     var wrapped = mount(<CodeVWrapped />)
 
     // Pick valid date
-    wrapped.find('#date-picker').simulate('change', {
-      target: {
-        value: getTodayString(),
-        classList: {
-          add: () => {},
-          remove: () => {},
+    wrapped
+      .find('#date-picker')
+      .at(1)
+      .simulate('change', {
+        target: {
+          value: getTodayString(),
         },
-      },
-    })
+      })
     // Can't generate a code with a date, even if it's valid
     expect(wrapped.find(PendingOperationButton).at(0).props().disabled).toBe(true)
 
