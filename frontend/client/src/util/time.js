@@ -16,19 +16,18 @@ export const getOneHourAheadDisplayString = () => {
   const now = new Date()
   const ahead = new Date(now.setHours(now.getHours() + 1))
   let hours = ahead.getHours()
-  let amPM
+  let amPM = 'AM'
 
   if (12 < hours && hours < 23) {
     hours = hours - 12
     amPM = 'PM'
   } else if (hours === 0) {
     hours = 12
-    amPM = 'AM'
   } else if (hours === 12) {
     hours = 12
     amPM = 'PM'
-  } 
-  
+  }
+
   hours = hours.toString()
   let mins = ahead.getMinutes().toString()
 
