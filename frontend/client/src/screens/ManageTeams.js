@@ -85,7 +85,7 @@ const ManageTeamsBase = observer((props) => {
       await props.store.sendPasswordRecoveryEmail(email)
       setToastMessage(`Password reset email sent to ${email}`)
       setIsSuccess(true)
-      confirmationToast.current.show()
+      confirmationToast.current && confirmationToast.current.show()
     } catch (err) {
       Logging.error(err)
       setToastMessage('Password reset failed. Please try again')
@@ -107,6 +107,7 @@ const ManageTeamsBase = observer((props) => {
         <img src={addMember} alt="" />
         <span className="add-button-text">Add Member</span>
       </button>
+      <p className="mobile-msg">Use desktop to view members.</p>
       <AddMemberModal
         hidden={!showAddMemberModal}
         onClose={onAddMemberCancel}

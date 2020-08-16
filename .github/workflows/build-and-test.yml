@@ -10,15 +10,12 @@ jobs:
   build-frontend:
     name: Build Frontend App
     runs-on: ubuntu-latest
-
     steps:
       - uses: actions/checkout@v2
-
       - name: Use Node.js 12.x
         uses: actions/setup-node@v1
         with:
           node-version: "12.x"
-
       - name: Build node app
         working-directory: frontend
         env:
@@ -47,7 +44,6 @@ jobs:
           SENDGRID_API_KEY: ${{ secrets.SENDGRID_API_KEY }}
           NODE_ENV: test
           VERIFICATION_SERVER_API_KEY: ${{ secrets.VERIFICATION_SERVER_API_KEY }}
-          VERIFICATION_SERVER_URL: ${{ secrets.VERIFICATION_SERVER_URL }}
       - name: Lint and Build
         working-directory: cloud-functions/functions
         run: |
@@ -102,3 +98,19 @@ jobs:
         env:
           FIREBASE_PRIVATE_KEY: ${{ secrets.FIREBASE_PRIVATE_KEY }}
           FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
+
+  frontend-tests:
+    name: Run Frontend Tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Use Node.js 12.x
+        uses: actions/setup-node@v1
+        with:
+          node-version: "12.x"
+      - name: Install
+        working-directory: frontend
+        run: npm install
+      - name: Run Tests
+        working-directory: frontend
+        run: npm run test_ci

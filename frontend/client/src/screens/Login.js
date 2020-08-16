@@ -27,7 +27,12 @@ const SignInFormBase = observer(
       this.state = { ...INITIAL_STATE }
       this.onChange = this.onChange.bind(this)
       this.errorToast = createRef()
+      this.emailInput = createRef()
       this.trySignInWithEmailLink()
+    }
+
+    componentDidMount() {
+      this.emailInput.current.select()
     }
 
     clickSubmit = async () => {
@@ -55,7 +60,6 @@ const SignInFormBase = observer(
     trySignInWithEmailLink = async () => {
       // Based on https://firebase.google.com/docs/auth/web/email-link-auth
       if (this.props.store.isSignInWithEmailLink(window.location.href)) {
-        Logging.log('signInWithEmailLink detected')
         // Get the email if available. This should be available if the user completes
         // the flow on the same device where they started it.
         var email = window.localStorage.getItem('emailForSignIn')
@@ -74,7 +78,6 @@ const SignInFormBase = observer(
             // result.additionalUserInfo.profile == null
             // You can check if the user is new or existing:
             // result.additionalUserInfo.isNewUser
-            Logging.log('Logged in via signInWithEmailLink')
           })
           .catch((err) => {
             // Some error occurred, you can inspect the code: error.code
@@ -100,7 +103,7 @@ const SignInFormBase = observer(
         <div className="mainContainer">
           <div className="welcome">
             <h1>Covid Watch Portal</h1>
-            <h3 className="small-text">
+            <h3 className="small-text welcome-blurb-desktop">
               Welcome to the Portal where your team can generate diagnosis verification codes to share with patients who
               test positive for COVID-19. With your help, they can decrease their risk to others by sharing a positive
               diagnosis, which allows the app to anonymously notify those who were nearby when the patient was likely
@@ -115,7 +118,7 @@ const SignInFormBase = observer(
             <label className="small-text" htmlFor="email">
               Email Address
             </label>
-            <input onChange={this.onChange('email')} type="email" id="email" name="email" />
+            <input onChange={this.onChange('email')} type="email" id="email" name="email" ref={this.emailInput} />
             <label className="small-text" htmlFor="password">
               Password
             </label>
@@ -125,6 +128,9 @@ const SignInFormBase = observer(
             </PendingOperationButton>
             <a onClick={this.showModal}>Forgot password?</a>
           </form>
+          <h3 className="small-text welcome-blurb-mobile">
+            <a href="https://www.covidwatch.org">Learn more</a>.
+          </h3>
           <ForgotPasswordModal hidden={!this.state.showPassModal} onClose={this.hideModal} />
         </div>
         <Toast ref={this.errorToast} isSuccess={false} message={this.state.toastMessage} />

@@ -1,0 +1,1139 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`NavBar renders correctly 1`] = `
+<Component
+  store={
+    Object {
+      "data": Object {
+        "organization": Object {
+          "diagnosisText": "",
+          "enableExposureText": "",
+          "exposureAboutText": "",
+          "exposureDetailsLearnText": "",
+          "exposureDetailsText": "",
+          "exposureInfoText": "",
+          "exposureText": "",
+          "id": "",
+          "logoBlob": null,
+          "members": Array [],
+          "membersPage": 1,
+          "name": "",
+          "notifyingOthersText": "",
+          "recommendExposureText": "",
+          "verificationAdministrationDateText": "",
+          "verificationIdentifierAboutText": "",
+          "verificationIdentifierText": "",
+          "verificationNotSharedText": "",
+          "verificationReviewText": "",
+          "verificationSharedText": "",
+          "verificationStartText": "",
+          "welcomeText": "",
+        },
+        "user": Object {
+          "disabled": false,
+          "email": "",
+          "firstName": "itUser",
+          "imageBlob": null,
+          "isAdmin": false,
+          "isFirstTimeUser": false,
+          "isSignedIn": true,
+          "lastName": "",
+          "organizationID": "",
+          "passwordResetCompletedInCurrentSession": false,
+          "passwordResetRequested": false,
+          "prefix": "",
+          "signedInWithEmailLink": false,
+        },
+      },
+    }
+  }
+>
+  <Memo(wrappedComponent)
+    store={
+      Object {
+        "data": Object {
+          "organization": Object {
+            "diagnosisText": "",
+            "enableExposureText": "",
+            "exposureAboutText": "",
+            "exposureDetailsLearnText": "",
+            "exposureDetailsText": "",
+            "exposureInfoText": "",
+            "exposureText": "",
+            "id": "",
+            "logoBlob": null,
+            "members": Array [],
+            "membersPage": 1,
+            "name": "",
+            "notifyingOthersText": "",
+            "recommendExposureText": "",
+            "verificationAdministrationDateText": "",
+            "verificationIdentifierAboutText": "",
+            "verificationIdentifierText": "",
+            "verificationNotSharedText": "",
+            "verificationReviewText": "",
+            "verificationSharedText": "",
+            "verificationStartText": "",
+            "welcomeText": "",
+          },
+          "user": Object {
+            "disabled": false,
+            "email": "",
+            "firstName": "itUser",
+            "imageBlob": null,
+            "isAdmin": false,
+            "isFirstTimeUser": false,
+            "isSignedIn": true,
+            "lastName": "",
+            "organizationID": "",
+            "passwordResetCompletedInCurrentSession": false,
+            "passwordResetRequested": false,
+            "prefix": "",
+            "signedInWithEmailLink": false,
+          },
+        },
+      }
+    }
+  >
+    <div
+      className="navbarContainer"
+    >
+      <Link
+        className="logo-link"
+        to="/code_validations"
+      >
+        <div />
+      </Link>
+      <div
+        id="logged-in-icons-container"
+      >
+        <div
+          className="avatar_group avatar_text"
+        >
+          <div
+            className="small-text name"
+          >
+            itUser 
+          </div>
+          <div
+            className="xs-text"
+          >
+            Test Validator
+          </div>
+        </div>
+        <div
+          className="avatar_group avatar_image"
+        >
+          <Link
+            to="/settings"
+          >
+            <div />
+          </Link>
+        </div>
+        <div
+          className="avatar_group separator"
+        />
+        <WithStyles(ForwardRef(IconButton))
+          aria-label="menu"
+          className="menu-btn"
+          color="inherit"
+          edge="start"
+          onClick={[Function]}
+        >
+          <ForwardRef(IconButton)
+            aria-label="menu"
+            className="menu-btn"
+            classes={
+              Object {
+                "colorInherit": "MuiIconButton-colorInherit",
+                "colorPrimary": "MuiIconButton-colorPrimary",
+                "colorSecondary": "MuiIconButton-colorSecondary",
+                "disabled": "Mui-disabled",
+                "edgeEnd": "MuiIconButton-edgeEnd",
+                "edgeStart": "MuiIconButton-edgeStart",
+                "label": "MuiIconButton-label",
+                "root": "MuiIconButton-root",
+                "sizeSmall": "MuiIconButton-sizeSmall",
+              }
+            }
+            color="inherit"
+            edge="start"
+            onClick={[Function]}
+          >
+            <WithStyles(ForwardRef(ButtonBase))
+              aria-label="menu"
+              centerRipple={true}
+              className="MuiIconButton-root menu-btn MuiIconButton-colorInherit MuiIconButton-edgeStart"
+              disabled={false}
+              focusRipple={true}
+              onClick={[Function]}
+            >
+              <ForwardRef(ButtonBase)
+                aria-label="menu"
+                centerRipple={true}
+                className="MuiIconButton-root menu-btn MuiIconButton-colorInherit MuiIconButton-edgeStart"
+                classes={
+                  Object {
+                    "disabled": "Mui-disabled",
+                    "focusVisible": "Mui-focusVisible",
+                    "root": "MuiButtonBase-root",
+                  }
+                }
+                disabled={false}
+                focusRipple={true}
+                onClick={[Function]}
+              >
+                <button
+                  aria-label="menu"
+                  className="MuiButtonBase-root MuiIconButton-root menu-btn MuiIconButton-colorInherit MuiIconButton-edgeStart"
+                  disabled={false}
+                  onBlur={[Function]}
+                  onClick={[Function]}
+                  onDragLeave={[Function]}
+                  onFocus={[Function]}
+                  onKeyDown={[Function]}
+                  onKeyUp={[Function]}
+                  onMouseDown={[Function]}
+                  onMouseLeave={[Function]}
+                  onMouseUp={[Function]}
+                  onTouchEnd={[Function]}
+                  onTouchMove={[Function]}
+                  onTouchStart={[Function]}
+                  tabIndex={0}
+                  type="button"
+                >
+                  <span
+                    className="MuiIconButton-label"
+                  >
+                    <img
+                      alt="Menu"
+                      src={
+                        Object {
+                          "getCacheKey": [Function],
+                          "process": [Function],
+                        }
+                      }
+                    />
+                  </span>
+                  <WithStyles(memo)
+                    center={true}
+                  >
+                    <ForwardRef(TouchRipple)
+                      center={true}
+                      classes={
+                        Object {
+                          "child": "MuiTouchRipple-child",
+                          "childLeaving": "MuiTouchRipple-childLeaving",
+                          "childPulsate": "MuiTouchRipple-childPulsate",
+                          "ripple": "MuiTouchRipple-ripple",
+                          "ripplePulsate": "MuiTouchRipple-ripplePulsate",
+                          "rippleVisible": "MuiTouchRipple-rippleVisible",
+                          "root": "MuiTouchRipple-root",
+                        }
+                      }
+                    >
+                      <span
+                        className="MuiTouchRipple-root"
+                      >
+                        <TransitionGroup
+                          childFactory={[Function]}
+                          component={null}
+                          exit={true}
+                        />
+                      </span>
+                    </ForwardRef(TouchRipple)>
+                  </WithStyles(memo)>
+                </button>
+              </ForwardRef(ButtonBase)>
+            </WithStyles(ForwardRef(ButtonBase))>
+          </ForwardRef(IconButton)>
+        </WithStyles(ForwardRef(IconButton))>
+        <WithStyles(ForwardRef(Menu))
+          anchorEl={null}
+          anchorOrigin={
+            Object {
+              "horizontal": "right",
+              "vertical": "top",
+            }
+          }
+          id="menu-appbar"
+          keepMounted={true}
+          onClose={[Function]}
+          open={false}
+          transformOrigin={
+            Object {
+              "horizontal": "right",
+              "vertical": "top",
+            }
+          }
+        >
+          <ForwardRef(Menu)
+            anchorEl={null}
+            anchorOrigin={
+              Object {
+                "horizontal": "right",
+                "vertical": "top",
+              }
+            }
+            classes={
+              Object {
+                "list": "MuiMenu-list",
+                "paper": "MuiMenu-paper",
+              }
+            }
+            id="menu-appbar"
+            keepMounted={true}
+            onClose={[Function]}
+            open={false}
+            transformOrigin={
+              Object {
+                "horizontal": "right",
+                "vertical": "top",
+              }
+            }
+          >
+            <WithStyles(ForwardRef(Popover))
+              PaperProps={
+                Object {
+                  "classes": Object {
+                    "root": "MuiMenu-paper",
+                  },
+                }
+              }
+              anchorEl={null}
+              anchorOrigin={
+                Object {
+                  "horizontal": "right",
+                  "vertical": "top",
+                }
+              }
+              getContentAnchorEl={[Function]}
+              id="menu-appbar"
+              keepMounted={true}
+              onClose={[Function]}
+              onEntering={[Function]}
+              open={false}
+              transformOrigin={
+                Object {
+                  "horizontal": "right",
+                  "vertical": "top",
+                }
+              }
+              transitionDuration="auto"
+            >
+              <ForwardRef(Popover)
+                PaperProps={
+                  Object {
+                    "classes": Object {
+                      "root": "MuiMenu-paper",
+                    },
+                  }
+                }
+                anchorEl={null}
+                anchorOrigin={
+                  Object {
+                    "horizontal": "right",
+                    "vertical": "top",
+                  }
+                }
+                classes={
+                  Object {
+                    "paper": "MuiPopover-paper",
+                    "root": "MuiPopover-root",
+                  }
+                }
+                getContentAnchorEl={[Function]}
+                id="menu-appbar"
+                keepMounted={true}
+                onClose={[Function]}
+                onEntering={[Function]}
+                open={false}
+                transformOrigin={
+                  Object {
+                    "horizontal": "right",
+                    "vertical": "top",
+                  }
+                }
+                transitionDuration="auto"
+              >
+                <ForwardRef(Modal)
+                  BackdropProps={
+                    Object {
+                      "invisible": true,
+                    }
+                  }
+                  className="MuiPopover-root"
+                  id="menu-appbar"
+                  keepMounted={true}
+                  onClose={[Function]}
+                  open={false}
+                >
+                  <ForwardRef(Portal)
+                    disablePortal={false}
+                  >
+                    <Portal
+                      containerInfo={
+                        <body>
+                          <div
+                            aria-hidden="true"
+                            class="MuiPopover-root"
+                            id="menu-appbar"
+                            role="presentation"
+                            style="position: fixed; z-index: 1300; right: 0px; bottom: 0px; top: 0px; left: 0px; visibility: hidden;"
+                          >
+                            <div
+                              data-test="sentinelStart"
+                              tabindex="0"
+                            />
+                            <div
+                              class="MuiPaper-root MuiMenu-paper MuiPopover-paper MuiPaper-elevation8 MuiPaper-rounded"
+                              style="opacity: 0; transform: scale(0.75, 0.5625); visibility: hidden;"
+                              tabindex="-1"
+                            >
+                              <ul
+                                class="MuiList-root MuiMenu-list MuiList-padding"
+                                role="menu"
+                                tabindex="-1"
+                              >
+                                <li
+                                  aria-disabled="false"
+                                  class="MuiButtonBase-root MuiListItem-root MuiMenuItem-root menu-link MuiMenuItem-gutters MuiListItem-gutters MuiListItem-button"
+                                  id="diagnosis-verification-codes"
+                                  role="menuitem"
+                                  style="margin-top: 22px;"
+                                  tabindex="0"
+                                >
+                                  Diagnosis Verification Codes
+                                  <span
+                                    class="MuiTouchRipple-root"
+                                  />
+                                </li>
+                                <li
+                                  aria-disabled="false"
+                                  class="MuiButtonBase-root MuiListItem-root MuiMenuItem-root menu-link MuiMenuItem-gutters MuiListItem-gutters MuiListItem-button"
+                                  id="my-settings"
+                                  role="menuitem"
+                                  tabindex="-1"
+                                >
+                                  My Settings
+                                  <span
+                                    class="MuiTouchRipple-root"
+                                  />
+                                </li>
+                                <li
+                                  aria-disabled="false"
+                                  class="MuiButtonBase-root MuiListItem-root MuiMenuItem-root menu-link MuiMenuItem-gutters MuiListItem-gutters MuiListItem-button"
+                                  id="logout"
+                                  role="menuitem"
+                                  style="margin-bottom: 22px;"
+                                  tabindex="-1"
+                                >
+                                  Logout
+                                  <span
+                                    class="MuiTouchRipple-root"
+                                  />
+                                </li>
+                              </ul>
+                            </div>
+                            <div
+                              data-test="sentinelEnd"
+                              tabindex="0"
+                            />
+                          </div>
+                        </body>
+                      }
+                    >
+                      <div
+                        className="MuiPopover-root"
+                        id="menu-appbar"
+                        onKeyDown={[Function]}
+                        role="presentation"
+                        style={
+                          Object {
+                            "bottom": 0,
+                            "left": 0,
+                            "position": "fixed",
+                            "right": 0,
+                            "top": 0,
+                            "visibility": "hidden",
+                            "zIndex": 1300,
+                          }
+                        }
+                      >
+                        <ForwardRef(SimpleBackdrop)
+                          invisible={true}
+                          onClick={[Function]}
+                          open={false}
+                        />
+                        <TrapFocus
+                          disableAutoFocus={false}
+                          disableEnforceFocus={false}
+                          disableRestoreFocus={false}
+                          getDoc={[Function]}
+                          isEnabled={[Function]}
+                          open={false}
+                        >
+                          <div
+                            data-test="sentinelStart"
+                            tabIndex={0}
+                          />
+                          <ForwardRef(Grow)
+                            appear={true}
+                            in={false}
+                            onEnter={[Function]}
+                            onEntering={[Function]}
+                            onExited={[Function]}
+                            tabIndex="-1"
+                            timeout="auto"
+                          >
+                            <Transition
+                              addEndListener={[Function]}
+                              appear={true}
+                              enter={true}
+                              exit={true}
+                              in={false}
+                              mountOnEnter={false}
+                              onEnter={[Function]}
+                              onEntered={[Function]}
+                              onEntering={[Function]}
+                              onExit={[Function]}
+                              onExited={[Function]}
+                              onExiting={[Function]}
+                              tabIndex="-1"
+                              timeout={null}
+                              unmountOnExit={false}
+                            >
+                              <WithStyles(ForwardRef(Paper))
+                                className="MuiPopover-paper"
+                                classes={
+                                  Object {
+                                    "root": "MuiMenu-paper",
+                                  }
+                                }
+                                elevation={8}
+                                style={
+                                  Object {
+                                    "opacity": 0,
+                                    "transform": "scale(0.75, 0.5625)",
+                                    "visibility": "hidden",
+                                  }
+                                }
+                                tabIndex="-1"
+                              >
+                                <ForwardRef(Paper)
+                                  className="MuiPopover-paper"
+                                  classes={
+                                    Object {
+                                      "elevation0": "MuiPaper-elevation0",
+                                      "elevation1": "MuiPaper-elevation1",
+                                      "elevation10": "MuiPaper-elevation10",
+                                      "elevation11": "MuiPaper-elevation11",
+                                      "elevation12": "MuiPaper-elevation12",
+                                      "elevation13": "MuiPaper-elevation13",
+                                      "elevation14": "MuiPaper-elevation14",
+                                      "elevation15": "MuiPaper-elevation15",
+                                      "elevation16": "MuiPaper-elevation16",
+                                      "elevation17": "MuiPaper-elevation17",
+                                      "elevation18": "MuiPaper-elevation18",
+                                      "elevation19": "MuiPaper-elevation19",
+                                      "elevation2": "MuiPaper-elevation2",
+                                      "elevation20": "MuiPaper-elevation20",
+                                      "elevation21": "MuiPaper-elevation21",
+                                      "elevation22": "MuiPaper-elevation22",
+                                      "elevation23": "MuiPaper-elevation23",
+                                      "elevation24": "MuiPaper-elevation24",
+                                      "elevation3": "MuiPaper-elevation3",
+                                      "elevation4": "MuiPaper-elevation4",
+                                      "elevation5": "MuiPaper-elevation5",
+                                      "elevation6": "MuiPaper-elevation6",
+                                      "elevation7": "MuiPaper-elevation7",
+                                      "elevation8": "MuiPaper-elevation8",
+                                      "elevation9": "MuiPaper-elevation9",
+                                      "outlined": "MuiPaper-outlined",
+                                      "root": "MuiPaper-root MuiMenu-paper",
+                                      "rounded": "MuiPaper-rounded",
+                                    }
+                                  }
+                                  elevation={8}
+                                  style={
+                                    Object {
+                                      "opacity": 0,
+                                      "transform": "scale(0.75, 0.5625)",
+                                      "visibility": "hidden",
+                                    }
+                                  }
+                                  tabIndex="-1"
+                                >
+                                  <div
+                                    className="MuiPaper-root MuiMenu-paper MuiPopover-paper MuiPaper-elevation8 MuiPaper-rounded"
+                                    style={
+                                      Object {
+                                        "opacity": 0,
+                                        "transform": "scale(0.75, 0.5625)",
+                                        "visibility": "hidden",
+                                      }
+                                    }
+                                    tabIndex="-1"
+                                  >
+                                    <ForwardRef(MenuList)
+                                      actions={
+                                        Object {
+                                          "current": Object {
+                                            "adjustStyleForScrollbar": [Function],
+                                          },
+                                        }
+                                      }
+                                      autoFocus={false}
+                                      autoFocusItem={false}
+                                      className="MuiMenu-list"
+                                      onKeyDown={[Function]}
+                                      variant="selectedMenu"
+                                    >
+                                      <WithStyles(ForwardRef(List))
+                                        className="MuiMenu-list"
+                                        onKeyDown={[Function]}
+                                        role="menu"
+                                        tabIndex={-1}
+                                      >
+                                        <ForwardRef(List)
+                                          className="MuiMenu-list"
+                                          classes={
+                                            Object {
+                                              "dense": "MuiList-dense",
+                                              "padding": "MuiList-padding",
+                                              "root": "MuiList-root",
+                                              "subheader": "MuiList-subheader",
+                                            }
+                                          }
+                                          onKeyDown={[Function]}
+                                          role="menu"
+                                          tabIndex={-1}
+                                        >
+                                          <ul
+                                            className="MuiList-root MuiMenu-list MuiList-padding"
+                                            onKeyDown={[Function]}
+                                            role="menu"
+                                            tabIndex={-1}
+                                          >
+                                            <WithStyles(ForwardRef(MenuItem))
+                                              className="menu-link"
+                                              id="diagnosis-verification-codes"
+                                              key=".$.0"
+                                              onClick={[Function]}
+                                              style={
+                                                Object {
+                                                  "marginTop": 22,
+                                                }
+                                              }
+                                              tabIndex={0}
+                                            >
+                                              <ForwardRef(MenuItem)
+                                                className="menu-link"
+                                                classes={
+                                                  Object {
+                                                    "dense": "MuiMenuItem-dense",
+                                                    "gutters": "MuiMenuItem-gutters",
+                                                    "root": "MuiMenuItem-root",
+                                                    "selected": "Mui-selected",
+                                                  }
+                                                }
+                                                id="diagnosis-verification-codes"
+                                                onClick={[Function]}
+                                                style={
+                                                  Object {
+                                                    "marginTop": 22,
+                                                  }
+                                                }
+                                                tabIndex={0}
+                                              >
+                                                <WithStyles(ForwardRef(ListItem))
+                                                  button={true}
+                                                  className="MuiMenuItem-root menu-link MuiMenuItem-gutters"
+                                                  classes={
+                                                    Object {
+                                                      "dense": "MuiMenuItem-dense",
+                                                    }
+                                                  }
+                                                  component="li"
+                                                  disableGutters={false}
+                                                  id="diagnosis-verification-codes"
+                                                  onClick={[Function]}
+                                                  role="menuitem"
+                                                  style={
+                                                    Object {
+                                                      "marginTop": 22,
+                                                    }
+                                                  }
+                                                  tabIndex={0}
+                                                >
+                                                  <ForwardRef(ListItem)
+                                                    button={true}
+                                                    className="MuiMenuItem-root menu-link MuiMenuItem-gutters"
+                                                    classes={
+                                                      Object {
+                                                        "alignItemsFlexStart": "MuiListItem-alignItemsFlexStart",
+                                                        "button": "MuiListItem-button",
+                                                        "container": "MuiListItem-container",
+                                                        "dense": "MuiListItem-dense MuiMenuItem-dense",
+                                                        "disabled": "Mui-disabled",
+                                                        "divider": "MuiListItem-divider",
+                                                        "focusVisible": "Mui-focusVisible",
+                                                        "gutters": "MuiListItem-gutters",
+                                                        "root": "MuiListItem-root",
+                                                        "secondaryAction": "MuiListItem-secondaryAction",
+                                                        "selected": "Mui-selected",
+                                                      }
+                                                    }
+                                                    component="li"
+                                                    disableGutters={false}
+                                                    id="diagnosis-verification-codes"
+                                                    onClick={[Function]}
+                                                    role="menuitem"
+                                                    style={
+                                                      Object {
+                                                        "marginTop": 22,
+                                                      }
+                                                    }
+                                                    tabIndex={0}
+                                                  >
+                                                    <WithStyles(ForwardRef(ButtonBase))
+                                                      className="MuiListItem-root MuiMenuItem-root menu-link MuiMenuItem-gutters MuiListItem-gutters MuiListItem-button"
+                                                      component="li"
+                                                      disabled={false}
+                                                      focusVisibleClassName="Mui-focusVisible"
+                                                      id="diagnosis-verification-codes"
+                                                      onClick={[Function]}
+                                                      role="menuitem"
+                                                      style={
+                                                        Object {
+                                                          "marginTop": 22,
+                                                        }
+                                                      }
+                                                      tabIndex={0}
+                                                    >
+                                                      <ForwardRef(ButtonBase)
+                                                        className="MuiListItem-root MuiMenuItem-root menu-link MuiMenuItem-gutters MuiListItem-gutters MuiListItem-button"
+                                                        classes={
+                                                          Object {
+                                                            "disabled": "Mui-disabled",
+                                                            "focusVisible": "Mui-focusVisible",
+                                                            "root": "MuiButtonBase-root",
+                                                          }
+                                                        }
+                                                        component="li"
+                                                        disabled={false}
+                                                        focusVisibleClassName="Mui-focusVisible"
+                                                        id="diagnosis-verification-codes"
+                                                        onClick={[Function]}
+                                                        role="menuitem"
+                                                        style={
+                                                          Object {
+                                                            "marginTop": 22,
+                                                          }
+                                                        }
+                                                        tabIndex={0}
+                                                      >
+                                                        <li
+                                                          aria-disabled={false}
+                                                          className="MuiButtonBase-root MuiListItem-root MuiMenuItem-root menu-link MuiMenuItem-gutters MuiListItem-gutters MuiListItem-button"
+                                                          id="diagnosis-verification-codes"
+                                                          onBlur={[Function]}
+                                                          onClick={[Function]}
+                                                          onDragLeave={[Function]}
+                                                          onFocus={[Function]}
+                                                          onKeyDown={[Function]}
+                                                          onKeyUp={[Function]}
+                                                          onMouseDown={[Function]}
+                                                          onMouseLeave={[Function]}
+                                                          onMouseUp={[Function]}
+                                                          onTouchEnd={[Function]}
+                                                          onTouchMove={[Function]}
+                                                          onTouchStart={[Function]}
+                                                          role="menuitem"
+                                                          style={
+                                                            Object {
+                                                              "marginTop": 22,
+                                                            }
+                                                          }
+                                                          tabIndex={0}
+                                                        >
+                                                          Diagnosis Verification Codes
+                                                          <WithStyles(memo)
+                                                            center={false}
+                                                          >
+                                                            <ForwardRef(TouchRipple)
+                                                              center={false}
+                                                              classes={
+                                                                Object {
+                                                                  "child": "MuiTouchRipple-child",
+                                                                  "childLeaving": "MuiTouchRipple-childLeaving",
+                                                                  "childPulsate": "MuiTouchRipple-childPulsate",
+                                                                  "ripple": "MuiTouchRipple-ripple",
+                                                                  "ripplePulsate": "MuiTouchRipple-ripplePulsate",
+                                                                  "rippleVisible": "MuiTouchRipple-rippleVisible",
+                                                                  "root": "MuiTouchRipple-root",
+                                                                }
+                                                              }
+                                                            >
+                                                              <span
+                                                                className="MuiTouchRipple-root"
+                                                              >
+                                                                <TransitionGroup
+                                                                  childFactory={[Function]}
+                                                                  component={null}
+                                                                  exit={true}
+                                                                />
+                                                              </span>
+                                                            </ForwardRef(TouchRipple)>
+                                                          </WithStyles(memo)>
+                                                        </li>
+                                                      </ForwardRef(ButtonBase)>
+                                                    </WithStyles(ForwardRef(ButtonBase))>
+                                                  </ForwardRef(ListItem)>
+                                                </WithStyles(ForwardRef(ListItem))>
+                                              </ForwardRef(MenuItem)>
+                                            </WithStyles(ForwardRef(MenuItem))>
+                                            <WithStyles(ForwardRef(MenuItem))
+                                              className="menu-link"
+                                              id="my-settings"
+                                              key=".$.3"
+                                              onClick={[Function]}
+                                            >
+                                              <ForwardRef(MenuItem)
+                                                className="menu-link"
+                                                classes={
+                                                  Object {
+                                                    "dense": "MuiMenuItem-dense",
+                                                    "gutters": "MuiMenuItem-gutters",
+                                                    "root": "MuiMenuItem-root",
+                                                    "selected": "Mui-selected",
+                                                  }
+                                                }
+                                                id="my-settings"
+                                                onClick={[Function]}
+                                              >
+                                                <WithStyles(ForwardRef(ListItem))
+                                                  button={true}
+                                                  className="MuiMenuItem-root menu-link MuiMenuItem-gutters"
+                                                  classes={
+                                                    Object {
+                                                      "dense": "MuiMenuItem-dense",
+                                                    }
+                                                  }
+                                                  component="li"
+                                                  disableGutters={false}
+                                                  id="my-settings"
+                                                  onClick={[Function]}
+                                                  role="menuitem"
+                                                  tabIndex={-1}
+                                                >
+                                                  <ForwardRef(ListItem)
+                                                    button={true}
+                                                    className="MuiMenuItem-root menu-link MuiMenuItem-gutters"
+                                                    classes={
+                                                      Object {
+                                                        "alignItemsFlexStart": "MuiListItem-alignItemsFlexStart",
+                                                        "button": "MuiListItem-button",
+                                                        "container": "MuiListItem-container",
+                                                        "dense": "MuiListItem-dense MuiMenuItem-dense",
+                                                        "disabled": "Mui-disabled",
+                                                        "divider": "MuiListItem-divider",
+                                                        "focusVisible": "Mui-focusVisible",
+                                                        "gutters": "MuiListItem-gutters",
+                                                        "root": "MuiListItem-root",
+                                                        "secondaryAction": "MuiListItem-secondaryAction",
+                                                        "selected": "Mui-selected",
+                                                      }
+                                                    }
+                                                    component="li"
+                                                    disableGutters={false}
+                                                    id="my-settings"
+                                                    onClick={[Function]}
+                                                    role="menuitem"
+                                                    tabIndex={-1}
+                                                  >
+                                                    <WithStyles(ForwardRef(ButtonBase))
+                                                      className="MuiListItem-root MuiMenuItem-root menu-link MuiMenuItem-gutters MuiListItem-gutters MuiListItem-button"
+                                                      component="li"
+                                                      disabled={false}
+                                                      focusVisibleClassName="Mui-focusVisible"
+                                                      id="my-settings"
+                                                      onClick={[Function]}
+                                                      role="menuitem"
+                                                      tabIndex={-1}
+                                                    >
+                                                      <ForwardRef(ButtonBase)
+                                                        className="MuiListItem-root MuiMenuItem-root menu-link MuiMenuItem-gutters MuiListItem-gutters MuiListItem-button"
+                                                        classes={
+                                                          Object {
+                                                            "disabled": "Mui-disabled",
+                                                            "focusVisible": "Mui-focusVisible",
+                                                            "root": "MuiButtonBase-root",
+                                                          }
+                                                        }
+                                                        component="li"
+                                                        disabled={false}
+                                                        focusVisibleClassName="Mui-focusVisible"
+                                                        id="my-settings"
+                                                        onClick={[Function]}
+                                                        role="menuitem"
+                                                        tabIndex={-1}
+                                                      >
+                                                        <li
+                                                          aria-disabled={false}
+                                                          className="MuiButtonBase-root MuiListItem-root MuiMenuItem-root menu-link MuiMenuItem-gutters MuiListItem-gutters MuiListItem-button"
+                                                          id="my-settings"
+                                                          onBlur={[Function]}
+                                                          onClick={[Function]}
+                                                          onDragLeave={[Function]}
+                                                          onFocus={[Function]}
+                                                          onKeyDown={[Function]}
+                                                          onKeyUp={[Function]}
+                                                          onMouseDown={[Function]}
+                                                          onMouseLeave={[Function]}
+                                                          onMouseUp={[Function]}
+                                                          onTouchEnd={[Function]}
+                                                          onTouchMove={[Function]}
+                                                          onTouchStart={[Function]}
+                                                          role="menuitem"
+                                                          tabIndex={-1}
+                                                        >
+                                                          My Settings
+                                                          <WithStyles(memo)
+                                                            center={false}
+                                                          >
+                                                            <ForwardRef(TouchRipple)
+                                                              center={false}
+                                                              classes={
+                                                                Object {
+                                                                  "child": "MuiTouchRipple-child",
+                                                                  "childLeaving": "MuiTouchRipple-childLeaving",
+                                                                  "childPulsate": "MuiTouchRipple-childPulsate",
+                                                                  "ripple": "MuiTouchRipple-ripple",
+                                                                  "ripplePulsate": "MuiTouchRipple-ripplePulsate",
+                                                                  "rippleVisible": "MuiTouchRipple-rippleVisible",
+                                                                  "root": "MuiTouchRipple-root",
+                                                                }
+                                                              }
+                                                            >
+                                                              <span
+                                                                className="MuiTouchRipple-root"
+                                                              >
+                                                                <TransitionGroup
+                                                                  childFactory={[Function]}
+                                                                  component={null}
+                                                                  exit={true}
+                                                                />
+                                                              </span>
+                                                            </ForwardRef(TouchRipple)>
+                                                          </WithStyles(memo)>
+                                                        </li>
+                                                      </ForwardRef(ButtonBase)>
+                                                    </WithStyles(ForwardRef(ButtonBase))>
+                                                  </ForwardRef(ListItem)>
+                                                </WithStyles(ForwardRef(ListItem))>
+                                              </ForwardRef(MenuItem)>
+                                            </WithStyles(ForwardRef(MenuItem))>
+                                            <WithStyles(ForwardRef(MenuItem))
+                                              className="menu-link"
+                                              id="logout"
+                                              key=".$.4"
+                                              onClick={[Function]}
+                                              style={
+                                                Object {
+                                                  "marginBottom": 22,
+                                                }
+                                              }
+                                            >
+                                              <ForwardRef(MenuItem)
+                                                className="menu-link"
+                                                classes={
+                                                  Object {
+                                                    "dense": "MuiMenuItem-dense",
+                                                    "gutters": "MuiMenuItem-gutters",
+                                                    "root": "MuiMenuItem-root",
+                                                    "selected": "Mui-selected",
+                                                  }
+                                                }
+                                                id="logout"
+                                                onClick={[Function]}
+                                                style={
+                                                  Object {
+                                                    "marginBottom": 22,
+                                                  }
+                                                }
+                                              >
+                                                <WithStyles(ForwardRef(ListItem))
+                                                  button={true}
+                                                  className="MuiMenuItem-root menu-link MuiMenuItem-gutters"
+                                                  classes={
+                                                    Object {
+                                                      "dense": "MuiMenuItem-dense",
+                                                    }
+                                                  }
+                                                  component="li"
+                                                  disableGutters={false}
+                                                  id="logout"
+                                                  onClick={[Function]}
+                                                  role="menuitem"
+                                                  style={
+                                                    Object {
+                                                      "marginBottom": 22,
+                                                    }
+                                                  }
+                                                  tabIndex={-1}
+                                                >
+                                                  <ForwardRef(ListItem)
+                                                    button={true}
+                                                    className="MuiMenuItem-root menu-link MuiMenuItem-gutters"
+                                                    classes={
+                                                      Object {
+                                                        "alignItemsFlexStart": "MuiListItem-alignItemsFlexStart",
+                                                        "button": "MuiListItem-button",
+                                                        "container": "MuiListItem-container",
+                                                        "dense": "MuiListItem-dense MuiMenuItem-dense",
+                                                        "disabled": "Mui-disabled",
+                                                        "divider": "MuiListItem-divider",
+                                                        "focusVisible": "Mui-focusVisible",
+                                                        "gutters": "MuiListItem-gutters",
+                                                        "root": "MuiListItem-root",
+                                                        "secondaryAction": "MuiListItem-secondaryAction",
+                                                        "selected": "Mui-selected",
+                                                      }
+                                                    }
+                                                    component="li"
+                                                    disableGutters={false}
+                                                    id="logout"
+                                                    onClick={[Function]}
+                                                    role="menuitem"
+                                                    style={
+                                                      Object {
+                                                        "marginBottom": 22,
+                                                      }
+                                                    }
+                                                    tabIndex={-1}
+                                                  >
+                                                    <WithStyles(ForwardRef(ButtonBase))
+                                                      className="MuiListItem-root MuiMenuItem-root menu-link MuiMenuItem-gutters MuiListItem-gutters MuiListItem-button"
+                                                      component="li"
+                                                      disabled={false}
+                                                      focusVisibleClassName="Mui-focusVisible"
+                                                      id="logout"
+                                                      onClick={[Function]}
+                                                      role="menuitem"
+                                                      style={
+                                                        Object {
+                                                          "marginBottom": 22,
+                                                        }
+                                                      }
+                                                      tabIndex={-1}
+                                                    >
+                                                      <ForwardRef(ButtonBase)
+                                                        className="MuiListItem-root MuiMenuItem-root menu-link MuiMenuItem-gutters MuiListItem-gutters MuiListItem-button"
+                                                        classes={
+                                                          Object {
+                                                            "disabled": "Mui-disabled",
+                                                            "focusVisible": "Mui-focusVisible",
+                                                            "root": "MuiButtonBase-root",
+                                                          }
+                                                        }
+                                                        component="li"
+                                                        disabled={false}
+                                                        focusVisibleClassName="Mui-focusVisible"
+                                                        id="logout"
+                                                        onClick={[Function]}
+                                                        role="menuitem"
+                                                        style={
+                                                          Object {
+                                                            "marginBottom": 22,
+                                                          }
+                                                        }
+                                                        tabIndex={-1}
+                                                      >
+                                                        <li
+                                                          aria-disabled={false}
+                                                          className="MuiButtonBase-root MuiListItem-root MuiMenuItem-root menu-link MuiMenuItem-gutters MuiListItem-gutters MuiListItem-button"
+                                                          id="logout"
+                                                          onBlur={[Function]}
+                                                          onClick={[Function]}
+                                                          onDragLeave={[Function]}
+                                                          onFocus={[Function]}
+                                                          onKeyDown={[Function]}
+                                                          onKeyUp={[Function]}
+                                                          onMouseDown={[Function]}
+                                                          onMouseLeave={[Function]}
+                                                          onMouseUp={[Function]}
+                                                          onTouchEnd={[Function]}
+                                                          onTouchMove={[Function]}
+                                                          onTouchStart={[Function]}
+                                                          role="menuitem"
+                                                          style={
+                                                            Object {
+                                                              "marginBottom": 22,
+                                                            }
+                                                          }
+                                                          tabIndex={-1}
+                                                        >
+                                                          Logout
+                                                          <WithStyles(memo)
+                                                            center={false}
+                                                          >
+                                                            <ForwardRef(TouchRipple)
+                                                              center={false}
+                                                              classes={
+                                                                Object {
+                                                                  "child": "MuiTouchRipple-child",
+                                                                  "childLeaving": "MuiTouchRipple-childLeaving",
+                                                                  "childPulsate": "MuiTouchRipple-childPulsate",
+                                                                  "ripple": "MuiTouchRipple-ripple",
+                                                                  "ripplePulsate": "MuiTouchRipple-ripplePulsate",
+                                                                  "rippleVisible": "MuiTouchRipple-rippleVisible",
+                                                                  "root": "MuiTouchRipple-root",
+                                                                }
+                                                              }
+                                                            >
+                                                              <span
+                                                                className="MuiTouchRipple-root"
+                                                              >
+                                                                <TransitionGroup
+                                                                  childFactory={[Function]}
+                                                                  component={null}
+                                                                  exit={true}
+                                                                />
+                                                              </span>
+                                                            </ForwardRef(TouchRipple)>
+                                                          </WithStyles(memo)>
+                                                        </li>
+                                                      </ForwardRef(ButtonBase)>
+                                                    </WithStyles(ForwardRef(ButtonBase))>
+                                                  </ForwardRef(ListItem)>
+                                                </WithStyles(ForwardRef(ListItem))>
+                                              </ForwardRef(MenuItem)>
+                                            </WithStyles(ForwardRef(MenuItem))>
+                                          </ul>
+                                        </ForwardRef(List)>
+                                      </WithStyles(ForwardRef(List))>
+                                    </ForwardRef(MenuList)>
+                                  </div>
+                                </ForwardRef(Paper)>
+                              </WithStyles(ForwardRef(Paper))>
+                            </Transition>
+                          </ForwardRef(Grow)>
+                          <div
+                            data-test="sentinelEnd"
+                            tabIndex={0}
+                          />
+                        </TrapFocus>
+                      </div>
+                    </Portal>
+                  </ForwardRef(Portal)>
+                </ForwardRef(Modal)>
+              </ForwardRef(Popover)>
+            </WithStyles(ForwardRef(Popover))>
+          </ForwardRef(Menu)>
+        </WithStyles(ForwardRef(Menu))>
+      </div>
+    </div>
+  </Memo(wrappedComponent)>
+</Component>
+`;

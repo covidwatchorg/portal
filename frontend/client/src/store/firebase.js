@@ -3,12 +3,12 @@ import 'firebase/auth'
 import 'firebase/firestore'
 import 'firebase/database'
 import 'firebase/functions'
+import 'firebase/analytics'
 import * as firebaseConfigLocal from '../config/firebase.config.local'
 import * as firebaseConfigDev from '../config/firebase.config.dev'
 import * as firebaseConfigTest from '../config/firebase.config.test'
 import * as firebaseConfigProd from '../config/firebase.config.prod'
 import * as firebaseConfigStaging from '../config/firebase.config.staging'
-import Logging from '../util/logging'
 
 var firebaseConfigMap = {
   development: firebaseConfigDev,
@@ -20,17 +20,19 @@ var firebaseConfigMap = {
 
 const config = firebaseConfigMap[process.env ? process.env.NODE_ENV : 'development']
 
-Logging.log(`process.env.NODE_ENV = ${process.env.NODE_ENV}`)
-
 // declaring this as a global variable for use in index.js for Sentry environment labeling like "development", "staging", and "production"
 window.env = process.env.NODE_ENV
 
 app.initializeApp(config)
 const auth = app.auth()
 const SESSION = app.auth.Auth.Persistence.SESSION
+const NONE = app.auth.Auth.Persistence.NONE
 const db = app.firestore()
+if (process.env.NODE_ENV === 'production') {
+  app.analytics()
+}
 const createUserCallable = app.functions().httpsCallable('createUser')
 const initiatePasswordRecoveryCallable = app.functions().httpsCallable('initiatePasswordRecovery')
 const getVerificationCodeCallable = app.functions().httpsCallable('getVerificationCode')
 
-export { auth, db, SESSION, createUserCallable, initiatePasswordRecoveryCallable, getVerificationCodeCallable }
+export { auth, db, SESSION, NONE, createUserCallable, initiatePasswordRecoveryCallable, getVerificationCodeCallable }

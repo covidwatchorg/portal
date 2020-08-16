@@ -1,4 +1,5 @@
 @import '../color.scss';
+@import '../include-media';
 
 .modal-background {
   z-index: 1;
@@ -20,15 +21,27 @@
   background-color: white;
   z-index: 1;
   border: 2px solid $lightMediumGray;
-  width: 350px;
-  padding-left: 50px;
-  padding-right: 50px;
+  @include media('>phone') {
+    width: 350px;
+    padding-left: 50px;
+    padding-right: 50px;
+  }
+  @include media('<=phone') {
+    width: 90vw;
+    padding-left: 2vw;
+    padding-right: 2vw;
+  }
 
   .close-btn {
-    font-size: 18px;
     position: absolute;
-    top: 28px;
-    right: 30px;
+    @include media('>phone') {
+      top: 28px;
+      right: 30px;
+    }
+    @include media('<=phone') {
+      top: 12px;
+      right: 12px;
+    }
 
     :hover {
       cursor: pointer;
@@ -36,24 +49,29 @@
   }
 
   h3 {
+    @include media('>phone') {
       margin-top: 48px;
       margin-bottom: 20px;
+    }
   }
-  
+
   p {
-      line-height: 22px;
+    line-height: 22px;
   }
 
   .progress-container {
-      margin-top: 25px;
+    margin-top: 25px;
   }
 
   .save-button {
-      font-weight: 600;
+    font-weight: 600;
+    @include media('<=phone') {
+      width: 100%;
+    }
   }
 
   .modal-form {
-      display: flex;
-      flex-direction: column;
+    display: flex;
+    flex-direction: column;
   }
 }

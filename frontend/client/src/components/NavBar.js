@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
-import { Redirect, Link } from 'react-router-dom'
-import { makeStyles } from '@material-ui/core/styles'
+import { Link, useHistory } from 'react-router-dom'
+import * as ROUTES from '../constants/routes'
 import IconButton from '@material-ui/core/IconButton'
 import MenuItem from '@material-ui/core/MenuItem'
 import Menu from '@material-ui/core/Menu'
@@ -11,31 +11,8 @@ import { withStore } from '../store'
 import { observer } from 'mobx-react'
 import menu from '../../assets/menu.svg'
 
-const useStyles = makeStyles((theme) => ({
-  root: {
-    flexGrow: 1,
-  },
-  menuButton: {
-    marginRight: theme.spacing(11),
-  },
-  title: {
-    flexGrow: 1,
-  },
-  link: {
-    marginTop: 14,
-    paddingLeft: 30,
-    paddingRight: 30,
-    fontFamily: 'Montserrat',
-    fontSize: 18,
-    fontWeight: 500,
-    color: '#2c58b1',
-  },
-}))
-
 const NavBarBase = observer((props) => {
-  const classes = useStyles()
-
-  const [redirect, setRedirect] = useState(-1)
+  const history = useHistory()
   const [anchorEl, setAnchorEl] = useState(null)
   const open = Boolean(anchorEl)
 
@@ -49,10 +26,29 @@ const NavBarBase = observer((props) => {
 
   const onClickMenuItem = (num) => {
     setAnchorEl(null)
-    if (num === 4) {
+    if (num === 0) {
+      history.push(ROUTES.CODE_VALIDATIONS)
+    } else if (num === 1) {
+      history.push(ROUTES.MANAGE_MEMBERS)
+    } else if (num === 2) {
+      history.push(ROUTES.BRANDING)
+    } else if (num === 3) {
+      history.push(ROUTES.SETTINGS)
+    } else {
+      // Sign out, and route protection system will automatically push user to ROUTES.LANDING
       props.store.signOut()
     }
-    setRedirect(num)
+  }
+
+  // Determines whether to display the navbar as if the user is logged in.
+  // Used to handle the complex cases where the user is technically logged in but we don't want it to seem
+  // that way to them, i.e. for password resets.
+  const displayAsIfLoggedIn = () => {
+    return (
+      props.store.data.user.isSignedIn &&
+      !(props.store.data.user.passwordResetRequested && props.store.data.user.signedInWithEmailLink) &&
+      !props.store.data.user.passwordResetCompletedInCurrentSession
+    )
   }
 
   const LoggedInIcons = (
@@ -72,7 +68,7 @@ const NavBarBase = observer((props) => {
       </div>
       <div className="avatar_group separator" />
 
-      <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu" onClick={handleMenu}>
+      <IconButton edge="start" className="menu-btn" color="inherit" aria-label="menu" onClick={handleMenu}>
         <img src={menu} alt="Menu" />
       </IconButton>
       <Menu
@@ -90,37 +86,31 @@ const NavBarBase = observer((props) => {
         open={open}
         onClose={handleClose}
       >
-        <MenuItem className={classes.link} style={{ marginTop: 22 }} onClick={() => onClickMenuItem(0)}>
+        <MenuItem
+          id="diagnosis-verification-codes"
+          className="menu-link"
+          style={{ marginTop: 22 }}
+          onClick={() => onClickMenuItem(0)}
+        >
           Diagnosis Verification Codes
         </MenuItem>
         {props.store.data.user.isAdmin && (
-          <MenuItem className={classes.link} onClick={() => onClickMenuItem(1)}>
+          <MenuItem id="manage-members" className="menu-link" onClick={() => onClickMenuItem(1)}>
             Manage Members
           </MenuItem>
         )}
         {props.store.data.user.isAdmin && (
-          <MenuItem className={classes.link} onClick={() => onClickMenuItem(2)}>
+          <MenuItem id="mobile-app-settings" className="menu-link" onClick={() => onClickMenuItem(2)}>
             Mobile App Settings
           </MenuItem>
         )}
-        <MenuItem className={classes.link} onClick={() => onClickMenuItem(3)}>
+        <MenuItem id="my-settings" className="menu-link" onClick={() => onClickMenuItem(3)}>
           My Settings
         </MenuItem>
-        <MenuItem className={classes.link} style={{ marginBottom: 22 }} onClick={() => onClickMenuItem(4)}>
+        <MenuItem id="logout" className="menu-link" style={{ marginBottom: 22 }} onClick={() => onClickMenuItem(4)}>
           Logout
         </MenuItem>
       </Menu>
-      {redirect === 0 ? (
-        <Redirect to="/code_validations" />
-      ) : redirect === 1 ? (
-        <Redirect to="/manage_members" />
-      ) : redirect === 2 ? (
-        <Redirect to="/branding" />
-      ) : redirect === 3 ? (
-        <Redirect to="/settings" />
-      ) : (
-        redirect === 4 && <Redirect to="/" />
-      )}
     </div>
   )
 
@@ -128,12 +118,16 @@ const NavBarBase = observer((props) => {
     <div className="navbarContainer">
       <Link to="/code_validations" className="logo-link">
         <img
-          src={props.store.data.organization.logoBlob ? props.store.data.organization.logoBlob : cwLogo}
+          src={
+            props.store.data.organization.logoBlob && displayAsIfLoggedIn()
+              ? props.store.data.organization.logoBlob
+              : cwLogo
+          }
           id="orgLogo"
           alt={props.store.data.organization.name}
         />
       </Link>
-      {props.store.data.user.firstName ? LoggedInIcons : <div id="logged-in-icons-container" />}
+      {displayAsIfLoggedIn() ? LoggedInIcons : <div id="logged-in-icons-container" />}
     </div>
   )
 })

@@ -1,6 +1,5 @@
 import { types, cast, onSnapshot } from 'mobx-state-tree'
 import 'mobx-react-lite/batchingForReactDom'
-import Logging from '../util/logging'
 import { PAGE_SIZE } from '.'
 
 const User = types
@@ -15,17 +14,20 @@ const User = types
     lastName: types.string,
     organizationID: types.string,
     isFirstTimeUser: types.boolean,
+    // NOTE: passwordResetRequested should typically be checked along with signedInWithEmailLink when used in conditionals
+    // e.g. `if (passwordResetRequested && signedInWithEmailLink) ...`
+    // Such conditionals are only met when the user requested a password reset AND they themselves clicked on the
+    // magic link in the email. This protects against attacks where a malicious third party locks a user out of the portal
+    // (or makes it exceedingly difficult to use) by repeatedly entering a legitimate user's email into the `Forgot password?` dialog.
     passwordResetRequested: types.maybe(types.boolean),
-    passwordResetCompletedInCurrentSession: types.maybe(types.boolean), // frontend-only field
     signedInWithEmailLink: types.maybe(types.boolean), // frontend-only field
+    passwordResetCompletedInCurrentSession: types.maybe(types.boolean), // frontend-only field
   })
   .actions((self) => {
     const __update = (updates) => {
       Object.keys(updates).forEach((key) => {
         if (self.hasOwnProperty(key)) self[key] = updates[key] // eslint-disable-line no-prototype-builtins
       })
-      Logging.log('Updated User:')
-      Logging.log(self)
     }
 
     return { __update }
@@ -61,8 +63,6 @@ const Organization = types
       Object.keys(updates).forEach((key) => {
         if (self.hasOwnProperty(key)) self[key] = updates[key] // eslint-disable-line no-prototype-builtins
       })
-      Logging.log('Updated Organization:')
-      Logging.log(self)
     }
 
     const __setMembers = (members) => {
@@ -137,18 +137,24 @@ const defaultStore = {
 
 let initialStore = defaultStore
 
-// Based on https://egghead.io/lessons/react-store-store-in-local-storage
-if (sessionStorage.getItem('store')) {
-  initialStore = JSON.parse(sessionStorage.getItem('store'))
+// This prevents every change registered by the hot-reload dev server from resetting the store, which aids in development.
+if (process.env.NODE_ENV == 'development') {
+  // Based on https://egghead.io/lessons/react-store-store-in-local-storage
+  if (sessionStorage.getItem('store')) {
+    initialStore = JSON.parse(sessionStorage.getItem('store'))
+  }
 }
 
 const rootStore = Store.create({
   ...initialStore,
 })
 
-// Based on https://egghead.io/lessons/react-store-store-in-local-storage
-onSnapshot(rootStore, (snapshot) => {
-  sessionStorage.setItem('store', JSON.stringify(snapshot))
-})
+// This prevents every change registered by the hot-reload dev server from resetting the store, which aids in development.
+if (process.env.NODE_ENV == 'development') {
+  // Based on https://egghead.io/lessons/react-store-store-in-local-storage
+  onSnapshot(rootStore, (snapshot) => {
+    sessionStorage.setItem('store', JSON.stringify(snapshot))
+  })
+}
 
 export { rootStore, defaultUser, defaultOrganization }

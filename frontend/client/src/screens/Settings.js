@@ -1,7 +1,7 @@
 import React, { useRef, Fragment, useState } from 'react'
+import { createMuiTheme, MuiThemeProvider } from '@material-ui/core/styles'
 import Grid from '@material-ui/core/Grid'
 import Modal from '../components/Modal'
-import { makeStyles } from '@material-ui/core/styles'
 import * as ROLES from '../constants/roles'
 import Toast from '../components/Toast'
 import { Redirect } from 'react-router-dom'
@@ -15,31 +15,21 @@ import PendingOperationButton from '../components/PendingOperationButton'
 import ResetPasswordModal from '../components/ResetPasswordModal'
 import CircularProgress from '@material-ui/core/CircularProgress'
 
-const useStyles = makeStyles({
-  root: {
-    marginTop: 10,
-    padding: 40,
-    paddingLeft: 8,
-  },
-})
-
-const inputStyles = makeStyles({
-  root: {
-    lineHeight: '16px',
-    borderRadius: 4,
-    border: '2px solid #BDBDBD',
-    boxSizing: 'border-box',
-    width: '75%',
-    height: 40,
-    marginTop: 10,
-    marginBottom: 40,
-  },
-})
-
 const MAXFILESIZE = 10 * 1024 * 1024
+
+// Breakpoints customized to match those of _include-media.scss
+const theme = createMuiTheme({
+  breakpoints: {
+    values: {
+      xs: 0,
+      sm: 420,
+      md: 768,
+      lg: 1024,
+      xl: 1920,
+    },
+  },
+})
 const SettingsBase = observer((props) => {
-  const classes = useStyles()
-  const input = inputStyles()
   const imgUploader = useRef()
 
   const [open, setOpen] = useState(false)
@@ -60,15 +50,31 @@ const SettingsBase = observer((props) => {
     if (event.target.name == 'prefix') {
       props.store.updateUser({ prefix: event.target.value })
     } else if (event.target.name == 'firstName') {
-      props.store.updateUser({ firstName: event.target.value })
+      if (event.target.value.length < 1) {
+        setToastInfo({
+          success: false,
+          msg: 'First name must be at least one character',
+        })
+        toastRef.current.show()
+      } else {
+        props.store.updateUser({ firstName: event.target.value })
+      }
     } else if (event.target.name == 'lastName') {
-      props.store.updateUser({ lastName: event.target.value })
+      if (event.target.value.length < 1) {
+        setToastInfo({
+          success: false,
+          msg: 'Last name must be at least one character',
+        })
+        toastRef.current.show()
+      } else {
+        props.store.updateUser({ lastName: event.target.value })
+      }
     }
   }
 
   const saveImage = async () => {
     if (imgUploader.current.files.length == 0) {
-      Logging.log('no image uploaded')
+      // No image uploaded
       return
     }
 
@@ -163,7 +169,12 @@ const SettingsBase = observer((props) => {
       containerClass="changeImageModalContainer"
     >
       <div>
-        <input type="file" ref={imgUploader} accepts="image/jpeg, image/png" />
+        <input
+          type="file"
+          ref={imgUploader}
+          accepts="image/jpeg, image/png"
+          style={{ border: 'none', marginTop: '25px', marginBottom: '15px' }}
+        />
         <PendingOperationButton operation={saveImage} className="save-button">
           Upload
         </PendingOperationButton>
@@ -174,9 +185,9 @@ const SettingsBase = observer((props) => {
   const settingsForm = () => (
     <Fragment>
       <form>
-        <Grid container className={classes.root} spacing={2} direction="row" justify="center">
-          <Grid item xs={4} xl={2}>
-            <Grid container spacing={2} direction="column">
+        <Grid container id="settings-grid" spacing={2} direction="row" justify="center">
+          <Grid item xs={12} md={12} lg={4} xl={2}>
+            <Grid container spacing={2} direction="column" className="profile-photo-container">
               <label> Profile Photo </label>
               <div
                 style={{
@@ -211,14 +222,13 @@ const SettingsBase = observer((props) => {
             </Grid>
           </Grid>
 
-          <Grid item xs={4} xl={5}>
+          <Grid item xs={12} md={6} lg={4} xl={5}>
             <Grid container spacing={2} direction="column">
               <label htmlFor="prefix">Prefix</label>
               <input
                 type="text"
                 id="prefix"
                 name="prefix"
-                className={input.root}
                 onChange={onChange}
                 value={props.store.data.user.prefix}
               ></input>
@@ -229,26 +239,26 @@ const SettingsBase = observer((props) => {
                 name="firstName"
                 required
                 aria-required="true"
-                className={input.root}
                 onChange={onChange}
-                value={props.store.data.user.firstName}
+                defaultValue={props.store.data.user.firstName}
               ></input>
-              <label htmlFor="email">Email Address</label>
-              <input
-                type="text"
-                id="email"
-                name="email"
-                required
-                disabled={true}
-                aria-required="true"
-                className={input.root}
-                style={{ backgroundColor: '#e0e0e0' }}
-                value={props.store.data.user.email}
-              ></input>
+              <div className="email-container">
+                <label htmlFor="email">Email Address</label>
+                <input
+                  type="text"
+                  id="email"
+                  name="email"
+                  required
+                  disabled={true}
+                  aria-required="true"
+                  style={{ backgroundColor: '#e0e0e0' }}
+                  value={props.store.data.user.email}
+                ></input>
+              </div>
             </Grid>
           </Grid>
 
-          <Grid item xs={4} xl={5}>
+          <Grid item xs={12} md={6} lg={4} xl={5}>
             <Grid container spacing={2} direction="column">
               <label htmlFor="role">Role</label>
               {props.store.data.user && (
@@ -259,22 +269,22 @@ const SettingsBase = observer((props) => {
                   disabled={true}
                   required
                   aria-required="true"
-                  className={input.root}
                   style={{ backgroundColor: '#e0e0e0' }}
                   value={props.store.data.user.isAdmin ? ROLES.ADMIN_LABEL : ROLES.NON_ADMIN_LABEL}
                 ></input>
               )}
-              <label htmlFor="lastName">Last Name</label>
-              <input
-                type="text"
-                id="lastName"
-                name="lastName"
-                required
-                aria-required="true"
-                onChange={onChange}
-                className={input.root}
-                defaultValue={props.store.data.user.lastName}
-              ></input>
+              <div className="lastName-container">
+                <label htmlFor="lastName">Last Name</label>
+                <input
+                  type="text"
+                  id="lastName"
+                  name="lastName"
+                  required
+                  aria-required="true"
+                  onChange={onChange}
+                  defaultValue={props.store.data.user.lastName}
+                ></input>
+              </div>
               <label htmlFor="password">Password</label>
               <input
                 type="text"
@@ -284,20 +294,9 @@ const SettingsBase = observer((props) => {
                 disabled={true}
                 required
                 aria-required="true"
-                className={input.root}
                 defaultValue=" • • • • • • • •"
               ></input>
-              <a
-                href=""
-                style={{
-                  fontSize: '12px',
-                  fontWeight: '500',
-                  textAlign: 'end',
-                  marginTop: -25,
-                  marginRight: '26%',
-                }}
-                onClick={(e) => resetPassword(e)}
-              >
+              <a href="" className="change-password-link" onClick={(e) => resetPassword(e)}>
                 Change Password
               </a>
             </Grid>
@@ -313,10 +312,10 @@ const SettingsBase = observer((props) => {
     (props.store.data.user.passwordResetRequested && props.store.data.user.signedInWithEmailLink) ? (
     <Redirect to={ROUTES.LANDING} />
   ) : (
-    <React.Fragment>
+    <MuiThemeProvider theme={theme}>
       <PageTitle title="My Settings" />
       <div className="module-container">
-        <div>
+        <div className="settings-header">
           <h1 style={{ marginBottom: 12 }}>My Settings</h1>
           <p className="xs-text">Changes are automatically saved</p>
         </div>
@@ -328,7 +327,7 @@ const SettingsBase = observer((props) => {
           onFailure={onChangePasswordFailure}
         />
       </div>
-    </React.Fragment>
+    </MuiThemeProvider>
   )
 })
 
