@@ -130,7 +130,7 @@ exports[`Footer renders correctly 1`] = `
             Privacy Policy
           </a>
           <a
-            href="https://covidwatch.org/get_support"
+            href="https://www.covidwatch.org/get_support"
             rel="noreferrer"
             target="_blank"
           >
