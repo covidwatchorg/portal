@@ -95,7 +95,7 @@ jobs:
           FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
           SENDGRID_API_KEY: ${{ secrets.SENDGRID_API_KEY }}
           NODE_ENV: dev
-          VERIFICATION_SERVER_API_KEY: ${{ secrets.VERIFICATION_SERVER_API_KEY }}          
+          VERIFICATION_SERVER_API_KEY: ${{ secrets.VERIFICATION_SERVER_API_KEY }}
       - name: Setup functions config
         if: github.ref == 'refs/heads/master'
         working-directory: cloud-functions/functions
