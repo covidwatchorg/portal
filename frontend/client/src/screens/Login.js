@@ -20,7 +20,6 @@ const INITIAL_STATE = {
   toastMessage: '',
 }
 
-// Test comment
 const SignInFormBase = observer(
   class SignInFormBase extends React.Component {
     constructor(props) {
