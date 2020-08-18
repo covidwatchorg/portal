@@ -8,7 +8,7 @@
     "sourceMap": true,
     "strict": true,
     "target": "es2017",
-    "types": [],
+    "types": ["reflect-metadata", "jest"],
     "typeRoots": ["./types", "./node_modules/@types"]
   },
   "compileOnSave": true,
