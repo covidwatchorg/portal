@@ -112,15 +112,9 @@ class ChangePasswordModalBase extends React.Component {
               label="New Password"
               id="new-password"
               required={true}
-              password={true}
               value={this.state.password}
               onChange={this.onChange}
               validation={this.state.formHasBeenEdited}
-              validationMessage={
-                this.state.password.length > 0
-                  ? 'Password must be at least 6 characters long'
-                  : 'New password cannot be blank'
-              }
             />
 
             <ModalInput
