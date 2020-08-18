@@ -1,3 +1,4 @@
+// TEST COMMENT
 var config = {
   client: {
     url: "http://localhost:3000/",
