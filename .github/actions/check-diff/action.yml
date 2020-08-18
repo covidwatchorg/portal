@@ -17,6 +17,7 @@ runs:
           diff=$(git diff --name-only HEAD HEAD~1)
           echo $diff
           for dir in frontend cloud-functions; do
+            echo $dir
             # Set the frontend or cloud-functions output if that directory
             # or config/ changed
              if echo $diff | grep -q "$dir\|config"; then
