@@ -15,6 +15,7 @@ runs:
         run : |
           # Use git diff to see the files altered by previous commit
           diff=$(git diff --name-only HEAD HEAD~1)
+          echo $diff
           for dir in frontend cloud-functions; do
             # Set the frontend or cloud-functions output if that directory
             # or config/ changed
