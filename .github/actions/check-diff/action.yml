@@ -19,6 +19,7 @@ runs:
             # Set the frontend or cloud-functions output if that directory
             # or config/ changed
              if echo $diff | grep -q "$dir\|config"; then
+               echo "setting output $dir"
                echo "::set-output name=$dir::true"
              fi 
           done
