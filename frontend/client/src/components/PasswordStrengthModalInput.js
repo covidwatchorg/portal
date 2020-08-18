@@ -3,7 +3,7 @@ import zxcvbn from 'zxcvbn'
 import ModalInput from '../components/ModalInput'
 
 /**
- *
+ * A component combining a ModalInput with a password strength meter.
  * @param {*} props.label      the label for the component
  * @param {*} props.id         the component ID
  * @param {*} props.required
