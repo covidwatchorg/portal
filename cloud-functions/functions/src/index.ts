@@ -247,7 +247,7 @@ export const createUser = functions.https.onCall((newUser, context) => {
                 password: password,
               })
               .then((userRecord) => {
-                if (functions.config().project !== 'test') {
+                if (functions.config().project.id !== 'test') {
                   sendNewUserEmail(newUser.email, password, newUser.firstName, newUser.lastName);
                 } else {
                   console.warn('Skipping sending new-user email');
@@ -387,7 +387,7 @@ export const initiatePasswordRecovery = functions.https.onCall((body) => {
       .doc(body.email)
       .update({ passwordResetRequested: true })
       .then(() => {
-        if (functions.config().project !== 'test') {
+        if (functions.config().project.id !== 'test') {
           sendPasswordRecoveryEmail(body.email);
         } else {
           console.warn('Skipping sending password recovery email');

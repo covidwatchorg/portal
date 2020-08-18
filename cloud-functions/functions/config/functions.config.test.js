@@ -1,5 +1,5 @@
 var config = {
-  project: 'test',
+  project: { id: 'test' },
   client: {
     url: 'http://localhost:3000/',
   },
