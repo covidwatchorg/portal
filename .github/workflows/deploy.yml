@@ -87,7 +87,15 @@ jobs:
           SENDGRID_API_KEY: ${{ secrets.SENDGRID_API_KEY }}
           NODE_ENV: staging
           VERIFICATION_SERVER_API_KEY: ${{ secrets.VERIFICATION_SERVER_API_KEY }}
-          VERIFICATION_SERVER_URL: ${{ secrets.VERIFICATION_SERVER_URL }}
+      - name: Setup functions config
+        if: github.ref == 'refs/heads/dev'
+        working-directory: cloud-functions/functions
+        run: npm run config:set
+        env:
+          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
+          SENDGRID_API_KEY: ${{ secrets.SENDGRID_API_KEY }}
+          NODE_ENV: dev
+          VERIFICATION_SERVER_API_KEY: ${{ secrets.VERIFICATION_SERVER_API_KEY }}          
       - name: Setup functions config
         if: github.ref == 'refs/heads/master'
         working-directory: cloud-functions/functions
@@ -97,7 +105,6 @@ jobs:
           SENDGRID_API_KEY: ${{ secrets.SENDGRID_API_KEY }}
           NODE_ENV: prod
           VERIFICATION_SERVER_API_KEY: ${{ secrets.VERIFICATION_SERVER_API_KEY }}
-          VERIFICATION_SERVER_URL: ${{ secrets.VERIFICATION_SERVER_URL }}
 
       - name: Lint and Build
         working-directory: cloud-functions/functions
@@ -138,6 +145,16 @@ jobs:
           FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
           PROJECT_PATH: cloud-functions/
           NODE_ENV: staging
+
+      - name: Deploy to Firebase Dev Infra
+        if: github.ref == 'refs/heads/dev'
+        uses: w9jds/firebase-action@master
+        with:
+          args: deploy -f --project=dev
+        env:
+          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
+          PROJECT_PATH: cloud-functions/
+          NODE_ENV: dev
 
       - name: Deploy to Firebase Prod Infra
         if: github.ref == 'refs/heads/master'
