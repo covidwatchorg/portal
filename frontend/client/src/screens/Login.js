@@ -1,3 +1,4 @@
+// Test comment, remove me!
 import React, { Fragment, createRef } from 'react'
 import { Redirect } from 'react-router-dom'
 import * as ROUTES from '../constants/routes'
