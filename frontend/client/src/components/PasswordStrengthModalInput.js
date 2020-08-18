@@ -3,7 +3,7 @@ import zxcvbn from 'zxcvbn'
 import ModalInput from '../components/ModalInput'
 
 /**
- * 
+ *
  * @param {*} props.label      the label for the component
  * @param {*} props.id         the component ID
  * @param {*} props.required
@@ -19,18 +19,19 @@ const PasswordStrengthModalInput = (props) => {
 
   const validation = (password) => {
     if (password.length < 6) {
-      return {valid: false, message: 'Password is too short'}
+      return { valid: false, message: 'Password is too short' }
     } else {
       let score = estimatePasswordStrength(password)
       switch (score) {
-        case 0: case 1:
-          return {valid: false, message: 'Password strength: weak'}
+        case 0:
+        case 1:
+          return { valid: false, message: 'Password strength: weak' }
         case 2:
-          return {valid: true, message: 'Password strength: okay'}
+          return { valid: true, message: 'Password strength: okay' }
         case 3:
-          return {valid: true, message: 'Password strength: good'}
+          return { valid: true, message: 'Password strength: good' }
         case 4:
-          return {valid: true, message: 'Password strength: great'}
+          return { valid: true, message: 'Password strength: great' }
       }
     }
   }
