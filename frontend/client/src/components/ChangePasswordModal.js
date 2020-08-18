@@ -4,6 +4,7 @@ import ModalInput from '../components/ModalInput'
 import PendingOperationButton from '../components/PendingOperationButton'
 import { withStore } from '../store'
 import Logging from '../util/logging'
+import PasswordStrengthModalInput from './PasswordStrengthModalInput'
 
 class ChangePasswordModalBase extends React.Component {
   constructor(props) {
@@ -107,14 +108,14 @@ class ChangePasswordModalBase extends React.Component {
         <p>{this.state.subHeading}</p>
         {this.state.showNewPasswordInputs && (
           <form className="change-password-form">
-            <ModalInput
+            <PasswordStrengthModalInput
               label="New Password"
               id="new-password"
               required={true}
               password={true}
               value={this.state.password}
               onChange={this.onChange}
-              validation={!this.state.passwordIsValid && this.state.formHasBeenEdited}
+              validation={this.state.formHasBeenEdited}
               validationMessage={
                 this.state.password.length > 0
                   ? 'Password must be at least 6 characters long'
