@@ -6,6 +6,7 @@ import { auth } from '../store/firebase'
 import { withStore } from '../store'
 import Logging from '../util/logging'
 import firebase from 'firebase'
+import PasswordStrengthModalInput from './PasswordStrengthModalInput'
 
 class ResetPasswordModalBase extends React.Component {
   constructor(props) {
@@ -116,19 +117,13 @@ class ResetPasswordModalBase extends React.Component {
             validationMessage="Current password cannot be blank"
           />
 
-          <ModalInput
-            label="New password"
+          <PasswordStrengthModalInput
+            label="New Password"
             id="new-password"
             required={true}
-            password={true}
             value={this.state.password}
             onChange={this.onChange}
-            validation={!this.state.passwordIsValid && this.state.newPasswordHasBeenEdited}
-            validationMessage={
-              this.state.password.length > 0
-                ? 'Password must be at least 6 characters long'
-                : 'New password cannot be blank'
-            }
+            validation={this.state.formHasBeenEdited}
           />
 
           <ModalInput
