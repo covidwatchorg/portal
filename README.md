@@ -13,7 +13,6 @@ You can see how our mobile app and permission portal work together in the quick 
 - clone this repo to your machine
 - navigate to `/frontend`
 - run `npm i` in your terminal
-- then `npm run init`
 - then `npm run start:dev`
 
 At `http://localhost:3000/` you should now see the Permissions Portal login screen.

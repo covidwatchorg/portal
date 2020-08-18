@@ -2,7 +2,6 @@
   "name": "functions",
   "scripts": {
     "lint": "tslint --project tsconfig.json",
-    "init": "cpy ../../config/ config/ && cpy --no-overwrite config/firebase.config.local.template config --rename=firebase.config.local.js",
     "build": "tsc",
     "serve": "npm run build && firebase emulators:start --only functions",
     "shell": "npm run build && firebase functions:shell",
@@ -13,7 +12,7 @@
     "logs": "firebase functions:log",
     "test": "jest --forceExit",
     "test:local": "NODE_ENV=local npm run test",
-    "test_ci": "npm run init && NODE_ENV=ci npm run test",
+    "test_ci": "NODE_ENV=ci npm run test",
     "config:set": "node set-config.js"
   },
   "engines": {
