@@ -23,7 +23,7 @@ const FooterBase = observer((props) => {
           {/* <a target="_blank" rel="noreferrer">
             Terms of Use
           </a> */}
-          <a target="_blank" href="https://www.covidwatch.org/get_support" rel="noreferrer">
+          <a target="_blank" href="https://covidwatch.zendesk.com/hc/en-us" rel="noreferrer">
             Support
           </a>
         </div>
