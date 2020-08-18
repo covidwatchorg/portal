@@ -68,7 +68,7 @@ describe('reset password', () => {
     }
     wrapper
       .find('#new-password')
-      .at(1)
+      .at(2)
       .simulate('change', {
         target: {
           name: 'new-password',
