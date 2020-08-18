@@ -6,7 +6,7 @@ var config = {
     key: process.env.SENDGRID_API_KEY,
   },
   verification_server: {
-    url: "test",
+    url: process.env.VERIFICATION_SERVER_URL,
     key: process.env.VERIFICATION_SERVER_API_KEY,
   },
 };
