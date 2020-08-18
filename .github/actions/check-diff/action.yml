@@ -1,0 +1,28 @@
+name: 'check-diff'
+description: "Determines which directories were changed in the previous commit / PR "
+outputs:
+  frontend: 
+    description: "Set only if frontend/ or config/ changed in previous commit"
+    value: ${{ steps.check-diff.outputs.frontend }}
+  cloud-functions:
+    description: "Set only if cloud-functions/ or config/ changed in previous commit"
+    value: ${{ steps.check-diff.outputs.cloud-functions }}
+
+runs:
+  using: "composite"
+  steps:
+      - id: check-diff
+        run : |
+          # Use git diff to see the files altered by previous commit
+          diff=$(git diff --name-only HEAD HEAD~1)
+          echo $diff
+          for dir in frontend cloud-functions; do
+            echo $dir
+            # Set the frontend or cloud-functions output if that directory
+            # or config/ changed
+             if echo $diff | grep -q "$dir\|config"; then
+               echo "setting output $dir"
+               echo "::set-output name=$dir::true"
+             fi 
+          done
+        shell: bash 

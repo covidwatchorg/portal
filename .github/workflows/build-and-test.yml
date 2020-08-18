@@ -7,9 +7,25 @@ on:
     branches: [master, dev]
 
 jobs:
+  check-diff:
+    runs-on: ubuntu-latest
+    # Map outputs from check-diff step to job outputs
+    outputs:
+      frontend: ${{ steps.check-diff.outputs.frontend }}
+      cloud-functions: ${{ steps.check-diff.outputs.cloud-functions }}
+    steps:
+      - name: Checkout branch
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 2
+      - id: check-diff
+        uses: ./.github/actions/check-diff
+
   build-frontend:
     name: Build Frontend App
     runs-on: ubuntu-latest
+    needs: check-diff
+    if: needs.check-diff.outputs.frontend == 'true'
     steps:
       - uses: actions/checkout@v2
       - name: Use Node.js 12.x
@@ -28,6 +44,8 @@ jobs:
   build-firebase:
     name: Build Firebase
     runs-on: ubuntu-latest
+    needs: check-diff
+    if: needs.check-diff.outputs.cloud-functions == 'true'
     steps:
       - uses: actions/checkout@v2
       - name: Install
@@ -44,6 +62,7 @@ jobs:
           SENDGRID_API_KEY: ${{ secrets.SENDGRID_API_KEY }}
           NODE_ENV: test
           VERIFICATION_SERVER_API_KEY: ${{ secrets.VERIFICATION_SERVER_API_KEY }}
+          VERIFICATION_SERVER_URL: ${{ secrets.VERIFICATION_SERVER_URL }}
       - name: Lint and Build
         working-directory: cloud-functions/functions
         run: |
@@ -102,6 +121,7 @@ jobs:
   frontend-tests:
     name: Run Frontend Tests
     runs-on: ubuntu-latest
+    needs: build-frontend
     steps:
       - uses: actions/checkout@v2
       - name: Use Node.js 12.x
