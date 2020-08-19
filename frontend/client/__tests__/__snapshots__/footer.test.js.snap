@@ -123,14 +123,14 @@ exports[`Footer renders correctly 1`] = `
             © 2020 Covid Watch. All rights reserved.
           </p>
           <a
-            href="https://docs.google.com/document/d/1pcnFidqiebgQpxxVoi0VCoiRsSndCl5VF_7kZMtnZOA/edit?usp=sharing"
+            href="https://drive.google.com/file/d/1vSPtUEjSYQ0jWxYHlP8OzTzCAWgT9B0E/view?usp=sharing"
             rel="noreferrer"
             target="_blank"
           >
             Privacy Policy
           </a>
           <a
-            href="https://www.covidwatch.org/get_support"
+            href="https://covidwatch.zendesk.com/hc/en-us"
             rel="noreferrer"
             target="_blank"
           >

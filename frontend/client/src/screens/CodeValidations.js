@@ -88,7 +88,7 @@ const CodeValidationsBase = observer((props) => {
       updateButtonDisabled()
     } else {
       setSymptomDateObject(undefined)
-      setSymptomDateYYYYMMDD(null)
+      setSymptomDateYYYYMMDD('')
     }
   }
 
