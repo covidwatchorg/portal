@@ -1,3 +1,4 @@
+// 
 import React from 'react'
 import { rootStore, defaultUser, defaultOrganization } from './model'
 import Logging from '../util/logging'
