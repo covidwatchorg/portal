@@ -18,33 +18,44 @@ const PendingOperationButton = (props) => {
   const operation = props.operation || (() => {})
   const disabled = props.disabled || false
 
-  // Flag to keep track of whether component is mounted. We check this flag in runOperation before setting the button's state,
-  // in order to prevent cases where we mistakenly try to update the state when the button is no longer mounted, which was
-  // happening relatively frequently in i.e. automatic-modal-closes and triggering the following warning:
-  // "Warning: Can't perform a React state update on an unmounted component. This is a no-op, but it indicates a memory leak in your application.
-  // To fix, cancel all subscriptions and asynchronous tasks in a useEffect cleanup function."
-  var componentIsMounted = false
+  // Based on https://dev.to/otamnitram/react-useeffect-cleanup-how-and-when-to-use-it-2hbm
   useEffect(() => {
-    componentIsMounted = true
+    let componentIsMounted = true
+
+    // This function gets triggered whenever isOperationPending gets updated
+    async function runOp() {
+      // If isOperationPending was just flipped to true, try to run the operation()
+      if (isOperationPending) {
+        try {
+          await operation()
+          // Set state only if the component is still mounted. This handles cases where `await operation()`
+          // triggers a global state change (i.e. in via the store) that unmounts this component directly after it completes.
+          // In that case, cleanup() below will have run and set componentIsMounted to false, and so setIsOperationPending(false)
+          // won't run and cause a memory leak, which was happening frequently and throwing the following warning:
+          // "Warning: Can't perform a React state update on an unmounted component. This is a no-op, but it indicates a memory leak in your application.
+          // To fix, cancel all subscriptions and asynchronous tasks in a useEffect cleanup function."
+          if (componentIsMounted) {
+            setIsOperationPending(false)
+          }
+        } catch {
+          if (componentIsMounted) {
+            setIsOperationPending(false)
+          }
+        }
+      }
+    }
+
+    runOp()
+
+    // Runs when component is unmounted
     return function cleanup() {
       componentIsMounted = false
     }
-  }, [])
+  }, [isOperationPending])
 
-  const runOperation = async () => {
-    if (componentIsMounted) {
-      setIsOperationPending(true)
-    }
-    try {
-      await operation()
-      if (componentIsMounted) {
-        setIsOperationPending(false)
-      }
-    } catch {
-      if (componentIsMounted) {
-        setIsOperationPending(false)
-      }
-    }
+  const runOperation = () => {
+    // Triggers useEffect
+    setIsOperationPending(true)
   }
 
   if (!isOperationPending) {
