@@ -7,25 +7,26 @@ import { observer } from 'mobx-react'
 import PageTitle from '../components/PageTitle'
 import PendingOperationButton from '../components/PendingOperationButton'
 import Clock from '../../assets/clock.svg'
+import DatePicker from 'react-datepicker'
+
 import {
   getOneHourAheadDisplayString,
-  getFourteenDaysAgoString,
-  moreThanFourteenDaysAgo,
-  dateInFuture,
-  getTodayString,
   getDefaultTimezoneString,
   localStringToZeroUTCOffsetString,
+  toDashSeperatedYYYYMMDDString,
+  getFourteenDaysAgoDate,
 } from '../util/time'
 
 const codePlaceholder = '00000000'
 
 const CodeValidationsBase = observer((props) => {
-  const [testType, setTestType] = useState('')
-  const [symptomDate, setSymptomDate] = useState('')
+  const [testType] = useState('confirmed')
+  const [symptomDateYYYYMMDD, setSymptomDateYYYYMMDD] = useState('')
+  const [symptomDateObject, setSymptomDateObject] = useState()
   const [dateInvalid, setDateInvalid] = useState(false)
   const [needsReset, setNeedsReset] = useState(false)
   const [code, setCode] = useState(codePlaceholder)
-  const [buttonDisabled, setButtonDisabled] = useState(true)
+  const [buttonDisabled, setButtonDisabled] = useState(false)
   const [expirationTime, setExpirationTime] = useState('')
   const [timeLeft, setTimeLeft] = useState(60)
   const [toastInfo, setToastInfo] = useState({
@@ -41,7 +42,7 @@ const CodeValidationsBase = observer((props) => {
 
   // Updates the buttonDisabled variable state based on other state variables
   const updateButtonDisabled = () => {
-    if (needsReset || testType === '' || dateInvalid) {
+    if (needsReset || dateInvalid) {
       setButtonDisabled(true)
     } else {
       setButtonDisabled(false)
@@ -61,7 +62,8 @@ const CodeValidationsBase = observer((props) => {
     try {
       let code = await props.store.getVerificationCode({
         testType: testType,
-        symptomDate: symptomDate === '' ? symptomDate : localStringToZeroUTCOffsetString(symptomDate),
+        symptomDate:
+          symptomDateYYYYMMDD === '' ? symptomDateYYYYMMDD : localStringToZeroUTCOffsetString(symptomDateYYYYMMDD),
       })
       setCode(code.data.split('').join(''))
       codeTimeStamp()
@@ -69,48 +71,36 @@ const CodeValidationsBase = observer((props) => {
       updateButtonDisabled()
       countdown()
     } catch (err) {
-      setToastInfo({ success: false, msg: 'Could not generate new code, please try again' })
+      setToastInfo({
+        success: false,
+        msg: 'Could not generate new code, please try again',
+      })
       confirmedToast.current.show()
     }
   }
 
-  const handleRadio = (e) => {
-    setTestType(e.target.value)
-    updateButtonDisabled()
-  }
-
-  const handleDate = (e) => {
-    e.target.classList.add('with-value')
-    e.target.classList.remove('no-value')
-
-    // does not allow symptomDate in state to be set if date selected is more than 14 days ago or in the future
-    if (moreThanFourteenDaysAgo(e.target.value)) {
-      setDateInvalid(true)
-      setToastInfo({ success: false, msg: 'Date cannot be more than 14 days ago' })
-      confirmedToast.current.show()
-    } else if (dateInFuture(e.target.value)) {
-      setDateInvalid(true)
-      setToastInfo({ success: false, msg: 'Date cannot be in the future' })
-      confirmedToast.current.show()
-    } else {
+  const handleDate = (date) => {
+    if (date) {
+      setSymptomDateObject(date)
+      const selectedDate = toDashSeperatedYYYYMMDDString(date)
       setDateInvalid(false)
-      setSymptomDate(e.target.value)
+      setSymptomDateYYYYMMDD(selectedDate)
+      updateButtonDisabled()
+    } else {
+      setSymptomDateObject(undefined)
+      setSymptomDateYYYYMMDD('')
     }
-    updateButtonDisabled()
   }
 
   const resetState = () => {
     document.getElementById('date-picker').value = ''
     document.getElementById('radio-form').reset()
-    document.getElementById('date-form').reset()
-    document.getElementById('date-picker').classList.remove('with-value')
-    document.getElementById('date-picker').classList.add('no-value')
     document.getElementById('code-box').classList.toggle('with-value')
     document.getElementById('code-box').classList.toggle('no-value')
     document.getElementById('code-box').classList.toggle('code-generated')
     setCode(codePlaceholder)
-    setSymptomDate('')
-    setTestType('')
+    setSymptomDateYYYYMMDD('')
+    setSymptomDateObject('')
     setTimeLeft(60)
     setNeedsReset(false)
     setDateInvalid(false)
@@ -124,6 +114,18 @@ const CodeValidationsBase = observer((props) => {
     document.getElementById('code-box').classList.toggle('code-generated')
     setExpirationTime(getOneHourAheadDisplayString())
   }
+
+  let datePicker = (
+    <DatePicker
+      id="date-picker"
+      className={symptomDateYYYYMMDD ? 'with-value' : 'no-value'}
+      selected={symptomDateObject}
+      minDate={getFourteenDaysAgoDate()}
+      maxDate={new Date()}
+      onChange={handleDate}
+      placeholderText="Choose a date in last 14 days"
+    />
+  )
 
   return !props.store.data.user.isSignedIn ||
     props.store.data.user.isFirstTimeUser ||
@@ -141,46 +143,16 @@ const CodeValidationsBase = observer((props) => {
         <form id="radio-form" className="col-2">
           <div className="radio">
             <input
+              defaultChecked
               className="radio-input"
               name="testType"
               type="radio"
-              onClick={handleRadio}
               id="confirmed"
               value="confirmed"
             ></input>
             <label htmlFor="confirmed" className="col-2-header-container">
               <div className="col-2-header">Confirmed Positive Test</div>
               <div className="col-2-sub-header">Confirmed positive result from an official testing source.</div>
-            </label>
-          </div>
-
-          <div className="radio">
-            <input
-              className="radio-input"
-              name="testType"
-              type="radio"
-              onClick={handleRadio}
-              id="likely"
-              value="likely"
-            ></input>
-            <label htmlFor="likely" className="col-2-header-container">
-              <div className="col-2-header">Likely Positive Diagnosis</div>
-              <div className="col-2-sub-header">Clincial diagnosis without a test.</div>
-            </label>
-          </div>
-
-          <div className="radio">
-            <input
-              className="radio-input"
-              name="testType"
-              type="radio"
-              onClick={handleRadio}
-              id="negative"
-              value="negative"
-            ></input>
-            <label htmlFor="negative" className="col-2-header-container">
-              <div className="col-2-header">Confirmed Negative Test</div>
-              <div className="col-2-sub-header">Confirmed negative result from an official testing source.</div>
             </label>
           </div>
         </form>
@@ -192,16 +164,7 @@ const CodeValidationsBase = observer((props) => {
           <p>The date must be within the past 14 days</p>
         </div>
         <div className="col-2">
-          <form id="date-form">
-            <input
-              id="date-picker"
-              className="no-value"
-              type="date"
-              min={getFourteenDaysAgoString()}
-              max={getTodayString()}
-              onChange={handleDate}
-            ></input>
-          </form>
+          {datePicker}
           <p className="date-desc">Time zone set to {getDefaultTimezoneString()}</p>
         </div>
       </div>

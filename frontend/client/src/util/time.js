@@ -15,23 +15,7 @@ export const getOneHourAheadDisplayString = () => {
   // declaring new Date() here instead of passing in the code generation time stamp as they should be within 60 seconds of each other and second precision here is not necessary
   const now = new Date()
   const ahead = new Date(now.setHours(now.getHours() + 1))
-  let hours = ahead.getHours()
-  let amPM = 'AM'
-
-  if (hours > 12) {
-    hours = hours - 12
-    amPM = 'PM'
-  }
-
-  hours = hours.toString()
-  let mins = ahead.getMinutes().toString()
-
-  if (mins.length === 1) {
-    mins = '0' + mins
-  }
-  const timezone = getDefaultTimezoneString()
-
-  return hours + ':' + mins + ' ' + amPM + ' ' + timezone
+  return `${ahead.toLocaleTimeString([], { hour: 'numeric', minute: 'numeric' })} ${getDefaultTimezoneString()}`
 }
 
 // getFourteenDaysAgo generates a string formatted date fourteen days ago from present day
@@ -46,26 +30,18 @@ export const getFourteenDaysAgoString = () => {
   return toDashSeperatedYYYYMMDDString(ourDate)
 }
 
+export const getFourteenDaysAgoDate = () => {
+  var ourDate = new Date()
+
+  //Change date picker minimum to be 14 days in the past.
+  var pastDate = ourDate.getDate() - 13
+  ourDate.setDate(pastDate)
+  return ourDate
+}
+
 // gets today's date as a string formatted as yyyy-mm-dd
 export const getTodayString = () => {
   return toDashSeperatedYYYYMMDDString(new Date())
-}
-
-// is this date more than 14 days ago?
-export const moreThanFourteenDaysAgo = (strChosenDate) => {
-  let chosenDate = new Date(strChosenDate)
-  // adding + 1 to the chosenDate is necessary bc the way new Date() takes in a string seems to move it one date less on the returned Date
-  chosenDate.setDate(chosenDate.getDate() + 1)
-  let now = new Date()
-  now.setDate(now.getDate() - 14)
-  return chosenDate < now
-}
-
-// is this date in the future?
-export const dateInFuture = (strChosenDate) => {
-  let chosenDate = new Date(strChosenDate)
-  let today = new Date()
-  return chosenDate > today
 }
 
 // Converts a local yyyy-mm-dd date string to zero UTC offset yyyy-mm-dd date string

@@ -15,7 +15,7 @@ const FooterBase = observer((props) => {
           <p id="copyright">© 2020 Covid Watch. All rights reserved.</p>
           <a
             target="_blank"
-            href="https://docs.google.com/document/d/1pcnFidqiebgQpxxVoi0VCoiRsSndCl5VF_7kZMtnZOA/edit?usp=sharing"
+            href="https://drive.google.com/file/d/1vSPtUEjSYQ0jWxYHlP8OzTzCAWgT9B0E/view?usp=sharing"
             rel="noreferrer"
           >
             Privacy Policy
@@ -23,7 +23,7 @@ const FooterBase = observer((props) => {
           {/* <a target="_blank" rel="noreferrer">
             Terms of Use
           </a> */}
-          <a target="_blank" href="https://covidwatch.org/get_support" rel="noreferrer">
+          <a target="_blank" href="https://covidwatch.zendesk.com/hc/en-us" rel="noreferrer">
             Support
           </a>
         </div>

@@ -1,13 +1,13 @@
 var config = {
   client: {
-    url: "http://localhost:3000/",
+    url: 'http://localhost:3000/',
   },
   sendgrid: {
     key: process.env.SENDGRID_API_KEY,
   },
   verification_server: {
-    url: "**url**",
-    key: "**key**",
+    url: 'https://dev.adminapi.verification.covidwatch.org',
+    key: process.env.VERIFICATION_SERVER_API_KEY,
   },
 };
 

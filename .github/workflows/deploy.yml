@@ -8,20 +8,33 @@ on:
     branches: [dev, master]
 
 jobs:
+  check-diff:
+    runs-on: ubuntu-latest
+    # Map outputs from check-diff step to job outputs
+    outputs:
+      frontend: ${{ steps.check-diff.outputs.frontend }}
+      cloud-functions: ${{ steps.check-diff.outputs.cloud-functions }}
+    steps:
+      - name: Checkout branch
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 2
+      - id: check-diff
+        uses: ./.github/actions/check-diff
+
   deploy-frontend:
     name: Build and Deploy Frontend App
+    needs: check-diff
     runs-on: ubuntu-latest
-
+    if: needs.check-diff.outputs.frontend == 'true'
     steps:
       - uses: actions/checkout@v2
         with:
           fetch-depth: 2
-
       - name: Use Node.js 12.x
         uses: actions/setup-node@v1
         with:
           node-version: "12.x"
-
       - name: Build node app for staging
         if: github.ref == 'refs/heads/dev'
         working-directory: frontend
@@ -29,9 +42,7 @@ jobs:
           CI: true
         run: |
           npm ci
-          npm run init
           npm run build:staging
-
       - name: Build node app for prod
         if: github.ref == 'refs/heads/master'
         working-directory: frontend
@@ -39,16 +50,13 @@ jobs:
           CI: true
         run: |
           npm ci
-          npm run init
           npm run build
-
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-2
-
       - name: Deploy to S3
         working-directory: frontend
         run: |
@@ -57,15 +65,14 @@ jobs:
 
   build-firebase:
     name: Build Firebase
+    needs: check-diff
     runs-on: ubuntu-latest
+    if: needs.check-diff.outputs.cloud-functions == 'true'
     steps:
       - uses: actions/checkout@v2
       - name: Install
         working-directory: cloud-functions/functions
         run: npm install
-      - name: Initialize config files
-        working-directory: cloud-functions/functions
-        run: npm run init
       - name: Setup functions config
         if: github.ref == 'refs/heads/dev'
         working-directory: cloud-functions/functions
@@ -75,7 +82,6 @@ jobs:
           SENDGRID_API_KEY: ${{ secrets.SENDGRID_API_KEY }}
           NODE_ENV: staging
           VERIFICATION_SERVER_API_KEY: ${{ secrets.VERIFICATION_SERVER_API_KEY }}
-          VERIFICATION_SERVER_URL: ${{ secrets.VERIFICATION_SERVER_URL }}
       - name: Setup functions config
         if: github.ref == 'refs/heads/dev'
         working-directory: cloud-functions/functions
@@ -85,7 +91,6 @@ jobs:
           SENDGRID_API_KEY: ${{ secrets.SENDGRID_API_KEY }}
           NODE_ENV: dev
           VERIFICATION_SERVER_API_KEY: ${{ secrets.VERIFICATION_SERVER_API_KEY }}
-          VERIFICATION_SERVER_URL: ${{ secrets.VERIFICATION_SERVER_URL }}
       - name: Setup functions config
         if: github.ref == 'refs/heads/master'
         working-directory: cloud-functions/functions
@@ -95,7 +100,6 @@ jobs:
           SENDGRID_API_KEY: ${{ secrets.SENDGRID_API_KEY }}
           NODE_ENV: prod
           VERIFICATION_SERVER_API_KEY: ${{ secrets.VERIFICATION_SERVER_API_KEY }}
-          VERIFICATION_SERVER_URL: ${{ secrets.VERIFICATION_SERVER_URL }}
 
       - name: Lint and Build
         working-directory: cloud-functions/functions

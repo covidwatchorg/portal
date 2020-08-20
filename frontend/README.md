@@ -5,8 +5,7 @@ To start the application, please go to the root folder and execute:
 ### Setup
 
 1. `npm install` to install all the dependencies
-2. `npm run init` to initialize common firebase files
-3. create your personal firebase account , and export your configurations under the following locations
+2. create your personal firebase account , and export your configurations under the following locations
    a. update your firebase configuration ( Firebase Console => Project => Settings => Website Settings ) in
    \$ROOT/client/src/config/firebase.config.local.js
 
