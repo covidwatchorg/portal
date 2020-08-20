@@ -38,7 +38,6 @@ jobs:
           CI: true
         run: |
           npm ci
-          npm run init
           npm run build
 
   build-firebase:
@@ -51,9 +50,6 @@ jobs:
       - name: Install
         working-directory: cloud-functions/functions
         run: npm install
-      - name: Initialize config files
-        working-directory: cloud-functions/functions
-        run: npm run init
       - name: Setup functions config
         working-directory: cloud-functions/functions
         run: npm run config:set

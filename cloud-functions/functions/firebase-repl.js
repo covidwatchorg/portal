@@ -8,7 +8,7 @@ require('firebase/functions');
 var admin = require('firebase-admin');
 require('firebase/auth');
 
-const firebaseConfig = require(`./config/firebase.config.${process.env.NODE_ENV}.js`)
+const firebaseConfig = require(`../../frontend/client/src/config/firebase.config.${process.env.NODE_ENV}.js`)
 
 firebase.initializeApp(firebaseConfig);
 admin.initializeApp(firebaseConfig);

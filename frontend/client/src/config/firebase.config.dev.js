@@ -5,11 +5,11 @@
 // which Firebase infrastructure it should talk to. Firebase handles security in other ways, see the following
 // Stack Overflow link for more info: https://stackoverflow.com/questions/37482366/is-it-safe-to-expose-firebase-apikey-to-the-public
 module.exports = {
-  apiKey: "AIzaSyBPKZg2lTrbgjMp6-yF0kf4OcsBYK27Vzo",
-  authDomain: "permission-portal-staging.firebaseapp.com",
-  databaseURL: "https://permission-portal-staging.firebaseio.com",
-  projectId: "permission-portal-staging",
-  storageBucket: "permission-portal-staging.appspot.com",
-  messagingSenderId: "680475466201",
-  appId: "1:680475466201:web:2feebd2b7b34d83d7121c8",
-};
+  apiKey: 'AIzaSyAKbS8JEe1UVSZdaJfN4RnsRFPE7Tb-YpM',
+  authDomain: 'permission-portal-dev.firebaseapp.com',
+  databaseURL: 'https://permission-portal-dev.firebaseio.com',
+  projectId: 'permission-portal-dev',
+  storageBucket: 'permission-portal-dev.appspot.com',
+  messagingSenderId: '885750041965',
+  appId: '1:885750041965:web:14133265537c686c1dde64',
+}

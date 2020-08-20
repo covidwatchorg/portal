@@ -224,40 +224,6 @@ function sendPasswordRecoveryEmail(email: string) {
     });
 }
 
-// @ts-ignore: TODO remove this once sendPasswordResetEmail is called
-function sendPasswordResetEmail(email: string) {
-  auth
-    .generatePasswordResetLink(email, {
-      // URL you want to redirect back to. The domain (www.example.com) for
-      // this URL must be whitelisted in the Firebase Console.
-      url: functions.config().client.url,
-    })
-    .then((pwdResetLink) => {
-      const msg = {
-        to: email,
-        from: 'noreply@covidwatch.org',
-        subject: 'Covid Watch Portal password reset',
-        html: `
-        <p>You are recieving this email because somebody requested a password reset for the account associated with this email address.</p>
-        <p>To reset your password, click the link below</p>
-        <a href=${pwdResetLink}>Reset Password</a>
-        <p>If you recieved this message in error, you can safely ignore it.</p>
-        `,
-      };
-      sgMail
-        .send(msg)
-        .then(() => {
-          console.log(`Welcome email sent to ${email}`);
-        })
-        .catch((err) => {
-          console.error(JSON.stringify(err));
-        });
-    })
-    .catch((err) => {
-      console.error(err);
-    });
-}
-
 // Cloud function for creating new users. Allows admins to create new non-admin users.
 export const createUser = functions.https.onCall((newUser, context) => {
   return new Promise((resolve, reject) => {
