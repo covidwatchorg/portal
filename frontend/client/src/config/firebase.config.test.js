@@ -12,4 +12,5 @@ module.exports = {
   storageBucket: 'permission-portal-test.appspot.com',
   messagingSenderId: '1090782248577',
   appId: '1:1090782248577:web:184d481f492cfa4edc1780',
+  measurementId: 'G-MRVE7QEFHG',
 }
