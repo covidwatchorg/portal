@@ -6,6 +6,7 @@ import {
   db,
   SESSION,
   NONE,
+  analytics,
   createUserCallable,
   initiatePasswordRecoveryCallable,
   getVerificationCodeCallable,
@@ -32,6 +33,8 @@ const createStore = (WrappedComponent) => {
       this.__signedInWithEmailLink = false // firebase doesn't tell us this so we need to track it ourself
       this.__authStateListener = auth.onAuthStateChanged(async (user) => {
         if (user) {
+          // make analytics accessible throughout app
+          this.__analytics = analytics
           // get user's document from the db and at the same time set up a listener to respond to document changes
           if (this.__userDocumentListener === null) {
             this.__userDocumentListener = db
