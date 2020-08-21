@@ -21,9 +21,6 @@ var firebaseConfigMap = {
 
 const config = firebaseConfigMap[process.env ? process.env.NODE_ENV : 'development']
 
-// declaring this as a global variable for use in index.js for Sentry environment labeling like "development", "staging", and "production"
-window.env = process.env.NODE_ENV
-
 app.initializeApp(config)
 const auth = app.auth()
 const SESSION = app.auth.Auth.Persistence.SESSION
