@@ -54,7 +54,9 @@ const NavBarBase = observer((props) => {
   const LoggedInIcons = (
     <div id="logged-in-icons-container">
       <div className="avatar_group avatar_text">
-        <div className="small-text name">{props.store.data.user.firstName + ' ' + props.store.data.user.lastName}</div>
+        <div className="small-text name">
+          {props.store.data.user.prefix + ' ' + props.store.data.user.firstName + ' ' + props.store.data.user.lastName}
+        </div>
         <div className="xs-text">{props.store.data.user.isAdmin ? ROLES.ADMIN_LABEL : ROLES.NON_ADMIN_LABEL}</div>
       </div>
       <div className="avatar_group avatar_image">
