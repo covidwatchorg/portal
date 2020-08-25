@@ -1,4 +1,5 @@
 var config = {
+  project: { id: 'prod' },
   client: {
     url: 'https://portal.covidwatch.org/',
   },

@@ -14,7 +14,6 @@ sgMail.setApiKey(functions.config().sendgrid.key);
 // Enforces the data model for documents in the users table
 // If an entry DNE or is improperly formatted, its corresponding entry in Firebase Auth will be deleted
 function isCovidWatchUserProperlyFormatted(covidWatchUser: any): boolean {
-  console.log(`checking that ${JSON.stringify(covidWatchUser)} is properly formatted`);
   return (
     typeof covidWatchUser.isAdmin === 'boolean' &&
     typeof covidWatchUser.organizationID === 'string' &&
@@ -25,7 +24,6 @@ function isCovidWatchUserProperlyFormatted(covidWatchUser: any): boolean {
 }
 
 function isCreateUserRequestProperlyFormatted(newUser: any): boolean {
-  console.log(`checking that createUser request is properly formatted`);
   // password field is optional. If there is no password field, a random password will be generated.
   return (
     typeof newUser.email === 'string' &&
@@ -111,14 +109,9 @@ function syncAuthUserWithCovidWatchUser(email: string) {
               organizationID: covidWatchUser.organizationID,
             })
             .then(() => {
-              console.log('user ' + email + ' isAdmin claim set to ' + covidWatchUser.isAdmin);
-              console.log('user ' + email + ' organizationID claim set to ' + covidWatchUser.organizationID);
               auth
                 .updateUser(authUser.uid, {
                   disabled: covidWatchUser.disabled,
-                })
-                .then(() => {
-                  console.log(`User ${email}'s disabled flag in Auth updated to ${covidWatchUser.disabled}`);
                 })
                 .catch((err) => {
                   throw err;
@@ -254,7 +247,11 @@ export const createUser = functions.https.onCall((newUser, context) => {
                 password: password,
               })
               .then((userRecord) => {
-                sendNewUserEmail(newUser.email, password, newUser.firstName, newUser.lastName);
+                if (functions.config().project.id !== 'test') {
+                  sendNewUserEmail(newUser.email, password, newUser.firstName, newUser.lastName);
+                } else {
+                  console.warn('Skipping sending new-user email');
+                }
                 // Create record for user in the userImages collection
                 db.collection('userImages')
                   .doc(newUser.email.toLowerCase())
@@ -390,7 +387,11 @@ export const initiatePasswordRecovery = functions.https.onCall((body) => {
       .doc(body.email)
       .update({ passwordResetRequested: true })
       .then(() => {
-        sendPasswordRecoveryEmail(body.email);
+        if (functions.config().project.id !== 'test') {
+          sendPasswordRecoveryEmail(body.email);
+        } else {
+          console.warn('Skipping sending password recovery email');
+        }
         resolve();
       })
       .catch((err) => {
