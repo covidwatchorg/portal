@@ -9,7 +9,6 @@ import * as firebaseConfigDev from '../config/firebase.config.dev'
 import * as firebaseConfigTest from '../config/firebase.config.test'
 import * as firebaseConfigProd from '../config/firebase.config.prod'
 import * as firebaseConfigStaging from '../config/firebase.config.staging'
-import { process } from 'mobx-state-tree'
 
 var firebaseConfigMap = {
   development: firebaseConfigDev,

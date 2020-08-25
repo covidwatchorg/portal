@@ -24,6 +24,7 @@ const createStore = (WrappedComponent) => {
       // Set auth persistence to SESSION for development so that every change registered by the hot-reload dev server doesn't log you out
       auth.setPersistence(process.env.NODE_ENV == 'development' ? SESSION : NONE)
       this.data = rootStore
+      this.analytics = analytics
       this.__userDocumentListener = null
       this.__userImageListener = null
       this.__organizationDocumentListener = null
@@ -33,8 +34,6 @@ const createStore = (WrappedComponent) => {
       this.__signedInWithEmailLink = false // firebase doesn't tell us this so we need to track it ourself
       this.__authStateListener = auth.onAuthStateChanged(async (user) => {
         if (user) {
-          // make analytics accessible throughout app
-          this.__analytics = analytics
           // get user's document from the db and at the same time set up a listener to respond to document changes
           if (this.__userDocumentListener === null) {
             this.__userDocumentListener = db

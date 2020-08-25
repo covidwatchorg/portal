@@ -73,7 +73,7 @@ const CodeValidationsBase = observer((props) => {
       setNeedsReset(true)
       updateButtonDisabled()
       countdown()
-      props.store.__analytics.logEvent('verificationCodeGenerated', {
+      props.store.analytics.logEvent('verificationCodeGenerated', {
         organizationID: props.store.data.user.organizationID,
         organizationName: props.store.data.organization.name,
       })
