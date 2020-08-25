@@ -19,19 +19,19 @@ const PasswordStrengthModalInput = (props) => {
 
   const validation = (password) => {
     if (password.length < 6) {
-      return { valid: false, message: 'Password is too short' }
+      return { valid: false, message: 'Password is too short', color: '#f05452' }
     } else {
       let score = estimatePasswordStrength(password)
       switch (score) {
         case 0:
         case 1:
-          return { valid: false, message: 'Password strength: weak' }
+          return { valid: false, message: 'Password strength: weak', color: '#f05452' }
         case 2:
-          return { valid: true, message: 'Password strength: okay' }
+          return { valid: true, message: 'Password strength: okay', color: '#43c4d9' }
         case 3:
-          return { valid: true, message: 'Password strength: good' }
+          return { valid: true, message: 'Password strength: good', color: '#388ec5' }
         case 4:
-          return { valid: true, message: 'Password strength: great' }
+          return { valid: true, message: 'Password strength: great', color: '#2c58b1' }
       }
     }
   }
@@ -48,6 +48,7 @@ const PasswordStrengthModalInput = (props) => {
       onChange={props.onChange}
       validation={props.validation}
       validationMessage={validationResult.message}
+      validationColor={validationResult.color}
     />
   )
 }
