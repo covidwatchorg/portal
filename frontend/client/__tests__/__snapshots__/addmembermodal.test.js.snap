@@ -12,6 +12,7 @@ exports[`AddMemberModal renders correctly 1`] = `
       "__signedInWithEmailLink": false,
       "__userDocumentListener": null,
       "__userImageListener": null,
+      "analytics": Object {},
       "context": Object {},
       "data": Object {
         "organization": Object {

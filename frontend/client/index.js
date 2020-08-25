@@ -7,7 +7,7 @@ import { disableReactDevTools } from '@fvilers/disable-react-devtools'
 
 Sentry.init({
   dsn: 'https://13821d959c3a4f10944bb8ef579d034d@o410040.ingest.sentry.io/5283616',
-  environment: window.env,
+  environment: process.env.NODE_ENV,
 })
 
 // Disable react dev tools to make it difficult for hackers to access the store and explore protected routes

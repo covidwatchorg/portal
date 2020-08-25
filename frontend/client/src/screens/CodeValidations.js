@@ -73,6 +73,10 @@ const CodeValidationsBase = observer((props) => {
       setNeedsReset(true)
       updateButtonDisabled()
       countdown()
+      props.store.analytics.logEvent('verificationCodeGenerated', {
+        organizationID: props.store.data.user.organizationID,
+        organizationName: props.store.data.organization.name,
+      })
     } catch (err) {
       setToastInfo({
         success: false,
@@ -178,7 +182,11 @@ const CodeValidationsBase = observer((props) => {
           <PendingOperationButton disabled={buttonDisabled} className="save-button" operation={genNewCode}>
             Generate Code
           </PendingOperationButton>
-          <div id="code-box" ref={codeBoxEle} className={code === codePlaceholder ? "no-value" : "with-value code-generated"}>
+          <div
+            id="code-box"
+            ref={codeBoxEle}
+            className={code === codePlaceholder ? 'no-value' : 'with-value code-generated'}
+          >
             {code}
           </div>
 
