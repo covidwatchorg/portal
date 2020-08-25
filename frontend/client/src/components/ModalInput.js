@@ -26,10 +26,7 @@ const ModalInput = (props) => {
         value={props.value}
         onChange={props.onChange}
       />
-      <div
-        className="validationResult"
-        style={{color: props.validationColor}}
-      >
+      <div className="validationResult" style={{ color: props.validationColor }}>
         {props.validation && props.validationMessage}
       </div>
     </div>
