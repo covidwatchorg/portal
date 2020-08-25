@@ -182,7 +182,11 @@ const CodeValidationsBase = observer((props) => {
           <PendingOperationButton disabled={buttonDisabled} className="save-button" operation={genNewCode}>
             Generate Code
           </PendingOperationButton>
-          <div id="code-box" ref={codeBoxEle} className={code === codePlaceholder ? "no-value" : "with-value code-generated"}>
+          <div
+            id="code-box"
+            ref={codeBoxEle}
+            className={code === codePlaceholder ? 'no-value' : 'with-value code-generated'}
+          >
             {code}
           </div>
 
