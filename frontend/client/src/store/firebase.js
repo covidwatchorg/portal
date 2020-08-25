@@ -25,7 +25,8 @@ const auth = app.auth()
 const SESSION = app.auth.Auth.Persistence.SESSION
 const NONE = app.auth.Auth.Persistence.NONE
 const db = app.firestore()
-const analytics = app.analytics()
+// Instantiation of app.analytics() throws "IDB requires a browser environment" when running jest tests, so just return an empty object for the test env
+const analytics = process.env.NODE_ENV !== 'test' ? app.analytics() : {}
 const createUserCallable = app.functions().httpsCallable('createUser')
 const initiatePasswordRecoveryCallable = app.functions().httpsCallable('initiatePasswordRecovery')
 const getVerificationCodeCallable = app.functions().httpsCallable('getVerificationCode')
