@@ -6,6 +6,7 @@ import {
   db,
   SESSION,
   NONE,
+  analytics,
   createUserCallable,
   initiatePasswordRecoveryCallable,
   getVerificationCodeCallable,
@@ -23,6 +24,7 @@ const createStore = (WrappedComponent) => {
       // Set auth persistence to SESSION for development so that every change registered by the hot-reload dev server doesn't log you out
       auth.setPersistence(process.env.NODE_ENV == 'development' ? SESSION : NONE)
       this.data = rootStore
+      this.analytics = analytics
       this.__userDocumentListener = null
       this.__userImageListener = null
       this.__organizationDocumentListener = null

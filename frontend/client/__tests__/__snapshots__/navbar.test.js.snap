@@ -113,7 +113,7 @@ exports[`NavBar renders correctly 1`] = `
           <div
             className="small-text name"
           >
-            itUser 
+             itUser 
           </div>
           <div
             className="xs-text"

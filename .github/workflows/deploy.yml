@@ -42,7 +42,6 @@ jobs:
           CI: true
         run: |
           npm ci
-          npm run init
           npm run build:staging
       - name: Build node app for prod
         if: github.ref == 'refs/heads/master'
@@ -51,7 +50,6 @@ jobs:
           CI: true
         run: |
           npm ci
-          npm run init
           npm run build
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
@@ -75,9 +73,6 @@ jobs:
       - name: Install
         working-directory: cloud-functions/functions
         run: npm install
-      - name: Initialize config files
-        working-directory: cloud-functions/functions
-        run: npm run init
       - name: Setup functions config
         if: github.ref == 'refs/heads/dev'
         working-directory: cloud-functions/functions

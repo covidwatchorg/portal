@@ -34,7 +34,10 @@ const CodeValidationsBase = observer((props) => {
     msg: '',
   })
 
-  let confirmedToast = React.createRef()
+  const confirmedToast = React.createRef()
+  const datePickerEle = React.createRef()
+  const codeBoxEle = React.createRef()
+  const radioFromEle = React.createRef()
 
   useEffect(() => {
     updateButtonDisabled()
@@ -51,7 +54,7 @@ const CodeValidationsBase = observer((props) => {
 
   const countdown = (num = 60) => {
     setTimeout(() => {
-      if (num > 0 && document.getElementById('code-box').classList.contains('code-generated')) {
+      if (num > 0 && code === codePlaceholder) {
         setTimeLeft(num - 1)
         countdown(num - 1)
       }
@@ -70,6 +73,10 @@ const CodeValidationsBase = observer((props) => {
       setNeedsReset(true)
       updateButtonDisabled()
       countdown()
+      props.store.analytics.logEvent('verificationCodeGenerated', {
+        organizationID: props.store.data.user.organizationID,
+        organizationName: props.store.data.organization.name,
+      })
     } catch (err) {
       setToastInfo({
         success: false,
@@ -93,11 +100,8 @@ const CodeValidationsBase = observer((props) => {
   }
 
   const resetState = () => {
-    document.getElementById('date-picker').value = ''
-    document.getElementById('radio-form').reset()
-    document.getElementById('code-box').classList.toggle('with-value')
-    document.getElementById('code-box').classList.toggle('no-value')
-    document.getElementById('code-box').classList.toggle('code-generated')
+    datePickerEle.current.input.value = ''
+    radioFromEle.current.reset()
     setCode(codePlaceholder)
     setSymptomDateYYYYMMDD('')
     setSymptomDateObject('')
@@ -108,16 +112,13 @@ const CodeValidationsBase = observer((props) => {
   }
 
   const codeTimeStamp = () => {
-    // since this is nearly the same moment that a code is generated, we also make the code text black (this assumes the API call will never fail)
-    document.getElementById('code-box').classList.toggle('with-value')
-    document.getElementById('code-box').classList.toggle('no-value')
-    document.getElementById('code-box').classList.toggle('code-generated')
     setExpirationTime(getOneHourAheadDisplayString())
   }
 
   let datePicker = (
     <DatePicker
       id="date-picker"
+      ref={datePickerEle}
       className={symptomDateYYYYMMDD ? 'with-value' : 'no-value'}
       selected={symptomDateObject}
       minDate={getFourteenDaysAgoDate()}
@@ -140,7 +141,7 @@ const CodeValidationsBase = observer((props) => {
         <div className="col-1">
           <div className="sect-header">COVID-19 Diagnosis</div>
         </div>
-        <form id="radio-form" className="col-2">
+        <form id="radio-form" className="col-2" ref={radioFromEle}>
           <div className="radio">
             <input
               defaultChecked
@@ -181,7 +182,11 @@ const CodeValidationsBase = observer((props) => {
           <PendingOperationButton disabled={buttonDisabled} className="save-button" operation={genNewCode}>
             Generate Code
           </PendingOperationButton>
-          <div id="code-box" className="no-value">
+          <div
+            id="code-box"
+            ref={codeBoxEle}
+            className={code === codePlaceholder ? 'no-value' : 'with-value code-generated'}
+          >
             {code}
           </div>
 

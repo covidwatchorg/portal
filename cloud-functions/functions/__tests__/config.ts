@@ -8,7 +8,7 @@ import 'firebase/functions';
 // tslint:disable-next-line: no-import-side-effect
 import 'firebase/firestore';
 
-const firebaseConfig = require(`../../../../config/firebase.config.test.js`);
+const firebaseConfig = require(`../../../../frontend/client/src/config/firebase.config.test.js`);
 
 firebase.initializeApp(firebaseConfig);
 // Initialize admin SDK
