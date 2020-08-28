@@ -39,7 +39,6 @@ class ChangePasswordModalBase extends React.Component {
       }
       if (fieldName === 'new-password') {
         newState.password = fieldContent
-        newState.passwordIsValid = newState.password && newState.password.length >= 6
         newState.passwordsMatch = newState.password === state.confirmPassword
       }
       if (fieldName === 'confirm-password') {
@@ -115,6 +114,9 @@ class ChangePasswordModalBase extends React.Component {
               value={this.state.password}
               onChange={this.onChange}
               validation={this.state.formHasBeenEdited}
+              notifyValidationResult={(valid) => {
+                this.setState({ passwordIsValid: valid })
+              }}
             />
 
             <ModalInput

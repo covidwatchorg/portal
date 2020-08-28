@@ -46,7 +46,6 @@ class ResetPasswordModalBase extends React.Component {
         case 'new-password':
           newState.newPasswordHasBeenEdited = true
           newState.password = fieldContent
-          newState.passwordIsValid = newState.password && newState.password.length >= 6
           newState.passwordsMatch = newState.password === state.confirmPassword
           break
         case 'confirm-password':
@@ -124,6 +123,9 @@ class ResetPasswordModalBase extends React.Component {
             value={this.state.password}
             onChange={this.onChange}
             validation={this.state.formHasBeenEdited}
+            notifyValidationResult={(valid) => {
+              this.setState({ passwordIsValid: valid })
+            }}
           />
 
           <ModalInput

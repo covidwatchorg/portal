@@ -1,17 +1,20 @@
-import React from 'react'
+import React, { useState } from 'react'
 import zxcvbn from 'zxcvbn'
 import ModalInput from '../components/ModalInput'
 
 /**
  * A component combining a ModalInput with a password strength meter.
- * @param {*} props.label      the label for the component
- * @param {*} props.id         the component ID
+ * @param {*} props.label                  the label for the component
+ * @param {*} props.id                     the component ID
  * @param {*} props.required
- * @param {*} props.value      the current value of the form field
- * @param {*} props.onChange   event handler
- * @param {*} props.validation whether to display a validation message
+ * @param {*} props.value                  the current value of the form field
+ * @param {*} props.validation             whether to display a validation message
+ * @param {*} props.onChange               called when the contents of the parent modal's form change
+ * @param {*} props.notifyValidationResult called to notify the parent of a validation result
  */
 const PasswordStrengthModalInput = (props) => {
+  const [validationResult, setValidationResult] = useState({})
+
   const estimatePasswordStrength = (password) => {
     let result = zxcvbn(password)
     return result.score
@@ -36,8 +39,6 @@ const PasswordStrengthModalInput = (props) => {
     }
   }
 
-  let validationResult = validation(props.value)
-
   return (
     <ModalInput
       label={props.label}
@@ -45,7 +46,12 @@ const PasswordStrengthModalInput = (props) => {
       required={props.required}
       password={true}
       value={props.value}
-      onChange={props.onChange}
+      onChange={(e) => {
+        props.onChange(e)
+        let newValidationResult = validation(props.value)
+        setValidationResult(newValidationResult)
+        props.notifyValidationResult(newValidationResult.valid)
+      }}
       validation={props.validation}
       validationMessage={validationResult.message}
       validationColor={validationResult.color}
