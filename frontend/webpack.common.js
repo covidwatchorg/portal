@@ -3,7 +3,6 @@ const path = require('path')
 module.exports = {
   devtool: 'source-map',
   entry: {
-    polyfill: 'babel-polyfill',
     app: './client/index.js',
   },
   output: {
@@ -16,27 +15,9 @@ module.exports = {
       {
         test: /\.jsx?/,
         exclude: /node_modules/,
-        use: [
-          {
-            loader: 'babel-loader',
-            options: {
-              presets: [
-                [
-                  '@babel/preset-env',
-                  {
-                    targets: {
-                      node: '10',
-                    },
-                  },
-                ],
-                '@babel/preset-react',
-                {
-                  plugins: ['@babel/plugin-proposal-class-properties'],
-                },
-              ],
-            },
-          },
-        ],
+        use: {
+          loader: 'babel-loader',
+        },
       },
       {
         test: /\.s[ac]ss$/i,
