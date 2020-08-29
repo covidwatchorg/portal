@@ -4,11 +4,14 @@ module.exports = {
     [
       '@babel/preset-env',
       {
-        targets: {
-          node: 'current',
-        },
+        corejs: 3,
+        useBuiltIns: 'usage',
+        targets: process.env.NODE_ENV == 'test' ? 'current node' : 'defaults',
       },
     ],
-    '@babel/react',
+    '@babel/preset-react',
+    {
+      plugins: ['@babel/plugin-proposal-class-properties'],
+    },
   ],
 }
