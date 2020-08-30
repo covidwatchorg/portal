@@ -5,7 +5,7 @@ module.exports = {
       '@babel/preset-env',
       {
         corejs: 3,
-        useBuiltIns: 'usage',
+        useBuiltIns: 'entry',
         targets: process.env.NODE_ENV == 'test' ? { node: 'current' } : 'defaults',
       },
     ],
