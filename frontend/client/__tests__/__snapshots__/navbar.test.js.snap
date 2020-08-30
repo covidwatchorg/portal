@@ -1,7 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`NavBar renders correctly 1`] = `
-<Component
+<_temp2
   store={
     Object {
       "data": Object {
@@ -1135,5 +1135,5 @@ exports[`NavBar renders correctly 1`] = `
       </div>
     </div>
   </Memo(wrappedComponent)>
-</Component>
+</_temp2>
 `;
