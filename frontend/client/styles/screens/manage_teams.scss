@@ -104,7 +104,8 @@ table {
   line-height: 18px;
 
   @include media('<=phone') {
-    display: none;
+    align-self: center;
+    margin: 16px 0;
   }
 
   .pages-container {
