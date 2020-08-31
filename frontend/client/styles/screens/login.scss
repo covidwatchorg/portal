@@ -110,6 +110,11 @@
         display: none;
       }
       margin-top: 20px;
+      
+      // Edit margin for Internet Explorer
+      @media all and (-ms-high-contrast: none), (-ms-high-contrast: active){
+	      margin-top: 110px;
+      }
     }
   }
 }
