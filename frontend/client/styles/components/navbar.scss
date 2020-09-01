@@ -16,6 +16,11 @@
 
   .logo-link {
     display: flex;
+
+    // Edit display for Internet Explorer
+    @media all and (-ms-high-contrast: none), (-ms-high-contrast: active){
+	    display: block;
+    }
   }
 
   #orgLogo {
