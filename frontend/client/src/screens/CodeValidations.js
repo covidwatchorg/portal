@@ -6,8 +6,8 @@ import { Redirect } from 'react-router-dom'
 import { observer } from 'mobx-react'
 import PageTitle from '../components/PageTitle'
 import PendingOperationButton from '../components/PendingOperationButton'
-import Clock from '../../assets/clock.svg'
 import DatePicker from 'react-datepicker'
+import Countdown from '../components/Countdown'
 
 import {
   getOneHourAheadDisplayString,
@@ -18,7 +18,6 @@ import {
 } from '../util/time'
 
 const codePlaceholder = '00000000'
-let needsResetGlobal = false
 
 const CodeValidationsBase = observer((props) => {
   const [testType] = useState('confirmed')
@@ -29,7 +28,6 @@ const CodeValidationsBase = observer((props) => {
   const [code, setCode] = useState(codePlaceholder)
   const [buttonDisabled, setButtonDisabled] = useState(false)
   const [expirationTime, setExpirationTime] = useState('')
-  const [timeLeft, setTimeLeft] = useState(60)
   const [toastInfo, setToastInfo] = useState({
     success: false,
     msg: '',
@@ -44,10 +42,6 @@ const CodeValidationsBase = observer((props) => {
     updateButtonDisabled()
   })
 
-  useEffect(() => {
-    needsResetGlobal = needsReset
-  }, [needsReset])
-
   // Updates the buttonDisabled variable state based on other state variables
   const updateButtonDisabled = () => {
     if (needsReset || dateInvalid) {
@@ -55,15 +49,6 @@ const CodeValidationsBase = observer((props) => {
     } else {
       setButtonDisabled(false)
     }
-  }
-
-  const countdown = (num = 60) => {
-    setTimeout(() => {
-      if (num > 0 && needsResetGlobal) {
-        setTimeLeft(num - 1)
-        countdown(num - 1)
-      }
-    }, 600000)
   }
 
   const genNewCode = async () => {
@@ -76,7 +61,6 @@ const CodeValidationsBase = observer((props) => {
       setCode(code.data.split('').join(''))
       codeTimeStamp()
       setNeedsReset(true)
-      countdown()
       updateButtonDisabled()
       props.store.analytics.logEvent('verificationCodeGenerated', {
         organizationID: props.store.data.user.organizationID,
@@ -110,7 +94,6 @@ const CodeValidationsBase = observer((props) => {
     setCode(codePlaceholder)
     setSymptomDateYYYYMMDD('')
     setSymptomDateObject('')
-    setTimeLeft(60)
     setNeedsReset(false)
     setDateInvalid(false)
     updateButtonDisabled()
@@ -197,18 +180,7 @@ const CodeValidationsBase = observer((props) => {
 
           {needsReset && (
             <div>
-              <div id="share-urgently">
-                <img src={Clock}></img>
-                <div>Share the code ASAP. &nbsp;</div>
-                {timeLeft > 0 ? (
-                  <span>
-                    It will expire in {timeLeft} min at {expirationTime}
-                  </span>
-                ) : (
-                  <span>Code expired after 60 minutes - generate new code.</span>
-                )}
-              </div>
-
+              <Countdown expirationTime={expirationTime} />
               <PendingOperationButton operation={resetState} className="save-button">
                 Reset Code and Form
               </PendingOperationButton>
