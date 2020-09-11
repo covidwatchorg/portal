@@ -18,6 +18,7 @@ import {
 } from '../util/time'
 
 const codePlaceholder = '00000000'
+let needsResetGlobal = false
 
 const CodeValidationsBase = observer((props) => {
   const [testType] = useState('confirmed')
@@ -43,6 +44,10 @@ const CodeValidationsBase = observer((props) => {
     updateButtonDisabled()
   })
 
+  useEffect(() => {
+    needsResetGlobal = needsReset
+  }, [needsReset])
+
   // Updates the buttonDisabled variable state based on other state variables
   const updateButtonDisabled = () => {
     if (needsReset || dateInvalid) {
@@ -54,11 +59,11 @@ const CodeValidationsBase = observer((props) => {
 
   const countdown = (num = 60) => {
     setTimeout(() => {
-      if (num > 0 && code === codePlaceholder) {
+      if (num > 0 && needsResetGlobal) {
         setTimeLeft(num - 1)
         countdown(num - 1)
       }
-    }, 60000)
+    }, 600000)
   }
 
   const genNewCode = async () => {
@@ -71,8 +76,8 @@ const CodeValidationsBase = observer((props) => {
       setCode(code.data.split('').join(''))
       codeTimeStamp()
       setNeedsReset(true)
-      updateButtonDisabled()
       countdown()
+      updateButtonDisabled()
       props.store.analytics.logEvent('verificationCodeGenerated', {
         organizationID: props.store.data.user.organizationID,
         organizationName: props.store.data.organization.name,
