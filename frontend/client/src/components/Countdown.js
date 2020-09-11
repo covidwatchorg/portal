@@ -8,7 +8,7 @@ const Countdown = (props) => {
     timeLeft > 0 &&
       setTimeout(() => {
         setTimeLeft(timeLeft - 1)
-      }, 600)
+      }, 60000)
   }, [timeLeft])
 
   return (
