@@ -6,8 +6,8 @@ import { Redirect } from 'react-router-dom'
 import { observer } from 'mobx-react'
 import PageTitle from '../components/PageTitle'
 import PendingOperationButton from '../components/PendingOperationButton'
-import Clock from '../../assets/clock.svg'
 import DatePicker from 'react-datepicker'
+import Countdown from '../components/Countdown'
 
 import {
   getOneHourAheadDisplayString,
@@ -72,7 +72,6 @@ const CodeValidationsBase = observer((props) => {
       codeTimeStamp()
       setNeedsReset(true)
       updateButtonDisabled()
-      countdown()
       props.store.analytics.logEvent('verificationCodeGenerated', {
         organizationID: props.store.data.user.organizationID,
         organizationName: props.store.data.organization.name,
@@ -105,7 +104,6 @@ const CodeValidationsBase = observer((props) => {
     setCode(codePlaceholder)
     setSymptomDateYYYYMMDD('')
     setSymptomDateObject('')
-    setTimeLeft(60)
     setNeedsReset(false)
     setDateInvalid(false)
     updateButtonDisabled()
@@ -192,18 +190,7 @@ const CodeValidationsBase = observer((props) => {
 
           {needsReset && (
             <div>
-              <div id="share-urgently">
-                <img src={Clock}></img>
-                <div>Share the code ASAP. &nbsp;</div>
-                {timeLeft > 0 ? (
-                  <span>
-                    It will expire in {timeLeft} min at {expirationTime}
-                  </span>
-                ) : (
-                  <span>Code expired after 60 minutes - generate new code.</span>
-                )}
-              </div>
-
+              <Countdown expirationTime={expirationTime} />
               <PendingOperationButton operation={resetState} className="save-button">
                 Reset Code and Form
               </PendingOperationButton>
