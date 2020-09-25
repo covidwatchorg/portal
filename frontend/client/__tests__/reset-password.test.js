@@ -33,14 +33,14 @@ jest.mock('../src/store/firebase', () => {
 
 describe('reset password', () => {
   it.each([
-    ['Changes password succesfully (ResetPasswordModal)', ResetPasswordModal, 'password1', 'password1'],
+    ['Changes password succesfully (ResetPasswordModal)', ResetPasswordModal, 'horsebattery123', 'horsebattery123'],
     [
       'Does not change password when confirmation does not match (ResetPasswordModal)',
       ResetPasswordModal,
       'password1',
       'password2',
     ],
-    ['Changes password succesfully (ChangePasswordModal)', ChangePasswordModal, 'password1', 'password1'],
+    ['Changes password succesfully (ChangePasswordModal)', ChangePasswordModal, 'horsebattery123', 'horsebattery123'],
     [
       'Does not change password when confirmation does not match (ChangePasswordModal)',
       ChangePasswordModal,
@@ -68,7 +68,7 @@ describe('reset password', () => {
     }
     wrapper
       .find('#new-password')
-      .at(1)
+      .at(2)
       .simulate('change', {
         target: {
           name: 'new-password',

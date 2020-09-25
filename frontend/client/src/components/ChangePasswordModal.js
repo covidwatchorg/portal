@@ -4,6 +4,7 @@ import ModalInput from '../components/ModalInput'
 import PendingOperationButton from '../components/PendingOperationButton'
 import { withStore } from '../store'
 import Logging from '../util/logging'
+import PasswordStrengthModalInput from './PasswordStrengthModalInput'
 
 class ChangePasswordModalBase extends React.Component {
   constructor(props) {
@@ -38,7 +39,6 @@ class ChangePasswordModalBase extends React.Component {
       }
       if (fieldName === 'new-password') {
         newState.password = fieldContent
-        newState.passwordIsValid = newState.password && newState.password.length >= 6
         newState.passwordsMatch = newState.password === state.confirmPassword
       }
       if (fieldName === 'confirm-password') {
@@ -107,19 +107,16 @@ class ChangePasswordModalBase extends React.Component {
         <p>{this.state.subHeading}</p>
         {this.state.showNewPasswordInputs && (
           <form className="change-password-form">
-            <ModalInput
+            <PasswordStrengthModalInput
               label="New Password"
               id="new-password"
               required={true}
-              password={true}
               value={this.state.password}
               onChange={this.onChange}
-              validation={!this.state.passwordIsValid && this.state.formHasBeenEdited}
-              validationMessage={
-                this.state.password.length > 0
-                  ? 'Password must be at least 6 characters long'
-                  : 'New password cannot be blank'
-              }
+              validation={this.state.formHasBeenEdited}
+              notifyValidationResult={(valid) => {
+                this.setState({ passwordIsValid: valid })
+              }}
             />
 
             <ModalInput
