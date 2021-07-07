@@ -13,6 +13,7 @@ import PageTitle from '../components/PageTitle'
 import Logging from '../util/logging'
 import ChangeRoleModal from '../components/ChangeRoleModal'
 import ChangeStatusModal from '../components/ChangeStatusModal'
+import MobileMemberInfo from '../components/MobileMemberInfo'
 import '../../styles/screens/manage_teams.scss' // NOTE: see note in index.scss
 
 const ManageTeamsBase = observer((props) => {
@@ -107,7 +108,6 @@ const ManageTeamsBase = observer((props) => {
         <img src={addMember} alt="" />
         <span className="add-button-text">Add Member</span>
       </button>
-      <p className="mobile-msg">Use desktop to view members.</p>
       <AddMemberModal
         hidden={!showAddMemberModal}
         onClose={onAddMemberCancel}
@@ -124,6 +124,21 @@ const ManageTeamsBase = observer((props) => {
         onClose={onChangeStatusModalClose}
         userProperties={modalUserProperties}
       />
+      {props.store.data.organization.members && (
+        <div className="mobile-member-info-index">
+          {props.store.data.organization.currentPageOfMembers.map((data, idx) => (
+            <MobileMemberInfo
+              data={data}
+              key={idx}
+              memberIndex={idx + (props.store.data.organization.membersPage - 1) * PAGE_SIZE}
+              userEmail={userEmail}
+              handleRoleChange={handleRoleChange}
+              handleStatusChange={handleStatusChange}
+              resetPassword={resetPassword}
+            />
+          ))}
+        </div>
+      )}
       <table>
         <thead>
           <tr>
